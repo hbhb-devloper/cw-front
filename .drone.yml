@@ -15,7 +15,7 @@ steps:
 
   # node打包
   - name: build
-    image: daixk1212/node
+    image: node:alpine
     volumes:
       - name: node_local_repo
         path: /wwwroot
@@ -39,21 +39,21 @@ steps:
         path: /cache
 
   # dist部署
-#  - name: deploy
-#    image: appleboy/drone-scp
-#    settings:
-#      host:
-#        from_secret: ssh_host
-#      port: 22
-#      username: root
-#      key:
-#        from_secret: ssh_key
-#      target:
-#        from_secret: deploy_path
-#      source: ./dist/*
-#    when:
-#      status:
-#        - success
+  - name: deploy
+    image: appleboy/drone-scp
+    settings:
+      host:
+        from_secret: ssh_host
+      port: 22
+      username: root
+      key:
+        from_secret: ssh_key
+      target:
+        from_secret: deploy_path
+      source: ./dist/*
+    when:
+      status:
+        - success
 
 
 
