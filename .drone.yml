@@ -3,6 +3,7 @@ type: docker
 name: default
 
 steps:
+  # 使用缓存
   - name: restore-cache
     image: drillster/drone-volume-cache
     volumes:
@@ -29,6 +30,7 @@ steps:
       - yarn
       - yarn run build:stage
 
+  # 更新缓存
   - name: rebuild-cache
     image: drillster/drone-volume-cache
     volumes:
@@ -57,9 +59,7 @@ steps:
       status:
         - success
 
-
-
-#  # 钉钉通知
+  # 钉钉通知
 #  - name: dingtalk
 #    image: lddsb/drone-dingtalk-message
 #    settings:
