@@ -22,7 +22,7 @@ steps:
       - yarn -v
       - yarn config set registry http://registry.npm.taobao.org/
       - yarn config set sass_binary_site https://npm.taobao.org/mirrors/node-sass
-      - yarn
+#      - yarn
       - yarn run build:stage
 
   # 更新缓存
@@ -46,10 +46,10 @@ steps:
       username: root
       key:
         from_secret: ssh_key
-      rm: true
       target:
         from_secret: deploy_path
       source: dist/*
+      rm: true
       strip_components: 1
     when:
       status:
