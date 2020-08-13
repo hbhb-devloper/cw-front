@@ -3,6 +3,16 @@ type: docker
 name: default
 
 steps:
+  - name: restore-cache
+    image: drillster/drone-volume-cache
+    restore: true
+    mount:
+      - ./.yarn-cache
+      - ./node_modules
+    volumes:
+      - name: node_local_repo
+        path: /cache
+
   # node打包
   - name: build
     image: daixk1212/node
@@ -12,9 +22,20 @@ steps:
     commands:
       - node -v
       - yarn -v
+      - yarn config set cache-folder .yarn-cache
       - yarn config set registry http://registry.npm.taobao.org/
       - yarn
       - npm run build:stage
+
+  - name: rebuild-cache
+    image: drillster/drone-volume-cache
+    rebuild: true
+    mount:
+      - ./.yarn-cache
+      - ./node_modules
+    volumes:
+      - name: node_local_repo
+        path: /cache
 
   # dist部署
 #  - name: deploy
