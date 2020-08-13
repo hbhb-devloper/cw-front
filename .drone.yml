@@ -6,20 +6,17 @@ steps:
   # 使用缓存
   - name: restore-cache
     image: drillster/drone-volume-cache
-    volumes:
-      - name: node_local_repo
-        path: /cache
     settings:
       restore: true
       mount:
-        - node_modules
+        - ./node_modules
+    volumes:
+      - name: node_cache
+        path: /cache
 
   # 打包
   - name: build
     image: node:alpine
-    volumes:
-      - name: node_local_repo
-        path: /wwwroot
     commands:
       - node -v
       - yarn -v
@@ -31,13 +28,13 @@ steps:
   # 更新缓存
   - name: rebuild-cache
     image: drillster/drone-volume-cache
-    volumes:
-      - name: node_local_repo
-        path: /cache
     settings:
       rebuild: true
       mount:
-        - node_modules
+        - ./node_modules
+    volumes:
+      - name: node_cache
+        path: /cache
 
   # 部署
   - name: deploy
@@ -51,7 +48,7 @@ steps:
         from_secret: ssh_key
       target:
         from_secret: deploy_path
-      source: dist/*
+      source: ./*
     when:
       status:
         - success
@@ -75,6 +72,6 @@ steps:
 #      status: [failure, success]
 
 volumes:
-  - name: node_local_repo
+  - name: node_cache
     host:
       path: /data/node
