@@ -3,17 +3,17 @@ type: docker
 name: default
 
 steps:
-  - name: restore-cache
-    image: drillster/drone-volume-cache
-    restore: true
-    mount:
-      - ./.yarn-cache
-      - ./node_modules
-    volumes:
-      - name: node_local_repo
-        path: /cache
+#  - name: restore-cache
+#    image: drillster/drone-volume-cache
+#    restore: true
+#    mount:
+#      - ./.yarn-cache
+#      - ./node_modules
+#    volumes:
+#      - name: node_local_repo
+#        path: /cache
 
-  # node打包
+  # 打包
   - name: build
     image: node:alpine
     volumes:
@@ -26,19 +26,19 @@ steps:
       - yarn config set registry http://registry.npm.taobao.org/
       - yarn config set sass_binary_site https://npm.taobao.org/mirrors/node-sass
       - yarn
-      - npm run build:stage
+      - yarn run build:stage
 
-  - name: rebuild-cache
-    image: drillster/drone-volume-cache
-    rebuild: true
-    mount:
-      - ./.yarn-cache
-      - ./node_modules
-    volumes:
-      - name: node_local_repo
-        path: /cache
+#  - name: rebuild-cache
+#    image: drillster/drone-volume-cache
+#    rebuild: true
+#    mount:
+#      - ./.yarn-cache
+#      - ./node_modules
+#    volumes:
+#      - name: node_local_repo
+#        path: /cache
 
-  # dist部署
+  # 部署
   - name: deploy
     image: appleboy/drone-scp
     settings:
@@ -50,7 +50,7 @@ steps:
         from_secret: ssh_key
       target:
         from_secret: deploy_path
-      source: ./dist/*
+      source: ./*
     when:
       status:
         - success
