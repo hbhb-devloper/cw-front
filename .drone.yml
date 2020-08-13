@@ -22,7 +22,6 @@ steps:
       - yarn -v
       - yarn config set registry http://registry.npm.taobao.org/
       - yarn config set sass_binary_site https://npm.taobao.org/mirrors/node-sass
-#      - yarn
       - yarn run build:stage
 
   # 更新缓存
@@ -47,7 +46,7 @@ steps:
       key:
         from_secret: ssh_key
       target:
-        from_secret: deploy_path
+        from_secret: /app/zhcw/dev
       source: dist/*
       rm: true
       strip_components: 1
@@ -56,22 +55,22 @@ steps:
         - success
 
   # 钉钉通知
-#  - name: dingtalk
-#    image: lddsb/drone-dingtalk-message
-#    settings:
-#      token:
-#        from_secret: dingtalk_token
-#      type: markdown
-#      tpl: ./markdown.tpl
-#      tips_title: 新的构建已完成，请测试
-#      message_color: true
-#      success_color: 39D839
-#      failure_color: E93939
-#      tpl_build_status_success: passed
-#      tpl_buaild_status_failure: failed
-#      sha_link: true
-#    when:
-#      status: [failure, success]
+  - name: dingtalk
+    image: lddsb/drone-dingtalk-message
+    settings:
+      token:
+        from_secret: dingtalk_token
+      type: markdown
+      tpl: ./markdown.tpl
+      tips_title: 新的构建已完成，请测试
+      message_color: true
+      success_color: 39D839
+      failure_color: E93939
+      tpl_build_status_success: passed
+      tpl_buaild_status_failure: failed
+      sha_link: true
+    when:
+      status: [failure, success]
 
 volumes:
   - name: node_cache
