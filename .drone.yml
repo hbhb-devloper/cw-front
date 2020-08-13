@@ -11,7 +11,7 @@ steps:
         path: /wwwroot
     commands:
       - node -v
-      - yarn --version
+      - yarn -v
       - yarn config set registry http://registry.npm.taobao.org/
       - yarn
       - npm run build:stage
