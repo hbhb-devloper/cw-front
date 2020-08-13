@@ -5,7 +5,7 @@ name: default
 steps:
   # node打包
   - name: build
-    image: registry.cn-hangzhou.aliyuncs.com/hbhb/node
+    image: daixk1212/node
     volumes:
       - name: node_local_repo
         path: /wwwroot
