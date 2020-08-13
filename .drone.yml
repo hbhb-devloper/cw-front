@@ -46,8 +46,7 @@ steps:
       key:
         from_secret: ssh_key
       rm: true
-      target:
-        from_secret: /app/zhcw/dev
+      target: /app/zhcw/dev
       source: dist/*
       strip_components: 1
     when:
