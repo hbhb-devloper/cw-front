@@ -12,8 +12,7 @@ steps:
     settings:
       restore: true
       mount:
-        - ./.yarn-cache
-        - ./node_modules
+        - node_modules
 
   # 打包
   - name: build
@@ -24,7 +23,6 @@ steps:
     commands:
       - node -v
       - yarn -v
-      - yarn config set cache-folder .yarn-cache
       - yarn config set registry http://registry.npm.taobao.org/
       - yarn config set sass_binary_site https://npm.taobao.org/mirrors/node-sass
       - yarn
@@ -39,8 +37,7 @@ steps:
     settings:
       rebuild: true
       mount:
-        - ./.yarn-cache
-        - ./node_modules
+        - node_modules
 
   # 部署
   - name: deploy
@@ -54,7 +51,7 @@ steps:
         from_secret: ssh_key
       target:
         from_secret: deploy_path
-      source: ./*
+      source: dist/*
     when:
       status:
         - success
