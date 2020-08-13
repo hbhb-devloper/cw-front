@@ -45,10 +45,10 @@ steps:
       username: root
       key:
         from_secret: ssh_key
+      rm: true
       target:
         from_secret: /app/zhcw/dev
       source: dist/*
-      rm: true
       strip_components: 1
     when:
       status:
