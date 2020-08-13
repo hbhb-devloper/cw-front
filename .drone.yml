@@ -3,15 +3,16 @@ type: docker
 name: default
 
 steps:
-#  - name: restore-cache
-#    image: drillster/drone-volume-cache
-#    restore: true
-#    mount:
-#      - ./.yarn-cache
-#      - ./node_modules
-#    volumes:
-#      - name: node_local_repo
-#        path: /cache
+  - name: restore-cache
+    image: drillster/drone-volume-cache
+    volumes:
+      - name: node_local_repo
+        path: /cache
+    settings:
+      restore: true
+      mount:
+        - ./.yarn-cache
+        - ./node_modules
 
   # 打包
   - name: build
@@ -28,15 +29,16 @@ steps:
       - yarn
       - yarn run build:stage
 
-#  - name: rebuild-cache
-#    image: drillster/drone-volume-cache
-#    rebuild: true
-#    mount:
-#      - ./.yarn-cache
-#      - ./node_modules
-#    volumes:
-#      - name: node_local_repo
-#        path: /cache
+  - name: rebuild-cache
+    image: drillster/drone-volume-cache
+    volumes:
+      - name: node_local_repo
+        path: /cache
+    settings:
+      rebuild: true
+      mount:
+        - ./.yarn-cache
+        - ./node_modules
 
   # 部署
   - name: deploy
