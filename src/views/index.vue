@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-07-20 18:22:09
  * @LastEditors: CYZ
- * @LastEditTime: 2020-08-14 18:19:45
+ * @LastEditTime: 2020-08-14 18:39:53
 -->
 <template>
   <div class="dashboard-editor-container">
@@ -129,8 +129,8 @@
         </el-form-item>
       </el-form>
       <el-table :data="NoticeMoreData" style="width: 100%" v-loading='loading1'>
-        <el-table-column prop="id" label="序号" align="center"></el-table-column>
-        <el-table-column prop="content" label="待办内容" align="center">
+        <el-table-column prop="id" label="序号" align="center" width="50"></el-table-column>
+        <el-table-column prop="content" label="待办内容" align="center" >
           <template style="color:#409EFF" slot-scope="scope">
             <router-link
               style="color:#409EFF;"
@@ -138,13 +138,17 @@
             >{{scope.row.content}}</router-link>
           </template>
         </el-table-column>
-        <el-table-column prop="amount" label="流程发起时金额(万元)" width="200" align="center"></el-table-column>
+        <el-table-column prop="amount" label="金额(万元)" width="150" align="center">
+          <!-- <template slot-scope="scope">{{scope.row.amount | dataFixed}}</template> -->
+        </el-table-column>
         <el-table-column prop="flowType" label="流程类型" align="center"></el-table-column>
         <el-table-column prop="userName" label="发起人" align="center"></el-table-column>
         <el-table-column prop="unitName" label="发起单位" align="center"></el-table-column>
-        <el-table-column prop="createTime" label="发起时间" align="center"></el-table-column>
+        <el-table-column prop="createTime" label="发起时间" align="center">
+          <template slot-scope="scope">{{scope.row.createTime | dataFormat}}</template>
+        </el-table-column>
         <el-table-column prop="stateLabel" label="流程状态" align="center"></el-table-column>
-        <el-table-column prop="remark" label="备注信息" align="center"></el-table-column>
+        <!-- <el-table-column prop="remark" label="备注信息" align="center"></el-table-column> -->
       </el-table>
       <pagination
         v-show="total>0"
@@ -254,6 +258,9 @@ export default {
   filters: {
     dataFormat(msg) {
       return msg.substring(0, 10);
+    },
+    dataFixed(num) {
+      return num.toFixed(2);
     },
   },
   created() {
