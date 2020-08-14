@@ -56,7 +56,7 @@
         </template>
       </el-table-column>
       <el-table-column prop="surplus" label="本年结余(万元)" align="center" width="180"></el-table-column>
-      <el-table-column prop="percentage" align="center" label="预算进度百分比">
+      <el-table-column prop="percentage" align="center" label="预算进度百分比" width="250">
         <template slot-scope="scope">
           <el-progress
             :percentage="scope.row.percentage"
@@ -66,8 +66,15 @@
       </el-table-column>
     </el-table>
     <el-dialog title="已立项值" :visible.sync="outerVisible">
-      <el-table :data="ProjectList" v-loading="loading1" @row-click="gotodetail">
-        <el-table-column property="id" label="序号" width="150"></el-table-column>
+      <el-table :data="ProjectList" v-loading="loading1" @row-click="gotodetail" row-class-name="pointer">
+        <el-table-column property="projectNum" label="编号" width="200">
+          <template style="color:#409EFF" slot-scope="scope">
+            <div
+              style="color:#409EFF;"
+            >{{scope.row.projectNum}}</div>
+          </template>
+        </el-table-column>
+        <el-table-column property="projectName" label="项目名称" width="200"></el-table-column>
         <el-table-column property="projectItemName" label="项目类别名称" width="200"></el-table-column>
         <el-table-column property="amount" label="金额"></el-table-column>
       </el-table>
@@ -392,5 +399,8 @@ export default {
 }
 /deep/ .el-table__row--level-0{
   background: #f5f7fa;
+}
+.pointer{
+  cursor: pointer;
 }
 </style>

@@ -57,7 +57,7 @@
       header-cell-class-name="is-center"
     >
       <!-- <el-table-column type="selection" width="55" align="center" /> -->
-      <el-table-column prop="budgetName" label="预算科目" width="400"></el-table-column>
+      <el-table-column prop="budgetName" label="预算科目" width="380"></el-table-column>
       <!-- <el-table-column prop="company" label="计量单位" align="center" width="180"></el-table-column> -->
       <el-table-column prop="oldValue" align="center" label="调整前预算值(万元)"></el-table-column>
       <el-table-column prop="newValue" align="center" label="调整后预算值(万元)"></el-table-column>

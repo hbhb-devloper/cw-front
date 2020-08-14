@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-07-20 18:22:09
  * @LastEditors: CYZ
- * @LastEditTime: 2020-08-13 10:04:51
+ * @LastEditTime: 2020-08-14 16:13:51
 -->
 <template>
   <div class="dashboard-editor-container">
@@ -16,7 +16,8 @@
             <el-button @click="opendialog" style="float: right; padding: 3px 0" type="text">更多</el-button>
           </div>
           <el-table :data="NoticetableData" v-loading='loading' style="width: 100%;font-size: 13px;" height="250">
-            <el-table-column prop="content" label="待办内容" align="center" class-name="ellipsis2">
+            <el-table-column prop="content" label="待办内容" align="center">
+              <!--  class-name="ellipsis2" -->
               <template style="color:#409EFF" slot-scope="scope">
                 <router-link
                   style="color:#409EFF;"
@@ -52,7 +53,8 @@
             >上传</el-button>
           </div>
           <el-table :data="FiletableData" v-loading='loading2' style="width: 100%;font-size: 13px;" height="250">
-            <el-table-column prop="fileName" label="文件名称" align="center" class-name="ellipsis2"></el-table-column>
+            <el-table-column prop="fileName" label="文件名称" align="center"></el-table-column>
+              <!--  class-name="ellipsis2" -->
             <el-table-column prop="uploadTime" label="日期" align="center">
               <template slot-scope="scope">{{scope.row.uploadTime | dataFormat}}</template>
             </el-table-column>
@@ -367,7 +369,6 @@ export default {
     },
     getNoticeList() {
       this.loading = true;
-      this.loading2 = true;
       getNoticeList().then((response) => {
         console.log(response,222)
         // console.log("getNoticeList", response);
