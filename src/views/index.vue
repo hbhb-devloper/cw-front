@@ -4,12 +4,12 @@
  * @Author: CYZ
  * @Date: 2020-07-20 18:22:09
  * @LastEditors: CYZ
- * @LastEditTime: 2020-08-14 16:13:51
+ * @LastEditTime: 2020-08-14 18:19:45
 -->
 <template>
   <div class="dashboard-editor-container">
     <el-row type="flex" class="row-bg" justify="space-around">
-      <el-col :span="11">
+      <el-col :span="23">
         <el-card class="box-card">
           <div slot="header" class="clearfix">
             <span>重点看点待办事宜</span>
@@ -41,6 +41,23 @@
             </el-table-column>
           </el-table>
         </el-card>
+      </el-col>
+    </el-row>
+    <el-row type="flex" class="row-bg" justify="space-around">
+      <el-col :span="11">
+        <el-card class="box-card">
+          <div slot="header" class="clearfix">
+            <span>通告提醒</span>
+            <el-button style="float: right; padding: 3px 0" type="text">更多</el-button>
+          </div>
+          <div class="noticelist">
+            <div class="noticeitem" v-for="(item,index) in noticelists" :key="index">
+              <div class="title">{{item.title}}</div>
+              <div class="date">{{item.date}}</div>
+            </div>
+          </div>
+        </el-card>
+        
       </el-col>
       <el-col :span="11">
         <el-card class="box-card">
@@ -75,22 +92,7 @@
         </el-card>
       </el-col>
     </el-row>
-    <el-row type="flex" class="row-bg" justify="space-around">
-      <el-col :span="23">
-        <el-card class="box-card">
-          <div slot="header" class="clearfix">
-            <span>通告提醒</span>
-            <el-button style="float: right; padding: 3px 0" type="text">更多</el-button>
-          </div>
-          <div class="noticelist">
-            <div class="noticeitem" v-for="(item,index) in noticelists" :key="index">
-              <div class="title">{{item.title}}</div>
-              <div class="date">{{item.date}}</div>
-            </div>
-          </div>
-        </el-card>
-      </el-col>
-    </el-row>
+    
     <!-- 添加或修改角色配置对话框 -->
     <el-dialog title="待办事宜" :visible.sync="open" width="1200px">
       <el-form :model="queryParams" ref="queryForm" :inline="true">
