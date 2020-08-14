@@ -2,7 +2,7 @@
   <div class="form-box">
     <div class="form1">
       <label class="form-label" v-if="stutic=='add'">
-        <span><i>*</i>预算科目类型</span>
+        <span><i>*</i>预算项目类型</span>
         <el-select placeholder="请选择科目类型" v-model="obj2.budgetId" filterable @change="handleType" style="width: 200px">
           <el-option v-for="item in projectItem" :value="item.id" :label="item.label"></el-option>
         </el-select>
@@ -478,7 +478,7 @@
         if (this.stutic == 'add') {
           addData(this.obj2).then(res => {
             this.$message.success('添加成功')
-            this.$router.go(-1);
+            // this.$router.go(-1);
           })
         } else{
           upData(this.obj2).then(res => {
@@ -487,7 +487,7 @@
             }else if(this.obj2.state==31||this.obj2.state==40){
               this.$message.success('调整成功');
             }
-            this.$router.go(-1);
+            // this.$router.go(-1);
           })
         }
 

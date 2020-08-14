@@ -17,8 +17,7 @@
               <i class="el-icon-error" v-if="item.operation.value==0"></i>
               {{item.approverRole}}：
             </span>
-            <el-select  placeholder="请选择" v-model="item.form.id" :disabled="item.approver.readOnly"
-                       >
+            <el-select  placeholder="请选择" v-model="item.form.id" style="width:100px;" :disabled="item.approver.readOnly">
               <el-option
                 v-for="items in item.approverSelect"
                 :value="items.userId"
@@ -32,10 +31,10 @@
             <el-button size="small" v-if="!item.operation.hidden" @click="handleApprove(item,0,index)">拒绝</el-button>
           </div>
           <div class="programList-div">
-            <span style="display: inline-block;width: 80px;">意见：</span>
+            <span style="display: inline-block;">意见：</span>
 
             <el-input v-if="item.suggestion.readOnly" :disabled="item.suggestion.readOnly"
-                      v-model="item.suggestion.value" placeholder="请输入审批意见"></el-input>
+                      v-model="item.suggestion.value" style="width:180px" placeholder="请输入审批意见"></el-input>
 <!--            <el-input :disabled="item.suggestion.readOnly" v-model="programObj.suggestion" :placeholder="'请输入审批意见'"></el-input>-->
             <el-select
               v-else
@@ -43,6 +42,7 @@
               slot="empty"
               filterable
               allow-create
+              style="width:150px"
               default-first-option
               placeholder="请输入审批意见">
               <el-option
@@ -167,7 +167,7 @@
             <div class="row-div">
               <label>责任人：</label>
               <span>{{info.director}}</span>
-              <label>工程编号：</label>
+              <label>预算编号：</label>
               <span>{{info.engineeringNum}}</span>
             </div>
             <div class="row-div">
@@ -932,7 +932,7 @@
       margin-top: 20px;
 
       .programList {
-        width: 430px;
+        width: 300px;
         margin-left: 30px;
         float: left;
         margin-bottom: 30px;
