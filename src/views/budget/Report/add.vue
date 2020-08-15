@@ -165,7 +165,7 @@
       <div class="textarea-box">
         <span></span>
         <div>
-          <el-button type="primary" v-if="!obj2.state" @click="handleSubmit">提交</el-button>
+          <el-button type="primary" :disabled="formSubMit" v-if="!obj2.state" @click="handleSubmit">提交</el-button>
           <el-button type="primary" v-if="obj2.state==10||obj2.state==30" @click="handleSubmit">修改保存</el-button>
           <el-button type="primary" v-if="obj2.state==31" @click="handleSubmit">调整保存</el-button>
         </div>
@@ -231,6 +231,7 @@
         projectId: undefined,//记录id
         VatRateOption: [],//增值税下拉
         need:false,//管理层必要文件
+        formSubMit:false,//防表单重复提交
       }
     },
     computed: {
@@ -476,9 +477,17 @@
         }).length
         if (checkLangth != 0) return
         if (this.stutic == 'add') {
+          this.formSubMit=true;
           addData(this.obj2).then(res => {
-            this.$message.success('添加成功')
+            this.$message.success('添加成功');
+            this.formSubMit=false;
+            this.obj2={
+              files: [],
+            };
+            this.fileList=[];
             // this.$router.go(-1);
+          }).catch(err=>{
+            this.formSubMit=false;
           })
         } else{
           upData(this.obj2).then(res => {
