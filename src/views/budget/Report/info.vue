@@ -485,6 +485,7 @@
       <!-- 流程查看历史记录    -->
       <el-dialog title="历史流程" :visible.sync="programOpen">
         <el-table
+          v-loading="historyLoading"
           :data="programTable"
           style="width: 100%">
           <el-table-column prop="moder" label="流程版本">
@@ -493,16 +494,16 @@
               <span v-else  >{{scope.row.moder}}</span>
             </template>
           </el-table-column>
-          <el-table-column prop="roleDesc" label="处理环节">
+<!--          <el-table-column prop="roleDesc" label="处理环节">-->
+<!--            <template slot-scope="scope">-->
+<!--              <span v-if="scope.row.operation==0" class="danger" >{{scope.row.roleDesc}}</span>-->
+<!--              <span v-else >{{scope.row.roleDesc}}</span>-->
+<!--            </template>-->
+<!--          </el-table-column>-->
+          <el-table-column prop="nickName" label="处理人">
             <template slot-scope="scope">
-              <span v-if="scope.row.operation==0" class="danger" >{{scope.row.roleDesc}}</span>
-              <span v-else >{{scope.row.roleDesc}}</span>
-            </template>
-          </el-table-column>
-          <el-table-column prop="userName" label="处理人">
-            <template slot-scope="scope">
-              <span v-if="scope.row.operation==0" class="danger" >{{scope.row.userName}}</span>
-              <span v-else >{{scope.row.userName}}</span>
+              <span v-if="scope.row.operation==0" class="danger" >{{scope.row.nickName}}</span>
+              <span v-else >{{scope.row.nickName}}</span>
             </template>
           </el-table-column>
           <el-table-column prop="suggestion" label="处理意见">
@@ -613,6 +614,7 @@
         projectId:undefined,//记录id
         budgetId:undefined,//类型id
         opinion:[],//意见下拉
+        historyLoading:true,
       }
     },
     components:{
@@ -837,6 +839,7 @@
         this.programOpen=true;
         getHistory(this.$route.params.id).then(res=>{
           this.programTable=res;
+          this.historyLoading=false;
         })
       },
       //发起审批
