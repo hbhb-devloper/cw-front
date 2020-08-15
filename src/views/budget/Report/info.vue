@@ -17,11 +17,18 @@
               <i class="el-icon-error" v-if="item.operation.value==0"></i>
               {{item.approverRole}}：
             </span>
-            <el-select  placeholder="请选择" v-model="item.form.id" style="width:100px;" :disabled="item.approver.readOnly">
+            <el-select  v-if="item.operation.value==2" placeholder="请选择" v-model="item.form.id" style="width:120px;" :disabled="item.approver.readOnly">
               <el-option
                 v-for="items in item.approverSelect"
                 :value="items.userId"
-                :label="items.userName">
+                :label="items.nickName">
+              </el-option>
+            </el-select>
+            <el-select  v-else placeholder="请选择" v-model="item.nickName" style="width:120px;" :disabled="item.approver.readOnly">
+              <el-option
+                v-for="items in item.approverSelect"
+                :value="items.userId"
+                :label="items.nickName">
               </el-option>
             </el-select>
           </div>
@@ -641,6 +648,7 @@
       handleLoad() {
         //详情
         GetInfo(this.$route.params.id).then(res => {
+          console.log(res);
           this.info = res;
           this.form.budgetId = res.budgetId;
           this.fileTable1 = res.files.filter(item=>{
@@ -664,15 +672,15 @@
               }
               this.program = res1;
             })
-          }
-          this.handleStatistics(res.budgetId)
-          this.startTime = parseInt(res.startTime.substr(0, 4))
-          this.endTime = parseInt(res.endTime.substr(0, 4))
+          };
+          this.handleStatistics(res.budgetId,res.unitId);
+          this.startTime = parseInt(res.startTime.substr(0, 4));
+          this.endTime = parseInt(res.endTime.substr(0, 4));
           if (this.endTime == this.startTime) {
-            this.Span = false
+            this.Span = false;
           } else {
-            this.Span = true
-          }
+            this.Span = true;
+          };
 
         })
         //分解预算表
@@ -685,10 +693,10 @@
 
       },
       //子组件改变父组件
-      handleStatistics(budgetId){
+      handleStatistics(budgetId,unitId){
         this.budgetId=budgetId;
         this.projectItem=this.tableData=[]
-        getSubject({ budgetId:budgetId}).then(res1 => {
+        getSubject({ budgetId:budgetId,unitId:unitId}).then(res1 => {
           let table = {
             lineNumber: res1.lineNumber,//序号
             itemName: res1.projectItemName,//科目名称

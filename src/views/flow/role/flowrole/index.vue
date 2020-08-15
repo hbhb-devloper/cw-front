@@ -29,7 +29,7 @@
     <el-table v-loading="loading" :data="flowList">
       <el-table-column label="单位名称" prop="unitName" align="center" />
       <el-table-column label="角色名称" prop="roleName" align="center" />
-      <el-table-column label="对应用户" prop="userName" align="center" /><el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column label="对应用户" prop="nickName" align="center" /><el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
             size="mini"

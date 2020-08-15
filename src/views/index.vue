@@ -57,7 +57,7 @@
             </div>
           </div>
         </el-card>
-        
+
       </el-col>
       <el-col :span="11">
         <el-card class="box-card">
@@ -77,7 +77,7 @@
             </el-table-column>
             <el-table-column prop="name" label="操作" align="center">
               <template slot-scope="scope">
-                <a :download="scope.row.fileName" style="color:#409EFF;" :href="scope.row.filePath">
+                <a :download="scope.row.fileName" class="button" style="color:#409EFF;" :href="scope.row.filePath">
                   <i class="el-icon-download"></i>下载
                 </a>
                 <el-button
@@ -92,7 +92,7 @@
         </el-card>
       </el-col>
     </el-row>
-    
+
     <!-- 添加或修改角色配置对话框 -->
     <el-dialog title="待办事宜" :visible.sync="open" width="1200px">
       <el-form :model="queryParams" ref="queryForm" :inline="true">
@@ -436,6 +436,6 @@ export default {
     text-overflow: ellipsis;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
-    
+
 }
 </style>
