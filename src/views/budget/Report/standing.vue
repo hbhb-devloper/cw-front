@@ -1,10 +1,10 @@
 <template>
   <div class="container">
     <div class="top-control">
-      <el-col :span="22" >
+      <el-col :span="24">
         <el-form ref="queryForm" :inline="true" label-width="100px">
           <el-form-item label="单位：">
-            <treeselect v-model="obj.unitId" :options="deptOptions" style="width: 240px"
+            <treeselect v-model="obj.unitId" :options="deptOptions" style="width: 200px"
                         placeholder="请选择归属部门"/>
           </el-form-item>
           <el-form-item style="margin-left: 30px;">
@@ -13,23 +13,15 @@
               <el-radio :label="6">创建时间：</el-radio>
             </el-radio-group>
 
-            <el-date-picker v-show="radio==3"
-                            v-model="obj.projectYear"
-                            style="width: 240px;"
-                            type="year"
-                            placeholder="请选择">
+            <el-date-picker v-show="radio==3" v-model="obj.projectYear" type="year" placeholder="请选择" style="width: 200px;margin-left:-25px;">
             </el-date-picker>
-            <el-date-picker v-show="radio==6"
-                            v-model="obj.createTime"
-                            style="width: 240px;"
-                            type="month"
-                            placeholder="请选择">
+            <el-date-picker v-show="radio==6" v-model="obj.createTime" type="month" placeholder="请选择" style="width: 200px;margin-left:-25px">
             </el-date-picker>
           </el-form-item>
-          <el-form-item  >
+          <el-form-item>
           </el-form-item>
           <el-form-item label="项目类型：">
-            <el-select v-model="obj.budgetId" filterable placeholder="请选择" style="width: 240px;">
+            <el-select v-model="obj.budgetId" filterable placeholder="请选择" style="width: 200px;">
               <el-option :value="undefined" label="---全部类型---"></el-option>
               <el-option
                 v-for="item in options"
@@ -47,7 +39,7 @@
 
               name="invoiceCode"
               size="small"
-              style="width: 240px;margin-left: -5px;"
+              style="width: 200px;margin-left: -5px;"
             />
           </el-form-item>
           <el-form-item label="项目编号：" prop="userName">
@@ -57,11 +49,11 @@
               clearable
               name="invoiceCode"
               size="small"
-              style="width: 240px"
+              style="width: 200px"
             />
           </el-form-item>
           <el-form-item label="项目状态：">
-            <el-select v-model="obj.state" placeholder="请选择" style="width: 240px;">
+            <el-select v-model="obj.state" placeholder="请选择" style="width: 200px;">
               <el-option label="--默认--" value=""></el-option>
               <el-option
                 v-for="(item,indexs) in stateArr"
@@ -160,7 +152,8 @@
             width="120px"
             label="流程状态">
             <template slot-scope="scope">
-              <router-link style="color:#409EFF;" :to="'/budget/info/'+scope.row.id">{{scope.row.stateLabel}}</router-link>
+              <router-link style="color:#409EFF;" :to="'/budget/info/'+scope.row.id">{{scope.row.stateLabel}}
+              </router-link>
             </template>
           </el-table-column>
           <el-table-column
@@ -170,9 +163,13 @@
             width="120px"
           >
             <template slot-scope="scope">
-              <router-link v-if="scope.row.state==20||scope.row.state==31||scope.row.state==50||scope.row.state==32" style="color:#409EFF;" :to="'/budget/info/'+scope.row.id">查看流程</router-link>
+              <router-link v-if="scope.row.state==20||scope.row.state==31||scope.row.state==50||scope.row.state==32"
+                           style="color:#409EFF;" :to="'/budget/info/'+scope.row.id">查看流程
+              </router-link>
               <el-button v-if="scope.row.state==10" @click="handleLaunch(scope.row)" type="text">发起审批</el-button>
-              <el-button v-if="scope.row.state==30||scope.row.state==40" @click="handleLaunch(scope.row)" type="text">重新发起审批</el-button>
+              <el-button v-if="scope.row.state==30||scope.row.state==40" @click="handleLaunch(scope.row)" type="text">
+                重新发起审批
+              </el-button>
             </template>
           </el-table-column>
           <el-table-column
@@ -192,7 +189,7 @@
                 type="text"
                 v-if="scope.row.state==31||scope.row.state==40"
                 icon="el-icon-edit"
-                @click="handleUpdata( scope.row)" >调整
+                @click="handleUpdata( scope.row)">调整
               </el-button>
             </template>
           </el-table-column>
@@ -225,18 +222,18 @@
         </el-table>
       </div>
       <div class="paging">
-                <el-pagination
-                  background
-                  style="margin-top:3px;"
-                  :page-count="pages"
-                  @current-change="handleCurrentChange"
-                  layout="prev, pager, next">
-                </el-pagination>
-                <el-select v-model="obj.pageSize" placeholder="请选择" @change="handleGetList" style="width:100px">
-                  <el-option value="10" label="10条/页"></el-option>
-                  <el-option value="20" label="20条/页"></el-option>
-                  <el-option value="30" label="30条/页"></el-option>
-                </el-select>
+        <el-pagination
+          background
+          style="margin-top:3px;"
+          :page-count="pages"
+          @current-change="handleCurrentChange"
+          layout="prev, pager, next">
+        </el-pagination>
+        <el-select v-model="obj.pageSize" placeholder="请选择" @change="handleGetList" style="width:100px">
+          <el-option value="10" label="10条/页"></el-option>
+          <el-option value="20" label="20条/页"></el-option>
+          <el-option value="30" label="30条/页"></el-option>
+        </el-select>
       </div>
     </div>
 
@@ -244,7 +241,8 @@
       <el-dialog :visible.sync="centerDialogVisible">
         <el-form ref="queryForm" :inline="true" label-width="150px">
           <el-form-item v-if="stutic==1" class="menuItem" label="预算科目类型" :required="true">
-            <el-select placeholder="请选择科目类型" v-model="obj2.budgetId" filterable @change="handleType" style="width: 200px">
+            <el-select placeholder="请选择科目类型" v-model="obj2.budgetId" filterable @change="handleType"
+                       style="width: 200px">
               <el-option v-for="item in projectItem" :value="item.id" :label="item.label"></el-option>
             </el-select>
           </el-form-item>
@@ -435,7 +433,7 @@
           :http-request="imageUpload"
           :file-list="fileList"
         >
-          <el-button slot="trigger" size="small"  class="uploadImgBtn" >选取文件</el-button>
+          <el-button slot="trigger" size="small" class="uploadImgBtn">选取文件</el-button>
           <span slot="tip"></span>
         </el-upload>
 
@@ -485,9 +483,9 @@
     getVatRate,
     RevokeRevert
   } from '@/api/budget/report/report.js'
-  import { exportData } from '@/utils/export.js'
-  import { getToken } from '@/utils/auth'
-  import { dateTimes } from '@/utils/date.js'
+  import {exportData} from '@/utils/export.js'
+  import {getToken} from '@/utils/auth'
+  import {dateTimes} from '@/utils/date.js'
   import Treeselect from '@riophae/vue-treeselect'
   import '@riophae/vue-treeselect/dist/vue-treeselect.css'
   import axios from 'axios'
@@ -500,7 +498,7 @@
 
         tableData: [],
         deptOptions: [],
-        VatRateOption:[],//增值税
+        VatRateOption: [],//增值税
         obj: { //顶部条件查询
           unitId: undefined,
           projectYear: undefined,
@@ -509,18 +507,18 @@
           projectName: undefined,
           projectNum: undefined,
           state: undefined,
-          pageNum:undefined||1,//页码
-          pageSize:undefined||10
+          pageNum: undefined || 1,//页码
+          pageSize: undefined || 10
         },
-        headers:{"Content-Type": "multipart/form-data",'Authorization':getToken()},
-        pages:null,
+        headers: {"Content-Type": "multipart/form-data", 'Authorization': getToken()},
+        pages: null,
         radio: 3, //项目年度/创建时间
         centerDialogVisible: false, //新增修改弹窗
         options: [],//项目类型下拉菜单
         stateArr: [],//状态下拉菜单
         status: null,
         unitId: null,//单位id
-        index:undefined,
+        index: undefined,
 
         obj2: {
           budgetId: undefined,//预算科目类型
@@ -541,7 +539,7 @@
           detail: undefined,//项目详情说明
           target: undefined,//项目实施目标
           remarks: undefined,//备注
-          files:[]
+          files: []
         },
         ActionUrl: process.env.VUE_APP_BASE_API + '/file/upload', // 上传的图片服务器地址
 
@@ -550,18 +548,18 @@
         stutic: 1,//1新增、2修改
         quota: null,//预算阀值
 
-        isLaunch:false,//选择流程弹窗
-        LaunchOption:[],//流程类型
-        LaunchId:undefined,//流程类型id
+        isLaunch: false,//选择流程弹窗
+        LaunchOption: [],//流程类型
+        LaunchId: undefined,//流程类型id
 
-        loading:true,//表格加载
-        checkArr:[true,true,true],//校验是否正确
-        projectId:undefined,//记录id
+        loading: true,//表格加载
+        checkArr: [true, true, true],//校验是否正确
+        projectId: undefined,//记录id
       }
     },
     created() {
-      let times=new Date();
-      this.obj.projectYear=times.getFullYear().toString();
+      let times = new Date();
+      this.obj.projectYear = times.getFullYear().toString();
       this.handleLoad();
     },
     components: {
@@ -574,17 +572,17 @@
       // type() {
       //   return this.obj.type;
       // },
-      taxIncludeAmount(){
+      taxIncludeAmount() {
         return this.obj2.taxIncludeAmount;
       }
     },
     watch: {
-      taxIncludeAmount(val){
-        if(!val) return;
+      taxIncludeAmount(val) {
+        if (!val) return;
         let vatRates = 1 + (this.obj2.vatRate / 100);
-        let countss = parseFloat(this.obj2.taxIncludeAmount)-parseFloat(this.obj2.cost);
-        this.obj2.vatAmount=countss.toFixed(6);
-        console.log(this.obj2.vatRate,1, this.obj2.vatAmount);
+        let countss = parseFloat(this.obj2.taxIncludeAmount) - parseFloat(this.obj2.cost);
+        this.obj2.vatAmount = countss.toFixed(6);
+        console.log(this.obj2.vatRate, 1, this.obj2.vatAmount);
       }
     },
     methods: {
@@ -605,13 +603,13 @@
           this.options = res;
         });
         //获取增值税下拉
-        getVatRate().then(res=>{
-          this.VatRateOption=res;
+        getVatRate().then(res => {
+          this.VatRateOption = res;
         })
       },
       //获取列表
       handleGetList() {
-        this.loading=true;
+        this.loading = true;
         this.obj.projectYear = dateTimes(this.obj.projectYear).substr(0, 4)
         this.obj.createTime = dateTimes(this.obj.createTime).substr(0, 7)
         if (this.radio != 3) {
@@ -624,30 +622,32 @@
           if (!this.obj[key]) {
           } else {
             data[key] = this.obj[key];
-          };
+          }
+          ;
 
-        };
+        }
+        ;
         getList(data).then(res => {
-          this.pages=Math.ceil(res.count/this.obj.pageSize);
+          this.pages = Math.ceil(res.count / this.obj.pageSize);
           this.tableData = res.list;
-          this.loading=false;
+          this.loading = false;
         });
       },
       //回退版本
-      handleRevert(id){
-        RevokeRevert(id).then(res=>{
+      handleRevert(id) {
+        RevokeRevert(id).then(res => {
           this.$message.success('回滚成功');
           this.handleLoad();
         })
       },
       //分页
-      handleCurrentChange(curr){
-        this.obj.pageNum=curr;
+      handleCurrentChange(curr) {
+        this.obj.pageNum = curr;
         this.handleGetList();
       },
       //重置
-      handleRest(){
-        this.obj={
+      handleRest() {
+        this.obj = {
           unitId: this.obj.unitId,
           projectYear: '',
           createTime: '',
@@ -655,36 +655,36 @@
           projectName: '',
           projectNum: '',
           state: '',
-          pageSize:this.obj.pageSize,
+          pageSize: this.obj.pageSize,
         }
       },
       //计算本年项目成本
       handleCost() {
-        if(!this.obj2.vatRate){
+        if (!this.obj2.vatRate) {
           // this.$message.warning('请选择增值税率');
           return;
         }
         let vatRate = 1 + (this.obj2.vatRate / 100);
-        let counts = parseFloat(this.obj2.taxIncludeAmount)/vatRate;
+        let counts = parseFloat(this.obj2.taxIncludeAmount) / vatRate;
         this.obj2.cost = counts.toFixed(6);
-        let countss = parseFloat(this.obj2.taxIncludeAmount)-parseFloat(this.obj2.cost);
-        this.obj2.vatAmount=countss.toFixed(6);
+        let countss = parseFloat(this.obj2.taxIncludeAmount) - parseFloat(this.obj2.cost);
+        this.obj2.vatAmount = countss.toFixed(6);
 
-        console.log(this.obj2.vatRate,2,this.obj2.vatAmount);
+        console.log(this.obj2.vatRate, 2, this.obj2.vatAmount);
       },
       //计算本年价税合计
-      handleAmount(){
-        if(!this.obj2.vatRate){
+      handleAmount() {
+        if (!this.obj2.vatRate) {
           // this.$message.warning('请选择增值税率');
           return;
         }
         let vatRate = 1 + (this.obj2.vatRate / 100);
-        let counts = parseFloat(this.obj2.cost)*vatRate;
+        let counts = parseFloat(this.obj2.cost) * vatRate;
         this.obj2.taxIncludeAmount = counts.toFixed(6);
       },
       //校验
-      handleCheck(type){
-        let filters=null;
+      handleCheck(type) {
+        let filters = null;
         switch (type) {
           case 0:
             // filters=/^[\u4e00-\u9fa5]{0,}$/g;
@@ -694,37 +694,37 @@
             // }else{
             //   this.checkArr[type]=true;
             // }
-            this.checkArr[type]=true;
+            this.checkArr[type] = true;
             break;
           case 1:
-            filters=/^[\u4e00-\u9fa5]{2,4}$/g;
-            if(!filters.test(this.obj2.director)){
+            filters = /^[\u4e00-\u9fa5]{2,4}$/g;
+            if (!filters.test(this.obj2.director)) {
               this.$message.warning('请输入正确的责任人名称');
-              this.checkArr[type]=false;
-            }else{
-              this.checkArr[type]=true;
+              this.checkArr[type] = false;
+            } else {
+              this.checkArr[type] = true;
             }
             break;
           case 2:
-            filters=/^[A-Z0-9]{0,}$/g;
-            if(!filters.test(this.obj2.engineeringNum)){
+            filters = /^[A-Z0-9]{0,}$/g;
+            if (!filters.test(this.obj2.engineeringNum)) {
               this.$message.warning('请输入正确的工程编号');
-              this.checkArr[type]=false;
-            }else{
-              this.checkArr[type]=true;
+              this.checkArr[type] = false;
+            } else {
+              this.checkArr[type] = true;
             }
             break;
           case 3:
-              if(parseFloat(this.obj2.amount)>parseFloat(this.quota)){
-                this.$message.warning(`当前预算总额大于${this.quota}万元，请上传必要附件`);
-              }
+            if (parseFloat(this.obj2.amount) > parseFloat(this.quota)) {
+              this.$message.warning(`当前预算总额大于${this.quota}万元，请上传必要附件`);
+            }
             break;
         }
 
       },
 
       //删除方法
-      handleDelete( row) {
+      handleDelete(row) {
         GetInfo(row.id).then(res => {
           if (res.state == 10 || res.state == 30) {
             this.$confirm('此操作将永久删除该条记录, 是否继续?', '提示', {
@@ -747,7 +747,7 @@
       //修改
       handleUpdata(row) {
         var data = {};
-        this.fileList=[];
+        this.fileList = [];
         GetInfo(row.id).then(res => {
           if (res.state == 10 || res.state == 30 || res.state == 31) {
             // for(let key of res.files){
@@ -781,7 +781,7 @@
       handleAdd() {
         this.$router.push('/budget/info/add');
         return;
-        this.fileList=[];
+        this.fileList = [];
         this.obj2 = {
           budgetId: '',//预算科目类型
           projectName: '',//项目名称
@@ -801,7 +801,7 @@
           detail: '',//项目详情说明
           target: '',//项目实施目标
           remarks: '',//备注
-          files:[]
+          files: []
         };
 
         this.stutic = 1;
@@ -820,37 +820,37 @@
       },
       //删除文件之前
       beforeRemove(file, fileList) {
-        this.$confirm(`确定移除 ${file.name}？`).then(res=>{
-          DeleteFile(file.id).then(res1=>{
+        this.$confirm(`确定移除 ${file.name}？`).then(res => {
+          DeleteFile(file.id).then(res1 => {
             this.$message.success('文件删除成功！');
-            this.obj2.files=this.obj2.files.filter(item=>{
-              return item.fileId!=file.id;
+            this.obj2.files = this.obj2.files.filter(item => {
+              return item.fileId != file.id;
             })
           });
         })
       },
       //文件上传
-      imageUpload(param){
-        let that = this,list= { };
+      imageUpload(param) {
+        let that = this, list = {};
         const _file = param.file;
         let params = new FormData();
         params.append('files', _file);
         axios({
-          url:this.ActionUrl,
-          method:'post',
-          data:params,
-          headers:{
+          url: this.ActionUrl,
+          method: 'post',
+          data: params,
+          headers: {
             "Content-Type": "multipart/form-data",
-            'Authorization':getToken()
+            'Authorization': getToken()
           }
-        }).then(res=>{
-          list.fileId=res.data.data[0].id;
-          this.fileList.push({name:res.data.data[0].fileName,id:res.data.data[0].id});
+        }).then(res => {
+          list.fileId = res.data.data[0].id;
+          this.fileList.push({name: res.data.data[0].fileName, id: res.data.data[0].id});
           this.$message.success('附件上传成功！');
-          if(parseFloat(this.obj2.amount)>parseFloat(this.quota)){
-            list.isApproved=1;
-          }else{
-            list.isApproved=0;
+          if (parseFloat(this.obj2.amount) > parseFloat(this.quota)) {
+            list.isApproved = 1;
+          } else {
+            list.isApproved = 0;
           }
           this.obj2.files.push(list);
         });
@@ -858,48 +858,51 @@
       //关闭弹窗
       handleCancel() {
         this.centerDialogVisible = false;
-        this.isLaunch=false;
+        this.isLaunch = false;
       },
       //流程
-      handleLaunch(row){
+      handleLaunch(row) {
         GetInfo(row.id).then(res => {
-          if (res.state == 10 || res.state == 30|| res.state == 31|| res.state == 40) {
-            this.projectId=row.id;
-            getLaunchType().then(res=>{
-              this.LaunchOption=res;
+          if (res.state == 10 || res.state == 30 || res.state == 31 || res.state == 40) {
+            this.projectId = row.id;
+            getLaunchType().then(res => {
+              this.LaunchOption = res;
             })
-            this.isLaunch=true;
-          }else{
+            this.isLaunch = true;
+          } else {
             this.$message.warning('当前记录不允许发起审批');
           }
         });
       },
       //信息提交
       handleSubmit() {
-        let _this=this;
+        let _this = this;
         this.obj2.startTime = dateTimes(this.obj2.startTime).substr(0, 10);
         this.obj2.endTime = dateTimes(this.obj2.endTime).substr(0, 10);
         if (!this.obj2.projectName || !this.obj2.amount || !this.obj2.availableAmount || !this.obj2.taxIncludeAmount || !this.obj2.cost || !this.obj2.vatRate || !this.obj2.director
-          || !this.obj2.startTime || !this.obj2.endTime ) {
+          || !this.obj2.startTime || !this.obj2.endTime) {
           this.$message.warning('必填项不能为空');
           return;
-        };
-        if(parseFloat(this.obj2.cost)+parseFloat(this.obj2.vatAmount)!=parseFloat(this.obj2.taxIncludeAmount)){
+        }
+        ;
+        if (parseFloat(this.obj2.cost) + parseFloat(this.obj2.vatAmount) != parseFloat(this.obj2.taxIncludeAmount)) {
           this.$message.warning('本年价税合计有误，请填写正确值');
           return;
-        };
-        if(parseFloat(this.obj2.amount)>parseFloat(this.quota)){
-          if(this.obj2.files.length==0) {
+        }
+        ;
+        if (parseFloat(this.obj2.amount) > parseFloat(this.quota)) {
+          if (this.obj2.files.length == 0) {
             this.$message.warning(`当前预算金额超过${this.quota}万元，请上传必要附件`);
             console.log(this.obj2.files);
             return;
           }
-        };
+        }
+        ;
 
-        let checkLangth=this.checkArr.filter(item=>{
-          return item==false;
+        let checkLangth = this.checkArr.filter(item => {
+          return item == false;
         }).length;
-        if(checkLangth!=0) return;
+        if (checkLangth != 0) return;
         if (this.stutic == 1) {
           addData(this.obj2).then(res => {
             this.$message.success('添加成功');
@@ -912,18 +915,19 @@
             this.handleGetList();
             this.centerDialogVisible = false;
           });
-        };
+        }
+        ;
       },
       //发起审批
-      SubmitLaunch(){
-        if(!this.LaunchId){
+      SubmitLaunch() {
+        if (!this.LaunchId) {
           this.$message.warning('请选择流程');
           return;
         }
 
-        LaunchApprove({flowTypeId:this.LaunchId,projectId:this.projectId}).then(res=>{
-          this.isLaunch=false;
-          this.LaunchId=undefined;
+        LaunchApprove({flowTypeId: this.LaunchId, projectId: this.projectId}).then(res => {
+          this.isLaunch = false;
+          this.LaunchId = undefined;
           this.handleGetList();
           this.$message.success('流程发起成功！');
           this.$router.push(`/budget/info/${this.projectId}`);
@@ -938,7 +942,8 @@
           for (let key of this.tableData) {
             ids.push(key.id);
           }
-        };
+        }
+        ;
         this.$confirm('是否确认导出签报的数据?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -958,12 +963,15 @@
     display: flex;
     flex-direction: column;
     position: relative;
+
     .top-control {
       margin-bottom: 20px;
+
       label {
         margin-right: 30px;
       }
     }
+
     .textareas {
       display: flex;
       flex-direction: row;
@@ -976,21 +984,24 @@
         padding-right: 15px;
       }
     }
-    .upload-demo{
+
+    .upload-demo {
       margin: 15px 0 0 16.2%;
     }
-    .btn_box{
+
+    .btn_box {
       text-align: right;
     }
   }
 
   .table-btn-box {
     position: relative;
-    background:#fff;
+    background: #fff;
     padding: 30px 20px;
-    .tables{
+
+    .tables {
       width: 100%;
-      height:600px;
+      height: 600px;
       /*margin-top:20px;*/
       text-align: center;
       overflow: auto;
