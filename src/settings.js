@@ -1,4 +1,4 @@
-module.exports = {
+ module.exports = {
   title: '中国移动财务管理系统',
 
   /**
