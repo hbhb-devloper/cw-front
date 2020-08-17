@@ -659,7 +659,7 @@
             }
           });
           if(res.state!=10){
-            getFlow(ids).then(res1 => {
+            getFlow(id).then(res1 => {
               for(let key of res1){
                 key.form={
                   id:key.approver.value||undefined,
