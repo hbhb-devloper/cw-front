@@ -36,6 +36,7 @@
       <div class="table-btn-box">
         <el-button type="primary" size="mini" @click="centerDialogVisible=true">导入</el-button>
         <el-table
+          v-loading="loading"
           ref="multipleTable"
           :data="tableData"
           tooltip-effect="dark"
@@ -250,7 +251,8 @@
         centerDialogVisible: false,
         fileList: [],
         fileName: '',
-        files: null
+        files: null,
+        loading:true,//表格加载
       }
     },
     created() {
@@ -258,8 +260,10 @@
     },
     methods: {
       handleLoad() {
+        this.loading=true;//表格加载
         getTable().then(res => {
           this.tableData = res;
+          this.loading=false;
         })
       },
       handleImport() {
@@ -300,6 +304,7 @@
           this.files = ''
           this.$message.success('上传成功！')
           this.centerDialogVisible =false;
+          this.handleLoad();
         }).catch(err => {
           this.fileName = '';
         })

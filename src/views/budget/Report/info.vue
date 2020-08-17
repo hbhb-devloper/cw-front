@@ -17,12 +17,18 @@
               <i class="el-icon-error" v-if="item.operation.value==0"></i>
               {{item.approverRole}}：
             </span>
-            <el-select  placeholder="请选择" v-model="item.form.id" :disabled="item.approver.readOnly"
-                       >
+            <el-select  v-if="item.operation.value==2" placeholder="请选择" v-model="item.form.id" style="width:120px;" :disabled="item.approver.readOnly">
               <el-option
                 v-for="items in item.approverSelect"
                 :value="items.userId"
-                :label="items.userName">
+                :label="items.nickName">
+              </el-option>
+            </el-select>
+            <el-select  v-else placeholder="请选择" v-model="item.nickName" style="width:120px;" :disabled="item.approver.readOnly">
+              <el-option
+                v-for="items in item.approverSelect"
+                :value="items.userId"
+                :label="items.nickName">
               </el-option>
             </el-select>
           </div>
@@ -32,10 +38,10 @@
             <el-button size="small" v-if="!item.operation.hidden" @click="handleApprove(item,0,index)">拒绝</el-button>
           </div>
           <div class="programList-div">
-            <span style="display: inline-block;width: 80px;">意见：</span>
+            <span style="display: inline-block;">意见：</span>
 
             <el-input v-if="item.suggestion.readOnly" :disabled="item.suggestion.readOnly"
-                      v-model="item.suggestion.value" placeholder="请输入审批意见"></el-input>
+                      v-model="item.suggestion.value" style="width:180px" placeholder="请输入审批意见"></el-input>
 <!--            <el-input :disabled="item.suggestion.readOnly" v-model="programObj.suggestion" :placeholder="'请输入审批意见'"></el-input>-->
             <el-select
               v-else
@@ -43,6 +49,7 @@
               slot="empty"
               filterable
               allow-create
+              style="width:150px"
               default-first-option
               placeholder="请输入审批意见">
               <el-option
@@ -167,7 +174,7 @@
             <div class="row-div">
               <label>责任人：</label>
               <span>{{info.director}}</span>
-              <label>工程编号：</label>
+              <label>预算编号：</label>
               <span>{{info.engineeringNum}}</span>
             </div>
             <div class="row-div">
@@ -478,6 +485,7 @@
       <!-- 流程查看历史记录    -->
       <el-dialog title="历史流程" :visible.sync="programOpen">
         <el-table
+          v-loading="historyLoading"
           :data="programTable"
           style="width: 100%">
           <el-table-column prop="moder" label="流程版本">
@@ -486,16 +494,16 @@
               <span v-else  >{{scope.row.moder}}</span>
             </template>
           </el-table-column>
-          <el-table-column prop="roleDesc" label="处理环节">
+<!--          <el-table-column prop="roleDesc" label="处理环节">-->
+<!--            <template slot-scope="scope">-->
+<!--              <span v-if="scope.row.operation==0" class="danger" >{{scope.row.roleDesc}}</span>-->
+<!--              <span v-else >{{scope.row.roleDesc}}</span>-->
+<!--            </template>-->
+<!--          </el-table-column>-->
+          <el-table-column prop="nickName" label="处理人">
             <template slot-scope="scope">
-              <span v-if="scope.row.operation==0" class="danger" >{{scope.row.roleDesc}}</span>
-              <span v-else >{{scope.row.roleDesc}}</span>
-            </template>
-          </el-table-column>
-          <el-table-column prop="userName" label="处理人">
-            <template slot-scope="scope">
-              <span v-if="scope.row.operation==0" class="danger" >{{scope.row.userName}}</span>
-              <span v-else >{{scope.row.userName}}</span>
+              <span v-if="scope.row.operation==0" class="danger" >{{scope.row.nickName}}</span>
+              <span v-else >{{scope.row.nickName}}</span>
             </template>
           </el-table-column>
           <el-table-column prop="suggestion" label="处理意见">
@@ -606,6 +614,7 @@
         projectId:undefined,//记录id
         budgetId:undefined,//类型id
         opinion:[],//意见下拉
+        historyLoading:true,
       }
     },
     components:{
@@ -641,6 +650,7 @@
       handleLoad() {
         //详情
         GetInfo(this.$route.params.id).then(res => {
+          console.log(res);
           this.info = res;
           this.form.budgetId = res.budgetId;
           this.fileTable1 = res.files.filter(item=>{
@@ -664,15 +674,15 @@
               }
               this.program = res1;
             })
-          }
-          this.handleStatistics(res.budgetId)
-          this.startTime = parseInt(res.startTime.substr(0, 4))
-          this.endTime = parseInt(res.endTime.substr(0, 4))
+          };
+          this.handleStatistics(res.budgetId,res.unitId);
+          this.startTime = parseInt(res.startTime.substr(0, 4));
+          this.endTime = parseInt(res.endTime.substr(0, 4));
           if (this.endTime == this.startTime) {
-            this.Span = false
+            this.Span = false;
           } else {
-            this.Span = true
-          }
+            this.Span = true;
+          };
 
         })
         //分解预算表
@@ -685,10 +695,10 @@
 
       },
       //子组件改变父组件
-      handleStatistics(budgetId){
+      handleStatistics(budgetId,unitId){
         this.budgetId=budgetId;
         this.projectItem=this.tableData=[]
-        getSubject({ budgetId:budgetId}).then(res1 => {
+        getSubject({ budgetId:budgetId,unitId:unitId}).then(res1 => {
           let table = {
             lineNumber: res1.lineNumber,//序号
             itemName: res1.projectItemName,//科目名称
@@ -829,6 +839,7 @@
         this.programOpen=true;
         getHistory(this.$route.params.id).then(res=>{
           this.programTable=res;
+          this.historyLoading=false;
         })
       },
       //发起审批
@@ -932,7 +943,7 @@
       margin-top: 20px;
 
       .programList {
-        width: 430px;
+        width: 300px;
         margin-left: 30px;
         float: left;
         margin-bottom: 30px;

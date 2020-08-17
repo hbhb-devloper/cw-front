@@ -217,7 +217,7 @@
                 size="mini"
                 type="text"
                 icon="el-icon-delete"
-                :disabled="scope.row.state==10||scope.row.state==20||scope.row.state==50"
+                :disabled="scope.row.state==10||scope.row.state==20||scope.row.state==31||scope.row.state==50"
                 @click="handleRevert( scope.row.id)">删除调整
               </el-button>
             </template>
