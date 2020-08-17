@@ -792,7 +792,7 @@
           type: 'warning'
         }).then(() => {
           deleteApprove(row.id).then(res => {
-            this.handleLoad()
+            this.handleLoad(this.$route.params.id)
             this.$message.success('删除成功')
           })
         })
@@ -855,7 +855,7 @@
 
         LaunchApprove({flowTypeId:this.LaunchId,projectId:this.$route.params.id}).then(res=>{
           this.isLaunch=false;
-          this.handleLoad();
+          this.handleLoad(this.$route.params.id);
           this.LaunchId=undefined;
           this.$message.success('流程发起成功！');
         })
@@ -914,7 +914,7 @@
         this.programObj.operation = type;
         this.programObj.id=item.id;
         SubmitApprove(this.programObj).then(res => {
-          this.handleLoad();
+          this.handleLoad(this.$route.params.id);
           this.programObj.suggestion=undefined;
           this.$message.success('提交成功')
         })
