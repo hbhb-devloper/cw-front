@@ -27,7 +27,6 @@ const permission = {
     handleProjectId: (state, id) => {
 
       state.projectId=id;
-      console.log(state.projectId, '123')
     }
   },
   actions: {

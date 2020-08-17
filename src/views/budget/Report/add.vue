@@ -250,12 +250,14 @@
       }
     },
     mounted() {
+      console.log(100);
       this.obj2.director=this.nickName;
       this.handleLoad()
     },
     methods: {
       //页面初始化加载
       handleLoad() {
+        console.log(1);
 
         //获取项目类型下拉
         getProejctType().then(res => {
@@ -271,7 +273,7 @@
               this.fileList.push({ name: key.fileName, url: key.filePath, id: key.fileId ,type:key.required})
             }
             // res.files=[];
-            this.$emit('changeType', res.budgetId)
+            this.$emit('changeType', true,res.budgetId)
             getQuota(res.budgetId).then(res => {
               this.quota = res
               // this.$message.warning(`当前项目预算总额阀值为${res}万元`);
@@ -485,9 +487,7 @@
               files: [],
             };
             this.fileList=[];
-            console.log('开始发送');
             this.$emit('changeType', false,res);
-            console.log('发送成功');
             // this.$router.go(-1);
           }).catch(err=>{
             this.formSubMit=false;

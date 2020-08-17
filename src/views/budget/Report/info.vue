@@ -240,10 +240,10 @@
         </el-tab-pane>
 
         <el-tab-pane v-if="state=='add'" label="项目信息" name="project">
-          <add-eidt @changeType="handleReceive"  :stutic="state"/>
+          <add-eidt @changeType="handleReceive"  stutic="add"/>
         </el-tab-pane>
         <el-tab-pane v-if="state==undefined" label="项目信息" name="project">
-          <add-eidt @changeType="handleReceive" :stutic="'eidt'"/>
+          <add-eidt @changeType="handleReceive" stutic="eidt"/>
         </el-tab-pane>
         <el-tab-pane label="分类预算" name="budget">
           <div>
@@ -570,7 +570,6 @@
 
 
   export default {
-    name: 'add',
     data() {
       return {
         tableData: [],

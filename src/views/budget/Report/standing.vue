@@ -762,7 +762,7 @@
             // this.obj2 = res;
             // this.centerDialogVisible = true;
             // this.stutic = 2;
-            this.$router.push(`/budget/edit?id=${row.id}`);
+            this.$router.push(`/budget/edit?id=${res.id}`);
           } else {
             this.$message.warning('当前记录不能进行修改调整！');
           }
