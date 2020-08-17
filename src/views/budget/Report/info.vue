@@ -240,10 +240,10 @@
         </el-tab-pane>
 
         <el-tab-pane v-if="state=='add'" label="项目信息" name="project">
-          <add-eidt @changeType="handleStatistics" :stutic="state"/>
+          <add-eidt @changeType="handleReceive"  :stutic="state"/>
         </el-tab-pane>
         <el-tab-pane v-if="state==undefined" label="项目信息" name="project">
-          <add-eidt @changeType="handleStatistics" :stutic="'eidt'"/>
+          <add-eidt @changeType="handleReceive" :stutic="'eidt'"/>
         </el-tab-pane>
         <el-tab-pane label="分类预算" name="budget">
           <div>
@@ -329,7 +329,7 @@
                   <br>
                   <br>
                   <el-form-item style="margin-left: 9%;">
-                    <el-button type="primary" size="mini" :disabled="info.state==20||info.state==50||state=='add'" @click="handleQuery">添加</el-button>
+                    <el-button type="primary" size="mini" :disabled="info.state==20||info.state==50" @click="handleQuery">添加</el-button>
                   </el-form-item>
                 </el-form>
                 <label>项目分类预算信息</label>
@@ -464,7 +464,7 @@
           <br>
           <br>
           <el-form-item style="margin-left: 9%;">
-            <el-button type="primary" size="mini" :disabled="info.state==20||info.state==50||state=='add'" @click="handleQuery">提交</el-button>
+            <el-button type="primary" size="mini" :disabled="info.state==20||info.state==50" @click="handleQuery">提交</el-button>
           </el-form-item>
         </el-form>
       </el-dialog>
@@ -488,18 +488,12 @@
           v-loading="historyLoading"
           :data="programTable"
           style="width: 100%">
-          <el-table-column prop="moder" label="流程版本">
+          <el-table-column width="250px" prop="moder" label="流程版本">
             <template slot-scope="scope">
               <span v-if="scope.row.operation==0" class="danger">{{scope.row.moder}}</span>
               <span v-else  >{{scope.row.moder}}</span>
             </template>
           </el-table-column>
-<!--          <el-table-column prop="roleDesc" label="处理环节">-->
-<!--            <template slot-scope="scope">-->
-<!--              <span v-if="scope.row.operation==0" class="danger" >{{scope.row.roleDesc}}</span>-->
-<!--              <span v-else >{{scope.row.roleDesc}}</span>-->
-<!--            </template>-->
-<!--          </el-table-column>-->
           <el-table-column prop="nickName" label="处理人">
             <template slot-scope="scope">
               <span v-if="scope.row.operation==0" class="danger" >{{scope.row.nickName}}</span>
@@ -512,13 +506,13 @@
               <span v-else >{{scope.row.suggestion}}</span>
             </template>
           </el-table-column>
-          <el-table-column prop="arrivalTime" label="到达时间">
+          <el-table-column width="200px" prop="arrivalTime" label="到达时间">
             <template slot-scope="scope">
               <span v-if="scope.row.operation==0" class="danger" >{{scope.row.arrivalTime}}</span>
               <span v-else >{{scope.row.arrivalTime}}</span>
             </template>
           </el-table-column>
-          <el-table-column prop="sendingTime" label="发出时间">
+          <el-table-column width="200px" prop="sendingTime" label="发出时间">
             <template slot-scope="scope">
               <span v-if="scope.row.operation==0" class="danger" >{{scope.row.sendingTime}}</span>
               <span v-else >{{scope.row.sendingTime}}</span>
@@ -625,7 +619,7 @@
     },
     mounted() {
       if(parseInt(this.state)){
-        this.handleLoad()
+        this.handleLoad(this.$route.params.id)
       }else if(this.state==undefined){
         this.$store.dispatch('PROJECTID',this.$route.query.id);
         if(!this.projectIds)return;
@@ -647,9 +641,10 @@
       }
     },
     methods: {
-      handleLoad() {
+      handleLoad(id) {
         //详情
-        GetInfo(this.$route.params.id).then(res => {
+        this.projectId=id;
+        GetInfo(id).then(res => {
           console.log(res);
           this.info = res;
           this.form.budgetId = res.budgetId;
@@ -664,7 +659,7 @@
             }
           });
           if(res.state!=10){
-            getFlow(this.$route.params.id).then(res1 => {
+            getFlow(id).then(res1 => {
               for(let key of res1){
                 key.form={
                   id:key.approver.value||undefined,
@@ -686,7 +681,7 @@
 
         })
         //分解预算表
-        getTable(this.$route.params.id).then(res1 => {
+        getTable(id).then(res1 => {
           this.tableDatas = res1
         });
         getList().then(res=>{
@@ -694,7 +689,15 @@
         })
 
       },
-      //子组件改变父组件
+      handleReceive(type,id){
+        console.log(type,id);
+        if(type){
+          this.handleStatistics(id)
+        }else{
+          this.handleLoad(id);
+        }
+      },
+      //子组件改变父组件的审批统计表
       handleStatistics(budgetId,unitId){
         this.budgetId=budgetId;
         this.projectItem=this.tableData=[]
@@ -717,6 +720,7 @@
           this.projectItem = [res1];
         })
       },
+
       //返回
       handleBack(){
         this.$router.go(-1);
@@ -788,7 +792,7 @@
           type: 'warning'
         }).then(() => {
           deleteApprove(row.id).then(res => {
-            this.handleLoad()
+            this.handleLoad(this.$route.params.id)
             this.$message.success('删除成功')
           })
         })
@@ -851,7 +855,7 @@
 
         LaunchApprove({flowTypeId:this.LaunchId,projectId:this.$route.params.id}).then(res=>{
           this.isLaunch=false;
-          this.handleLoad();
+          this.handleLoad(this.$route.params.id);
           this.LaunchId=undefined;
           this.$message.success('流程发起成功！');
         })
@@ -861,7 +865,7 @@
         if(this.state==undefined){
           this.projectId=this.form2.projectId=this.form.projectId=this.projectIds;
         }else if(this.state=='add'){
-          return;
+          this.form2.projectId=this.form.projectId=this.projectId;
         }else{
           this.projectId=this.form2.projectId=this.form.projectId=this.state;
         }
@@ -910,7 +914,7 @@
         this.programObj.operation = type;
         this.programObj.id=item.id;
         SubmitApprove(this.programObj).then(res => {
-          this.handleLoad();
+          this.handleLoad(this.$route.params.id);
           this.programObj.suggestion=undefined;
           this.$message.success('提交成功')
         })

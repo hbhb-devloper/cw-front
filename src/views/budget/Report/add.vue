@@ -58,7 +58,7 @@
                   size="small"/>
       </label>
       <label class="form-label">
-        <span>工程编号</span>
+        <span>预算编号</span>
         <el-input placeholder="请输入工程编号" v-model="obj2.engineeringNum" @blur="handleCheck(2)" style="width: 200px"
                   clearable size="small"/>
       </label>
@@ -438,9 +438,9 @@
         });
         this.obj2.engineeringNum=engineeringNum.substr(0,engineeringNum.indexOf('_'));
 
-        this.$emit('changeType', this.obj2.budgetId)
+        this.$emit('changeType', true,this.obj2.budgetId);
         getQuota(this.obj2.budgetId).then(res => {
-          this.quota = res
+          this.quota = res;
           // this.$message.warning(`当前项目预算总额阀值为${res}万元`);
         })
       },
@@ -485,6 +485,9 @@
               files: [],
             };
             this.fileList=[];
+            console.log('开始发送');
+            this.$emit('changeType', false,res);
+            console.log('发送成功');
             // this.$router.go(-1);
           }).catch(err=>{
             this.formSubMit=false;
