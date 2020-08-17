@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-07-13 16:23:28
  * @LastEditors: CYZ
- * @LastEditTime: 2020-08-07 14:31:07
+ * @LastEditTime: 2020-08-17 11:13:37
 -->
 <template>
   <div class="container">
@@ -45,7 +45,6 @@
           icon="el-icon-download"
           size="mini"
           @click="centerDialogVisible=true"
-          v-hasPermi="['system:post:export']"
           v-if="false"
         >导入</el-button>
       </el-col>
@@ -55,7 +54,6 @@
           icon="el-icon-download"
           size="mini"
           @click="handleExport"
-          v-hasPermi="['system:post:export']"
           v-if="false"
         >导出</el-button>
       </el-col>

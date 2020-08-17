@@ -33,7 +33,6 @@
           icon="el-icon-download"
           size="mini"
           @click="handleExport"
-          v-hasPermi="['system:post:export']"
         >导出</el-button>
       </el-col>
 
@@ -55,7 +54,6 @@
             type="text"
             icon="el-icon-edit"
             @click.stop="handleUpdate(scope.row)"
-            v-hasPermi="['system:role:edit']"
           >查看详情</el-button>
         </template>
       </el-table-column>

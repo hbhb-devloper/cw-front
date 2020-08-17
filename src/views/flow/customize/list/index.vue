@@ -25,7 +25,6 @@
           icon="el-icon-plus"
           size="mini"
           @click="handleAdd"
-          v-hasPermi="['system:role:add']"
         >新增</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -35,7 +34,6 @@
           size="mini"
           :disabled="single"
           @click="handleUpdate"
-          v-hasPermi="['system:role:edit']"
           v-if="false"
         >修改</el-button>
       </el-col>
@@ -46,7 +44,6 @@
           size="mini"
           :disabled="multiple"
           @click="handleDelete"
-          v-hasPermi="['system:role:remove']"
           v-if="false"
         >删除</el-button>
       </el-col>
@@ -56,7 +53,6 @@
           icon="el-icon-download"
           size="mini"
           @click="handleExport"
-          v-hasPermi="['system:post:export']"
           v-if="false"
         >导出</el-button>
       </el-col>
@@ -92,7 +88,6 @@
             type="text"
             icon="el-icon-edit"
             @click.stop="handleUpdate(scope.row)"
-            v-hasPermi="['system:role:edit']"
           >修改</el-button>
 
           <el-button
@@ -100,7 +95,6 @@
             type="text"
             icon="el-icon-delete"
             @click.stop="handleDelete(scope.row)"
-            v-hasPermi="['system:role:remove']"
           >删除</el-button>
         </template>
       </el-table-column>

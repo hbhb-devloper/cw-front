@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-07-20 18:22:09
  * @LastEditors: CYZ
- * @LastEditTime: 2020-08-14 18:39:53
+ * @LastEditTime: 2020-08-14 19:04:57
 -->
 <template>
   <div class="dashboard-editor-container">
@@ -130,7 +130,7 @@
       </el-form>
       <el-table :data="NoticeMoreData" style="width: 100%" v-loading='loading1'>
         <el-table-column prop="id" label="序号" align="center" width="50"></el-table-column>
-        <el-table-column prop="content" label="待办内容" align="center" >
+        <el-table-column prop="content" label="待办内容" align="center" width="400">
           <template style="color:#409EFF" slot-scope="scope">
             <router-link
               style="color:#409EFF;"

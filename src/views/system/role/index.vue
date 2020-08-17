@@ -62,7 +62,6 @@
           icon="el-icon-plus"
           size="mini"
           @click="handleAdd"
-          v-hasPermi="['system:role:add']"
         >新增</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -72,7 +71,6 @@
           size="mini"
           :disabled="single"
           @click="handleUpdate"
-          v-hasPermi="['system:role:edit']"
         >修改</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -82,7 +80,6 @@
           size="mini"
           :disabled="multiple"
           @click="handleDelete"
-          v-hasPermi="['system:role:remove']"
         >删除</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -91,7 +88,6 @@
           icon="el-icon-download"
           size="mini"
           @click="handleExport"
-          v-hasPermi="['system:post:export']"
         >导出</el-button>
       </el-col>
     </el-row>
@@ -124,21 +120,18 @@
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
-            v-hasPermi="['system:role:edit']"
           >修改</el-button>
           <el-button
             size="mini"
             type="text"
             icon="el-icon-circle-check"
             @click="handleDataScope(scope.row)"
-            v-hasPermi="['system:role:edit']"
           >数据权限</el-button>
           <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
-            v-hasPermi="['system:role:remove']"
           >删除</el-button>
         </template>
       </el-table-column>

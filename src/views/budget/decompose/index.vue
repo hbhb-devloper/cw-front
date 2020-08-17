@@ -4,7 +4,6 @@
       <el-form-item label="单位" prop="unitId">
         <treeselect v-model="queryParams.unitId" :options="deptOptions" placeholder="请选择单位" />
       </el-form-item>
-
       <el-form-item label="预算科目" prop="projectItem">
         <el-input
           placeholder="请输入预算科目"
@@ -33,7 +32,6 @@
           icon="el-icon-download"
           size="mini"
           @click="centerDialogVisible=true"
-          v-hasPermi="['system:post:export']"
         >导入</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -42,7 +40,6 @@
           icon="el-icon-download"
           size="mini"
           @click="handleExport"
-          v-hasPermi="['system:post:export']"
         >导出</el-button>
       </el-col>
     </el-row>
