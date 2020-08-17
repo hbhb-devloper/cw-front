@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-07-20 18:22:09
  * @LastEditors: CYZ
- * @LastEditTime: 2020-08-12 15:57:14
+ * @LastEditTime: 2020-08-17 17:08:56
 --> 
 <template>
   <div v-if="easyFlowVisible" style="height: calc(100vh);">
@@ -492,11 +492,11 @@ export default {
       this.$refs.nodeForm.nodeInit(this.data, nodeId);
       // this.$emit('clickItem', nodeId)
     },
-    clickNodeDB(nodeId) {
+    clickNodeDB(nodeId,nodeName) {
       this.activeElement.type = "node";
       this.activeElement.nodeId = nodeId;
       this.$refs.nodeForm.nodeInit(this.data, nodeId);
-      this.$emit("clickItem", nodeId);
+      this.$emit("clickItem", nodeId,nodeName);
     },
     // 是否具有该线
     hasLine(from, to) {

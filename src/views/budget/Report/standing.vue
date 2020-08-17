@@ -32,7 +32,7 @@
             <el-select v-model="obj.budgetId" filterable placeholder="请选择" style="width: 240px;">
               <el-option :value="undefined" label="---全部类型---"></el-option>
               <el-option
-                v-for="item in options"
+                v-for="(item,index) in options"
                 :key="index"
                 :label="item.label"
                 :value="item.id">
@@ -81,7 +81,7 @@
     </div>
     <div class="table-btn-box">
       <el-button type="primary" icon="el-icon-plus" size="mini" @click="handleAdd">添加</el-button>
-      <el-button type="warning" icon="el-icon-download" size="mini" @click="handleExport">导出</el-button>
+      <el-button type="warning" icon="el-icon-download" size="mini" @click="handleExport" v-hasPermi="['budget:project:export']">导出</el-button>
       <div style="height: 600px;overflow:auto;">
         <el-table
           v-loading="loading"

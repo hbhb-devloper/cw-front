@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-07-20 18:22:09
  * @LastEditors: CYZ
- * @LastEditTime: 2020-08-03 16:50:55
+ * @LastEditTime: 2020-08-17 17:08:17
 --> 
 <template>
   <div
@@ -75,7 +75,8 @@ export default {
       this.$emit("clickNode", this.node.id);
     },
     clickNodeDB() {
-      this.$emit("clickNodeDB", this.node.id);
+      console.log('this.node.name',this.node.name);
+      this.$emit("clickNodeDB", this.node.id,this.node.name);
     },
     // 鼠标移动后抬起
     changeNodeSite() {

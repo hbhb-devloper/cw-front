@@ -241,7 +241,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="7">
-            <el-form-item label="默认归属单位" prop="defaultUnitId">
+            <el-form-item label="默认数据单位" prop="defaultUnitId">
               <!-- :disable-branch-nodes="true"
               :show-count="true"-->
               <treeselect
@@ -249,7 +249,7 @@
                 :options="deptOptions"
                 :disable-branch-nodes="true"
                 :show-count="true"
-                placeholder="请选择归属部门"
+                placeholder="请选择数据部门"
               />
             </el-form-item>
           </el-col>
@@ -570,7 +570,7 @@ export default {
           { required: true, message: "归属单位不能为空", trigger: "blur" }
         ],
         defaultUnitId: [
-          { required: true, message: "默认归属单位不能为空", trigger: "blur" }
+          { required: true, message: "默认数据单位不能为空", trigger: "blur" }
         ],
         // pwd: [{ required: true, message: "用户密码不能为空", trigger: "blur" }],
         // CheckPassword: [

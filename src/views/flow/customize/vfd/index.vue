@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-07-20 18:22:09
  * @LastEditors: CYZ
- * @LastEditTime: 2020-08-13 09:33:53
+ * @LastEditTime: 2020-08-17 17:28:35
 --> 
 <template>
   <div class="app-container">
@@ -454,13 +454,15 @@ export default {
         });
       });
     },
-    clickitem(nodeId) {
+    clickitem(nodeId,nodeName) {
       this.nodeId = nodeId;
+      console.log('nodeName',nodeName);
       this.reset();
       let that = this;
       getFlowProp(nodeId).then((response) => {
         if (response) {
           this.node = response;
+          this.node.roleDesc = nodeName;
           if (!this.node.userId) {
             this.node.userId = undefined;
           }

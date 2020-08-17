@@ -34,7 +34,7 @@
     <!--    </el-col>-->
     <el-col>
       <div class="table-btn-box">
-        <el-button type="primary" size="mini" @click="centerDialogVisible=true">导入</el-button>
+        <el-button type="primary" size="mini" @click="centerDialogVisible=true" v-hasPermi="['budget:map:export']">导入</el-button>
         <el-table
           v-loading="loading"
           ref="multipleTable"

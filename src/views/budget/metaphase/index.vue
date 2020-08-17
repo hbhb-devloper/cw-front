@@ -32,6 +32,7 @@
           icon="el-icon-download"
           size="mini"
           @click="centerDialogVisible=true"
+          v-hasPermi="['budget:history:import']"
         >导入</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -40,6 +41,7 @@
           icon="el-icon-download"
           size="mini"
           @click="handleExport"
+          v-hasPermi="['budget:history:export']"
         >导出</el-button>
       </el-col>
     </el-row>

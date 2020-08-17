@@ -26,6 +26,7 @@
           icon="el-icon-download"
           size="mini"
           @click="handleExport"
+          v-hasPermi="['budget:progress:export']"
         >导出</el-button>
       </el-col>
     </el-row>
