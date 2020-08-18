@@ -369,7 +369,7 @@
                           type="text"
                           icon="el-icon-delete"
                           :disabled="info.state==20||info.state==50"
-                          @click="handleDelete(scope.$index, scope.row)">删除
+                          @click="handleDelete(scope.row)">删除
                         </el-button>
                       </template>
                     </el-table-column>
@@ -797,14 +797,15 @@
         })
       },
       //删除
-      handleDelete(index, id) {
+      handleDelete(row) {
+        console.log(row);
         this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          ClassDelete(id.id).then(res => {
-            getTable(this.$route.params.id).then(res1 => {
+          ClassDelete(row.id).then(res => {
+            getTable(this.$route.params.id||this.projectIds).then(res1 => {
               this.tableDatas = res1
             })
             this.$message({
