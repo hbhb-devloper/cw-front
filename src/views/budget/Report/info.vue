@@ -315,14 +315,15 @@
                     />
                   </el-form-item>
                   <br>
-                  <el-form-item label="说明：">
+                  <el-form-item label="说明："
+                                :form-class="'column is-12 no-padding'"
+                                :content-class="'column is-9 no-padding'">
                     <el-input
                       type="textarea"
                       placeholder="请输入说明内容"
                       v-model="form.explains"
                       maxlength="30"
                       show-word-limit
-                      style="width: 460%;"
                     >
                     </el-input>
                   </el-form-item>
@@ -567,7 +568,7 @@
   import { mapGetters } from 'vuex'
   import { exportWord } from '@/utils/export.js'
   import { getToken } from '@/utils/auth'
-
+  import ElFormItem from '@/components/customize/ElFormItem';
 
   export default {
     data() {
@@ -611,7 +612,8 @@
       }
     },
     components:{
-      AddEidt
+      AddEidt,
+      ElFormItem
     },
     computed:{
       ...mapGetters(['projectIds']),
@@ -753,19 +755,19 @@
           budgetId: this.info.budgetId||this.budgetId,
           unitId: this.info.unitId
         };
-        if (type == 10) {
+        if (type === 10) {
           this.titleProject = '未发起审批和审批拒绝项目列表(未申报)：'
           data.state = type;
           getProject(data).then(res => {
             this.tableProjectData = res;
           });
-        } else if (type == 20) {
+        } else if (type === 20) {
           this.titleProject = '审批中项目列表：'
           data.state = type
           getProject(data).then(res => {
             this.tableProjectData = res;
           });
-        } else if (type == 31) {
+        } else if (type === 31) {
           this.titleProject = '已审批通过项目列表：'
           data.state = type
           getProject(data).then(res => {
@@ -1046,5 +1048,9 @@
     .danger{
       color:red;
     }
+  }
+
+  .column-no-padding {
+    padding: 0;
   }
 </style>
