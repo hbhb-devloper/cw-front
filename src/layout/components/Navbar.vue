@@ -1,11 +1,11 @@
 <!--
- * @Descripttion: 
- * @version: 
+ * @Descripttion:
+ * @version:
  * @Author: CYZ
  * @Date: 2020-07-17 09:35:24
  * @LastEditors: CYZ
  * @LastEditTime: 2020-07-22 17:46:19
---> 
+-->
 <template>
   <div class="navbar">
     <hamburger
@@ -83,7 +83,7 @@ export default {
     .el-menu-item {
       height: 40px;
       line-height: 40px;
-      width: 12.5%;
+      /*width: 12.5%;*/
       text-align: center;
       color: #fff;
       border-bottom: none;

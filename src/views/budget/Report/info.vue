@@ -240,7 +240,7 @@
         </el-tab-pane>
 
         <el-tab-pane v-if="state=='add'" label="项目信息" name="project">
-          <add-eidt @changeType="handleReceive"  stutic="add"/>
+          <add-eidt @changeType="handleReceive" :stutic="state"/>
         </el-tab-pane>
         <el-tab-pane v-if="state==undefined" label="项目信息" name="project">
           <add-eidt @changeType="handleReceive" stutic="eidt"/>
@@ -521,26 +521,6 @@
           </el-table-column>
         </el-table>
       </el-dialog>
-      <!--  重新发起流程    -->
-      <el-dialog title="发起审批" :visible.sync="isLaunch" width="500px">
-        <el-form>
-          <el-form-item label="选择流程">
-            <el-select v-model="LaunchId" filterable placeholder="请选择">
-              <el-option
-                v-for="item in LaunchOption"
-                :key="item.id"
-                :label="item.label"
-                :value="item.id">
-              </el-option>
-            </el-select>
-          </el-form-item>
-        </el-form>
-
-        <div style="width: 100%;text-align:center;">
-          <el-button type="primary" @click="handleCancel" style="margin-right: 50px;">取消</el-button>
-          <el-button type="primary" @click="SubmitLaunch">提交</el-button>
-        </div>
-      </el-dialog>
     </div>
   </div>
 </template>
@@ -602,9 +582,6 @@
           id: undefined,  //
           suggestion: undefined
         },
-        isLaunch:false,//选择流程弹窗
-        LaunchOption:[],//流程类型
-        LaunchId:undefined,//流程类型id
         projectId:undefined,//记录id
         budgetId:undefined,//类型id
         opinion:[],//意见下拉
@@ -692,10 +669,12 @@
       },
       handleReceive(type,id){
         console.log(type,id);
-        if(type){
+        if(type==0){
           this.handleStatistics(id)
-        }else{
+        }else if(type==1){
           this.handleLoad(id);
+        }else{
+          this.state=undefined;
         }
       },
       //子组件改变父组件的审批统计表
@@ -823,10 +802,6 @@
           this.quota = res
         })
       },
-      //关闭弹窗
-      handleCancel() {
-        this.isLaunch=false;
-      },
       //流程
       handleRestLaunch(){
         GetInfo(this.$route.params.id).then(res => {
@@ -846,20 +821,6 @@
         getHistory(this.$route.params.id).then(res=>{
           this.programTable=res;
           this.historyLoading=false;
-        })
-      },
-      //发起审批
-      SubmitLaunch(){
-        if(!this.LaunchId){
-          this.$message.warning('请选择流程');
-          return;
-        }
-
-        LaunchApprove({flowTypeId:this.LaunchId,projectId:this.$route.params.id}).then(res=>{
-          this.isLaunch=false;
-          this.handleLoad(this.$route.params.id);
-          this.LaunchId=undefined;
-          this.$message.success('流程发起成功！');
         })
       },
       //分解添加
@@ -1032,19 +993,6 @@
       border: none;
     }
 
-    .textareas {
-      display: flex;
-      flex-direction: row;
-      line-height: 40px;
-      margin-bottom: 15px;
-
-      label {
-        display: inline-block;
-        width: 140px;
-        text-align: right;
-        padding-right: 15px;
-      }
-    }
     .danger{
       color:red;
     }
