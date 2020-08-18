@@ -72,6 +72,7 @@
 
 <script>
 import { listRole, addRole, updateRole, delarr } from "@/api/flow/role";
+
 export default {
   name: "Flowtype",
   data() {

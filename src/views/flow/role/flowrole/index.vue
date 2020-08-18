@@ -26,10 +26,17 @@
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
+    <el-row :gutter="10" class="mb8">
+      <el-col :span="1.5">
+        <el-button type="warning" icon="el-icon-download" size="mini" @click="handleExport">导出</el-button>
+      </el-col>
+    </el-row>
+
     <el-table v-loading="loading" :data="flowList">
       <el-table-column label="单位名称" prop="unitName" align="center" />
       <el-table-column label="角色名称" prop="roleName" align="center" />
-      <el-table-column label="对应用户" prop="nickName" align="center" /><el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column label="对应用户" prop="nickName" align="center" />
+      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
             size="mini"
@@ -53,11 +60,13 @@
 
 <script>
 import { listFlow, addFlow, updateFlow, delarr } from "@/api/flow/list";
-import { listFlowRole, listFlowRoles , delRoleUser} from "@/api/flow/flowrole";
+import { listFlowRole, listFlowRoles, delRoleUser } from "@/api/flow/flowrole";
 import { listType } from "@/api/flow/type";
 import { listUnit } from "@/api/system/unit";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
+import { exportData } from "@/utils/export";
+import { getToken } from "@/utils/auth";
 export default {
   name: "Flowtype",
   components: { Treeselect },
@@ -248,21 +257,38 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const flowRoleUserId = row.flowRoleUserId;
-      this.$confirm(
-        '是否确认删除该关联关系的数据项?',
-        "删除",
-        {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning",
-        }
-      )
+      this.$confirm("是否确认删除该关联关系的数据项?", "删除", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
         .then(function () {
           return delRoleUser(flowRoleUserId);
         })
         .then(() => {
           this.getList();
           this.msgSuccess("删除成功");
+        })
+        .catch(function () {});
+    },
+    /** 导出按钮操作 */
+    handleExport() {
+      const queryParams = this.queryParams;
+      console.log("queryParams", queryParams);
+      this.$confirm("是否确认导出所有流程角色列表?", "导出表格", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(function () {
+          console.log("queryParams", queryParams);
+          return exportData(
+            getToken(),
+            queryParams,
+            "/flow/role/export",
+            "流程角色列表"
+          );
+          // exportRole(queryParams);
         })
         .catch(function () {});
     },

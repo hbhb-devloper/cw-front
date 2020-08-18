@@ -64,9 +64,10 @@
         @row-click="getinfo"
         :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
         @selection-change="handleSelectionChange"
+        style="width:35%;"
       >
         <el-table-column type="selection" width="50" align="center" />
-        <el-table-column prop="label" label="单位名称" width="450"></el-table-column>
+        <el-table-column prop="label" label="单位名称" width="350"></el-table-column>
       </el-table>
       <el-form
         class="deptinfo"
@@ -422,7 +423,7 @@ export default {
 </script>
 
 <style scoped>
-.el-table {
+ .el-table {
   width: 30%;
   background-color: transparent;
 }
