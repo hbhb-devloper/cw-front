@@ -77,8 +77,8 @@
       <label class="form-label">
         <span>来源</span>
         <el-select placeholder="请选择" v-model="obj2.origin" style="width: 200px">
-          <el-option value="新建" label="新建"></el-option>
-          <el-option value="结转" label="结转"></el-option>
+          <el-option value="0" label="新建"></el-option>
+          <el-option value="1" label="结转"></el-option>
         </el-select>
       </label>
     </div>
@@ -179,11 +179,9 @@
     getCompany,
     getList,
     getProejctType,
-    deleteData,
     addData,
     GetInfo,
     upData,
-    getState,
     getQuota,
     DeleteFile,
     getLaunchType,
@@ -257,8 +255,6 @@
     methods: {
       //页面初始化加载
       handleLoad() {
-        console.log(1);
-
         //获取项目类型下拉
         getProejctType().then(res => {
           this.projectItem = res
@@ -268,6 +264,7 @@
           this.VatRateOption = res;
         })
         if (this.stutic == 'eidt') {
+          this.fileList=[];
           GetInfo(this.$route.query.id).then(res => {
             for (let key of res.files) {
               this.fileList.push({ name: key.fileName, url: key.filePath, id: key.fileId ,type:key.required})
@@ -499,6 +496,7 @@
             }else if(this.obj2.state==31||this.obj2.state==40){
               this.$message.success('调整成功');
             }
+            this.handleLoad();
             // this.$router.go(-1);
           })
         }
