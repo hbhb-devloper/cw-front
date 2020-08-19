@@ -603,6 +603,7 @@
         if(!this.projectIds)return;
 
         GetInfo(this.projectIds).then(res => {
+          this.projectId=res.id;
           this.form.budgetId = res.budgetId;
           this.startTime = parseInt(res.startTime.substr(0, 4));
           this.endTime = parseInt(res.endTime.substr(0, 4));
@@ -779,15 +780,14 @@
       },
       //删除
       handleDelete(row) {
-        console.log(row);
         this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
           ClassDelete(row.id).then(res => {
-            getTable(this.$route.params.id||this.projectIds).then(res1 => {
-              this.tableDatas = res1
+            getTable(this.projectId).then(res1 => {
+              this.tableDatas = res1;
             })
             this.$message({
               type: 'success',
@@ -799,7 +799,7 @@
       handleType() {
         if (!this.obj2.budgetId) return
         getQuota(this.obj2.budgetId).then(res => {
-          this.quota = res
+          this.quota = res;
         })
       },
       //流程

@@ -285,13 +285,11 @@
           // this.$message.warning('请选择增值税率');
           return
         }
-        let vatRate = 1 + (this.obj2.vatRate / 100)
-        let counts = parseFloat(this.obj2.taxIncludeAmount) / vatRate
-        this.obj2.cost = counts.toFixed(6)
-        let countss = parseFloat(this.obj2.taxIncludeAmount) - parseFloat(this.obj2.cost)
-        this.obj2.vatAmount = countss.toFixed(6)
-
-        console.log(this.obj2.vatRate, 2, this.obj2.vatAmount)
+        let vatRate = 1 + (this.obj2.vatRate / 100);
+        let counts = parseFloat(this.obj2.taxIncludeAmount) / vatRate;
+        this.obj2.cost = counts.toFixed(6);
+        let countss = parseFloat(this.obj2.taxIncludeAmount) - parseFloat(this.obj2.cost);
+        this.obj2.vatAmount = countss.toFixed(6);
       },
       //计算本年价税合计
       handleAmount() {
@@ -485,7 +483,9 @@
             // this.fileList=[];
             this.$emit('changeType', 1, res);
             this.obj2.id = res;
+            this.$store.dispatch('PROJECTID',res);
             this.$emit('changeType', 2, undefined);
+
             // this.$router.go(-1);
           }).catch(err => {
             this.formSubMit = false;
