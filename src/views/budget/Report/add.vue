@@ -79,8 +79,8 @@
 
         <br>
         <el-form-item label="项目简介"
-                      :form-class="'column is-12 no-padding'"
-                      :content-class="'column is-9 no-padding'">
+                      :form-class="formClass"
+                      :content-class="contentClass">
           <el-input
             type="textarea"
             placeholder="请输入项目简介信息"
@@ -92,8 +92,8 @@
 
         <br>
         <el-form-item label="项目详细说明"
-                      :form-class="'column is-12 no-padding'"
-                      :content-class="'column is-9 no-padding'">
+                      :form-class="formClass"
+                      :content-class="contentClass">
           <el-input
             type="textarea"
             placeholder="请输入项目详细说明信息"
@@ -103,8 +103,8 @@
           </el-input>
         </el-form-item>
         <br>
-        <el-form-item label="项目实施目标" :form-class="'column is-12 no-padding'"
-                      :content-class="'column is-9 no-padding'">
+        <el-form-item label="项目实施目标" :form-class="formClass"
+                      :content-class="contentClass">
           <el-input
             type="textarea"
             placeholder="请输入项目实施目标信息"
@@ -114,8 +114,8 @@
           </el-input>
         </el-form-item>
         <br>
-        <el-form-item label="备注" :form-class="'column is-12 no-padding'"
-                      :content-class="'column is-9 no-padding'">
+        <el-form-item label="备注" :form-class="formClass"
+                      :content-class="contentClass">
           <el-input
             type="textarea"
             placeholder="请输入备注信息"
@@ -226,6 +226,8 @@
         VatRateOption: [],//增值税下拉
         need: false,//管理层必要文件
         formSubMit: false,//防表单重复提交
+        formClass: 'column is-12 no-padding',
+        contentClass: 'column is-9 no-padding'
       }
     },
     computed: {
