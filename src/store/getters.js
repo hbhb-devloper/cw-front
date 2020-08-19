@@ -17,6 +17,7 @@ const getters = {
     sideRouters: state => state.permission.sideRouters,
     navRouters: state => state.permission.navRouters,
     submen: state => state.permission.menuArr,
-    projectIds:state=>state.permission.projectId
+    projectIds:state=>state.permission.projectId,
+    budgetSelect:state=>state.permission.budgetSelect
 }
 export default getters

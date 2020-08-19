@@ -95,8 +95,7 @@
       </el-col>
     </el-row>
     <el-table :data="tableData" v-loading="loading">
-      <el-table-column align="center" type="index" label="序号">
-      </el-table-column>
+      <el-table-column align="center" type="index" label="序号"></el-table-column>
       <el-table-column prop="fcCode" width="200px" align="center" label="编号"></el-table-column>
       <el-table-column prop="createTime" width="120px" align="center" label="日期"></el-table-column>
       <el-table-column prop="dptName" align="center" label="部门"></el-table-column>
@@ -158,6 +157,8 @@
   import "@riophae/vue-treeselect/dist/vue-treeselect.css";
   import { resourceTreeByUN } from "@/api/system/unit";
   import {getHistroyList,getUnitList} from '@/api/fund/fundSelect'
+  import {fundSelectExprot} from '@/utils/export.js'
+  import {getToken} from '@/utils/auth'
   export default {
     name: "index",
     data() {
@@ -211,11 +212,22 @@
       resetQuery(){
         this.queryParams={};
       },
-      //条件搜索
-      handleQuery(){
-      },
       //导出
-      handleExport(){}
+      handleExport(){
+        this.$confirm(
+          '是否导出数据？',
+          "提示",
+          {
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            type: "warning",
+          }
+        ).then(res=>{
+          this.queryParams.pageSize=this.queryParams.pageNum=undefined
+
+          fundSelectExprot(getToken(),this.queryParams,'/fund/history/export','客户资金查询')
+        })
+      }
     }
   }
 </script>

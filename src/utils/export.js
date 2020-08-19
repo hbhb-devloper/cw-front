@@ -86,3 +86,35 @@ export function exportWord(tokens, data, url,fileName) {
     }
   })
 }
+
+//签报详情导出
+export function fundSelectExprot(tokens, data, url,fileName) {
+  axios({
+    method: 'post',
+    responseType: 'blob',
+    url: process.env.VUE_APP_BASE_API + url,
+    data: data,
+    headers: {
+      'Authorization':tokens
+    }
+  }).then(res => {
+    console.log(res,66);
+    const content = res.data
+    const blob = new Blob([content])
+    if ('download' in document.createElement('a')) {
+      // 非IE下载
+      const elink = document.createElement('a')
+      elink.download = fileName+'.csv'  //命名下载名称
+      elink.style.display = 'none'
+      elink.href = URL.createObjectURL(blob) //表示一个指定的file对象或Blob对象
+      document.body.appendChild(elink)
+      elink.click()  //点击触发下载
+      URL.revokeObjectURL(elink.href) // 释放URL 对象
+      document.body.removeChild(elink)
+    } else {
+      // IE10+下载
+      navigator.msSaveBlob(blob, fileName)
+    }
+  })
+}
+

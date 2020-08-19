@@ -11,9 +11,9 @@
           size="small"
         />
       </el-form-item>
-      <el-form-item label="年份" prop="date">
+      <el-form-item label="年份" prop="importr">
         <el-date-picker
-          v-model="queryParams.date"
+          v-model="queryParams.importDate"
           type="year"
           placeholder="选择年份"
           format="yyyy"

@@ -214,26 +214,19 @@
                 size="mini"
                 type="text"
                 icon="el-icon-delete"
-                :disabled="scope.row.state==10||scope.row.state==20||scope.row.state==31||scope.row.state==50"
+                :disabled="scope.row.state==10||scope.row.state==20||scope.row.state==31||scope.row.state==50||scope.row.state==32"
                 @click="handleRevert( scope.row.id)">删除调整
               </el-button>
             </template>
           </el-table-column>
         </el-table>
-      </div>
-      <div class="paging">
-        <el-pagination
-          background
-          style="margin-top:3px;"
-          :page-count="pages"
-          @current-change="handleCurrentChange"
-          layout="prev, pager, next">
-        </el-pagination>
-        <el-select v-model="obj.pageSize" placeholder="请选择" @change="handleGetList" style="width:100px">
-          <el-option value="10" label="10条/页"></el-option>
-          <el-option value="20" label="20条/页"></el-option>
-          <el-option value="30" label="30条/页"></el-option>
-        </el-select>
+        <pagination
+          v-show="total>0"
+          :total="total"
+          :page.sync="obj.pageNum"
+          :limit.sync="obj.pageSize"
+          @pagination="handleGetList"
+        />
       </div>
     </div>
 
@@ -489,6 +482,7 @@
   import Treeselect from '@riophae/vue-treeselect'
   import '@riophae/vue-treeselect/dist/vue-treeselect.css'
   import axios from 'axios'
+  import {mapGetters} from 'vuex'
 
   export default {
     name: 'standing',
@@ -511,7 +505,7 @@
           pageSize: undefined || 10
         },
         headers: {"Content-Type": "multipart/form-data", 'Authorization': getToken()},
-        pages: null,
+        total: undefined,
         radio: 3, //项目年度/创建时间
         centerDialogVisible: false, //新增修改弹窗
         options: [],//项目类型下拉菜单
@@ -560,12 +554,14 @@
     created() {
       let times = new Date();
       this.obj.projectYear = times.getFullYear().toString();
+      this.obj=this.budgetSelect;
       this.handleLoad();
     },
     components: {
       Treeselect
     },
     computed: {
+      ...mapGetters(['budgetSelect']),
       // unitid() {
       //   return this.obj.unitId;
       // },
@@ -622,13 +618,12 @@
           if (!this.obj[key]) {
           } else {
             data[key] = this.obj[key];
-          }
-          ;
+          };
 
-        }
-        ;
+        };
+        this.$store.dispatch('SET_BUDGET_SELECT',data);
         getList(data).then(res => {
-          this.pages = Math.ceil(res.count / this.obj.pageSize);
+          this.total = res.count ;
           this.tableData = res.list;
           this.loading = false;
         });
@@ -640,11 +635,7 @@
           this.handleLoad();
         })
       },
-      //分页
-      handleCurrentChange(curr) {
-        this.obj.pageNum = curr;
-        this.handleGetList();
-      },
+
       //重置
       handleRest() {
         this.obj = {
@@ -656,7 +647,9 @@
           projectNum: '',
           state: '',
           pageSize: this.obj.pageSize,
+          pageNum: this.obj.pageNum
         }
+        this.$store.dispatch('SET_BUDGET_SELECT',this.obj);
       },
       //计算本年项目成本
       handleCost() {
