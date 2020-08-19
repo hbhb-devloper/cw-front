@@ -600,31 +600,32 @@
         this.handleLoad(this.$route.params.id)
       }else if(this.state==undefined){
         this.$store.dispatch('PROJECTID',this.$route.query.id);
-        if(!this.projectIds)return;
+        this.handleLoad(this.$route.query.id);
+        // GetInfo(this.projectIds).then(res => {
+        //   this.projectId=res.id;
+        //   this.form.budgetId = res.budgetId;
+        //   this.startTime = parseInt(res.startTime.substr(0, 4));
+        //   this.endTime = parseInt(res.endTime.substr(0, 4));
+        //   if (this.endTime == this.startTime) {
+        //     this.Span = false;
+        //   } else {
+        //     this.Span = true;
+        //   }
+        //   //分解预算表
+        //   getTable(res.id).then(res1 => {
+        //     this.tableDatas = res1
+        //   })
+        //   this.handleStatistics(res.budgetId,res.unitId);
+        // });
 
-        GetInfo(this.projectIds).then(res => {
-          this.projectId=res.id;
-          this.form.budgetId = res.budgetId;
-          this.startTime = parseInt(res.startTime.substr(0, 4));
-          this.endTime = parseInt(res.endTime.substr(0, 4));
-          if (this.endTime == this.startTime) {
-            this.Span = false;
-          } else {
-            this.Span = true;
-          }
-        });
-        //分解预算表
-        getTable(this.projectIds).then(res1 => {
-          this.tableDatas = res1
-        })
       }
     },
     methods: {
       handleLoad(id) {
+
         //详情
         this.projectId=id;
         GetInfo(id).then(res => {
-          console.log(res);
           this.info = res;
           this.form.budgetId = res.budgetId;
           this.fileTable1 = res.files.filter(item=>{
@@ -669,13 +670,14 @@
 
       },
       handleReceive(type,id){
-        console.log(type,id);
         if(type==0){
           this.handleStatistics(id)
         }else if(type==1){
           this.handleLoad(id);
         }else{
-          this.state=undefined;
+          if(this.state=='add'){
+            this.state=undefined;
+          }
         }
       },
       //子组件改变父组件的审批统计表
@@ -719,7 +721,6 @@
       },
       handleGetDel(){
         getDeleteApprove(this.$route.params.id).then(res=>{
-          console.log(res);
           for(let obj of this.program){
             for(let val of res){
               if(obj.id==val){
@@ -890,7 +891,6 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          console.log(5555)
           exportWord(getToken(), { id:parseInt(this.$route.params.id),budgetId:this.info.budgetId }, '/budget/project/exports',this.info.projectName);
         });
       }

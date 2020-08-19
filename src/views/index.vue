@@ -77,7 +77,7 @@
             </el-table-column>
             <el-table-column prop="name" label="操作" align="center">
               <template slot-scope="scope">
-                <a :download="scope.row.fileName" class="button" style="color:#409EFF;" :href="scope.row.filePath">
+                <a :download="scope.row.fileName" style="color:#409EFF;" :href="scope.row.filePath">
                   <i class="el-icon-download"></i>下载
                 </a>
                 <el-button

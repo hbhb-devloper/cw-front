@@ -245,11 +245,9 @@
         let vatRates = 1 + (this.obj2.vatRate / 100)
         let countss = parseFloat(this.obj2.taxIncludeAmount) - parseFloat(this.obj2.cost)
         this.obj2.vatAmount = countss.toFixed(6)
-        console.log(this.obj2.vatRate, 1, this.obj2.vatAmount)
       }
     },
     mounted() {
-      console.log(100);
       this.obj2.director = this.nickName;
       this.handleLoad()
     },
@@ -264,14 +262,14 @@
         getVatRate().then(res => {
           this.VatRateOption = res;
         })
-        if (this.stutic == 'eidt' && this.$route.query.id) {
+        if (this.stutic == 'eidt') {
           this.fileList = [];
           GetInfo(this.$route.query.id).then(res => {
             for (let key of res.files) {
               this.fileList.push({name: key.fileName, url: key.filePath, id: key.fileId, type: key.required})
             }
             // res.files=[];
-            this.$emit('changeType', true, res.budgetId)
+            this.$emit('changeType', 0, res.budgetId)
             getQuota(res.budgetId).then(res => {
               this.quota = res
               // this.$message.warning(`当前项目预算总额阀值为${res}万元`);
@@ -378,7 +376,6 @@
         const _file = param.file;
         let params = new FormData();
         params.append('files', _file);
-        console.log(params);
         axios({
           url: this.ActionUrl,
           method: 'post',
@@ -405,7 +402,6 @@
         const _file = param.file;
         let params = new FormData();
         params.append('files', _file);
-        console.log(params);
         axios({
           url: this.ActionUrl,
           method: 'post',
