@@ -626,6 +626,7 @@
         //详情
         this.projectId=id;
         GetInfo(id).then(res => {
+          console.log(res);
           this.info = res;
           this.form.budgetId = res.budgetId;
           this.fileTable1 = res.files.filter(item=>{
@@ -734,7 +735,8 @@
       handleGetProject(type) {
         let data = {
           budgetId: this.info.budgetId||this.budgetId,
-          unitId: this.info.unitId
+          unitId: this.info.unitId,
+          createTime:this.info.createTime
         };
         if (type === 10) {
           this.titleProject = '未发起审批和审批拒绝项目列表(未申报)：'

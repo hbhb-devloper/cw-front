@@ -366,8 +366,9 @@ export default {
     },
     //修改
     handleEdit(row) {
+      console.log(row,63)
       this.reset();
-      if (row.children) {
+      if (row.isParent) {
         this.addtype = "unit";
       } else {
         this.addtype = "item";
