@@ -626,7 +626,6 @@
         //详情
         this.projectId=id;
         GetInfo(id).then(res => {
-          console.log(res);
           this.info = res;
           this.form.budgetId = res.budgetId;
           this.fileTable1 = res.files.filter(item=>{
@@ -651,7 +650,7 @@
               this.program = res1;
             })
           };
-          this.handleStatistics(res.budgetId,res.unitId);
+          this.handleStatistics(res.budgetId,res.unitId,res.createTime);
           this.startTime = parseInt(res.startTime.substr(0, 4));
           this.endTime = parseInt(res.endTime.substr(0, 4));
           if (this.endTime == this.startTime) {
@@ -682,10 +681,10 @@
         }
       },
       //子组件改变父组件的审批统计表
-      handleStatistics(budgetId,unitId){
+      handleStatistics(budgetId,unitId,dateTime){
         this.budgetId=budgetId;
         this.projectItem=this.tableData=[]
-        getSubject({ budgetId:budgetId,unitId:unitId}).then(res1 => {
+        getSubject({ budgetId:budgetId,unitId:unitId,importDate:dateTime}).then(res1 => {
           let table = {
             lineNumber: res1.lineNumber,//序号
             itemName: res1.projectItemName,//科目名称
@@ -736,7 +735,7 @@
         let data = {
           budgetId: this.info.budgetId||this.budgetId,
           unitId: this.info.unitId,
-          createTime:this.info.createTime
+          importDate:this.info.createTime
         };
         if (type === 10) {
           this.titleProject = '未发起审批和审批拒绝项目列表(未申报)：'

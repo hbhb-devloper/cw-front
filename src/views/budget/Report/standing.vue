@@ -553,8 +553,10 @@
     },
     created() {
       let times = new Date();
-      this.obj.projectYear = times.getFullYear().toString();
+
+      // this.obj.projectYear = times.getFullYear().toString();
       this.obj=this.budgetSelect;
+      this.$set(this.obj,'projectYear',times.getFullYear().toString())
       this.handleLoad();
     },
     components: {
