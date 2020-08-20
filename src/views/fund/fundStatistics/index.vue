@@ -78,17 +78,17 @@
         <el-table-column prop="dptName" align="center" label="部门"></el-table-column>
         <el-table-column prop="groupName" width="200px" align="center" label="集团信息"></el-table-column>
         <el-table-column prop="userName" align="center" label="录入人"></el-table-column>
-        <el-table-column prop="beginAmount" align="center" label="期初余额(元)"></el-table-column>
-        <el-table-column prop="thisAddAmount" align="center" label="本期增加(元)"></el-table-column>
-        <el-table-column prop="verifyAmount" align="center" label="核销收款(元)"></el-table-column>
-        <el-table-column prop="thisReduceAmount" align="center" label="本期减少(元)"></el-table-column>
-        <el-table-column prop="thisCollectionFrozen" align="center" label="本期收款冻结(元)"></el-table-column>
-        <el-table-column prop="thisUseFrozen" align="center" label="本期使用冻结(元)"></el-table-column>
-        <el-table-column prop="thisRefundFrozen" align="center" label="本期退款冻结(元)"></el-table-column>
-        <el-table-column prop="thisRefund" align="center" label="本期退款(元)"></el-table-column>
-        <el-table-column prop="thisBalance" align="center" label="本期余额(元)"></el-table-column>
-        <el-table-column prop="totalInvoiceAmount" align="center" label="积累开票金额(元)"></el-table-column>
-        <el-table-column prop="totalEnterAmount" align="center" label="积累入账金额(元)"></el-table-column>
+        <el-table-column prop="beginAmount" align="center" width="150px" label="期初余额(元)"></el-table-column>
+        <el-table-column prop="thisAddAmount" align="center" width="150px" label="本期增加(元)"></el-table-column>
+        <el-table-column prop="verifyAmount" align="center" width="150px" label="核销收款(元)"></el-table-column>
+        <el-table-column prop="thisReduceAmount" align="center" width="150px" label="本期减少(元)"></el-table-column>
+        <el-table-column prop="thisCollectionFrozen" align="center" width="150px" label="本期收款冻结(元)"></el-table-column>
+        <el-table-column prop="thisUseFrozen" align="center" width="150px" label="本期使用冻结(元)"></el-table-column>
+        <el-table-column prop="thisRefundFrozen" align="center" width="150px" label="本期退款冻结(元)"></el-table-column>
+        <el-table-column prop="thisRefund" align="center" width="150px" label="本期退款(元)"></el-table-column>
+        <el-table-column prop="thisBalance" align="center" width="150px" label="本期余额(元)"></el-table-column>
+        <el-table-column prop="totalInvoiceAmount" align="center" width="150px" label="积累开票金额(元)"></el-table-column>
+        <el-table-column prop="totalEnterAmount" align="center" width="150px" label="积累入账金额(元)"></el-table-column>
       </el-table>
     </div>
 </template>
@@ -144,6 +144,8 @@
           getListData(this.queryParams).then(res=>{
             this.total=res.count;
             this.tableData=res.list;
+            this.loading=false;
+          }).catch(err=>{
             this.loading=false;
           })
         },

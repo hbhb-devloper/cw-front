@@ -858,10 +858,11 @@
         GetInfo(row.id).then(res => {
           if (res.state == 10 || res.state == 30 || res.state == 31 || res.state == 40) {
             this.projectId = row.id;
-            getLaunchType().then(res => {
-              this.LaunchOption = res;
+            getLaunchType().then(response => {
+              this.LaunchOption = response;
+              this.isLaunch = true;
+              this.LaunchId=undefined;
             })
-            this.isLaunch = true;
           } else {
             this.$message.warning('当前记录不允许发起审批');
           }

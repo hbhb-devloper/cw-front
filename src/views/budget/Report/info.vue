@@ -4,7 +4,7 @@
     <div class="program-box" v-if="parseInt(id)||info.state!=10">
       <div style="width: 100%;position: relative;">
         <div style="position: absolute;right:20%;top:-50px;">
-          <el-button size="mini" v-if="info.state==30||info.state==31" @click="handleGetHistory">查看历史</el-button>
+          <el-button size="mini" v-if="info.state!=10" @click="handleGetHistory">查看历史</el-button>
         </div>
       </div>
       <div style="width: 100%;text-align: center;font-weight: 900;" v-if="parseInt(state)"><span v-if="program[0]">{{program[0].projectFlowName}}</span></div>
@@ -943,6 +943,9 @@
 
         .programList-div {
           margin-bottom: 10px;
+          span{
+            font-size:13px;
+          }
         }
       }
     }
