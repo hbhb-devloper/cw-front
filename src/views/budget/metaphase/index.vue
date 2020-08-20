@@ -4,9 +4,9 @@
       <el-form-item label="单位" prop="unitId">
         <treeselect v-model="queryParams.unitId" :options="deptOptions" placeholder="请选择单位" />
       </el-form-item>
-      <el-form-item label="预算科目" prop="projectItem">
+      <el-form-item label="项目类型" prop="projectItem">
         <el-input
-          placeholder="请输入预算科目"
+          placeholder="请输入项目类型"
           v-model="queryParams.projectItem"
           size="small"
         />
@@ -57,7 +57,7 @@
       header-cell-class-name="is-center"
     >
       <!-- <el-table-column type="selection" width="55" align="center" /> -->
-      <el-table-column prop="budgetName" label="预算科目" width="380"></el-table-column>
+      <el-table-column prop="budgetName" label="项目类型" width="380"></el-table-column>
       <!-- <el-table-column prop="company" label="计量单位" align="center" width="180"></el-table-column> -->
       <el-table-column prop="oldValue" align="center" label="调整前预算值(万元)"></el-table-column>
       <el-table-column prop="newValue" align="center" label="调整后预算值(万元)"></el-table-column>

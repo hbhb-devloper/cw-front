@@ -4,9 +4,9 @@
       <el-form-item label="单位" prop="unitId">
         <treeselect v-model="queryParams.unitId" :options="deptOptions" placeholder="请选择单位" />
       </el-form-item>
-      <el-form-item label="预算科目" prop="projectItem">
+      <el-form-item label="项目类型" prop="projectItem">
         <el-input
-          placeholder="请输入预算科目"
+          placeholder="请输入项目类型"
           v-model="queryParams.projectItem"
           size="small"
         />
@@ -51,7 +51,7 @@
     >
       <!-- <el-table-column type="selection" width="50" align="center" /> -->
       <el-table-column prop="lineNumber" label="序号" align="center"  width="50"></el-table-column>
-      <el-table-column prop="budgetItem" label="预算科目" align="center"  width="170"></el-table-column>
+      <el-table-column prop="budgetItem" label="项目类型" align="center"  width="170"></el-table-column>
       <!-- <el-table-column prop="measureUnit" label="计量单位" align="center" width="100"></el-table-column> -->
       <el-table-column prop="nowBudgetBalance" align="center" label="本年预算值"></el-table-column>
       <el-table-column prop="afterAdjustmentValue" align="center" label="本期调整后完成值"></el-table-column>
@@ -247,7 +247,7 @@ export default {
             getToken(),
             queryParams,
             "/budget/export",
-            "预算分解"
+            "月度考核情况"
           );
         })
         .then(response => {

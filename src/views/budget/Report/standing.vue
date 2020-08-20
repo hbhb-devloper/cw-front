@@ -438,7 +438,7 @@
       <el-dialog title="发起审批" :visible.sync="isLaunch" width="500px">
         <el-form>
           <el-form-item label="选择流程">
-            <el-select v-model="LaunchId" filterable placeholder="请选择">
+            <el-select v-model="LaunchId" filterable :placeholder="LaunchOption.length==0?'该单位没有流程类型':'请选择'">
               <el-option
                 v-for="item in LaunchOption"
                 :key="item.id"

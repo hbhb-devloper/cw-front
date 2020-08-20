@@ -385,7 +385,6 @@ export default {
       }
     },
     handleDelete(row) {
-      console.log(row);
       let that = this;
       // if (row.children) {
       //   this.addtype = "unit";
@@ -407,13 +406,13 @@ export default {
           DelBudgetItem(row.id).then((response) => {
             console.log("DelBudget", response);
             this.msgSuccess("删除成功");
-            that.getList();
+            this.getList();
           });
         } else {
           DelBudget(row.id).then((response) => {
             console.log("DelBudget", response);
             this.msgSuccess("删除成功");
-            that.getList();
+            this.getList();
           });
         }
       });
