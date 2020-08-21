@@ -356,7 +356,8 @@ export default {
     handleAdd(type) {
       this.reset();
       this.addtype = type;
-      // this.getMenuTreeselect();
+      this.getList();
+      this.getTreeselect();
       this.open = true;
       if (type == "item") {
         this.title = "添加项目类别";

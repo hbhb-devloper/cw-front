@@ -35,6 +35,7 @@
           icon="el-icon-download"
           size="mini"
           @click="handleExport"
+          :disabled="true"
           v-hasPermi="['budget:monthCheck:import']"
         >导出</el-button>
       </el-col>
