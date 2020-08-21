@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-07-17 09:35:24
  * @LastEditors: CYZ
- * @LastEditTime: 2020-07-22 17:46:19
+ * @LastEditTime: 2020-08-21 10:25:14
 -->
 <template>
   <div class="navbar">
@@ -58,7 +58,7 @@ export default {
   z-index: 9;
   width: 100%;
   background: #409eff;
-
+      min-height: 40px;
   .hamburger-container {
     line-height: 36px;
     height: 100%;
