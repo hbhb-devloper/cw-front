@@ -161,6 +161,7 @@ export default {
   // margin: 0 auto;
   overflow: hidden;
   position: relative;
+  line-height: 50px;
   // text-align: center;
 }
 .text {
