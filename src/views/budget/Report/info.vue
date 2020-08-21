@@ -892,7 +892,7 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          exportWord(getToken(), { id:parseInt(this.$route.params.id),budgetId:this.info.budgetId }, '/budget/project/exports',this.info.projectName);
+          exportWord(getToken(), {}, `/info/${parseInt(this.$route.params.id)}/export`,this.info.projectName);
         });
       }
     }

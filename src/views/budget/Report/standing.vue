@@ -501,8 +501,8 @@
           projectName: undefined,
           projectNum: undefined,
           state: undefined,
-          pageNum: undefined || 1,//页码
-          pageSize: undefined || 10
+          pageNum:  1,//页码
+          pageSize: 20
         },
         headers: {"Content-Type": "multipart/form-data", 'Authorization': getToken()},
         total: undefined,
@@ -931,21 +931,24 @@
       },
       //导出Excel表
       handleExport() {
-        let ids = [];
-        if (this.tableData.length == 0) {
-          return;
-        } else {
-          for (let key of this.tableData) {
-            ids.push(key.id);
-          }
-        }
-        ;
+        // let ids = [];
+        // if (this.tableData.length == 0) {
+        //   return;
+        // } else {
+        //   for (let key of this.tableData) {
+        //     ids.push(key.id);
+        //   }
+        // }
+        // ;
+        let queryForm=JSON.parse(JSON.stringify(this.obj));
+        delete queryForm.pageNum;
+        delete queryForm.pageSize;
         this.$confirm('是否确认导出签报的数据?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          exportData(getToken(), ids, '/budget/project/export', '项目签报');
+          exportData(getToken(), queryForm, '/budget/project/export', '项目签报');
         });
       }
     }
