@@ -61,7 +61,7 @@
             </el-select>
           </div>
           <div style="height:32px">
-            <div v-if="item.operation.value!=2" ><span style="opacity: 0.7;">{{item.userName}}</span>({{item.updateTime}})</div>
+            <div v-if="item.operation.value!=2" ><span style="opacity: 0.7;">{{item.nickName}}</span>({{item.updateTime}})</div>
           </div>
         </div>
         <div style="clear: both"></div>
@@ -887,12 +887,18 @@
       },
       //导出
       handleExport(){
+        let exportData={
+          statistics:[this.headinfo],
+          flows:this.program,
+          splits:this.tableDatas,
+          detail:this.info
+        }
         this.$confirm('是否确认导出签报的详情数据数据?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          exportWord(getToken(), {}, `/info/${parseInt(this.$route.params.id)}/export`,this.info.projectName);
+          exportWord(getToken(), exportData, `/budget/project/info/export`,this.info.projectName);
         });
       }
     }
