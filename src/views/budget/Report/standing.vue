@@ -74,7 +74,7 @@
     <div class="table-btn-box">
       <el-button type="primary" icon="el-icon-plus" size="mini" @click="handleAdd">新增签报</el-button>
       <el-button type="warning" icon="el-icon-download" size="mini" @click="handleExport" v-hasPermi="['budget:project:export']">导出数据</el-button>
-      <div style="height: 600px;overflow:auto;">
+      <div style="height: 600px;overflow:auto;margin-top:20px;">
         <el-table
           v-loading="loading"
           ref="multipleTable"
@@ -231,210 +231,6 @@
     </div>
 
     <div class="updata-box">
-      <el-dialog :visible.sync="centerDialogVisible">
-        <el-form ref="queryForm" :inline="true" label-width="150px">
-          <el-form-item v-if="stutic==1" class="menuItem" label="预算科目类型" :required="true">
-            <el-select placeholder="请选择科目类型" v-model="obj2.budgetId" filterable @change="handleType"
-                       style="width: 200px">
-              <el-option v-for="item in projectItem" :value="item.id" :label="item.label"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item class="menuItem" label="项目名称" :required="true">
-            <el-input
-              placeholder="请输入项目名称"
-              @blur="handleCheck(0)"
-              v-model="obj2.projectName"
-              style="width: 200px"
-              clearable
-              size="small"
-            />
-          </el-form-item>
-          <el-form-item class="menuItem" v-if="quota" label="金额阀值">
-            <el-input
-              placeholder="请输入项目名称"
-              @blur="handleCheck(0)"
-              v-model="quota"
-              style="width: 200px"
-              clearable
-              disabled
-              size="small"
-            />
-          </el-form-item>
-          <el-form-item class="menuItem" label="项目预算总额(万元)" :required="true">
-            <el-input
-              placeholder="请输入预算总额"
-              v-model="obj2.amount"
-              @blur="handleCheck(3)"
-              style="width: 200px"
-              type="number"
-              min="0"
-              clearable
-              size="small"
-            />
-          </el-form-item>
-          <el-form-item class="menuItem" label="可供分配预算(万元)" :required="true">
-            <el-input
-              placeholder="请输入可供分配预算额"
-              v-model="obj2.availableAmount"
-              style="width: 200px"
-              type="number"
-              min="0"
-              clearable
-              size="small"
-            />
-          </el-form-item>
-
-
-          <el-form-item class="menuItem" label="本年价税合计(万元)" :required="true">
-            <el-input
-              placeholder="请输入本年价税合计"
-              v-model="obj2.taxIncludeAmount"
-              style="width: 200px"
-              type="number"
-              @input="handleCost"
-              min="0"
-              clearable
-              size="small"
-            />
-          </el-form-item>
-          <el-form-item class="menuItem" label="增值税率" :required="true">
-            <el-select placeholder="-请选择-" v-model="obj2.vatRate" @change="handleCost" style="width: 200px">
-              <el-option value="undefined" label="-请选择-"></el-option>
-              <el-option v-for="(item,index) in VatRateOption" :value="item.value" :label="item.label"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item class="menuItem" label="本年项目成本(万元)" :required="true">
-            <el-input
-              placeholder="请输入本年项目成本额"
-              v-model="obj2.cost"
-              style="width: 200px"
-              type="number"
-              @input="handleAmount"
-              min="0"
-              clearable
-              size="small"
-            />
-          </el-form-item>
-
-          <el-form-item class="menuItem" label="本年增值税金(万元)" :required="true">
-            <el-input
-              placeholder="请输入本年增值税金"
-              v-model="obj2.vatAmount"
-              type="number"
-              min="0"
-              style="width: 200px"
-              clearable
-              size="small"
-            />
-          </el-form-item>
-          <el-form-item class="menuItem" label="责任人" :required="true">
-            <el-input
-              placeholder="请输入责任人"
-              v-model="obj2.director"
-              @blur="handleCheck(1)"
-              style="width: 200px"
-              clearable
-              size="small"
-            />
-          </el-form-item>
-          <el-form-item class="menuItem" label="工程编号">
-            <el-input
-              placeholder="请输入工程编号"
-              v-model="obj2.engineeringNum"
-              @blur="handleCheck(2)"
-              style="width: 200px"
-              clearable
-              size="small"
-            />
-          </el-form-item>
-          <el-form-item class="menuItem" label="项目开始时间" :required="true">
-            <el-date-picker
-              type="date"
-              v-model="obj2.startTime"
-              style="width: 200px"
-              placeholder="请选择开始时间">
-            </el-date-picker>
-          </el-form-item>
-          <el-form-item class="menuItem" label="项目结束时间" :required="true">
-            <el-date-picker
-              type="date"
-              style="width: 200px"
-              v-model="obj2.endTime"
-              placeholder="请选择结束时间">
-            </el-date-picker>
-          </el-form-item>
-          <el-form-item class="menuItem" label="供应商">
-            <el-input
-              placeholder="请输入供应商"
-              style="width: 200px"
-              v-model="obj2.supplier"
-              clearable
-              size="small"
-            />
-          </el-form-item>
-          <el-form-item class="menuItem" label="项目来源">
-            <el-select placeholder="请选择" v-model="obj2.origin" style="width: 200px">
-              <el-option value="新建" label="新建"></el-option>
-              <el-option value="结转" label="结转"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item style="clear: both"></el-form-item>
-
-
-        </el-form>
-        <div class="textareas">
-          <label>项目简介</label>
-          <el-input
-            placeholder="请输入项目简介信息"
-            v-model="obj2.introduction"
-            clearable
-          />
-        </div>
-        <div class="textareas">
-          <label>项目详细说明</label>
-          <el-input
-            placeholder="请输入项目详细说明信息"
-            v-model="obj2.detail"
-            clearable
-            size="small"
-          />
-        </div>
-        <div class="textareas">
-          <label>项目实施目标</label>
-          <el-input
-            placeholder="请输入项目实施目标信息"
-            v-model="obj2.target"
-            clearable
-            size="small"
-          />
-        </div>
-        <div class="textareas">
-          <label>备注</label>
-          <el-input
-            placeholder="请输入备注信息"
-            v-model="obj2.remarks"
-            clearable
-            size="small"
-          />
-        </div>
-        <el-upload
-          class="upload-demo"
-          :show-file-list="true"
-          multiple
-          action="#"
-          :before-remove="beforeRemove"
-          :http-request="imageUpload"
-          :file-list="fileList"
-        >
-          <el-button slot="trigger" size="small" class="uploadImgBtn">选取文件</el-button>
-          <span slot="tip"></span>
-        </el-upload>
-
-        <div class="btn_box">
-          <el-button type="primary" @click="handleCancel" style="margin-right: 50px;">取消</el-button>
-          <el-button type="primary" @click="handleSubmit">提交</el-button>
-        </div>
-      </el-dialog>
       <el-dialog title="发起审批" :visible.sync="isLaunch" width="500px">
         <el-form>
           <el-form-item label="选择流程">
@@ -514,28 +310,7 @@
         unitId: null,//单位id
         index: undefined,
 
-        obj2: {
-          budgetId: undefined,//预算科目类型
-          projectName: undefined,//项目名称
-          amount: undefined,//项目预算总额
-          availableAmount: undefined,//可供分配预算
-          taxIncludeAmount: undefined,//本年价税合计
-          cost: undefined,//本年项目成本
-          vatRate: undefined,//增值税率
-          vatAmount: undefined,//本年增值税金
-          director: undefined,//责任人
-          engineeringNum: undefined,//工程编号
-          startTime: undefined,//项目开始时间
-          endTime: undefined,//项目结束时间
-          supplier: undefined,//供应商
-          origin: undefined,//项目来源
-          introduction: undefined,//项目简介
-          detail: undefined,//项目详情说明
-          target: undefined,//项目实施目标
-          remarks: undefined,//备注
-          files: []
-        },
-        ActionUrl: process.env.VUE_APP_BASE_API + '/file/upload', // 上传的图片服务器地址
+
 
         projectItem: [],//预算科目下拉菜单
         rate: [],//增值税率下拉
@@ -564,12 +339,6 @@
     },
     computed: {
       ...mapGetters(['budgetSelect']),
-      // unitid() {
-      //   return this.obj.unitId;
-      // },
-      // type() {
-      //   return this.obj.type;
-      // },
       taxIncludeAmount() {
         return this.obj2.taxIncludeAmount;
       }
@@ -775,84 +544,11 @@
       //添加数据
       handleAdd() {
         this.$router.push('/budget/info/add');
-        return;
-        this.fileList = [];
-        this.obj2 = {
-          budgetId: '',//预算科目类型
-          projectName: '',//项目名称
-          amount: '',//项目预算总额
-          availableAmount: '',//可供分配预算
-          taxIncludeAmount: '',//本年价税合计
-          cost: '',//本年项目成本
-          vatRate: '',//增值税率
-          vatAmount: '',//本年增值税金
-          director: '',//责任人
-          engineeringNum: '',//工程编号
-          startTime: '',//项目开始时间
-          endTime: '',//项目结束时间
-          supplier: '',//供应商
-          origin: '新建',//项目来源
-          introduction: '',//项目简介
-          detail: '',//项目详情说明
-          target: '',//项目实施目标
-          remarks: '',//备注
-          files: []
-        };
+      },
 
-        this.stutic = 1;
-        getProejctType(this.obj.unitId).then(res => {
-          this.projectItem = res;
-        })
-        this.centerDialogVisible = true;
-      },
-      //选择文件时
-      handleExceed(files, fileList) {
-        this.$message.warning(
-          `当前限制选择6个文件，本次选择了 ${
-            files.length
-          } 个文件，共选择了 ${files.length + fileList.length} 个文件`
-        )
-      },
-      //删除文件之前
-      beforeRemove(file, fileList) {
-        this.$confirm(`确定移除 ${file.name}？`).then(res => {
-          DeleteFile(file.id).then(res1 => {
-            this.$message.success('文件删除成功！');
-            this.obj2.files = this.obj2.files.filter(item => {
-              return item.fileId != file.id;
-            })
-          });
-        })
-      },
-      //文件上传
-      imageUpload(param) {
-        let that = this, list = {};
-        const _file = param.file;
-        let params = new FormData();
-        params.append('files', _file);
-        axios({
-          url: this.ActionUrl,
-          method: 'post',
-          data: params,
-          headers: {
-            "Content-Type": "multipart/form-data",
-            'Authorization': getToken()
-          }
-        }).then(res => {
-          list.fileId = res.data.data[0].id;
-          this.fileList.push({name: res.data.data[0].fileName, id: res.data.data[0].id});
-          this.$message.success('附件上传成功！');
-          if (parseFloat(this.obj2.amount) > parseFloat(this.quota)) {
-            list.isApproved = 1;
-          } else {
-            list.isApproved = 0;
-          }
-          this.obj2.files.push(list);
-        });
-      },
+
       //关闭弹窗
       handleCancel() {
-        this.centerDialogVisible = false;
         this.isLaunch = false;
       },
       //流程
@@ -870,50 +566,7 @@
           }
         });
       },
-      //信息提交
-      handleSubmit() {
-        let _this = this;
-        this.obj2.startTime = dateTimes(this.obj2.startTime).substr(0, 10);
-        this.obj2.endTime = dateTimes(this.obj2.endTime).substr(0, 10);
-        if (!this.obj2.projectName || !this.obj2.amount || !this.obj2.availableAmount || !this.obj2.taxIncludeAmount || !this.obj2.cost || !this.obj2.vatRate || !this.obj2.director
-          || !this.obj2.startTime || !this.obj2.endTime) {
-          this.$message.warning('必填项不能为空');
-          return;
-        }
-        ;
-        if (parseFloat(this.obj2.cost) + parseFloat(this.obj2.vatAmount) != parseFloat(this.obj2.taxIncludeAmount)) {
-          this.$message.warning('本年价税合计有误，请填写正确值');
-          return;
-        }
-        ;
-        if (parseFloat(this.obj2.amount) > parseFloat(this.quota)) {
-          if (this.obj2.files.length == 0) {
-            this.$message.warning(`当前预算金额超过${this.quota}万元，请上传必要附件`);
-            console.log(this.obj2.files);
-            return;
-          }
-        }
-        ;
 
-        let checkLangth = this.checkArr.filter(item => {
-          return item == false;
-        }).length;
-        if (checkLangth != 0) return;
-        if (this.stutic == 1) {
-          addData(this.obj2).then(res => {
-            this.$message.success('添加成功');
-            this.handleGetList();
-            this.centerDialogVisible = false;
-          });
-        } else if (this.stutic == 2) {
-          upData(this.obj2).then(res => {
-            this.$message.success('修改成功');
-            this.handleGetList();
-            this.centerDialogVisible = false;
-          });
-        }
-        ;
-      },
       //发起审批
       SubmitLaunch() {
         if (!this.LaunchId) {
@@ -931,15 +584,6 @@
       },
       //导出Excel表
       handleExport() {
-        // let ids = [];
-        // if (this.tableData.length == 0) {
-        //   return;
-        // } else {
-        //   for (let key of this.tableData) {
-        //     ids.push(key.id);
-        //   }
-        // }
-        // ;
         let queryForm=JSON.parse(JSON.stringify(this.obj));
         delete queryForm.pageNum;
         delete queryForm.pageSize;
@@ -1001,7 +645,7 @@
     .tables {
       width: 100%;
       height: 600px;
-      /*margin-top:20px;*/
+      margin-top:20px;
       text-align: center;
       overflow: auto;
     }

@@ -330,7 +330,7 @@
                   <br>
                   <br>
                   <el-form-item style="margin-left: 9%;">
-                    <el-button type="primary" size="mini" :disabled="info.state==20||info.state==50" @click="handleQuery">添加</el-button>
+                    <el-button type="primary" size="mini" :disabled="info.state==20||info.state==50||parseInt(state)" @click="handleQuery">添加</el-button>
                   </el-form-item>
                 </el-form>
                 <label>项目分类预算信息</label>
@@ -358,7 +358,7 @@
                           size="mini"
                           type="text"
                           icon="el-icon-edit"
-                          :disabled="info.state==20||info.state==50"
+                          :disabled="info.state==20||info.state==50||info.state==32||parseInt(state)"
                           @click="handleEidt(scope.$index, scope.row)">编辑
                         </el-button>
                       </template>
@@ -369,7 +369,7 @@
                           size="mini"
                           type="text"
                           icon="el-icon-delete"
-                          :disabled="info.state==20||info.state==50"
+                          :disabled="info.state==20||info.state==50||info.state==31||info.state==32||parseInt(state)"
                           @click="handleDelete(scope.row)">删除
                         </el-button>
                       </template>
@@ -465,7 +465,8 @@
           <br>
           <br>
           <el-form-item style="margin-left: 9%;">
-            <el-button type="primary" size="mini" :disabled="info.state==20||info.state==50" @click="handleQuery">提交</el-button>
+            <el-button type="primary" size="mini" v-if="info.state==10||info.state==30" :disabled="info.state==20||info.state==50||parseInt(state)" @click="handleQuery">提交</el-button>
+            <el-button type="primary" size="mini" v-if="info.state==31"  :disabled="info.state==20||info.state==50||parseInt(state)" @click="handleQuery">调整保存</el-button>
           </el-form-item>
         </el-form>
       </el-dialog>

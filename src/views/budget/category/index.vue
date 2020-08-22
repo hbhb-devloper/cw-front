@@ -367,7 +367,6 @@ export default {
     },
     //修改
     handleEdit(row) {
-      console.log(row,63)
       this.reset();
       if (row.isParent) {
         this.addtype = "unit";
@@ -375,7 +374,7 @@ export default {
         this.addtype = "item";
       }
       if (this.addtype == "unit") {
-        this.form = row;
+        this.form = JSON.parse(JSON.stringify(row));
         this.open = true;
         this.title = "预算科目调整";
       } else {
