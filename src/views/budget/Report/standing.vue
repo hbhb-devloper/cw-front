@@ -306,23 +306,18 @@
         centerDialogVisible: false, //新增修改弹窗
         options: [],//项目类型下拉菜单
         stateArr: [],//状态下拉菜单
-        status: null,
         unitId: null,//单位id
         index: undefined,
 
 
 
         projectItem: [],//预算科目下拉菜单
-        rate: [],//增值税率下拉
-        stutic: 1,//1新增、2修改
-        quota: null,//预算阀值
 
         isLaunch: false,//选择流程弹窗
         LaunchOption: [],//流程类型
         LaunchId: undefined,//流程类型id
 
         loading: true,//表格加载
-        checkArr: [true, true, true],//校验是否正确
         projectId: undefined,//记录id
       }
     },
@@ -341,15 +336,6 @@
       ...mapGetters(['budgetSelect']),
       taxIncludeAmount() {
         return this.obj2.taxIncludeAmount;
-      }
-    },
-    watch: {
-      taxIncludeAmount(val) {
-        if (!val) return;
-        let vatRates = 1 + (this.obj2.vatRate / 100);
-        let countss = parseFloat(this.obj2.taxIncludeAmount) - parseFloat(this.obj2.cost);
-        this.obj2.vatAmount = countss.toFixed(6);
-        console.log(this.obj2.vatRate, 1, this.obj2.vatAmount);
       }
     },
     methods: {
@@ -422,70 +408,6 @@
         }
         this.$store.dispatch('SET_BUDGET_SELECT',this.obj);
       },
-      //计算本年项目成本
-      handleCost() {
-        if (!this.obj2.vatRate) {
-          // this.$message.warning('请选择增值税率');
-          return;
-        }
-        let vatRate = 1 + (this.obj2.vatRate / 100);
-        let counts = parseFloat(this.obj2.taxIncludeAmount) / vatRate;
-        this.obj2.cost = counts.toFixed(6);
-        let countss = parseFloat(this.obj2.taxIncludeAmount) - parseFloat(this.obj2.cost);
-        this.obj2.vatAmount = countss.toFixed(6);
-
-        console.log(this.obj2.vatRate, 2, this.obj2.vatAmount);
-      },
-      //计算本年价税合计
-      handleAmount() {
-        if (!this.obj2.vatRate) {
-          // this.$message.warning('请选择增值税率');
-          return;
-        }
-        let vatRate = 1 + (this.obj2.vatRate / 100);
-        let counts = parseFloat(this.obj2.cost) * vatRate;
-        this.obj2.taxIncludeAmount = counts.toFixed(6);
-      },
-      //校验
-      handleCheck(type) {
-        let filters = null;
-        switch (type) {
-          case 0:
-            // filters=/^[\u4e00-\u9fa5]{0,}$/g;
-            // if(!filters.test(this.obj2.projectName)){
-            //   this.$message.warning('请输入正确的项目名称');
-            //   this.checkArr[type]=false;
-            // }else{
-            //   this.checkArr[type]=true;
-            // }
-            this.checkArr[type] = true;
-            break;
-          case 1:
-            filters = /^[\u4e00-\u9fa5]{2,4}$/g;
-            if (!filters.test(this.obj2.director)) {
-              this.$message.warning('请输入正确的责任人名称');
-              this.checkArr[type] = false;
-            } else {
-              this.checkArr[type] = true;
-            }
-            break;
-          case 2:
-            filters = /^[A-Z0-9]{0,}$/g;
-            if (!filters.test(this.obj2.engineeringNum)) {
-              this.$message.warning('请输入正确的工程编号');
-              this.checkArr[type] = false;
-            } else {
-              this.checkArr[type] = true;
-            }
-            break;
-          case 3:
-            if (parseFloat(this.obj2.amount) > parseFloat(this.quota)) {
-              this.$message.warning(`当前预算总额大于${this.quota}万元，请上传必要附件`);
-            }
-            break;
-        }
-
-      },
 
       //删除方法
       handleDelete(row) {
@@ -514,18 +436,6 @@
         this.fileList = [];
         GetInfo(row.id).then(res => {
           if (res.state == 10 || res.state == 30 || res.state == 31) {
-            // for(let key of res.files){
-            //   this.fileList.push({name:key.fileName,url:key.filePath,id:key.fileId});
-            // }
-            // // res.files=[];
-            // getQuota(res.budgetId).then(res => {
-            //   this.quota = res;
-            //   // this.$message.warning(`当前项目预算总额阀值为${res}万元`);
-            // });
-            // res.vatRate=res.vatRate
-            // this.obj2 = res;
-            // this.centerDialogVisible = true;
-            // this.stutic = 2;
             this.$router.push(`/budget/edit?id=${res.id}`);
           } else {
             this.$message.warning('当前记录不能进行修改调整！');
@@ -533,14 +443,7 @@
 
         });
       },
-      //获取金额阀值
-      handleType() {
-        if (!this.obj2.budgetId) return;
-        getQuota(this.obj2.budgetId).then(res => {
-          this.quota = res;
-          // this.$message.warning(`当前项目预算总额阀值为${res}万元`);
-        });
-      },
+
       //添加数据
       handleAdd() {
         this.$router.push('/budget/info/add');
