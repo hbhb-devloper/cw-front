@@ -336,21 +336,18 @@
                 <label>项目分类预算信息</label>
                 <div>
                   <el-table :data="tableDatas" style="width: 100%">>
-                    <el-table-column prop="id" label="序号">
-                      <template slot-scope="scope">
-                        <span>{{scope.$index+1}}</span>
-                      </template>
+                    <el-table-column prop="id" type="index" label="序号">
                     </el-table-column>
                     <el-table-column prop="years" label="年份">
                       <template slot-scope="scope">
-                        <span>{{scope.row.years.substr(0,4)}}</span>
+                        <span>{{scope.row.years?scope.row.years.substr(0,4):''}}</span>
                       </template>
                     </el-table-column>
                     <el-table-column prop="className" label="名称"></el-table-column>
                     <el-table-column prop="amount" label="数量"></el-table-column>
                     <el-table-column prop="price" label="单价(万元)"></el-table-column>
                     <el-table-column prop="cost" label="金额(万元)"></el-table-column>
-                    <el-table-column prop="itemName" width="120px" label="科目"></el-table-column>
+                    <el-table-column prop="itemName" label="科目"></el-table-column>
                     <el-table-column prop="explains" label="说明"></el-table-column>
                     <el-table-column prop="address" label="编辑">
                       <template slot-scope="scope">
@@ -663,6 +660,7 @@
         })
         //分解预算表
         getTable(id).then(res1 => {
+          console.log(res1);
           this.tableDatas = res1
         });
         getList().then(res=>{
@@ -751,21 +749,21 @@
             this.tableProjectData = res;
           });
         } else if (type === 31) {
-          this.titleProject = '已审批通过项目列表：'
-          data.state = type
+          this.titleProject = '已审批通过项目列表：';
+          data.state = type;
           getProject(data).then(res => {
-            this.tableProjectData = res
+            this.tableProjectData = res;
           })
         }
-        this.projectPopup = true
+        this.projectPopup = true;
       },
 
       //分解表记录修改
       handleEidt(index, row) {
-        this.statics = 2
-        this.centerDialogVisible = true
+        this.statics = 2;
+        this.centerDialogVisible = true;
         getClassInfo(row.id).then(res => {
-          this.form2 = res
+          this.form2 = res;
         })
       },
       //流程节点删除
@@ -800,7 +798,7 @@
         })
       },
       handleType() {
-        if (!this.obj2.budgetId) return
+        if (!this.obj2.budgetId) return;
         getQuota(this.obj2.budgetId).then(res => {
           this.quota = res;
         })
@@ -837,31 +835,37 @@
         }
         if (this.statics == 1) {
           if (!this.form.className || !this.form.budgetId || !this.form.cost) {
-            this.$message.warning('必填项不能为空！')
-            return
+            this.$message.warning('必填项不能为空！');
+            return;
           }
 
           addClass(this.form).then(res => {
-            this.$message.success('添加成功')
+            this.$message.success('添加成功');
             this.form = {
               budgetId: this.form.budgetId
             }
             getTable(this.projectId).then(res1 => {
-              this.tableDatas = res1
+              this.tableDatas = res1;
             })
           })
         } else {
           if (!this.form2.className || !this.form2.budgetId || !this.form2.cost) {
-            this.$message.warning('必填项不能为空！')
-            return
+            this.$message.warning('必填项不能为空！');
+            return;
           }
           UpdateClass(this.form2).then(res => {
-            this.$message.success('修改成功')
+            if (this.info.state == 10 || this.info.state == 30) {
+              this.$message.success('修改成功');
+            } else if (this.info.state == 31 || this.info.state == 40) {
+              this.$message.success('调整成功');
+            } else {
+              this.$message.success('修改成功');
+            }
             getTable(this.projectId).then(res1 => {
-              this.tableDatas = res1
+              this.tableDatas = res1;
             })
-            this.centerDialogVisible = false
-            this.statics = 1
+            this.centerDialogVisible = false;
+            this.statics = 1;
           })
         }
       },
@@ -869,12 +873,12 @@
       //提交审批
       handleApprove(item, type,index) {
         if (!this.programObj.suggestion) {
-          this.$message.warning('请输入你的审批意见')
-          return
+          this.$message.warning('请输入你的审批意见');
+          return;
         }
-        this.programObj.approvers = []
+        this.programObj.approvers = [];
         for (let key of this.program) {
-          this.programObj.approvers.push({ flowNodeId:key.flowNodeId,userId:key.form.id})
+          this.programObj.approvers.push({ flowNodeId:key.flowNodeId,userId:key.form.id});
         }
 
         this.programObj.operation = type;
@@ -882,7 +886,7 @@
         SubmitApprove(this.programObj).then(res => {
           this.handleLoad(this.$route.params.id);
           this.programObj.suggestion=undefined;
-          this.$message.success('提交成功')
+          this.$message.success('提交成功');
         })
 
       },
