@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-07-20 18:22:09
  * @LastEditors: CYZ
- * @LastEditTime: 2020-08-24 10:56:01
+ * @LastEditTime: 2020-08-24 18:29:27
 --> 
 <template>
   <div v-if="easyFlowVisible" style="height: calc(100vh);">
@@ -206,7 +206,7 @@ export default {
     // 返回唯一标识
     getUUID() {
       // console.log('uuid',(this.S4()+this.S4()+"-"+this.S4()+"-"+this.S4()+"-"+this.S4()+"-"+this.S4()+this.S4()+this.S4()).substring(24,36));
-      return (this.S4()+this.S4()+"-"+this.S4()+"-"+this.S4()+"-"+this.S4()+"-"+this.S4()+this.S4()+this.S4().substring(24,36));
+      return (this.S4()+this.S4()+"-"+this.S4()+"-"+this.S4()+"-"+this.S4()+"-"+this.S4()+this.S4()+this.S4()).substring(24,36);
       // return Math.random().toString(36).substr(3, 10);
       // return this.flowId + Math.random().toString().substr(3, 8);
     },
