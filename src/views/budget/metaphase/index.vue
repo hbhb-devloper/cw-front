@@ -67,7 +67,7 @@
       <el-table-column prop="remark" align="center" label="备注"></el-table-column>
       <el-table-column align="center" label="操作">
         <template slot-scope="scope">
-          <el-button size="mini" @click="handleEdit(scope.row)" v-if="!scope.row.hasChildren">调整</el-button>
+          <el-button size="mini" @click="handleEdit(scope.row)" v-if="!scope.row.hasChildren" v-hasPermi="['budget:history:edit']" >调整</el-button>
         </template>
       </el-table-column>
     </el-table>

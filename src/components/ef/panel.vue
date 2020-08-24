@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-07-20 18:22:09
  * @LastEditors: CYZ
- * @LastEditTime: 2020-08-17 17:08:56
+ * @LastEditTime: 2020-08-24 10:56:01
 --> 
 <template>
   <div v-if="easyFlowVisible" style="height: calc(100vh);">
@@ -200,9 +200,14 @@ export default {
         });
       });
     },
+    S4() {
+        return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+    },
     // 返回唯一标识
     getUUID() {
-      return Math.random().toString(36).substr(3, 10);
+      // console.log('uuid',(this.S4()+this.S4()+"-"+this.S4()+"-"+this.S4()+"-"+this.S4()+"-"+this.S4()+this.S4()+this.S4()).substring(24,36));
+      return (this.S4()+this.S4()+"-"+this.S4()+"-"+this.S4()+"-"+this.S4()+"-"+this.S4()+this.S4()+this.S4().substring(24,36));
+      // return Math.random().toString(36).substr(3, 10);
       // return this.flowId + Math.random().toString().substr(3, 8);
     },
     jsPlumbInit() {
