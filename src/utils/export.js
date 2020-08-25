@@ -73,7 +73,7 @@ export function exportWord(tokens, data, url,fileName) {
     if ('download' in document.createElement('a')) {
       // 非IE下载
       const elink = document.createElement('a')
-      elink.download = fileName+'.docx'  //命名下载名称
+      elink.download = fileName+'.doc'  //命名下载名称
       elink.style.display = 'none'
       elink.href = URL.createObjectURL(blob) //表示一个指定的file对象或Blob对象
       document.body.appendChild(elink)
