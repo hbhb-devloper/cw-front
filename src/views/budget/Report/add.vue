@@ -373,6 +373,7 @@
         if (this.stutic != 'add') {
           list.isApproved = this.obj2.state == 31 || this.obj2.state == 32 ? 1 : 0;
         }
+        console.log(param);
         const _file = param.file;
         let params = new FormData();
         params.append('files', _file);
