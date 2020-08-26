@@ -20,12 +20,12 @@
         </el-form-item>
 
         <el-form-item label="项目可分配预算(万元)" :required="true">
-          <el-input placeholder="请输入可供分配预算额" class="input-select-length" v-model="obj2.availableAmount" type="number"
+          <el-input placeholder="请输入可供分配预算额" :max="obj2.amount" class="input-select-length" v-model="obj2.availableAmount" type="number"
                     min="0" clearable/>
         </el-form-item>
 
         <el-form-item label="本年价税合计" :required="true">
-          <el-input placeholder="请输入本年价税合计" class="input-select-length" v-model="obj2.taxIncludeAmount" type="number"
+          <el-input placeholder="请输入本年价税合计" :max="obj2.amount" class="input-select-length" v-model="obj2.taxIncludeAmount" type="number"
                     @input="handleCost" min="0" clearable/>
         </el-form-item>
 
@@ -449,23 +449,35 @@
           || !this.obj2.startTime || !this.obj2.endTime) {
           this.$message.warning('必填项不能为空')
           return
-        }
+        };
 
         if (parseFloat(this.obj2.cost) + parseFloat(this.obj2.vatAmount) != parseFloat(this.obj2.taxIncludeAmount)) {
           this.$message.warning('本年价税合计有误，请填写正确值')
           return
-        }
+        };
         if (parseFloat(this.obj2.amount) >= parseFloat(this.quota)) {
           let fileLength = this.obj2.files.filter(item => {
             if (item.required == 1) {
               return item;
-            }
+            };
           }).length;
           if (fileLength == 0) {
             this.$message.warning(`项目预算总额超过${this.quota}万元，请上传管理层审批附件`);
             return
-          }
-        }
+          };
+        };
+        let startTimes=Date.parse(new Date(this.obj2.startTime));
+        startTimes=startTimes/1000;
+        let endTimes=Date.parse(new Date(this.obj2.endTime));
+        endTimes=endTimes/1000;
+        if(startTimes>endTimes){
+          this.$message.error('项目开始时间不能大于项目结束时间！');
+          return;
+        };
+        if(parseFloat(this.obj2.availableAmount)>parseFloat(this.obj2.amount)||parseFloat(this.obj2.taxIncludeAmount)>parseFloat(this.obj2.amount)){
+          this.$message.error('可供分配预算或本年价税合计不能高于项目预算总额！');
+          return;
+        };
 
         let checkLangth = this.checkArr.filter(item => {
           return item == false
