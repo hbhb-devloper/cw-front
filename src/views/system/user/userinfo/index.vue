@@ -326,7 +326,8 @@
           </div>
           <el-scrollbar style="height:160px">
             <!-- <div v-for="(item,index) in RSlist" :key="index" class="text item">{{item.label}}</div> -->
-            <el-checkbox-group v-model="checkedRsRoleIds">
+            <el-checkbox-group v-model="checkedRsRoleIds"
+                               class="tree-box">
               <el-checkbox
                 v-for="item in RSlist"
                 :label="item.id"
@@ -355,6 +356,7 @@
               :data="menuOptions"
               show-checkbox
               ref="menu"
+              class="tree-box"
               node-key="id"
               empty-text="加载中，请稍后"
               :props="defaultProps"
@@ -367,7 +369,8 @@
             <!-- <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button> -->
           </div>
           <el-scrollbar style="height:160px">
-            <el-checkbox-group v-model="checkedUnRoleIds">
+            <el-checkbox-group v-model="checkedUnRoleIds"
+                               class="tree-box">
               <el-checkbox v-for="item in UNlist" :label="item.id" :key="item.id">
                 <span @click.prevent="handleCheckedUNChange(item)">{{item.label}}</span>
               </el-checkbox>
@@ -394,6 +397,7 @@
               show-checkbox
               ref="menu1"
               node-key="id"
+              class="tree-box"
               empty-text="加载中，请稍后"
               :props="defaultProps"
             ></el-tree>
@@ -905,5 +909,8 @@ export default {
 .el-checkbox-group {
   display: flex;
   flex-direction: column;
+}
+.tree-box{
+  padding-bottom: 20px;
 }
 </style>
