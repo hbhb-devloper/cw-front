@@ -326,7 +326,9 @@
 
       // this.obj.projectYear = times.getFullYear().toString();
       this.obj=this.budgetSelect;
-      this.$set(this.obj,'projectYear',times.getFullYear().toString())
+      if(!this.obj.projectYear){
+        this.$set(this.obj,'projectYear',times.getFullYear().toString())
+      }
       this.handleLoad();
     },
     components: {
