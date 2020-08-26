@@ -9,7 +9,6 @@
           style="width: 240px"
         />
       </el-form-item>
-
       <el-form-item label="开票金额" prop="nickName">
         <el-input
           v-model="queryParams.nickName"

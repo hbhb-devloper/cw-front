@@ -2,7 +2,7 @@
   <div class="app-container">
     <div class="app-top">
       <div>
-        <el-col :span="20" :xs="24">
+        <el-col :span="24" :xs="24">
           <el-form ref="queryForm" :inline="true" label-width="100px">
             <el-form-item label="发票代码：" prop="userName">
               <el-input
@@ -122,13 +122,13 @@
             prop="invoiceType"
             label="发票种类"
             align="center"
-            width="110">
+            width="180">
           </el-table-column>
           <el-table-column
             prop="invoiceCode"
             label="发票代码"
             align="center"
-            width="90">
+            width="180">
           </el-table-column>
           <el-table-column
             prop="invoiceNumber"

@@ -814,27 +814,27 @@ export default {
       });
     },
     /** 删除按钮操作 */
-    handleDelete(row) {
-      const userIds = row.userId || this.ids;
-      console.log(row);
-      this.$confirm(
-        '是否确认删除用户编号为"' + userIds + '"的数据项?',
-        "警告",
-        {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        }
-      )
-        .then(function() {
-          return delUser(userIds);
-        })
-        .then(() => {
-          this.getList();
-          this.msgSuccess("删除成功");
-        })
-        .catch(function() {});
-    },
+    // handleDelete(row) {
+    //   const userIds = row.userId || this.ids;
+    //   console.log(row);
+    //   this.$confirm(
+    //     '是否确认删除用户编号为"' + userIds + '"的数据项?',
+    //     "警告",
+    //     {
+    //       confirmButtonText: "确定",
+    //       cancelButtonText: "取消",
+    //       type: "warning"
+    //     }
+    //   )
+    //     .then(function() {
+    //       return delUser(userIds);
+    //     })
+    //     .then(() => {
+    //       this.getList();
+    //       this.msgSuccess("删除成功");
+    //     })
+    //     .catch(function() {});
+    // },
     /** 导出按钮操作 */
     handleExport() {
       this.download(

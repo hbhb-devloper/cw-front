@@ -226,7 +226,8 @@
 </template>
 
 <script>
-import { pageRole, getRole, delRole, addRole, updateRole, dataScope, changeRoleStatus } from "@/api/system/role";
+// delRole,dataScope,
+import { pageRole, getRole,  addRole, updateRole,  changeRoleStatus } from "@/api/system/role";
 import { treeselect as menuTreeselect, roleMenuTreeselect } from "@/api/system/menu";
 import { treeselect as deptTreeselect, roleDeptTreeselect } from "@/api/system/dept";
 import { UserList } from "@/api/system/user";

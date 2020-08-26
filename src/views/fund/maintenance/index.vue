@@ -1,11 +1,36 @@
 <template>
   <div class="app-container">
+    <div class="uploadList">
+      <div style="color:blue;">发票单位信息导入模板下载</div>
+      <div style="color:red;">注意：导入单位模块后，请认真查看返回信息，若没有提示导入成功，则需要重新编辑模板导入</div>
+      <el-upload
+        class="upload-demo"
+        action="https://jsonplaceholder.typicode.com/posts/"
+        :on-preview="handlePreview"
+        :on-remove="handleRemove"
+        :before-remove="beforeRemove"
+        multiple
+        :limit="3"
+        :on-exceed="handleExceed"
+        :file-list="fileList"
+      >
+        <el-button size="small" type="primary">点击上传</el-button>
+      </el-upload>
+      <el-table :data="tableData" style="width: 100%;margin-top:15px;">
+        <el-table-column prop="date" label="数据导入检查结果" ></el-table-column>
+      </el-table>
+    </div>
     <el-form :model="queryParams" ref="queryForm" :inline="true">
       <el-form-item label="单位名称" prop="unitId">
-        <treeselect v-model="queryParams.unitId" :options="deptOptions" placeholder="请选择单位" style="width: 240px"/>
+        <treeselect
+          v-model="queryParams.unitId"
+          :options="deptOptions"
+          placeholder="请选择单位"
+          style="width: 240px"
+        />
       </el-form-item>
       <el-form-item label="单位编号" prop="flowRoleId">
-       <el-input
+        <el-input
           v-model="queryParams.nickName"
           placeholder="请输入单位编号"
           clearable
@@ -20,7 +45,7 @@
     </el-form>
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
-        <el-button type="warning" icon="el-icon-download" size="mini" @click="handleExport">导出</el-button>
+        <el-button type="warning" icon="el-icon-download" size="mini" @click="handleExport" v-if="false">导出</el-button>
       </el-col>
     </el-row>
 
@@ -32,12 +57,7 @@
       <el-table-column label="期初金额" prop="nickName" align="center" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-delete"
-            @click.stop="handleDelete(scope.row)"
-          >提交</el-button>
+          <el-button size="mini" type="text" @click.stop="handleDelete(scope.row)">提交</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -66,6 +86,15 @@ export default {
   components: { Treeselect },
   data() {
     return {
+      tableData: [
+        {
+          date: "3行A列单位名称数据重复",
+        },
+        {
+          date: "3行A列单位名称数据重复",
+        },
+      ],
+      fileList: [],
       // 遮罩层
       loading: true,
       // 选中数组
@@ -149,6 +178,22 @@ export default {
     this.getMenuTreeselect();
   },
   methods: {
+    handleRemove(file, fileList) {
+      console.log(file, fileList);
+    },
+    handlePreview(file) {
+      console.log(file);
+    },
+    handleExceed(files, fileList) {
+      this.$message.warning(
+        `当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${
+          files.length + fileList.length
+        } 个文件`
+      );
+    },
+    beforeRemove(file, fileList) {
+      return this.$confirm(`确定移除 ${file.name}？`);
+    },
     getMenuTreeselect() {
       listUnit().then((response) => {
         this.deptOptions = response;
@@ -293,4 +338,11 @@ export default {
 /* .el-form-item--medium /deep/ .el-form-item__content {
   width: 230px;
 } */
+.uploadList {
+  width: 100%;
+  padding: 15px;
+  border: 1px solid #0d8efd;
+  border-radius: 15px;
+  margin-bottom: 15px;
+}
 </style>
