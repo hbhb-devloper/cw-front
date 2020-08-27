@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="containers">
     <div class="top-control">
       <el-col :span="24">
         <el-form ref="queryForm" :inline="true" label-width="100px">
@@ -505,8 +505,8 @@
 </script>
 
 <style lang="scss" scoped>
-  .container {
-    width: 90%;
+  .containers {
+    width: 95%;
     margin: 20px auto 0 auto;
     display: flex;
     flex-direction: column;
