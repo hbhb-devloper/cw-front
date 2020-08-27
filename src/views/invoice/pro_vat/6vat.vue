@@ -561,7 +561,6 @@
           return;
         }
         if (this.insetUpdata == 1) {
-
           adddata(datas).then(res => {
             this.$message.success('添加成功！');
             this.handleSelect();
@@ -608,7 +607,6 @@
     display: flex;
     flex-direction: column;
   }
-
   .table-box {
     padding: 15px 20px;
     margin-top: 20px;
