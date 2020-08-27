@@ -45,6 +45,8 @@ steps:
       username: root
       key:
         from_secret: ssh_key
+      command_timeout: 3m
+      script_stop: false
       target: /app/zhcw/test
       source: dist/*
       rm: true
