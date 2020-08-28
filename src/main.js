@@ -33,7 +33,7 @@ Vue.prototype.addDateRange = addDateRange
 Vue.prototype.selectDictLabel = selectDictLabel
 Vue.prototype.download = download
 Vue.prototype.handleTree = handleTree
-
+Vue.prototype.downPath = 'https://file.yeexun.com.cn/template/';
 Vue.prototype.msgSuccess = function(msg) {
     this.$message({ showClose: true, message: msg, type: "success" });
 }

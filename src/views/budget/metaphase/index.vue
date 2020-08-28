@@ -132,14 +132,21 @@
     </el-dialog>
 
     <el-dialog :visible.sync="centerDialogVisible" width="500px">
-      <el-date-picker
-        class="uploadCss"
-        v-model="uploadData.importDate"
-        type="year"
-        placeholder="选择年份(默认当前年份)"
-        format="yyyy"
-        value-format="yyyy"
-      ></el-date-picker>
+      <div>
+        <el-date-picker
+          class="uploadCss"
+          v-model="uploadData.importDate"
+          type="year"
+          placeholder="选择年份(默认当前年份)"
+          format="yyyy"
+          value-format="yyyy"
+        ></el-date-picker>
+        <el-button type="primary"  style="margin-botton:10px;">
+          <a download="中期预算调整导入模板示例" :href="downPath+'预算分解导入模板示例.xlsx'">
+            <i class="el-icon-download"></i>下载导入模板
+          </a>
+        </el-button>
+      </div>
       <el-upload
         class="upload-demo"
         :headers="headers"

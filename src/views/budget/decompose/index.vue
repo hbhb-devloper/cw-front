@@ -5,11 +5,7 @@
         <treeselect v-model="queryParams.unitId" :options="deptOptions" placeholder="请选择单位" />
       </el-form-item>
       <el-form-item label="项目类型" prop="projectItem">
-        <el-input
-          placeholder="请输入项目类型"
-          v-model="queryParams.projectItem"
-          size="small"
-        />
+        <el-input placeholder="请输入项目类型" v-model="queryParams.projectItem" size="small" />
       </el-form-item>
       <el-form-item label="年份" prop="importDate">
         <el-date-picker
@@ -124,15 +120,22 @@
         <el-button type="primary" @click="submitUpload()">确 定</el-button>
     </div>-->
 
-    <el-dialog :visible.sync="centerDialogVisible" width="500px">
-      <el-date-picker
-        class="uploadCss"
-        v-model="uploadData.importDate"
-        type="year"
-        placeholder="选择年份(默认当前年份)"
-        format="yyyy"
-        value-format="yyyy"
-      ></el-date-picker>
+    <el-dialog title="导入" :visible.sync="centerDialogVisible" width="500px">
+      <div>
+        <el-date-picker
+          class="uploadCss"
+          v-model="uploadData.importDate"
+          type="year"
+          placeholder="选择年份(默认当前年份)"
+          format="yyyy"
+          value-format="yyyy"
+        ></el-date-picker>
+        <el-button type="primary"  style="margin-botton:10px;">
+          <a download="预算分解导入模板示例" :href="downPath+'预算分解导入模板示例.xlsx'">
+            <i class="el-icon-download"></i>下载导入模板
+          </a>
+        </el-button>
+      </div>
       <el-upload
         class="upload-demo"
         :headers="headers"
@@ -186,7 +189,7 @@ export default {
       queryParams: {
         unitId: undefined,
         year: undefined,
-        projectItem:undefined
+        projectItem: undefined,
         // year: new Date()
       },
       unitId: undefined,
@@ -250,9 +253,9 @@ export default {
       this.loadingoption.close();
       this.centerDialogVisible = false;
       if (res.status == 1000) {
-        this.$message.success('文件上传成功');
+        this.$message.success("文件上传成功");
         this.getList();
-      } else{
+      } else {
         this.$message({
           message: res.message,
           type: "error",
@@ -362,6 +365,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
 .el-form-item--medium /deep/ .el-form-item__content {
   width: 230px;
 }
