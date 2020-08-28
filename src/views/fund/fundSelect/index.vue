@@ -120,11 +120,13 @@
       </el-table-column>
       <el-table-column prop="itemName" align="center" label="发起流程">
         <template slot-scope="scope">
-          <el-button
-            size="mini"
-            type="text"
-            :disabled="scope.row.state==0">查看流程
-          </el-button>
+<!--          <el-button-->
+<!--            size="mini"-->
+<!--            type="text"-->
+<!--            :disabled="scope.row.state==0">查看流程-->
+<!--          </el-button>-->
+          <router-link style="color:#409EFF;" :to="'/fund/select/info/'+scope.row.id">查看流程
+          </router-link>
         </template>
       </el-table-column>
 <!--      <el-table-column prop="itemName" align="center" label="编辑"></el-table-column>-->
@@ -180,7 +182,27 @@
         },//条件搜索表单
         deptOptions:[],//单位下拉
         busTypeOptions:['一次性收入','集团统付','可变资金划账','购卡','现金充值','预缴(除统付外)','开户','终端捆绑','退款','其它','欠费缴纳','集团预付(预开发票)'],//业务下拉类
-        tableData:[],//表格数据
+        tableData:[
+          {
+            id:8,
+            fcCode:1,
+            createTime:2020,
+            dptName:'ddd',
+            groupName:'eed',
+            busType:'add',
+            fundFlows:52,
+            amountType:'dss',
+            amount:'sd',
+            invoiceAmount:55,
+            invoiceCode:5855,
+            preInvoiceAmount:'dssd0',
+            userName:'sdfsd',
+            peopleDown:559,
+            peopleDownTime:5,
+            state:2,
+            document:'是'
+          }
+        ],//表格数据
         loading:true,//表格加载动画
       }
     },
@@ -205,6 +227,8 @@
         getHistroyList(this.queryParams).then(res=>{
           this.total=res.count;
           this.tableData=res.list;
+          this.loading=false;
+        }).catch(err=>{
           this.loading=false;
         })
       },

@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="containers">
     <el-button icon="el-icon-back" type="primary" size="mini" style="margin-bottom: 20px" @click="handleBack">返回</el-button>
     <div class="program-box" v-if="parseInt(id)||info.state!=10">
       <div style="width: 100%;position: relative;">
@@ -191,7 +191,7 @@
             </div>
             <div class="row-div">
               <label>项目简介：</label>
-              <span>{{info.introduction}}</span>
+              <span style="width:79%">{{info.introduction}}</span>
             </div>
             <div class="row-div">
               <label>项目详细说明：</label>
@@ -911,7 +911,7 @@
 </script>
 
 <style lang="scss" scoped>
-  .container {
+  .containers {
     width: 95%;
     margin: 30px auto 30px auto;
     padding: 30px 20px;
@@ -922,8 +922,8 @@
       margin-top: 20px;
 
       .programList {
-        width: 300px;
-        margin-left: 30px;
+        width: 350px;
+        margin-left: 10px;
         float: left;
         margin-bottom: 30px;
         background: #F4F4F4;
