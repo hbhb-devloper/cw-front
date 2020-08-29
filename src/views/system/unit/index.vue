@@ -84,6 +84,11 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
+            <el-form-item label="排序" prop="sortNum">
+              <el-input-number v-model="form1.sortNum" disabled :min="0" ></el-input-number>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
             <el-form-item label="通信地址" prop="address">
               <el-input readonly v-model="form1.address" disabled />
             </el-form-item>
@@ -148,6 +153,11 @@
           <el-col :span="12">
             <el-form-item label="单位名称" prop="unitName">
               <el-input v-model="form.unitName" placeholder="请输入单位名称" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="排序" prop="sortNum">
+              <el-input-number v-model="form.sortNum" :min="0"></el-input-number>
             </el-form-item>
           </el-col>
           <el-col :span="12">
