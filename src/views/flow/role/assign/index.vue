@@ -59,7 +59,7 @@
           :limit.sync="queryParams.pageSize"
           @pagination="getUserList"
         />-->
-        <el-transfer v-model="form.userIds" :data="UserList"></el-transfer>
+        <el-transfer v-model="form.userIds" :data="UserList" filterable></el-transfer>
       </div>
     </div>
   </div>
@@ -112,8 +112,9 @@ export default {
       // 查询参数
       queryParams: {
         pageNum: 1,
-        pageSize: 1000,
+        pageSize: 10000,
         unitId: undefined,
+        state :1
       },
       queryParams1: {
         pageNum: 1,
