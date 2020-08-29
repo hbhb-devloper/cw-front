@@ -46,7 +46,7 @@
       <el-table-column label="流程名称" prop="flowName" :show-overflow-tooltip="true"  align="center"/>
       <el-table-column label="节点名称" prop="flowNodeName" align="center"/>
       <!-- <el-table-column label="环节名称" prop="linkName"  align="center" /> -->
-      <el-table-column label="角色" prop="roleLid"  align="center"/>
+      <el-table-column label="角色" prop="roleDescription"  align="center"/>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
