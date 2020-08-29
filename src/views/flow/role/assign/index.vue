@@ -59,7 +59,7 @@
           :limit.sync="queryParams.pageSize"
           @pagination="getUserList"
         />-->
-        <el-transfer v-model="form.userIds" :data="UserList" filterable></el-transfer>
+        <el-transfer v-model="form.userIds" :data="UserList" filterable v-loading="loading1"></el-transfer>
       </div>
     </div>
   </div>
@@ -273,6 +273,9 @@ export default {
 };
 </script>
 <style scoped>
+.tablist /deep/ .el-transfer-panel{
+  width: 30%;
+}
 .el-form-item--medium /deep/ .el-form-item__content {
   width: 230px;
 }

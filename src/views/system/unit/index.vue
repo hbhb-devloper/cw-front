@@ -74,7 +74,7 @@
         ref="form1"
         :model="form1"
         :rules="rules"
-        label-width="80px"
+        label-width="90px"
         v-if="deptId"
       >
         <el-row>
@@ -129,7 +129,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="单位名称" prop="unitHeader">
+            <el-form-item label="单位负责人" prop="unitHeader">
               <el-input readonly v-model="form1.unitHeader" disabled />
             </el-form-item>
           </el-col>
