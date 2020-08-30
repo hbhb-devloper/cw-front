@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-07-20 18:22:09
  * @LastEditors: CYZ
- * @LastEditTime: 2020-08-17 17:28:35
+ * @LastEditTime: 2020-08-30 20:38:23
 --> 
 <template>
   <div class="app-container">
@@ -327,17 +327,18 @@ export default {
           this.ItemVisible = false;
           this.submitLoading = false;
         } else {
-          addFlowPropNotice(this.tableData).then((res) => {
-            console.log('addFlowPropNotice',res);
-            this.$message.success("修改提醒成功");
-            this.ItemVisible = false;
-            this.submitLoading = false;
-          }).catch(err=>{
-
-            this.$message.err("修改提醒失败");
-            this.ItemVisible = false;
-            this.submitLoading = false;
-          })
+          addFlowPropNotice(this.tableData)
+            .then((res) => {
+              console.log("addFlowPropNotice", res);
+              this.$message.success("修改提醒成功");
+              this.ItemVisible = false;
+              this.submitLoading = false;
+            })
+            .catch((err) => {
+              this.$message.err("修改提醒失败");
+              this.ItemVisible = false;
+              this.submitLoading = false;
+            });
         }
       }
       // }
@@ -454,15 +455,15 @@ export default {
         });
       });
     },
-    clickitem(nodeId,nodeName) {
+    clickitem(nodeId, nodeName) {
       this.nodeId = nodeId;
-      console.log('nodeName',nodeName);
+      console.log("nodeName", nodeName);
       this.reset();
       let that = this;
+
       getFlowProp(nodeId).then((response) => {
         if (response) {
           this.node = response;
-          this.node.roleDesc = nodeName;
           if (!this.node.userId) {
             this.node.userId = undefined;
           }
@@ -476,6 +477,8 @@ export default {
         }
         this.ItemVisible = true;
       });
+      this.node.roleDesc = nodeName;
+
       getFlowPropNotice(nodeId).then((response) => {
         if (response) {
           this.tableData = response;
