@@ -24,7 +24,7 @@
                     min="0" clearable/>
         </el-form-item>
 
-        <el-form-item label="本年价税合计" :required="true">
+        <el-form-item label="本年价税合计(万元)" :required="true">
           <el-input placeholder="请输入本年价税合计" :max="obj2.amount" class="input-select-length" v-model="obj2.taxIncludeAmount" type="number"
                     @input="handleCost" min="0" clearable/>
         </el-form-item>
