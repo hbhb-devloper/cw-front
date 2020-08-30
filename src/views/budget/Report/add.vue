@@ -47,6 +47,7 @@
                     clearable/>
         </el-form-item>
 
+
         <el-form-item label="责任人" :required="true">
           <el-input placeholder="请输入责任人" class="input-select-length" v-model="obj2.director" @blur="handleCheck(1)"
                     clearable/>
