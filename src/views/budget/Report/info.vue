@@ -922,18 +922,19 @@
       margin-top: 20px;
 
       .programList {
-        width: 350px;
+        width: 300px;
+        max-width: 350px;
         margin-left: 10px;
         float: left;
         margin-bottom: 30px;
         background: #F4F4F4;
-        padding: 15px 25px;
+        padding: 15px 0px 15px 15px;
         border-radius: 8px;
         position: relative;
 
         .el-icon-close {
           display: inline-block;
-          margin: 0 0 10px 370px;
+          margin: 0 0 10px 330px;
           cursor: pointer;
         }
 
