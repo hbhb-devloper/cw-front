@@ -63,9 +63,7 @@
                 </label>
                 </el-form-item>
                 <div style="clear: both;"></div>
-
               </el-checkbox-group>
-
             </el-form>
             <div>
               <el-button type="primary" @click="handleSubmit">提交</el-button>
