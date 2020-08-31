@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="containers">
     <div class="page1">
       <el-col :span="20" :xs="24">
         <el-form ref="queryForm" :inline="true">
@@ -35,6 +35,7 @@
             </div>
 
             <el-tree
+              class="trees"
               :data="treeArr"
               :props="defaultProps"
               :expand-on-click-node="false"
@@ -48,11 +49,11 @@
           <div class="checkbox-box">
             <div style="display: flex;flex-direction: row;margin:0 0 15px 0;width: 75%;">
               <div style="width:70px;line-height: 35px">归口单位</div>
-              <treeselect v-model="companyId" :options="companyArr" style="width: 55%" placeholder="请选择归口单位"/>
+              <treeselect v-model="companyId" :options="companyArr" style="width:45%" placeholder="请选择归口单位"/>
               <div style="margin-left:1%;line-height: 35px">该单位归口于：<span v-if="checkboxArr[0]">{{checkboxArr[0].underUnitName}}</span></div>
             </div>
             <el-form>
-              <el-checkbox-group v-model="checkList">
+              <el-checkbox-group v-model="checkList" class="checkbox-big-box">
                 <el-form-item class="check_input" v-for="(item,index) in checkboxArr" :key="index">
                   <label class="checkbox_name">
                     <el-checkbox :label="item.label" :disabled="item.flag==undefined"></el-checkbox>
@@ -69,12 +70,8 @@
             <div>
               <el-button type="primary" @click="handleSubmit">提交</el-button>
             </div>
-
           </div>
         </div>
-      </el-col>
-      <el-col>
-
       </el-col>
     </div>
   </div>
@@ -259,53 +256,84 @@
 </script>
 
 <style lang="scss" scoped>
-  .container {
+  .containers {
     width: 95%;
     margin: 30px auto 0 auto;
 
     .main {
       display: flex;
       flex-direction: row;
-      margin-bottom: 50px;
+      height: calc(100vh - 100px);
 
       .tree-box {
-        width: 20%;
+        width: 23%;
         background: #fff;
         padding-top: 20px;
+        height: 100%;
+        .trees{
+          height:100%;
+          overflow: auto;
+        }
       }
 
       .checkbox-box {
         width: 80%;
-        margin-left: 5%;
+        margin-left:2%;
         background: #fff;
         border-radius: 8px;
         box-sizing: border-box;
         padding: 30px;
+        height: 100%;
+        overflow: auto;
+        .checkbox-big-box{
+          display: flex;
+          flex-direction: row;
+          flex-wrap: wrap;
+          .checkbox_name {
+            width: 80px;
+          }
 
-        .checkbox_name {
-          width: 80px;
+          .check_input {
+            width: 40%;
+            text-align: center;
+
+            label {
+              float: left;
+            }
+
+            label:nth-child(1) {
+              margin-right: 15px;
+            }
+
+            .checkbox-input {
+              width: 200px;
+            }
+          }
         }
 
-        .check_input {
-          float: left;
-          width: 40%;
-          text-align: center;
 
-          label {
-            float: left;
-          }
-
-          label:nth-child(1) {
-            margin-right: 15px;
-          }
-
-          .checkbox-input {
-            width: 200px;
-          }
-        }
 
       }
     }
 
+  }
+
+  @media screen and (max-width: 700px){
+    .main {
+      display: flex;
+      flex-direction: column;
+      .checkbox-box{
+        width:100%;
+        margin-left:0;
+        .checkbox-big-box{
+          display: flex;
+          flex-direction: column;
+        }
+
+      }
+      .tree-box {
+        width: 100%;
+      }
+    }
   }
 </style>

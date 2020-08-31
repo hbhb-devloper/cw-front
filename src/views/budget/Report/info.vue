@@ -932,8 +932,6 @@
         border-radius: 8px;
         position: relative;
 
-
-
         .el-icon-close {
           display: inline-block;
           margin: 0 0 10px 330px;
