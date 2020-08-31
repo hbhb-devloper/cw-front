@@ -264,7 +264,7 @@
       height: calc(100vh - 100px);
 
       .tree-box {
-        width: 23%;
+        /*width: 23%;*/
         background: #fff;
         padding-top: 20px;
         height: 100%;
@@ -317,20 +317,26 @@
   }
 
   @media screen and (max-width: 700px){
-    .main {
-      display: flex;
-      flex-direction: column;
-      .checkbox-box{
-        width:100%;
-        margin-left:0;
-        .checkbox-big-box{
-          display: flex;
-          flex-direction: column;
+    .containers {
+      .main {
+        display: flex;
+        flex-direction: column;
+
+        .checkbox-box {
+          width: 100%;
+          margin-left: 0;
+
+          .checkbox-big-box {
+            display: flex;
+            flex-direction: column;
+            flex-wrap: nowrap;
+          }
+
         }
 
-      }
-      .tree-box {
-        width: 100%;
+        .tree-box {
+          width: 100%;
+        }
       }
     }
   }
