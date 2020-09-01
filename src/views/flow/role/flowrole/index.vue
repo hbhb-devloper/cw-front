@@ -21,6 +21,16 @@
         </el-select>
         <!-- <treeselect v-model="queryParams.flowRoleId" :options="roleOptions" placeholder="请选择角色" /> -->
       </el-form-item>
+      <el-form-item label="用户名称" prop="nickName">
+        <el-input
+          placeholder="请输入关键词"
+          v-model="queryParams.nickName"
+          clearable
+          name="invoiceCode"
+          size="small"
+          style="width: 240px"
+        />
+      </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>

@@ -261,15 +261,17 @@
     .main {
       display: flex;
       flex-direction: row;
-      height: calc(100vh - 100px);
+      /*height: calc(100vh - 100px);*/
 
       .tree-box {
         /*width: 23%;*/
         background: #fff;
+        border-radius: 8px;
         padding-top: 20px;
-        height: 100%;
+        height: 800px;
         .trees{
-          height:100%;
+          height:700px;
+
           overflow: auto;
         }
       }

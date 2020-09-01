@@ -3,8 +3,8 @@
     <el-button icon="el-icon-back" type="primary" size="mini" style="margin-bottom: 20px" @click="handleBack">返回</el-button>
     <div class="program-box" v-if="parseInt(id)||info.state!=10">
       <div style="width: 100%;position: relative;">
-        <div style="position: absolute;right:20%;top:-50px;">
-          <el-button size="mini" v-if="info.state!=10" @click="handleGetHistory">查看历史</el-button>
+        <div style="position: absolute;right:20%;top:-50px;" >
+          <el-button size="mini" v-if="parseInt(state)" :disabled="info.state==10"  @click="handleGetHistory">查看历史</el-button>
         </div>
       </div>
       <div style="width: 100%;text-align: center;font-weight: 900;" v-if="parseInt(state)"><span v-if="program[0]">{{program[0].projectFlowName}}</span></div>
@@ -61,7 +61,7 @@
             </el-select>
           </div>
           <div style="height:32px">
-            <div v-if="item.operation.value!=2" ><span style="opacity: 0.7;">{{item.nickName}}</span>({{item.updateTime}})</div>
+            <div v-if="item.operation.value!=2" ><span style="opacity: 0.7;">{{item.nickName}}</span>({{item.updateTime|filterTime}})</div>
           </div>
         </div>
         <div style="clear: both"></div>
@@ -584,6 +584,16 @@
         budgetId:undefined,//类型id
         opinion:[],//意见下拉
         historyLoading:true,
+      }
+    },
+    filters:{
+      filterTime(e){
+        if(e){
+          return e.substr(0,19);
+        }else{
+          return undefined;
+        }
+
       }
     },
     components:{

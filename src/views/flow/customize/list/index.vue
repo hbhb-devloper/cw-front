@@ -11,6 +11,12 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
+      <el-form-item label="流程类型" prop="flowTypeId">
+        <el-select v-model="queryParams.flowTypeId" placeholder="请选择" style="">
+          <el-option :value="undefined" label="全部类型"></el-option>
+          <el-option v-for="item in flowTypeArr" :value="item.id" :label="item.label"></el-option>
+        </el-select>
+      </el-form-item>
 
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
@@ -163,6 +169,7 @@ import {
   updateFlow,
   delarr,
   getFlow,
+  FlowTypeList
 } from "@/api/flow/list";
 import { listType } from "@/api/flow/type";
 import { listUnit } from "@/api/system/unit";
@@ -170,6 +177,7 @@ export default {
   name: "Flowtype",
   data() {
     return {
+      flowTypeArr:[],
       // 遮罩层
       loading: true,
       // 选中数组
@@ -242,7 +250,6 @@ export default {
           { required: true, message: "显示顺序不能为空", trigger: "blur" },
         ],
       },
-      deptOptions: [],
     };
   },
   //定义私用局部过滤器。只能在当前 vue 对象中使用
@@ -255,6 +262,7 @@ export default {
     this.getList();
     this.getTypeList();
     this.getMenuTreeselect();
+    this.getFlowTypeList();
   },
   methods: {
     // 所有菜单节点数据
@@ -265,6 +273,11 @@ export default {
       let halfCheckedKeys = this.$refs.dept.getCheckedKeys();
       // checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys);
       return halfCheckedKeys;
+    },
+    getFlowTypeList(){
+      FlowTypeList().then(res=>{
+        this.flowTypeArr=res;
+      })
     },
     getMenuTreeselect() {
       listUnit().then((response) => {
