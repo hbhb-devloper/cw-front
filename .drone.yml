@@ -22,7 +22,7 @@ steps:
       - yarn -v
       - yarn config set registry http://registry.npm.taobao.org/
       - yarn config set sass_binary_site https://npm.taobao.org/mirrors/node-sass
-      - yarn run build:stage
+      - yarn run build:${DRONE_BRANCH}
 
   # 更新缓存
   - name: rebuild-cache
@@ -46,7 +46,7 @@ steps:
       key:
         from_secret: ssh_key
       command_timeout: 3m
-      target: /app/zhcw/test
+      target: /app/zhcw/${DRONE_BRANCH}
       source: dist/*
       rm: true
       strip_components: 1
