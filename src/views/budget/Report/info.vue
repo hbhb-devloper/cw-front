@@ -12,7 +12,7 @@
         <div v-for="(item,index) in program" class="programList">
           <i class="el-icon-close" v-if="item.isDelete" @click="handleDeleteApprove(item)"></i>
           <div class="programList-div">
-            <span>
+            <span style="max-width: 160px;line-height: 19px;">
               <i class="el-icon-success" v-if="item.operation.value==1"></i>
               <i class="el-icon-error" v-if="item.operation.value==0"></i>
               {{item.approverRole}}：
@@ -932,8 +932,8 @@
       margin-top: 20px;
 
       .programList {
-        width: 300px;
-        max-width: 350px;
+        width: 330px;
+        max-width: 380px;
         margin-left: 10px;
         float: left;
         margin-bottom: 30px;
