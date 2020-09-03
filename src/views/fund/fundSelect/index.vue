@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="containers">
     <el-form :model="queryParams" ref="queryForm" label-width="70px" :inline="true">
       <el-form-item label="部门" prop="dptId">
         <treeselect v-model="queryParams.dptId" style="width:200px" :options="deptOptions" placeholder="请选择部门"/>
@@ -216,9 +216,9 @@
     methods:{
       //获取部门列表
       getUnitId(){
-        getUnitList().then(res=>{
-          // this.queryParams.dptId=res.checked[0];
-          this.deptOptions=res;
+        resourceTreeByUN().then(res=>{
+          this.queryParams.dptId=res.checked[0];
+          this.deptOptions=res.list;
         });
       },
       //表格数据列表
@@ -260,8 +260,8 @@
   .el-form-item--medium /deep/ .el-form-item__content {
     width: 230px;
   }
-  .container {
-    width: 90%;
+  .containers {
+    width: 95%;
     margin: 20px auto 0 auto;
 
     .top-control {

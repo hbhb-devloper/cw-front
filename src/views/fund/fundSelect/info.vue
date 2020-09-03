@@ -24,44 +24,44 @@
       <div class="form-box">
         <el-form :inline="true" label-width="160px">
           <el-form-item label="编号" :required="true">
-            <el-input placeholder="请输入编号" disabled style="width: 200px"/>
+            <el-input v-model="info.fcCode" placeholder="请输入编号" disabled style="width: 200px"/>
           </el-form-item>
           <el-form-item label="部门" :required="true">
-            <el-input placeholder="请输入部门" disabled style="width: 120px"/>
-            <el-checkbox v-model="checked">是否核销</el-checkbox>
+            <el-input v-model="info.dptId" placeholder="请输入部门" disabled style="width: 120px"/>
+            <el-checkbox disabled v-model="info.directSelling">是否核销</el-checkbox>
           </el-form-item>
           <el-form-item label="金额(元)"  :required="true">
-            <el-input placeholder="请输入金额(元)" disabled style="width: 200px"/>
+            <el-input v-model="info.amount" placeholder="请输入金额(元)" disabled style="width: 200px"/>
           </el-form-item>
           <el-form-item label="款项类型" :required="true">
-            <el-input disabled style="width: 200px"/>
+            <el-input v-model="info.amountType" disabled style="width: 200px"/>
           </el-form-item>
           <el-form-item label="办理业务" :required="true">
-            <el-input disabled style="width: 200px"/>
+            <el-input v-model="info.busType" disabled style="width: 200px"/>
           </el-form-item>
           <el-form-item label="集团信息" :required="true">
-            <el-input disabled style="width: 200px"/>
+            <el-input v-model="info.groupName" disabled style="width: 200px"/>
           </el-form-item>
           <el-form-item label="资金流向" :required="true">
-            <el-input disabled style="width: 200px"/>
+            <el-input v-model="info.fundFlows" disabled style="width: 200px"/>
           </el-form-item>
           <el-form-item label="资金到账时间" :required="true">
-            <el-input disabled style="width: 200px"/>
+            <el-input v-model="info.intoAccountDate" disabled style="width: 200px"/>
           </el-form-item>
           <el-form-item label="是否已开具发票" :required="true">
-            <el-input disabled style="width: 200px"/>
+            <el-input v-model="info.hasInvoice" disabled style="width: 200px"/>
           </el-form-item>
           <el-form-item label="已开票金额(元)" :required="true">
-            <el-input disabled style="width: 200px"/>
+            <el-input v-model="info.preInvoiceAmount" disabled style="width: 200px"/>
           </el-form-item>
-          <el-form-item label="开票金额" :required="true">
+          <el-form-item label="开票编号" :required="true">
             <el-tooltip content="审批通过后由收账员填写" placement="bottom" effect="light">
-              <el-input disabled style="width: 200px"/>
+              <el-input v-model="info.invoiceCode" disabled style="width: 200px"/>
             </el-tooltip>
           </el-form-item>
           <el-form-item label="开票金额(元)" :required="true">
             <el-tooltip content="审批通过后由收账员填写" placement="bottom" effect="light">
-              <el-input disabled style="width: 200px"/>
+              <el-input v-model="info.invoiceAmount" disabled style="width: 200px"/>
             </el-tooltip>
           </el-form-item>
 
@@ -69,6 +69,7 @@
           <el-form-item label="备注" :form-class="formClass" :content-class="contentClass">
             <el-input
               type="textarea"
+              v-model="info.customerNote"
               placeholder="请输入备注信息"
               show-word-limit
               disabled
@@ -102,6 +103,7 @@
 
 <script>
   import ElFormItem from '@/components/customize/ElFormItem';
+  import {getInfo} from '@/api/fund/fundSelect/info'
 
   export default {
     components: {
@@ -171,13 +173,25 @@
             time: '2020-08-27 15:25:47'
           }
         ],
-
+        info:{},
         checked:true,
         formClass: 'column is-12 no-padding',
-        contentClass: 'column is-9 no-padding'
+        contentClass: 'column is-9 no-padding',
+        tableData:[],
+
       }
     },
-    methods: {}
+    created() {
+      this.handleGetStatistics(this.$route.params.id)
+    },
+    methods: {
+      handleGetStatistics(id){
+        getInfo(parseInt(id)).then(res=>{
+          console.log(res);
+          this.info=res;
+        })
+      }
+    }
   }
 </script>
 

@@ -937,8 +937,9 @@
         margin-left: 10px;
         float: left;
         margin-bottom: 30px;
-        background: #F4F4F4;
+        /*background: #F4F4F4;*/
         padding: 15px 0px 15px 15px;
+        border:1.5px solid red;
         border-radius: 8px;
         position: relative;
 
