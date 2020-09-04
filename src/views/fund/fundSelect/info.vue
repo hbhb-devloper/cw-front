@@ -76,6 +76,15 @@
             >
             </el-input>
           </el-form-item>
+          <el-form-item label="附件" :form-class="formClass" :content-class="contentClass">
+            <el-table :data="Filetable">
+              <el-table-column prop="fileName" align="center" label="标题"></el-table-column>
+              <el-table-column prop="author" align="center" label="作者"></el-table-column>
+              <el-table-column prop="uploadTime" align="center" label="时间"></el-table-column>
+              <el-table-column prop="fileSize" align="center" label="大小"></el-table-column>
+              <el-table-column align="center" label="删除"></el-table-column>
+            </el-table>
+          </el-form-item>
         </el-form>
       </div>
     </section>
@@ -178,7 +187,7 @@
         formClass: 'column is-12 no-padding',
         contentClass: 'column is-9 no-padding',
         tableData:[],
-
+        Filetable:[],
       }
     },
     created() {
@@ -189,6 +198,7 @@
         getInfo(parseInt(id)).then(res=>{
           console.log(res);
           this.info=res;
+          this.Filetable=res.sysFile;
         })
       }
     }

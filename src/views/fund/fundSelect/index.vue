@@ -247,9 +247,13 @@
             type: "warning",
           }
         ).then(res=>{
-          this.queryParams.pageSize=this.queryParams.pageNum=undefined
+          // this.queryParams.pageSize=this.queryParams.pageNum=undefined
+          let arr= [];
+          for(let key of this.tableData){
+            arr.push(key.id);
+          }
 
-          fundSelectExprot(getToken(),this.queryParams,'/fund/history/export','客户资金查询')
+          fundSelectExprot(getToken(),arr,'/fund/history/export1','客户资金查询')
         })
       }
     }
