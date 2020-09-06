@@ -29,4 +29,3 @@
    */
   errorLog: 'production'
 }
-
