@@ -315,7 +315,7 @@
 
         isLaunch: false,//选择流程弹窗
         LaunchOption: [],//流程类型
-        LaunchId: undefined,//流程类型id
+        LaunchId: 1,//流程类型id
 
         loading: true,//表格加载
         projectId: undefined,//记录id
@@ -464,7 +464,7 @@
             getLaunchType().then(response => {
               this.LaunchOption = response;
               this.isLaunch = true;
-              this.LaunchId=undefined;
+              this.LaunchId=1;
             })
           } else {
             this.$message.warning('当前记录不允许发起审批');

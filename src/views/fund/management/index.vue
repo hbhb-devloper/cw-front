@@ -9,18 +9,18 @@
           style="width: 240px"
         />
       </el-form-item>
-      <el-form-item label="开票金额" prop="nickName">
+      <el-form-item label="开票金额" prop="invoiceAmount">
         <el-input
-          v-model="queryParams.nickName"
+          v-model="queryParams.invoiceAmount"
           placeholder="请输入开票金额"
           clearable
           size="small"
           style="width: 240px"
         />
       </el-form-item>
-      <el-form-item label="业务内容" prop="flowRoleId">
+      <el-form-item label="业务内容" prop="business">
         <el-select
-          v-model="queryParams.flowRoleId"
+          v-model="queryParams.business"
           placeholder="请选择业务内容"
           clearable
           size="medium"
@@ -34,52 +34,55 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="流程状态" prop="flowRoleId">
+      <el-form-item label="流程状态" prop="state">
         <el-select
-          v-model="queryParams.flowRoleId"
+          v-model="queryParams.state"
           placeholder="请选择流程状态"
           clearable
           size="medium"
           style="width: 240px"
         >
           <el-option
-            v-for="dict in roleOptions"
+            v-for="dict in StateOptions"
             :key="dict.id"
-            :label="dict.roleName"
+            :label="dict.label"
             :value="dict.id"
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="客户经理" prop="nickName">
+      <el-form-item label="客户经理" prop="clientManager">
         <el-input
-          v-model="queryParams.nickName"
+          v-model="queryParams.clientManager"
           placeholder="请输入客户经理"
           clearable
           size="small"
           style="width: 240px"
         />
       </el-form-item>
-      <el-form-item label="单位编号" prop="nickName">
+      <el-form-item>
+        <el-checkbox v-model="queryParams.isCancellation">是否作废</el-checkbox>
+      </el-form-item>
+      <el-form-item label="单位编号" prop="unitNumber">
         <el-input
-          v-model="queryParams.nickName"
+          v-model="queryParams.unitNumber"
           placeholder="请输入单位编号"
           clearable
           size="small"
           style="width: 240px"
         />
       </el-form-item>
-      <el-form-item label="单位名称" prop="nickName">
+      <el-form-item label="单位名称" prop="unitName">
         <el-input
-          v-model="queryParams.nickName"
+          v-model="queryParams.unitName"
           placeholder="请输入单位名称"
           clearable
           size="small"
           style="width: 240px"
         />
       </el-form-item>
-      <el-form-item label="发票编号" prop="nickName">
+      <el-form-item label="发票编号" prop="invoiceNumber">
         <el-input
-          v-model="queryParams.nickName"
+          v-model="queryParams.invoiceNumber"
           placeholder="请输入发票编号"
           clearable
           size="small"
@@ -100,27 +103,27 @@
       </el-col>
     </el-row>
 
-    <el-table v-loading="loading" :data="flowList">
+    <el-table v-loading="loading" :data="tableData">
       <el-table-column label="序号" prop="unitName" align="center" />
-      <el-table-column label="发票开具部门" prop="roleName" align="center" width="180" />
-      <el-table-column label="对应用户" prop="nickName" align="center" />
-      <el-table-column label="客户经理" prop="nickName" align="center" />
-      <el-table-column label="发票金额（元）" prop="nickName" align="center" width="180" />
+      <el-table-column label="发票开具部门" prop="invoiceUnit" align="center" width="180" />
+<!--      <el-table-column label="对应用户" prop="nickName" align="center" />-->
+      <el-table-column label="客户经理" prop="clientManager" align="center" />
+      <el-table-column label="发票金额（元）" prop="invoiceAmount" align="center" width="180" />
       <el-table-column label="单位编号" prop="nickName" align="center" />
       <el-table-column label="单位名称" prop="nickName" align="center" />
-      <el-table-column label="发票内容" prop="nickName" align="center" />
-      <el-table-column label="办理业务" prop="nickName" align="center" />
-      <el-table-column label="欠费月份" prop="nickName" align="center" />
-      <el-table-column label="欠费金额" prop="nickName" align="center" />
-      <el-table-column label="计费号" prop="nickName" align="center" />
-      <el-table-column label="发票账户" prop="nickName" align="center" />
+      <el-table-column label="发票内容" prop="invoiceContent" align="center" />
+      <el-table-column label="办理业务" prop="businessLabel" align="center" />
+      <el-table-column label="欠费月份" prop="arrearageMonth" align="center" />
+      <el-table-column label="欠费金额" prop="arrearageMoney" align="center" />
+      <el-table-column label="计费号" prop="billingNumber" align="center" />
+      <el-table-column label="发票账户" prop="invoiceAccount" align="center" />
       <el-table-column label="发票版本号" prop="nickName" align="center" width="180" />
-      <el-table-column label="发票编号" prop="nickName" align="center" />
-      <el-table-column label="到账时间" prop="nickName" align="center" />
-      <el-table-column label="到账金额（元）" prop="nickName" align="center" width="180" />
-      <el-table-column label="发票人" prop="nickName" align="center" />
-      <el-table-column label="发票时间" prop="nickName" align="center" />
-      <el-table-column prop="state" align="center" label="流程状态">
+      <el-table-column label="发票编号" prop="invoiceNumber" align="center" />
+      <el-table-column label="到账时间" prop="accountTime" align="center" />
+      <el-table-column label="到账金额（元）" prop="accountMoney" align="center" width="180" />
+      <el-table-column label="开票人" prop="invoiceUser" align="center" />
+      <el-table-column label="出票时间" prop="invoiceCreateTime" align="center" />
+      <el-table-column prop="stateLabel" align="center" label="流程状态">
         <template slot-scope="scope">
           <span style="color:#409EFF;" v-if="scope.row.state==0">审批未发起</span>
           <span style="color:#409EFF;" v-if="scope.row.state==1">正在审批</span>
@@ -152,6 +155,10 @@
           >删除</el-button>
         </template>
       </el-table-column>
+
+      <el-table-column label="编辑到账" prop="invoiceCreateTime" align="center" />
+      <el-table-column label="是否作废" prop="isCancellation" align="center" />
+      <el-table-column label="是否含文件" prop="isFile" align="center" />
     </el-table>
 
     <pagination
@@ -183,38 +190,12 @@
         <el-col :span="12"></el-col>
         <el-col :span="12">
           <el-form-item label="单位名称" prop="flowName">
-            <el-select
-              v-model="form.flowTypeId"
-              placeholder="请选择单位名称"
-              clearable
-              size="medium"
-              style="width: 100%"
-            >
-              <el-option
-                v-for="dict in typeList"
-                :key="dict.id"
-                :label="dict.flowTypeName"
-                :value="dict.id"
-              />
-            </el-select>
+            <el-input v-model="form.flowName" placeholder="请输入单位名称" />
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="单位编号" prop="flowName">
-            <el-select
-              v-model="form.flowTypeId"
-              placeholder="请选择单位编号"
-              clearable
-              size="medium"
-              style="width: 100%"
-            >
-              <el-option
-                v-for="dict in typeList"
-                :key="dict.id"
-                :label="dict.flowTypeName"
-                :value="dict.id"
-              />
-            </el-select>
+            <el-input v-model="form.flowName" placeholder="请输入单位编号" />
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -226,11 +207,12 @@
               size="medium"
               style="width: 100%"
             >
+              <el-option :value="undefined" label="--请选择业务内容--"></el-option>
               <el-option
-                v-for="dict in typeList"
-                :key="dict.id"
-                :label="dict.flowTypeName"
-                :value="dict.id"
+                v-for="dict in InvoiceContentList"
+                :key="dict"
+                :label="dict"
+                :value="dict"
               />
             </el-select>
           </el-form-item>
@@ -328,7 +310,7 @@
 </template>
 
 <script>
-import { listFlow, addFlow, updateFlow, delarr } from "@/api/flow/list";
+import { getListTable,getStateList,getBusiness } from "@/api/fund/management/index";
 import { listFlowRole, listFlowRoles, delRoleUser } from "@/api/flow/flowrole";
 import { listType } from "@/api/flow/type";
 import { listUnit } from "@/api/system/unit";
@@ -336,24 +318,20 @@ import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 import { exportData } from "@/utils/export";
 import { getToken } from "@/utils/auth";
+import ElFormItem from "../../../components/customize/ElFormItem/index";
 export default {
   name: "Flowtype",
-  components: { Treeselect },
+  components: {ElFormItem, Treeselect },
   data() {
     return {
       // 遮罩层
       loading: true,
-      // 选中数组
-      ids: [],
-      // 非单个禁用
-      single: true,
       // 非多个禁用
       multiple: true,
       // 总条数
       total: 0,
       // 角色表格数据
-      flowList: [],
-      typeList: [],
+      tableData: [],
       // 弹出层标题
       title: "",
       // 是否显示弹出层
@@ -363,43 +341,13 @@ export default {
       openDataScope: false,
       // 日期范围
       dateRange: [],
-      // 状态数据字典
-      statusOptions: [
-        { dictValue: 1, dictLabel: "正常" },
-        { dictValue: 2, dictLabel: "停用" },
-      ],
-      // 数据范围选项
-      dataScopeOptions: [
-        {
-          value: "1",
-          label: "全部数据权限",
-        },
-        {
-          value: "2",
-          label: "自定数据权限",
-        },
-        {
-          value: "3",
-          label: "本部门数据权限",
-        },
-        {
-          value: "4",
-          label: "本部门及以下数据权限",
-        },
-        {
-          value: "5",
-          label: "仅本人数据权限",
-        },
-      ],
-      // 菜单列表
-      menuOptions: [],
       // 部门列表
       deptOptions: [],
       // 查询参数
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        flowName: undefined,
+        isCancellation: false,
       },
       // 表单参数
       form: {},
@@ -416,31 +364,35 @@ export default {
           { required: true, message: "显示顺序不能为空", trigger: "blur" },
         ],
       },
-      roleOptions: [],
+      StateOptions: [],
+      InvoiceContentList:['数据服务费','网络租费','集团彩铃','信息机','信息即包年费','虚拟网费','通讯费','虚拟网包年费','短信费','电路出租费'],
+      BusinessList:[]
     };
   },
   created() {
     this.getList();
-    this.getRoleList();
     this.getMenuTreeselect();
+    this.handleGetBusiness();
   },
   methods: {
     getMenuTreeselect() {
       listUnit().then((response) => {
         this.deptOptions = response;
       });
+      getStateList().then(res=>{
+        this.StateOptions=res;
+      })
     },
-
-    getRoleList() {
-      listFlowRoles().then((response) => {
-        this.roleOptions = response;
-      });
+    handleGetBusiness(){
+      getBusiness().then(res=>{
+        console.log(res);
+      })
     },
     /** 查询角色列表 */
     getList() {
       this.loading = true;
-      listFlowRole(this.queryParams).then((response) => {
-        this.flowList = response.list;
+      getListTable(this.queryParams).then((response) => {
+        this.tableData = response.list;
         this.total = response.count;
         this.loading = false;
       });

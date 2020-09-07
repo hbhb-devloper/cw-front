@@ -50,11 +50,11 @@
     </el-row>
 
     <el-table v-loading="loading" :data="flowList">
-      <el-table-column label="序号" prop="unitName" align="center" />
-      <el-table-column label="单位名称" prop="roleName" align="center" />
-      <el-table-column label="单位编号" prop="nickName" align="center" />
-      <el-table-column label="是否启用" prop="nickName" align="center" />
-      <el-table-column label="期初金额" prop="nickName" align="center" />
+      <el-table-column label="序号" prop="id" align="center" />
+      <el-table-column label="单位名称" prop="unitName" align="center" />
+      <el-table-column label="单位编号" prop="unitCode" align="center" />
+      <el-table-column label="是否启用(1为是,0为否)" prop="state" align="center" />
+      <el-table-column label="期初金额" prop="initialAmount" align="center" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button size="mini" type="text" @click.stop="handleDelete(scope.row)">提交</el-button>
@@ -73,8 +73,7 @@
 </template>
 
 <script>
-import { listFlow, addFlow, updateFlow, delarr } from "@/api/flow/list";
-import { listFlowRole, listFlowRoles, delRoleUser } from "@/api/flow/flowrole";
+import { getUnitList} from "@/api/fund/maintenance/index";
 import { listType } from "@/api/flow/type";
 import { listUnit } from "@/api/system/unit";
 import Treeselect from "@riophae/vue-treeselect";
@@ -205,10 +204,9 @@ export default {
         this.roleOptions = response;
       });
     },
-    /** 查询角色列表 */
     getList() {
       this.loading = true;
-      listFlowRole(this.queryParams).then((response) => {
+      getUnitList(this.queryParams).then(response=> {
         this.flowList = response.list;
         this.total = response.count;
         this.loading = false;

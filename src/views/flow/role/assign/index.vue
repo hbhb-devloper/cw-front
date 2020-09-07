@@ -44,11 +44,11 @@
           <el-pagination
             background
             style="margin-top:3px;"
-            @current-change="getList"
+            @current-change="handleRole"
             layout="prev, pager, next"
             :page-count="total1">
           </el-pagination>
-          <el-select v-model="queryParams.pageSize" placeholder="请选择" @change="getList" style="width:100px">
+          <el-select v-model="queryParams1.pageSize" placeholder="请选择" @change="getList" style="width:100px">
             <el-option value="10" label="10条/页"></el-option>
             <el-option value="20" label="20条/页"></el-option>
             <el-option value="30" label="30条/页"></el-option>
@@ -127,7 +127,7 @@ export default {
       // 查询参数
       queryParams: {
         pageNum: 1,
-        pageSize: 10,
+        pageSize: 100000,
         unitId: undefined,
         state :1
       },
@@ -184,12 +184,16 @@ export default {
       this.form.flowRoleId = row.id;
       this.RoleAble = true;
     },
+    handleRole(cur){
+      this.queryParams1.pageNum=cur;
+      this.getList();
+    },
     /** 查询角色列表 */
     getList() {
       this.loading = true;
       listRole(this.queryParams1).then((response) => {
         this.RoleList = response.list;
-        this.total1 = Math.ceil(response.count/this.queryParams.pageSize);
+        this.total1 = Math.ceil(response.count/this.queryParams1.pageSize);
         this.loading = false;
       });
     },
