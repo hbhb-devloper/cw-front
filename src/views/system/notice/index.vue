@@ -76,19 +76,13 @@
         <template slot-scope="scope">
           <el-switch
             v-model="scope.row.state"
-            @change="handleChange(scope.row)"
-            active-text="启用"
-            inactive-text="停用">
+            @change="handleChange(scope.row)">
           </el-switch>
           <!--          <span>{{scope.row.state?'启用':'停用'}}</span>-->
         </template>
       </el-table-column>
       <!--      <el-table-column label="创建者" align="center" prop="createBy" />-->
-      <el-table-column label="创建时间" align="center" prop="createTime">
-        <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.createTime, '{y}-{m}-{d}') }}</span>
-        </template>
-      </el-table-column>
+      <el-table-column label="创建时间" align="center" prop="createTime"></el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -250,7 +244,11 @@
         delete datas.createBy;
         datas.state = datas.state ? 1 : 0;
         updateNotice(datas).then(response => {
-          this.msgSuccess("修改成功");
+          if(datas.state){
+            this.msgSuccess("已启用");
+          }else{
+            this.msgSuccess("已停用");
+          }
           this.getList();
           this.$store.dispatch('SET_GETNOTICE');
         });
@@ -299,10 +297,10 @@
         }).then(function () {
           return delNotice(noticeIds);
         }).then(() => {
+          this.$store.dispatch('SET_GETNOTICE');
           this.getList();
           this.msgSuccess("删除成功");
-        }).catch(function () {
-        });
+        })
       }
     }
   };
