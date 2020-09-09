@@ -10,8 +10,8 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="类型" prop="state">
-        <el-select v-model="queryParams.state" placeholder="公告类型" clearable size="small">
+      <el-form-item label="公告状态" prop="state">
+        <el-select v-model="queryParams.state" placeholder="请选择公告状态" clearable size="small">
           <el-option label="-全部-" :value="undefined"/>
           <el-option label="启用" :value="1"/>
           <el-option label="停用" :value="0"/>
@@ -61,6 +61,7 @@
         label="公告内容"
         align="center"
         prop="content"
+        width="500"
         :show-overflow-tooltip="true"
       />
       <el-table-column
@@ -73,10 +74,16 @@
         align="center"
         prop="state">
         <template slot-scope="scope">
-          <span>{{scope.row.state?'启用':'停用'}}</span>
+          <el-switch
+            v-model="scope.row.state"
+            @change="handleChange(scope.row)"
+            active-text="启用"
+            inactive-text="停用">
+          </el-switch>
+<!--          <span>{{scope.row.state?'启用':'停用'}}</span>-->
         </template>
       </el-table-column>
-      <el-table-column label="创建者" align="center" prop="createBy" />
+<!--      <el-table-column label="创建者" align="center" prop="createBy" />-->
       <el-table-column label="创建时间" align="center" prop="createTime">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.createTime, '{y}-{m}-{d}') }}</span>
@@ -117,7 +124,7 @@
         <el-row>
           <el-col :span="16">
             <el-form-item label="公告内容" prop="content">
-              <el-input v-model="form.content" placeholder="请输入公告标题"/>
+              <el-input type="textarea" v-model="form.content" placeholder="请输入公告标题"/>
             </el-form-item>
           </el-col>
           <el-col :span="24">
@@ -182,18 +189,19 @@
     },
     created() {
       this.getList();
-      this.getDicts("sys_notice_status").then(response => {
-        this.statusOptions = response.data;
-      });
-      this.getDicts("sys_notice_type").then(response => {
-        this.typeOptions = response.data;
-      });
     },
     methods: {
       /** 查询公告列表 */
       getList() {
         this.loading = true;
         listNotice(this.queryParams).then(response => {
+          response.list.map(function(item, index, arr){
+            if(item.state){
+              item.state=true;
+            }else{
+              item.state=false;
+            }
+          });
           this.noticeList = response.list;
           this.total = response.count;
           this.loading = false;
@@ -217,11 +225,9 @@
       // 表单重置
       reset() {
         this.form = {
-          noticeId: undefined,
-          noticeTitle: undefined,
-          noticeType: undefined,
-          noticeContent: undefined,
-          status: "0"
+          content: undefined,
+          sortNum: undefined,
+          state:undefined
         };
         this.resetForm("form");
       },
@@ -235,11 +241,17 @@
         this.resetForm("queryForm");
         this.handleQuery();
       },
-      // 多选框选中数据
-      handleSelectionChange(selection) {
-        this.ids = selection.map(item => item.noticeId)
-        this.single = selection.length != 1
-        this.multiple = !selection.length
+      // 开关事件
+      handleChange(row) {
+        console.log(row);
+        let datas=JSON.parse(JSON.stringify(row));
+        delete datas.createTime;
+        delete datas.createBy;
+        datas.state=datas.state?1:0;
+        updateNotice(datas).then(response => {
+          this.msgSuccess("修改成功");
+          this.getList();
+        });
       },
       /** 新增按钮操作 */
       handleAdd() {
@@ -253,7 +265,6 @@
         this.form = JSON.parse(JSON.stringify(row));
         delete this.form.createTime;
         delete this.form.createBy;
-        this.form.state = parseInt(row.state) ? true : false;
         this.open = true;
         this.title = "修改公告";
       },
