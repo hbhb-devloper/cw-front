@@ -70,7 +70,7 @@
         prop="sortNum"
       />
       <el-table-column
-        label="状态"
+        label="公告状态"
         align="center"
         prop="state">
         <template slot-scope="scope">
