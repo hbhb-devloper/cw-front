@@ -88,7 +88,7 @@ export default {
     RuoYiDoc,
   },
   computed: {
-    ...mapGetters(["avatar", "device"]),
+    ...mapGetters(["avatar", "device",'notices']),
     setting: {
       get() {
         return this.$store.state.settings.showSettings;
@@ -106,6 +106,11 @@ export default {
         val: this.textArr[this.number],
       };
     },
+  },
+  watch:{
+    notices(newval){
+      this.handleNotice();
+    }
   },
   mounted() {
     this.handleInfo();

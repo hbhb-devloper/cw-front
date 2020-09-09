@@ -80,10 +80,10 @@
             active-text="启用"
             inactive-text="停用">
           </el-switch>
-<!--          <span>{{scope.row.state?'启用':'停用'}}</span>-->
+          <!--          <span>{{scope.row.state?'启用':'停用'}}</span>-->
         </template>
       </el-table-column>
-<!--      <el-table-column label="创建者" align="center" prop="createBy" />-->
+      <!--      <el-table-column label="创建者" align="center" prop="createBy" />-->
       <el-table-column label="创建时间" align="center" prop="createTime">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.createTime, '{y}-{m}-{d}') }}</span>
@@ -99,13 +99,14 @@
             v-hasPermi="['system:notice:edit']"
           >修改
           </el-button>
-                    <el-button
-                      size="mini"
-                      type="text"
-                      icon="el-icon-delete"
-                      @click="handleDelete(scope.row)"
-                      v-hasPermi="['system:notice:remove']"
-                    >删除</el-button>
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-delete"
+            @click="handleDelete(scope.row)"
+            v-hasPermi="['system:notice:remove']"
+          >删除
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -120,7 +121,7 @@
 
     <!-- 添加或修改公告对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+      <el-form ref="form" :model="form" label-width="80px">
         <el-row>
           <el-col :span="16">
             <el-form-item label="公告内容" prop="content">
@@ -195,11 +196,11 @@
       getList() {
         this.loading = true;
         listNotice(this.queryParams).then(response => {
-          response.list.map(function(item, index, arr){
-            if(item.state){
-              item.state=true;
-            }else{
-              item.state=false;
+          response.list.map(function (item, index, arr) {
+            if (item.state) {
+              item.state = true;
+            } else {
+              item.state = false;
             }
           });
           this.noticeList = response.list;
@@ -227,7 +228,7 @@
         this.form = {
           content: undefined,
           sortNum: undefined,
-          state:undefined
+          state: undefined
         };
         this.resetForm("form");
       },
@@ -244,13 +245,14 @@
       // 开关事件
       handleChange(row) {
         console.log(row);
-        let datas=JSON.parse(JSON.stringify(row));
+        let datas = JSON.parse(JSON.stringify(row));
         delete datas.createTime;
         delete datas.createBy;
-        datas.state=datas.state?1:0;
+        datas.state = datas.state ? 1 : 0;
         updateNotice(datas).then(response => {
           this.msgSuccess("修改成功");
           this.getList();
+          this.$store.dispatch('SET_GETNOTICE');
         });
       },
       /** 新增按钮操作 */
@@ -275,13 +277,15 @@
           updateNotice(this.form).then(response => {
             this.msgSuccess("修改成功");
             this.open = false;
+            this.$store.dispatch('SET_GETNOTICE');
             this.getList();
           });
         } else {
           addNotice(this.form).then(response => {
-              this.msgSuccess("新增成功");
-              this.open = false;
-              this.getList();
+            this.msgSuccess("新增成功");
+            this.open = false;
+            this.getList();
+            this.$store.dispatch('SET_GETNOTICE');
           });
         }
       },
