@@ -12,7 +12,8 @@ const permission = {
     navRouters: [],
     menuArr: [],
     projectId: undefined,
-    budgetSelect:{}
+    budgetSelect: {},
+    notice: 0
   },
   mutations: {
     SET_SIDEROUTERS: (state, sideRouters) => {
@@ -26,24 +27,30 @@ const permission = {
       state.menuArr.push(state.sideRouters[id])
     },
     handleProjectId: (state, id) => {
-      state.projectId=id;
+      state.projectId = id;
     },
-    setBudgetSelect:(state,data)=>{
-      state.budgetSelect=data;
+    setBudgetSelect: (state, data) => {
+      state.budgetSelect = data;
     },
-    setBudgetRest:(state,data)=>{
-      state.budgetSelect=data;
+    setBudgetRest: (state, data) => {
+      state.budgetSelect = data;
+    },
+    setNotice: (state) => {
+      state.notice=state.notice+1;
     }
   },
   actions: {
-    HANDLESIDEBAR({ commit }, data) {
+    HANDLESIDEBAR({commit}, data) {
       commit('handleSidebar', data)
     },
-    PROJECTID({ commit }, id) {
+    PROJECTID({commit}, id) {
       commit('handleProjectId', id)
     },
-    SET_BUDGET_SELECT({commit},data){
-      commit('setBudgetSelect',data);
+    SET_BUDGET_SELECT({commit}, data) {
+      commit('setBudgetSelect', data);
+    },
+    SET_GETNOTICE({commit}) {
+      commit('setNotice')
     }
   }
 }

@@ -265,9 +265,6 @@ export default {
           this.tags = [];
           this.getList();
         })
-        .catch((err) => {
-          this.msgError(err.message);
-        });
     },
 
     /** 删除按钮操作 */
