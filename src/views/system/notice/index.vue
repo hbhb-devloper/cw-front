@@ -282,6 +282,8 @@ export default {
       this.single = selection.length!=1
       this.multiple = !selection.length
     },
+
+
     /** 新增按钮操作 */
     handleAdd() {
       this.reset();
