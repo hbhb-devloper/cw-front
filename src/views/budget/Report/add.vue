@@ -453,8 +453,6 @@
         };
 
         if ((parseFloat(this.obj2.cost)+ parseFloat(this.obj2.vatAmount)).toFixed(6) != parseFloat(this.obj2.taxIncludeAmount)) {
-          console.log(parseFloat(this.obj2.cost), parseFloat(this.obj2.vatAmount), parseFloat(this.obj2.taxIncludeAmount));
-          console.log((parseFloat(this.obj2.cost)+ parseFloat(this.obj2.vatAmount)).toFixed(6), parseFloat(this.obj2.taxIncludeAmount));
           this.$message.warning('本年价税合计有误，请填写正确值')
           return
         };

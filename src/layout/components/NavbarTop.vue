@@ -66,15 +66,16 @@ import Search from "@/components/HeaderSearch";
 import RuoYiGit from "@/components/RuoYi/Git";
 import RuoYiDoc from "@/components/RuoYi/Doc";
 import { getInfo } from "@/api/login.js";
+import {getNotice} from "@/api/system/notice"
 
 export default {
   data() {
     return {
       name: "",
       textArr: [
-        "1 预算执行用户手册已更新到文档区，请查阅",
-        "2 发起签报请选择“预算执行流程”",
-        "3 渠道电子发票导出模板问题已解决",
+        // "1 预算执行用户手册已更新到文档区，请查阅",
+        // "2 发起签报请选择“预算执行流程”",
+        // "3 渠道电子发票导出模板问题已解决",
       ],
       number: 0,
     };
@@ -109,6 +110,7 @@ export default {
   mounted() {
     this.handleInfo();
     this.startMove();
+    this.handleNotice();
   },
   methods: {
     startMove() {
@@ -121,6 +123,11 @@ export default {
         }
         this.startMove();
       }, 2000); // 滚动不需要停顿则将2000改成动画持续时间
+    },
+    handleNotice(){
+      getNotice().then(res=>{
+        this.textArr=res;
+      })
     },
     handleInfo() {
       getInfo().then((res) => {

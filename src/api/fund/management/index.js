@@ -30,5 +30,12 @@ export function getBusiness(){
     method:'get'
   })
 }
+//新增单位下拉
+export function getUnitList() {
+  return request({
+    url:'/fund/cond-list',
+    method:'get'
+  })
+}
 
 

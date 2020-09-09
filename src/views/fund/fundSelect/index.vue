@@ -247,14 +247,10 @@
             type: "warning",
           }
         ).then(res=>{
-          // this.queryParams.pageSize=this.queryParams.pageNum=undefined
-          let arr= [];
-          for(let key of this.tableData){
-            arr.push(key.id);
-          }
-
-          fundSelectExprot(getToken(),arr,'/fund/history/export1','客户资金查询')
-        })
+          let data=JSON.parse(JSON.stringify(this.queryParams));
+          data.pageSize=data.pageNum=undefined;
+          fundSelectExprot(getToken(),data,'/fund/history/export','客户资金查询');
+        });
       }
     }
   }
