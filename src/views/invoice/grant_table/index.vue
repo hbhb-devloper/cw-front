@@ -37,11 +37,33 @@
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-            <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+            <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">查询</el-button>
+            <el-button icon="" size="mini" @click="resetQuery">删除</el-button>
           </el-form-item>
         </el-form>
       </div>
+      <el-table v-loading="loading" :data="tableData">
+        <el-table-column label="报账流水" prop="arrearageMonth" align="center"/>
+        <el-table-column label="酬金月份" prop="arrearageMonth" align="center"/>
+        <el-table-column label="渠道编号" prop="arrearageMonth" align="center"/>
+        <el-table-column label="渠道名称" prop="arrearageMonth" align="center"/>
+        <el-table-column label="营业执照对公账号名称" prop="arrearageMonth" align="center"/>
+        <el-table-column label="开户支行" prop="arrearageMonth" align="center"/>
+        <el-table-column label="银行账号" prop="arrearageMonth" align="center"/>
+        <el-table-column label="酬金金额(元)" prop="arrearageMonth" align="center"/>
+        <el-table-column label="应付金额(元)" prop="arrearageMonth" align="center"/>
+        <el-table-column label="本次支付(元)" prop="arrearageMonth" align="center"/>
+        <el-table-column label="本次实付(元)" prop="arrearageMonth" align="center"/>
+        <el-table-column label="代缴税费(元)" prop="arrearageMonth" align="center"/>
+        <el-table-column label="发票编号(元)" prop="arrearageMonth" align="center"/>
+      </el-table>
+      <pagination
+        v-show="total>0"
+        :total="total"
+        :page.sync="queryParams.pageNum"
+        :limit.sync="queryParams.pageSize"
+        @pagination="getList"
+      />
     </section>
   </div>
 </template>
@@ -51,11 +73,13 @@
       data(){
         return {
           typeOptions:[],
-          queryParams:{}
+          queryParams:{},
+          total:undefined,
+          loading:false,
         }
       },
       methods:{
-
+        getList(){},
       }
     }
 </script>
@@ -82,5 +106,12 @@
         border-radius: 30px;
       }
     }
+  }
+  .search-table{
+    width: 100%;
+    border-radius: 15px;
+    background: #fff;
+    border:1px solid #0d8efd;
+    padding:20px;
   }
 </style>
