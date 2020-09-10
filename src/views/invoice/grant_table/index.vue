@@ -37,11 +37,29 @@
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-            <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+            <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">查询</el-button>
+            <el-button icon="" size="mini" @click="resetQuery">删除</el-button>
           </el-form-item>
         </el-form>
       </div>
+      <div class="title-import">酬金</div>
+      <el-table v-loading="loading" :data="tableData">
+        <el-table-column label="酬金金额(元)" prop="arrearageMonth" align="center"/>
+        <el-table-column label="应付金额(元)" prop="arrearageMonth" align="center"/>
+        <el-table-column label="本次支付(元)" prop="arrearageMonth" align="center"/>
+        <el-table-column label="本次实付(元)" prop="arrearageMonth" align="center"/>
+        <el-table-column label="代缴税费(元)" prop="arrearageMonth" align="center"/>
+        <el-table-column label="发票编号" prop="arrearageMonth" align="center"/>
+        <el-table-column label="发票税率" prop="arrearageMonth" align="center"/>
+        <el-table-column label="分公司" prop="arrearageMonth" align="center"/>
+      </el-table>
+      <pagination
+        v-show="total>0"
+        :total="total"
+        :page.sync="queryParams.pageNum"
+        :limit.sync="queryParams.pageSize"
+        @pagination="getList"
+      />
     </section>
   </div>
 </template>
@@ -51,11 +69,13 @@
       data(){
         return {
           typeOptions:[],
-          queryParams:{}
+          queryParams:{},
+          total:undefined,
+          loading:false,
         }
       },
       methods:{
-
+        getList(){},
       }
     }
 </script>
@@ -82,5 +102,12 @@
         border-radius: 30px;
       }
     }
+  }
+  .search-table{
+    width: 100%;
+    border-radius: 15px;
+    background: #fff;
+    border:1px solid #0d8efd;
+    padding:20px;
   }
 </style>

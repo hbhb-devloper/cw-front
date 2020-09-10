@@ -70,6 +70,13 @@
         <el-table-column label="单价" prop="arrearageMonth" align="center"/>
         <el-table-column label="税率" prop="arrearageMonth" align="center"/>
       </el-table>
+      <pagination
+        v-show="total>0"
+        :total="total"
+        :page.sync="queryParams.pageNum"
+        :limit.sync="queryParams.pageSize"
+        @pagination="getList"
+      />
     </section>
   </div>
 </template>
@@ -80,8 +87,12 @@
       return {
         queryParams:{},
         loading:false,
-        tableData:[]
+        tableData:[],
+        total:undefined,
       }
+    },
+    methods:{
+      getList(){},
     }
   }
 </script>

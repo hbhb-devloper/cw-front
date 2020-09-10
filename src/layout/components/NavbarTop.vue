@@ -72,12 +72,12 @@ export default {
   data() {
     return {
       name: "",
-      
+
       textArr: [
-        "1 预算执行用户手册已更新到文档区，请查阅",
-        "2 发起签报请选择“预算执行流程”",
-        "3 渠道电子发票导出模板问题已解决",
-        "4 渠道电子发票导出模板问题已解决",
+        // "1 预算执行用户手册已更新到文档区，请查阅",
+        // "2 发起签报请选择“预算执行流程”",
+        // "3 渠道电子发票导出模板问题已解决",
+        // "4 渠道电子发票导出模板问题已解决",
       ],
       number: 0,
     };
@@ -117,7 +117,7 @@ export default {
   mounted() {
     this.handleInfo();
     this.startMove();
-    // this.handleNotice();
+    this.handleNotice();
   },
   methods: {
     startMove() {
@@ -133,6 +133,7 @@ export default {
     },
     handleNotice(){
       getNotice().then(res=>{
+        console.log(res,999);
         this.textArr=res;
       })
     },
