@@ -27,10 +27,9 @@
           style="width: 240px"
         >
           <el-option
-            v-for="dict in roleOptions"
-            :key="dict.id"
-            :label="dict.roleName"
-            :value="dict.id"
+            v-for="dict in typeList"
+            :label="dict.label"
+            :value="dict.value"
           />
         </el-select>
       </el-form-item>
@@ -40,13 +39,12 @@
           placeholder="请选择流程状态"
           clearable
           size="medium"
-          style="width: 240px"
+          style="width: 100%"
         >
           <el-option
             v-for="dict in StateOptions"
-            :key="dict.id"
             :label="dict.label"
-            :value="dict.id"
+            :value="dict.value"
           />
         </el-select>
       </el-form-item>
@@ -228,9 +226,8 @@
               <el-option :value="undefined" label="--请选择业务内容--"></el-option>
               <el-option
                 v-for="dict in InvoiceContentList"
-                :key="dict"
-                :label="dict"
-                :value="dict"
+                :label="dict.label"
+                :value="dict.value"
               />
             </el-select>
           </el-form-item>
@@ -246,14 +243,13 @@
             >
               <el-option
                 v-for="dict in typeList"
-                :key="dict.id"
-                :label="dict.flowTypeName"
-                :value="dict.id"
+                :label="dict.label"
+                :value="dict.value"
               />
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="12">
+        <el-col :span="12" v-if="parseInt(form.business)==20">
           <el-form-item label="欠费时间" prop="arrearageMonth">
             <el-date-picker
               v-model="form.arrearageMonth"
@@ -263,7 +259,7 @@
             </el-date-picker>
           </el-form-item>
         </el-col>
-        <el-col :span="12">
+        <el-col :span="12" v-if="parseInt(form.business)==20">
           <el-form-item label="欠费金额" prop="arrearageMoney">
             <el-input v-model="form.arrearageMoney" type="number" min="0" placeholder="请输入欠费金额"/>
           </el-form-item>
@@ -362,7 +358,15 @@
 </template>
 
 <script>
-  import {getListTable, getStateList, getBusiness, getUnitList} from "@/api/fund/management/index";
+  import {
+    getListTable,
+    getBusiness,
+    getUnitList,
+    getContentList,
+    getStatusList,
+    addDate,
+    upaDate
+  } from "@/api/fund/management/index";
   import {listFlowRole, listFlowRoles, delRoleUser} from "@/api/flow/flowrole";
   import {listType} from "@/api/flow/type";
   import {listUnit} from "@/api/system/unit";
@@ -379,7 +383,7 @@
     data() {
       return {
         ActionUrl: process.env.VUE_APP_BASE_API + '/file/invoice',
-        fileList:[],
+        fileList: [],
         // 遮罩层
         loading: true,
         // 非多个禁用
@@ -421,28 +425,41 @@
           ],
         },
         StateOptions: [],
-        InvoiceContentList: ['数据服务费', '网络租费', '集团彩铃', '信息机', '信息即包年费', '虚拟网费', '通讯费', '虚拟网包年费', '短信费', '电路出租费'],
+        InvoiceContentList: [],
         BusinessList: [],
         UnitList: [],
+        typeList: [],
       };
     },
     created() {
       this.getList();
       this.getMenuTreeselect();
       this.handleGetBusiness();
+      this.handleGetContent();
+      this.handleGetStatusList();
     },
     methods: {
       getMenuTreeselect() {
         listUnit().then((response) => {
           this.deptOptions = response;
         });
-        getStateList().then(res => {
-          this.StateOptions = res;
-        })
       },
       handleGetBusiness() {
         getBusiness().then(res => {
           console.log(res, 69);
+          this.typeList = res;
+        })
+      },
+      handleGetContent() {
+        getContentList().then(res => {
+          console.log(res, 68);
+          this.InvoiceContentList = res;
+        })
+      },
+      handleGetStatusList() {
+        getStatusList().then(res => {
+          console.log(res, 66);
+          this.StateOptions = res;
         })
       },
       /** 查询角色列表 */
@@ -465,12 +482,7 @@
       },
       // 表单重置
       reset() {
-        this.form = {
-          id: undefined,
-          flowName: undefined,
-          sortNum: 0,
-          remark: undefined,
-        };
+        this.form = {};
         this.resetForm("form");
       },
       /** 搜索按钮操作 */
@@ -547,31 +559,60 @@
 
       /** 提交按钮 */
       submitForm: function () {
-        this.$refs["form"].validate((valid) => {
-          if (valid) {
-            if (this.form.id != undefined) {
-              updateFlow(this.form)
-                .then((response) => {
-                  this.msgSuccess("修改成功");
-                  this.open = false;
-                  this.getList();
-                })
-                .catch((err) => {
-                  this.msgError(err.message);
-                });
-            } else {
-              addFlow(this.form)
-                .then((response) => {
-                  this.msgSuccess("新增成功");
-                  this.open = false;
-                  this.getList();
-                })
-                .catch((err) => {
-                  this.msgError(err.message);
-                });
-            }
+        if (parseInt(this.form.business) == 20) {
+          if (!this.form.clientManager ||
+            !this.form.invoiceAmount ||
+            !this.form.invoiceAccount ||
+            !this.form.unitName ||
+            !this.form.unitNumber ||
+            !this.form.invoiceContent ||
+            !this.form.business ||
+            !this.form.arrearageMonth ||
+            !this.form.arrearageMoney ||
+            !this.form.billingNumber ||
+            !this.form.pushAddress ||
+            !this.form.versions ||
+            !this.form.invoiceNumber ||
+            !this.form.accountTime ||
+            !this.form.accountMoney) {
+
+            this.msgError("必填项不能为空！");
+            return;
           }
-        });
+        } else {
+          if (!this.form.clientManager ||
+            !this.form.invoiceAmount ||
+            !this.form.invoiceAccount ||
+            !this.form.unitName ||
+            !this.form.unitNumber ||
+            !this.form.invoiceContent ||
+            !this.form.business ||
+            !this.form.billingNumber ||
+            !this.form.pushAddress ||
+            !this.form.versions ||
+            !this.form.invoiceNumber ||
+            !this.form.accountTime ||
+            !this.form.accountMoney) {
+
+            this.msgError("必填项不能为空！");
+            return;
+          }
+        }
+        if (this.form.id != undefined) {
+          upaDate(this.form)
+            .then((response) => {
+              this.msgSuccess("修改成功");
+              this.open = false;
+              this.getList();
+            })
+        } else {
+          addDate(this.form)
+            .then((response) => {
+              this.msgSuccess("新增成功");
+              this.open = false;
+              this.getList();
+            })
+        }
       },
 
       /** 删除按钮操作 */

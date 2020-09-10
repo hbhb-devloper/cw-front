@@ -42,16 +42,20 @@
           </el-form-item>
         </el-form>
       </div>
-      <div class="title-import">酬金</div>
       <el-table v-loading="loading" :data="tableData">
+        <el-table-column label="报账流水" prop="arrearageMonth" align="center"/>
+        <el-table-column label="酬金月份" prop="arrearageMonth" align="center"/>
+        <el-table-column label="渠道编号" prop="arrearageMonth" align="center"/>
+        <el-table-column label="渠道名称" prop="arrearageMonth" align="center"/>
+        <el-table-column label="营业执照对公账号名称" prop="arrearageMonth" align="center"/>
+        <el-table-column label="开户支行" prop="arrearageMonth" align="center"/>
+        <el-table-column label="银行账号" prop="arrearageMonth" align="center"/>
         <el-table-column label="酬金金额(元)" prop="arrearageMonth" align="center"/>
         <el-table-column label="应付金额(元)" prop="arrearageMonth" align="center"/>
         <el-table-column label="本次支付(元)" prop="arrearageMonth" align="center"/>
         <el-table-column label="本次实付(元)" prop="arrearageMonth" align="center"/>
         <el-table-column label="代缴税费(元)" prop="arrearageMonth" align="center"/>
-        <el-table-column label="发票编号" prop="arrearageMonth" align="center"/>
-        <el-table-column label="发票税率" prop="arrearageMonth" align="center"/>
-        <el-table-column label="分公司" prop="arrearageMonth" align="center"/>
+        <el-table-column label="发票编号(元)" prop="arrearageMonth" align="center"/>
       </el-table>
       <pagination
         v-show="total>0"
