@@ -72,7 +72,6 @@ export default {
   data() {
     return {
       name: "",
-
       textArr: [
         // "1 预算执行用户手册已更新到文档区，请查阅",
         // "2 发起签报请选择“预算执行流程”",

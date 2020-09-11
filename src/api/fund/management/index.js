@@ -51,7 +51,13 @@ export function getStatusList() {
     method:'get',
   })
 }
-
+//获取记录详情
+export function getInfo(id) {
+  return request({
+    url:`/fund/advance/info/${id}`,
+    method:'get'
+  })
+}
 //记录修改
 export function upaDate(data) {
   return request({

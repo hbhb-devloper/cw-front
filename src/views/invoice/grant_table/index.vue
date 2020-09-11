@@ -3,15 +3,45 @@
     <section class="import-box">
       <ul>
         <li class="import-title">酬金发放表模板下载</li>
-        <li>酬金发放表导入</li>
+        <li>
+          <el-upload
+            class="upload-demo"
+            :show-file-list="false"
+            multiple
+            action="#"
+            :http-request="imageUpload1"
+          >
+            <el-button type="primary" round>酬金发放表导入</el-button>
+          </el-upload>
+        </li>
       </ul>
       <ul>
         <li class="import-title">综合补贴模板下载</li>
-        <li>综合补贴导入</li>
+        <li>
+          <el-upload
+            class="upload-demo"
+            :show-file-list="false"
+            multiple
+            action="#"
+            :http-request="imageUpload2"
+          >
+            <el-button type="primary" round>综合补贴导入</el-button>
+          </el-upload>
+        </li>
       </ul>
       <ul>
         <li class="import-title">往来账模板下载</li>
-        <li>往来账导入</li>
+        <li>
+          <el-upload
+            class="upload-demo"
+            :show-file-list="false"
+            multiple
+            action="#"
+            :http-request="imageUpload3"
+          >
+            <el-button type="primary" round>往来账导入</el-button>
+          </el-upload>
+        </li>
       </ul>
     </section>
     <section class="search-table">
@@ -69,6 +99,9 @@
 </template>
 
 <script>
+    import axios from "axios";
+    import {getToken} from '@/utils/auth'
+
     export default {
       data(){
         return {
@@ -76,10 +109,27 @@
           queryParams:{},
           total:undefined,
           loading:false,
+          ActionUrl: process.env.VUE_APP_BASE_API
         }
       },
       methods:{
         getList(){},
+        imageUpload1(param){
+          const _file = param.file;
+          let params = new FormData();
+          params.append('files', _file);
+          axios({
+            url: this.ActionUrl,
+            method: 'post',
+            data: params,
+            headers: {
+              'Content-Type': 'multipart/form-data',
+              'Authorization': getToken()
+            }
+          }).then(res => {
+            this.$message.success('附件上传成功！');
+          })
+        }
       }
     }
 </script>
@@ -101,10 +151,10 @@
       li{
         line-height: 45px;
       }
-      li:nth-last-child(1){
-        border:1.5px solid #00afff;
-        border-radius: 30px;
-      }
+      /*li:nth-last-child(1){*/
+      /*  border:1.5px solid #00afff;*/
+      /*  border-radius: 30px;*/
+      /*}*/
     }
   }
   .search-table{

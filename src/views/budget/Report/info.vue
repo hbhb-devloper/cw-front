@@ -191,19 +191,19 @@
             </div>
             <div class="row-div">
               <label>项目简介：</label>
-              <span style="width:79%">{{info.introduction}}</span>
+              <span class="info-textarea">{{info.introduction}}</span>
             </div>
             <div class="row-div">
               <label>项目详细说明：</label>
-              <span style="width:79%">{{info.detail}}</span>
+              <span class="info-textarea">{{info.detail}}</span>
             </div>
             <div class="row-div">
               <label>项目实施目标：</label>
-              <span style="width:79%">{{info.target}}</span>
+              <span class="info-textarea">{{info.target}}</span>
             </div>
             <div class="row-div">
               <label>备注：</label>
-              <span style="width:79%">{{info.remarks}}</span>
+              <span class="info-textarea">{{info.remark}}</span>
             </div>
             <div class="row-div">
               <label>附件：</label>
@@ -634,6 +634,10 @@
         //详情
         this.projectId=id;
         GetInfo(id).then(res => {
+          // res.detail=`${res.detail.replace(/\n/g, "<br/>")}`;
+          // res.introduction=`${res.introduction.replace(/\n/g, "<br/>")}`;
+          // res.target=`${res.target.replace(/\n/g, "<br/>")}`;
+          // res.remark=`${res.remark.replace(/\n/g, "<br/>")}`;
           this.info = res;
           this.form.budgetId = res.budgetId;
           this.fileTable1 = res.files.filter(item=>{
@@ -1022,6 +1026,10 @@
 
     .danger{
       color:red;
+    }
+    .info-textarea{
+      width:79%;
+      white-space: pre-line;
     }
   }
 
