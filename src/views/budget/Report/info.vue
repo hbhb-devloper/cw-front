@@ -1028,7 +1028,7 @@
       color:red;
     }
     .info-textarea{
-      width:79%;
+      width:79% !important;
       white-space: pre-line;
     }
   }
