@@ -102,32 +102,32 @@
     </el-row>
 
     <el-table v-loading="loading" :data="tableData">
-      <el-table-column label="序号" prop="unitName" align="center"/>
-      <el-table-column label="发票开具部门" prop="invoiceUnit" align="center" width="180"/>
+      <el-table-column label="序号" type="index" align="center"/>
+      <el-table-column label="发票开具部门" prop="invoiceUnit" align="center"/>
       <!--      <el-table-column label="对应用户" prop="nickName" align="center" />-->
       <el-table-column label="客户经理" prop="clientManager" align="center"/>
-      <el-table-column label="发票金额（元）" prop="invoiceAmount" align="center" width="180"/>
-      <el-table-column label="单位编号" prop="nickName" align="center"/>
-      <el-table-column label="单位名称" prop="nickName" align="center"/>
+      <el-table-column label="发票金额（元）" prop="invoiceAmount" align="center"/>
+      <el-table-column label="单位编号" prop="unitNumber" align="center"/>
+      <el-table-column label="单位名称" prop="unitName" align="center"/>
       <el-table-column label="发票内容" prop="invoiceContent" align="center"/>
       <el-table-column label="办理业务" prop="businessLabel" align="center"/>
       <el-table-column label="欠费月份" prop="arrearageMonth" align="center"/>
       <el-table-column label="欠费金额" prop="arrearageMoney" align="center"/>
       <el-table-column label="计费号" prop="billingNumber" align="center"/>
       <el-table-column label="发票账户" prop="invoiceAccount" align="center"/>
-      <el-table-column label="发票版本号" prop="nickName" align="center" width="180"/>
+      <el-table-column label="发票版本号" prop="versions" align="center"/>
       <el-table-column label="发票编号" prop="invoiceNumber" align="center"/>
       <el-table-column label="到账时间" prop="accountTime" align="center"/>
-      <el-table-column label="到账金额（元）" prop="accountMoney" align="center" width="180"/>
+      <el-table-column label="到账金额（元）" prop="accountMoney" align="center"/>
       <el-table-column label="开票人" prop="invoiceUser" align="center"/>
       <el-table-column label="出票时间" prop="invoiceCreateTime" align="center"/>
       <el-table-column prop="stateLabel" align="center" label="流程状态">
-        <template slot-scope="scope">
-          <span style="color:#409EFF;" v-if="scope.row.state==0">审批未发起</span>
-          <span style="color:#409EFF;" v-if="scope.row.state==1">正在审批</span>
-          <span style="color:#409EFF;" v-if="scope.row.state==2">审批未通过</span>
-          <span style="color:#409EFF;" v-if="scope.row.state==3">审批通过</span>
-        </template>
+        <!--        <template slot-scope="scope">-->
+        <!--          <span style="color:#409EFF;" v-if="scope.row.state==0">审批未发起</span>-->
+        <!--          <span style="color:#409EFF;" v-if="scope.row.state==1">正在审批</span>-->
+        <!--          <span style="color:#409EFF;" v-if="scope.row.state==2">审批未通过</span>-->
+        <!--          <span style="color:#409EFF;" v-if="scope.row.state==3">审批通过</span>-->
+        <!--        </template>-->
       </el-table-column>
       <el-table-column prop="itemName" align="center" label="发起流程">
         <template slot-scope="scope">
@@ -137,13 +137,14 @@
       <!--      <el-table-column prop="itemName" align="center" label="编辑"></el-table-column>-->
       <!--      <el-table-column prop="itemName" align="center" label="编辑发票"></el-table-column>-->
       <!--      <el-table-column prop="itemName" align="center" label="编辑附件"></el-table-column>-->
-      <el-table-column prop="itemName" align="center" label="操作" width="180">
+      <el-table-column prop="itemName" align="center" label="操作">
         <template slot-scope="scope">
           <el-button
             size="mini"
             type="text"
             :disabled="scope.row.state==1||scope.row.state==3"
             icon="el-icon-delete"
+            @click="handleUpdate(scope.row)"
           >修改
           </el-button>
           <el-button
@@ -173,23 +174,23 @@
     <el-dialog :title="title" :visible.sync="open" width="900px">
       <el-form ref="form" :model="form" :rules="rules" label-width="120px">
         <el-col :span="12">
-          <el-form-item label="客户经理" prop="clientManager">
+          <el-form-item label="客户经理" prop="clientManager" :required="true">
             <el-input v-model="form.clientManager" placeholder="请输入客户经理"/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="开票金额" prop="invoiceAmount">
+          <el-form-item label="开票金额" prop="invoiceAmount" :required="true">
             <el-input v-model="form.invoiceAmount" type="number" min="0" placeholder="请输入开票金额"/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="发票账户" prop="invoiceAccount">
+          <el-form-item label="发票账户" prop="invoiceAccount" :required="true">
             <el-input v-model="form.invoiceAccount" placeholder="请输入发票账户"/>
           </el-form-item>
         </el-col>
         <el-col :span="12"></el-col>
         <el-col :span="12">
-          <el-form-item label="单位名称" prop="unitName">
+          <el-form-item label="单位名称" prop="unitName" :required="true">
             <el-select v-model="form.unitName" @change="handleSearchUnit(true)" filterable placeholder="请选择"
                        style="width: 100%">
               <el-option
@@ -202,7 +203,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="单位编号" prop="unitNumber">
+          <el-form-item label="单位编号" prop="unitNumber" :required="true">
             <el-select v-model="form.unitNumber" @change="handleSearchUnit(false)" filterable placeholder="请选择"
                        style="width: 100%">
               <el-option
@@ -215,7 +216,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="开票内容" prop="invoiceContent">
+          <el-form-item label="开票内容" prop="invoiceContent" :required="true">
             <el-select
               v-model="form.invoiceContent"
               placeholder="请选择开票内容"
@@ -233,7 +234,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="办理业务内容" prop="business">
+          <el-form-item label="办理业务内容" prop="business" :required="true">
             <el-select
               v-model="form.business"
               placeholder="请选择办理业务内容"
@@ -250,53 +251,58 @@
           </el-form-item>
         </el-col>
         <el-col :span="12" v-if="parseInt(form.business)==20">
-          <el-form-item label="欠费时间" prop="arrearageMonth">
+          <el-form-item label="欠费时间" prop="arrearageMonth" :required="true">
             <el-date-picker
               v-model="form.arrearageMonth"
               type="date"
+              format="yyyy-MM-dd"
+              value-format="yyyy-MM-dd"
               style="width: 100%"
               placeholder="选择日期">
             </el-date-picker>
           </el-form-item>
         </el-col>
         <el-col :span="12" v-if="parseInt(form.business)==20">
-          <el-form-item label="欠费金额" prop="arrearageMoney">
+          <el-form-item label="欠费金额" prop="arrearageMoney" :required="true">
             <el-input v-model="form.arrearageMoney" type="number" min="0" placeholder="请输入欠费金额"/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="计号费" prop="billingNumber">
+          <el-form-item label="计号费" prop="billingNumber" :required="true">
             <el-input v-model="form.billingNumber" placeholder="请输入计号费"/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="推送地址" prop="pushAddress">
+          <el-form-item label="推送地址" prop="pushAddress" :required="true">
             <el-input v-model="form.pushAddress" placeholder="请输入推送地址"/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="发票版本号" prop="versions">
-            <el-input v-model="form.versions" placeholder="请输入发票版本号"/>
+          <el-form-item label="发票版本号" prop="versions" :required="true">
+            <el-input v-model="form.versions" :disabled="!form.id" placeholder="请输入发票版本号"/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="发票编号" prop="invoiceNumber">
-            <el-input v-model="form.invoiceNumber" placeholder="请输入发票编号"/>
+          <el-form-item label="发票编号" prop="invoiceNumber" :required="true">
+            <el-input v-model="form.invoiceNumber" :disabled="!form.id" placeholder="请输入发票编号"/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="到账时间" prop="accountTime">
+          <el-form-item label="到账时间" prop="accountTime" :required="true">
             <el-date-picker
               v-model="form.accountTime"
               type="date"
               style="width: 100%"
+              :disabled="!form.id"
+              format="yyyy-MM-dd"
+              value-format="yyyy-MM-dd"
               placeholder="选择日期">
             </el-date-picker>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="到账金额" prop="accountMoney">
-            <el-input v-model="form.accountMoney" type="number" min="0" placeholder="请输入到账金额"/>
+          <el-form-item label="到账金额" prop="accountMoney" :required="true">
+            <el-input v-model="form.accountMoney" :disabled="!form.id" type="number" min="0" placeholder="请输入到账金额"/>
           </el-form-item>
         </el-col>
         <el-col :span="24">
@@ -365,7 +371,8 @@
     getContentList,
     getStatusList,
     addDate,
-    upaDate
+    upaDate,
+    getInfo
   } from "@/api/fund/management/index";
   import {listFlowRole, listFlowRoles, delRoleUser} from "@/api/flow/flowrole";
   import {listType} from "@/api/flow/type";
@@ -375,6 +382,7 @@
   import {exportData} from "@/utils/export";
   import {getToken} from "@/utils/auth";
   import ElFormItem from "../../../components/customize/ElFormItem/index";
+  import {mapGetters} from 'vuex'
   import axios from "axios";
 
   export default {
@@ -407,7 +415,6 @@
         queryParams: {
           pageNum: 1,
           pageSize: 10,
-          isCancellation: false,
         },
         // 表单参数
         form: {},
@@ -431,9 +438,12 @@
         typeList: [],
       };
     },
+    computed: {
+      ...mapGetters(['nickName']),
+    },
     created() {
-      this.getList();
       this.getMenuTreeselect();
+      this.getList();
       this.handleGetBusiness();
       this.handleGetContent();
       this.handleGetStatusList();
@@ -441,6 +451,7 @@
     methods: {
       getMenuTreeselect() {
         listUnit().then((response) => {
+          console.log(response, '单位')
           this.deptOptions = response;
         });
       },
@@ -544,17 +555,20 @@
           this.UnitList = res;
           this.open = true;
           this.title = "添加";
+          this.form.clientManager = this.nickName
         });
       },
       /** 修改按钮操作 */
       handleUpdate(row) {
         this.reset();
-        const typeId = row.id || this.ids;
-        //   getRole(typeId).then(response => {
-        this.form = row;
-        this.open = true;
-        this.title = "修改类型";
-        //   });
+        const typeId = row.id;
+        getInfo(typeId).then(response => {
+          response.invoiceContent = String(response.invoiceContent);
+          response.business = String(response.business);
+          this.form = response;
+          this.open = true;
+          this.title = "修改类型";
+        });
       },
 
       /** 提交按钮 */
@@ -567,15 +581,16 @@
             !this.form.unitNumber ||
             !this.form.invoiceContent ||
             !this.form.business ||
-            !this.form.arrearageMonth ||
-            !this.form.arrearageMoney ||
+            // !this.form.arrearageMonth||
+            // !this.form.arrearageMoney||
             !this.form.billingNumber ||
-            !this.form.pushAddress ||
-            !this.form.versions ||
-            !this.form.invoiceNumber ||
-            !this.form.accountTime ||
-            !this.form.accountMoney) {
-
+            !this.form.pushAddress
+            // !this.form.versions ||
+            //!this.form.invoiceNumber
+            // !this.form.accountTime ||
+            // !this.form.accountMoney
+          ) {
+            console.log(1)
             this.msgError("必填项不能为空！");
             return;
           }
@@ -587,19 +602,26 @@
             !this.form.unitNumber ||
             !this.form.invoiceContent ||
             !this.form.business ||
+            // !this.form.arrearageMonth
+            // !this.form.arrearageMoney
             !this.form.billingNumber ||
-            !this.form.pushAddress ||
-            !this.form.versions ||
-            !this.form.invoiceNumber ||
-            !this.form.accountTime ||
-            !this.form.accountMoney) {
+            !this.form.pushAddress
 
+            // !this.form.versions ||
+            //!this.form.invoiceNumber
+            // !this.form.accountTime ||
+          ) {
+
+            console.log(2)
             this.msgError("必填项不能为空！");
             return;
           }
         }
         if (this.form.id != undefined) {
-          upaDate(this.form)
+          let datas = JSON.parse(JSON.stringify(this.form))
+          datas.invoiceContent = parseInt(datas.invoiceContent);
+          datas.business = parseInt(datas.business);
+          upaDate(datas)
             .then((response) => {
               this.msgSuccess("修改成功");
               this.open = false;

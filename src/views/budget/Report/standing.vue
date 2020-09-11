@@ -160,6 +160,7 @@
             prop="itime"
             align="center"
             label="发起流程"
+            fixed="right"
             width="120px"
           >
             <template slot-scope="scope">
@@ -174,6 +175,7 @@
           </el-table-column>
           <el-table-column
             label="编辑"
+            fixed="right"
             align="center">
             <template slot-scope="scope">
               <el-button
@@ -195,6 +197,7 @@
           </el-table-column>
           <el-table-column
             label="删除"
+            fixed="right"
             align="center">
             <template slot-scope="scope">
               <el-button
@@ -208,6 +211,7 @@
           <el-table-column
             label="删除调整"
             width="100px"
+            fixed="right"
             align="center">
             <template slot-scope="scope">
               <el-button
@@ -437,7 +441,7 @@
         var data = {};
         this.fileList = [];
         GetInfo(row.id).then(res => {
-          if (res.state == 10 || res.state == 30 || res.state == 31) {
+          if (res.state == 10 || res.state == 30 || res.state == 31||res.state == 40) {
             this.$router.push(`/budget/edit?id=${res.id}`);
           } else {
             this.$message.warning('当前记录不能进行修改调整！');
@@ -567,5 +571,8 @@
     margin: 20px 0 0 80px;
     display: flex;
     flex-direction: row;
+  }
+  .table-btn-box /deep/ .is-hidden{
+    display: table-cell !important;
   }
 </style>
