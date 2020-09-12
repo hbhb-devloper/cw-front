@@ -67,6 +67,7 @@ import RuoYiGit from "@/components/RuoYi/Git";
 import RuoYiDoc from "@/components/RuoYi/Doc";
 import { getInfo } from "@/api/login.js";
 import {getNotice} from "@/api/system/notice"
+import Stomp from "stompjs";
 
 export default {
   data() {
@@ -79,6 +80,7 @@ export default {
         // "4 渠道电子发票导出模板问题已解决",
       ],
       number: 0,
+      client: Stomp.client("ws://mq.yeexun.com.cn:15674/ws"),
     };
   },
   components: {
@@ -112,6 +114,9 @@ export default {
     notices(newval){
       this.handleNotice();
     }
+  },
+  created() {
+    this.connect();
   },
   mounted() {
     this.handleInfo();
@@ -151,6 +156,24 @@ export default {
           location.reload();
         });
       });
+    },
+
+    onConnected: function () {
+      const dest = "/exchange/cw_exchange/broadcast_queue";
+      this.client.subscribe(dest, this.responseCallback, this.onFailed);
+    },
+    onFailed: function (frame) {
+      console.log("MQ Failed: " + frame);
+    },
+    responseCallback: function (frame) {
+      console.log("接收的消息为" + JSON.parse(frame.body));
+    },
+    connect: function () {
+      const headers = {
+        login: "root",
+        passcode: "cw_2020",
+      };
+      this.client.connect(headers, this.onConnected, this.onFailed);
     },
   },
 };

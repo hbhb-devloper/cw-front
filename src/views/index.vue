@@ -209,7 +209,7 @@ export default {
       fileList: [],
       uploadData: {},
       NoticetableData: [],
-      // client: Stomp.client("ws://mq.yeexun.com.cn:15674/ws"),
+      client: Stomp.client("ws://mq.yeexun.com.cn:15674/ws"),
       total: 1,
       open: false,
       loading1: false,
