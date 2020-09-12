@@ -159,20 +159,23 @@ export default {
     },
 
     onConnected: function () {
-      const dest = "/exchange/cw_exchange/broadcast_queue";
+      const dest = "/queue/broadcast_queue";
       this.client.subscribe(dest, this.responseCallback, this.onFailed);
     },
     onFailed: function (frame) {
       console.log("MQ Failed: " + frame);
     },
     responseCallback: function (frame) {
-      console.log("接收的消息为" + JSON.parse(frame.body));
+      let obj = eval("("+frame.body+")");
+      console.log("接收的消息为" + obj);
     },
     connect: function () {
       const headers = {
         login: "root",
         passcode: "cw_2020",
       };
+      // 调试日志开关
+      // this.client.debug = null;
       this.client.connect(headers, this.onConnected, this.onFailed);
     },
   },
