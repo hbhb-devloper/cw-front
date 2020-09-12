@@ -109,7 +109,8 @@
           queryParams:{},
           total:undefined,
           loading:false,
-          ActionUrl: process.env.VUE_APP_BASE_API
+          ActionUrl1: process.env.VUE_APP_BASE_API+'/invoice/remuneration/import/reward',//酬金发放表导入
+          ActionUrl2: process.env.VUE_APP_BASE_API+'/invoice/remuneration/import/subsidy',//综合补贴表导入
         }
       },
       methods:{

@@ -66,4 +66,25 @@ export function upaDate(data) {
     data
   })
 }
-
+//文件删除
+export function fileDelete(id) {
+  return request({
+    url:`/fund/advance/delete/file/${id}`,
+    method:'delete'
+  })
+}
+//记录删除
+export function DeleteDate(id) {
+  return request({
+    url:`/fund/advance/delete/${id}`,
+    method:'delete'
+  })
+}
+//发起审批
+export function approveFlow(data) {
+  return request({
+    url:'/fund/advance/to-approve',
+    method:'post',
+    data
+  })
+}

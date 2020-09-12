@@ -9,7 +9,7 @@
         <div class="title">公告栏:</div>
         <div class="textBox">
           <transition name="slide">
-            <p class="text" :key="text.id">{{text.val}}</p>
+            <p class="text" v-if="text.val" :key="text.id">{{text.val}}</p>
           </transition>
         </div>
       </div>
@@ -112,28 +112,51 @@ export default {
   },
   watch:{
     notices(newval){
-      this.handleNotice();
+      // this.handleNotice();
     }
   },
   created() {
+
     this.connect();
+    if(window.name == ""){
+      window.name = "isReload"; // 在首次进入页面时我们可以给window.name设置一个固定值
+    }else if(window.name == "isReload"){
+      console.log("页面被刷新");
+      this.handleNotice();
+    }
   },
   mounted() {
     this.handleInfo();
     this.startMove();
-    this.handleNotice();
   },
   methods: {
     startMove() {
       // eslint-disable-next-line
-      let timer = setTimeout(() => {
-        if (this.number === this.textArr.length-1) {
-          this.number = 0;
-        } else {
-          this.number += 1;
+      // let timer = setTimeout(() => {
+      //   if (this.number === this.textArr.length-1) {
+      //
+      //     this.number = 0;
+      //   } else {
+      //     if(this.textArr.length-1===-1){
+      //       clearTimeout(timer);
+      //     }else if(this.textArr.length-1===0){
+      //       this.number =0;
+      //     }else{
+      //       this.number +=1;
+      //     }
+      //   }
+      //   this.startMove();
+      //   console.log(this.number,this.textArr.length-1)
+      // }, 2000); // 滚动不需要停顿则将2000改成动画持续时间
+      let time=setInterval(()=>{
+        if(this.number===this.textArr.length-1||this.textArr.length-1===0||this.textArr.length===0||this.number>this.textArr.length){
+          this.number=0;
+        }else if(this.textArr.length>0){
+          this.number +=1;
         }
-        this.startMove();
-      }, 2000); // 滚动不需要停顿则将2000改成动画持续时间
+      },2000);
+
+      // this.startMove()
     },
     handleNotice(){
       getNotice().then(res=>{
@@ -166,8 +189,12 @@ export default {
       console.log("MQ Failed: " + frame);
     },
     responseCallback: function (frame) {
+      this.textArr=[];
       let obj = eval("("+frame.body+")");
-      console.log("接收的消息为" + obj);
+      for(let key of obj){
+        this.textArr.push(key);
+      }
+      console.log(this.textArr);
     },
     connect: function () {
       const headers = {

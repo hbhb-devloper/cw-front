@@ -342,6 +342,21 @@
       ...mapGetters(['budgetSelect']),
       taxIncludeAmount() {
         return this.obj2.taxIncludeAmount;
+      },
+      projectYear(){
+        return this.obj.projectYear;
+      },
+      createTime(){
+        return this.obj.createTime;
+        this.$forceUpdate();
+      }
+    },
+    watch:{
+      projectYear(newVal){
+        this.$set(this.obj,'projectYear',newVal)
+      },
+      createTime(newVal){
+        this.$set(this.obj,'createTime',newVal)
       }
     },
     methods: {
@@ -372,9 +387,9 @@
         this.obj.projectYear = dateTimes(this.obj.projectYear).substr(0, 4)
         this.obj.createTime = dateTimes(this.obj.createTime).substr(0, 7)
         if (this.radio != 3) {
-          this.obj.projectYear = '';
+          this.obj.projectYear = undefined;
         } else {
-          this.obj.createTime = '';
+          this.obj.createTime = undefined;
         }
         let data = {}
         for (let key in this.obj) {
