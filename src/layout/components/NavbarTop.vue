@@ -112,12 +112,12 @@ export default {
   },
   watch:{
     notices(newval){
-      // this.handleNotice();
+      this.handleNotice();
     }
   },
   created() {
 
-    this.connect();
+    // this.connect();
     if(window.name == ""){
       window.name = "isReload"; // 在首次进入页面时我们可以给window.name设置一个固定值
     }else if(window.name == "isReload"){
