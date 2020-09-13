@@ -116,14 +116,14 @@ export default {
     }
   },
   created() {
-
+    this.handleNotice();
     // this.connect();
-    if(window.name == ""){
-      window.name = "isReload"; // 在首次进入页面时我们可以给window.name设置一个固定值
-    }else if(window.name == "isReload"){
-      console.log("页面被刷新");
-      this.handleNotice();
-    }
+    // if(window.name == ""){
+    //   window.name = "isReload"; // 在首次进入页面时我们可以给window.name设置一个固定值
+    // }else if(window.name == "isReload"){
+    //   console.log("页面被刷新");
+    //   this.handleNotice();
+    // }
   },
   mounted() {
     this.handleInfo();
