@@ -9,7 +9,7 @@
         <div class="title">公告栏:</div>
         <div class="textBox">
           <transition name="slide">
-            <p class="text" v-if="text.val" :key="text.id">{{text.val}}</p>
+            <p class="text"  :key="text.id">{{text.val}}</p>
           </transition>
         </div>
       </div>
@@ -154,6 +154,7 @@ export default {
         }else if(this.textArr.length>0){
           this.number +=1;
         }
+        console.log(this.number,this.textArr.length-1);
       },2000);
 
       // this.startMove()
