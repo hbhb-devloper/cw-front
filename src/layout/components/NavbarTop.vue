@@ -80,7 +80,7 @@ export default {
         // "4 渠道电子发票导出模板问题已解决",
       ],
       number: 0,
-      client: Stomp.client("ws://mq.yeexun.com.cn:15674/ws"),
+      // client: Stomp.client("ws://mq.yeexun.com.cn:15674/ws"),
     };
   },
   components: {
@@ -182,30 +182,30 @@ export default {
       });
     },
 
-    onConnected: function () {
-      const dest = "/queue/broadcast_queue";
-      this.client.subscribe(dest, this.responseCallback, this.onFailed);
-    },
-    onFailed: function (frame) {
-      console.log("MQ Failed: " + frame);
-    },
-    responseCallback: function (frame) {
-      this.textArr=[];
-      let obj = eval("("+frame.body+")");
-      for(let key of obj){
-        this.textArr.push(key);
-      }
-      console.log(this.textArr);
-    },
-    connect: function () {
-      const headers = {
-        login: "root",
-        passcode: "cw_2020",
-      };
-      // 调试日志开关
-      // this.client.debug = null;
-      this.client.connect(headers, this.onConnected, this.onFailed);
-    },
+    // onConnected: function () {
+    //   const dest = "/queue/broadcast_queue";
+    //   this.client.subscribe(dest, this.responseCallback, this.onFailed);
+    // },
+    // onFailed: function (frame) {
+    //   console.log("MQ Failed: " + frame);
+    // },
+    // responseCallback: function (frame) {
+    //   this.textArr=[];
+    //   let obj = eval("("+frame.body+")");
+    //   for(let key of obj){
+    //     this.textArr.push(key);
+    //   }
+    //   console.log(this.textArr);
+    // },
+    // connect: function () {
+    //   const headers = {
+    //     login: "root",
+    //     passcode: "cw_2020",
+    //   };
+    //   // 调试日志开关
+    //   // this.client.debug = null;
+    //   this.client.connect(headers, this.onConnected, this.onFailed);
+    // },
   },
 };
 </script>
