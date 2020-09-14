@@ -160,6 +160,7 @@
             prop="itime"
             align="center"
             label="发起流程"
+            fixed="right"
             width="120px"
           >
             <template slot-scope="scope">
@@ -174,6 +175,7 @@
           </el-table-column>
           <el-table-column
             label="编辑"
+            fixed="right"
             align="center">
             <template slot-scope="scope">
               <el-button
@@ -195,6 +197,7 @@
           </el-table-column>
           <el-table-column
             label="删除"
+            fixed="right"
             align="center">
             <template slot-scope="scope">
               <el-button
@@ -208,6 +211,7 @@
           <el-table-column
             label="删除调整"
             width="100px"
+            fixed="right"
             align="center">
             <template slot-scope="scope">
               <el-button
@@ -338,6 +342,21 @@
       ...mapGetters(['budgetSelect']),
       taxIncludeAmount() {
         return this.obj2.taxIncludeAmount;
+      },
+      projectYear(){
+        return this.obj.projectYear;
+      },
+      createTime(){
+        return this.obj.createTime;
+        this.$forceUpdate();
+      }
+    },
+    watch:{
+      projectYear(newVal){
+        this.$set(this.obj,'projectYear',newVal)
+      },
+      createTime(newVal){
+        this.$set(this.obj,'createTime',newVal)
       }
     },
     methods: {
@@ -368,9 +387,9 @@
         this.obj.projectYear = dateTimes(this.obj.projectYear).substr(0, 4)
         this.obj.createTime = dateTimes(this.obj.createTime).substr(0, 7)
         if (this.radio != 3) {
-          this.obj.projectYear = '';
+          this.obj.projectYear = undefined;
         } else {
-          this.obj.createTime = '';
+          this.obj.createTime = undefined;
         }
         let data = {}
         for (let key in this.obj) {
@@ -437,7 +456,7 @@
         var data = {};
         this.fileList = [];
         GetInfo(row.id).then(res => {
-          if (res.state == 10 || res.state == 30 || res.state == 31) {
+          if (res.state == 10 || res.state == 30 || res.state == 31||res.state == 40) {
             this.$router.push(`/budget/edit?id=${res.id}`);
           } else {
             this.$message.warning('当前记录不能进行修改调整！');
@@ -567,5 +586,8 @@
     margin: 20px 0 0 80px;
     display: flex;
     flex-direction: row;
+  }
+  .table-btn-box /deep/ .is-hidden{
+    display: table-cell !important;
   }
 </style>

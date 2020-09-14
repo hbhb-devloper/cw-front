@@ -9,7 +9,7 @@
         <div class="title">公告栏:</div>
         <div class="textBox">
           <transition name="slide">
-            <p class="text" :key="text.id">{{text.val}}</p>
+            <p class="text"  :key="text.id">{{text.val}}</p>
           </transition>
         </div>
       </div>
@@ -67,19 +67,20 @@ import RuoYiGit from "@/components/RuoYi/Git";
 import RuoYiDoc from "@/components/RuoYi/Doc";
 import { getInfo } from "@/api/login.js";
 import {getNotice} from "@/api/system/notice"
+import Stomp from "stompjs";
 
 export default {
   data() {
     return {
       name: "",
-      
       textArr: [
-        "1 预算执行用户手册已更新到文档区，请查阅",
-        "2 发起签报请选择“预算执行流程”",
-        "3 渠道电子发票导出模板问题已解决",
-        "4 渠道电子发票导出模板问题已解决",
+        // "1 预算执行用户手册已更新到文档区，请查阅",
+        // "2 发起签报请选择“预算执行流程”",
+        // "3 渠道电子发票导出模板问题已解决",
+        // "4 渠道电子发票导出模板问题已解决",
       ],
       number: 0,
+      // client: Stomp.client("ws://mq.yeexun.com.cn:15674/ws"),
     };
   },
   components: {
@@ -114,25 +115,53 @@ export default {
       this.handleNotice();
     }
   },
+  created() {
+    this.handleNotice();
+    // this.connect();
+    // if(window.name == ""){
+    //   window.name = "isReload"; // 在首次进入页面时我们可以给window.name设置一个固定值
+    // }else if(window.name == "isReload"){
+    //   console.log("页面被刷新");
+    //   this.handleNotice();
+    // }
+  },
   mounted() {
     this.handleInfo();
     this.startMove();
-    // this.handleNotice();
   },
   methods: {
     startMove() {
       // eslint-disable-next-line
-      let timer = setTimeout(() => {
-        if (this.number === this.textArr.length-1) {
-          this.number = 0;
-        } else {
-          this.number += 1;
+      // let timer = setTimeout(() => {
+      //   if (this.number === this.textArr.length-1) {
+      //
+      //     this.number = 0;
+      //   } else {
+      //     if(this.textArr.length-1===-1){
+      //       clearTimeout(timer);
+      //     }else if(this.textArr.length-1===0){
+      //       this.number =0;
+      //     }else{
+      //       this.number +=1;
+      //     }
+      //   }
+      //   this.startMove();
+      //   console.log(this.number,this.textArr.length-1)
+      // }, 2000); // 滚动不需要停顿则将2000改成动画持续时间
+      let time=setInterval(()=>{
+        if(this.number===this.textArr.length-1||this.textArr.length-1===0||this.textArr.length===0||this.number>this.textArr.length){
+          this.number=0;
+        }else if(this.textArr.length>0){
+          this.number +=1;
         }
-        this.startMove();
-      }, 2000); // 滚动不需要停顿则将2000改成动画持续时间
+        console.log(this.number,this.textArr.length-1);
+      },2000);
+
+      // this.startMove()
     },
     handleNotice(){
       getNotice().then(res=>{
+        console.log(res,999);
         this.textArr=res;
       })
     },
@@ -152,6 +181,31 @@ export default {
         });
       });
     },
+
+    // onConnected: function () {
+    //   const dest = "/queue/broadcast_queue";
+    //   this.client.subscribe(dest, this.responseCallback, this.onFailed);
+    // },
+    // onFailed: function (frame) {
+    //   console.log("MQ Failed: " + frame);
+    // },
+    // responseCallback: function (frame) {
+    //   this.textArr=[];
+    //   let obj = eval("("+frame.body+")");
+    //   for(let key of obj){
+    //     this.textArr.push(key);
+    //   }
+    //   console.log(this.textArr);
+    // },
+    // connect: function () {
+    //   const headers = {
+    //     login: "root",
+    //     passcode: "cw_2020",
+    //   };
+    //   // 调试日志开关
+    //   // this.client.debug = null;
+    //   this.client.connect(headers, this.onConnected, this.onFailed);
+    // },
   },
 };
 </script>
