@@ -13,9 +13,11 @@
               <el-radio :label="6">创建时间：</el-radio>
             </el-radio-group>
 
-            <el-date-picker v-show="radio==3" v-model="obj.projectYear" type="year" placeholder="请选择" style="width: 200px;margin-left:-25px;">
+            <el-date-picker v-show="radio==3" v-model="obj.projectYear" type="year" placeholder="请选择"
+                            style="width: 200px;margin-left:-25px;">
             </el-date-picker>
-            <el-date-picker v-show="radio==6" v-model="obj.createTime" type="month" placeholder="请选择" style="width: 200px;margin-left:-25px">
+            <el-date-picker v-show="radio==6" v-model="obj.createTime" type="month" placeholder="请选择"
+                            style="width: 200px;margin-left:-25px">
             </el-date-picker>
           </el-form-item>
           <el-form-item>
@@ -73,7 +75,9 @@
     </div>
     <div class="table-btn-box">
       <el-button type="primary" icon="el-icon-plus" size="mini" @click="handleAdd">新增签报</el-button>
-      <el-button type="warning" icon="el-icon-download" size="mini" @click="handleExport" v-hasPermi="['budget:project:export']">导出数据</el-button>
+      <el-button type="warning" icon="el-icon-download" size="mini" @click="handleExport"
+                 v-hasPermi="['budget:project:export']">导出数据
+      </el-button>
       <div style="height: 600px;overflow:auto;margin-top:20px;">
         <el-table
           v-loading="loading"
@@ -265,12 +269,8 @@
     getList,
     getProejctType,
     deleteData,
-    addData,
     GetInfo,
-    upData,
     getState,
-    getQuota,
-    DeleteFile,
     getLaunchType,
     LaunchApprove,
     getVatRate,
@@ -281,7 +281,6 @@
   import {dateTimes} from '@/utils/date.js'
   import Treeselect from '@riophae/vue-treeselect'
   import '@riophae/vue-treeselect/dist/vue-treeselect.css'
-  import axios from 'axios'
   import {mapGetters} from 'vuex'
 
   export default {
@@ -301,18 +300,17 @@
           projectName: undefined,
           projectNum: undefined,
           state: undefined,
-          pageNum:  1,//页码
+          pageNum: 1,//页码
           pageSize: 20
         },
         headers: {"Content-Type": "multipart/form-data", 'Authorization': getToken()},
-        total: undefined,
+        total: 0,
         radio: 3, //项目年度/创建时间
         centerDialogVisible: false, //新增修改弹窗
         options: [],//项目类型下拉菜单
         stateArr: [],//状态下拉菜单
         unitId: null,//单位id
         index: undefined,
-
 
 
         projectItem: [],//预算科目下拉菜单
@@ -329,9 +327,9 @@
       let times = new Date();
 
       // this.obj.projectYear = times.getFullYear().toString();
-      this.obj=this.budgetSelect;
-      if(!this.obj.projectYear){
-        this.$set(this.obj,'projectYear',times.getFullYear().toString())
+      this.obj = this.budgetSelect;
+      if (!this.obj.projectYear) {
+        this.$set(this.obj, 'projectYear', times.getFullYear().toString())
       }
       this.handleLoad();
     },
@@ -342,6 +340,21 @@
       ...mapGetters(['budgetSelect']),
       taxIncludeAmount() {
         return this.obj2.taxIncludeAmount;
+      },
+      projectYear() {
+        return this.obj.projectYear;
+      },
+      createTime() {
+        return this.obj.createTime;
+        this.$forceUpdate();
+      }
+    },
+    watch: {
+      projectYear(newVal) {
+        this.$set(this.obj, 'projectYear', newVal)
+      },
+      createTime(newVal) {
+        this.$set(this.obj, 'createTime', newVal)
       }
     },
     methods: {
@@ -372,21 +385,23 @@
         this.obj.projectYear = dateTimes(this.obj.projectYear).substr(0, 4)
         this.obj.createTime = dateTimes(this.obj.createTime).substr(0, 7)
         if (this.radio != 3) {
-          this.obj.projectYear = '';
+          this.obj.projectYear = undefined;
         } else {
-          this.obj.createTime = '';
+          this.obj.createTime = undefined;
         }
         let data = {}
         for (let key in this.obj) {
           if (!this.obj[key]) {
           } else {
             data[key] = this.obj[key];
-          };
+          }
+          ;
 
-        };
-        this.$store.dispatch('SET_BUDGET_SELECT',data);
+        }
+        ;
+        this.$store.dispatch('SET_BUDGET_SELECT', data);
         getList(data).then(res => {
-          this.total = res.count ;
+          this.total = res.count;
           this.tableData = res.list;
           this.loading = false;
         });
@@ -412,7 +427,7 @@
           pageSize: this.obj.pageSize,
           pageNum: this.obj.pageNum
         }
-        this.$store.dispatch('SET_BUDGET_SELECT',this.obj);
+        this.$store.dispatch('SET_BUDGET_SELECT', this.obj);
       },
 
       //删除方法
@@ -441,7 +456,7 @@
         var data = {};
         this.fileList = [];
         GetInfo(row.id).then(res => {
-          if (res.state == 10 || res.state == 30 || res.state == 31||res.state == 40) {
+          if (res.state == 10 || res.state == 30 || res.state == 31 || res.state == 40) {
             this.$router.push(`/budget/edit?id=${res.id}`);
           } else {
             this.$message.warning('当前记录不能进行修改调整！');
@@ -468,7 +483,7 @@
             getLaunchType().then(response => {
               this.LaunchOption = response;
               this.isLaunch = true;
-              this.LaunchId=1;
+              this.LaunchId = 1;
             })
           } else {
             this.$message.warning('当前记录不允许发起审批');
@@ -493,7 +508,7 @@
       },
       //导出Excel表
       handleExport() {
-        let queryForm=JSON.parse(JSON.stringify(this.obj));
+        let queryForm = JSON.parse(JSON.stringify(this.obj));
         delete queryForm.pageNum;
         delete queryForm.pageSize;
         this.$confirm('是否确认导出签报的数据?', '提示', {
@@ -554,7 +569,7 @@
     .tables {
       width: 100%;
       height: 600px;
-      margin-top:20px;
+      margin-top: 20px;
       text-align: center;
       overflow: auto;
     }
@@ -572,7 +587,8 @@
     display: flex;
     flex-direction: row;
   }
-  .table-btn-box /deep/ .is-hidden{
+
+  .table-btn-box /deep/ .is-hidden {
     display: table-cell !important;
   }
 </style>

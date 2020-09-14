@@ -1,11 +1,4 @@
-<!--
- * @Descripttion:
- * @version:
- * @Author: CYZ
- * @Date: 2020-07-13 16:23:28
- * @LastEditors: CYZ
- * @LastEditTime: 2020-08-17 11:13:37
--->
+
 <template>
   <div class="container">
     <el-form :model="queryParams" ref="queryForm" :inline="true">
@@ -67,14 +60,7 @@
       :tree-props="{children: 'children', hasChildren: 'hasChildren1'}"
       @selection-change="handleSelectionChange"
     >
-      <!-- <el-table-column type="selection" width="55" align="center" /> -->
-      <!-- <el-table-column prop="id" label="预算编号" width="100" align="center"></el-table-column> -->
       <el-table-column prop="label" label="项目名称"></el-table-column>
-      <!-- <el-table-column prop="balance" label="今年预算值" width="120" align="center"></el-table-column>
-      <el-table-column prop="lastYearBalance" label="去年预算值" width="120" align="center"></el-table-column>
-      <el-table-column prop="threshold" label="金额阀值" width="120" align="center"></el-table-column>
-      <el-table-column prop="underUnitId" label="归口单位" width="150" align="center"></el-table-column>-->
-      <!-- <el-table-column prop="remark" label="备注" align="center"></el-table-column> -->
       <el-table-column align="center" label="操作">
         <template slot-scope="scope">
           <el-button
@@ -93,14 +79,6 @@
       </el-table-column>
     </el-table>
 
-    <!-- <pagination
-      v-show="total>0"
-      :total="total"
-      :page.sync="queryParams.pageNum"
-      :limit.sync="queryParams.pageSize"
-      @pagination="getList"
-    />-->
-
     <!-- 添加或修改角色配置对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px">
       <el-form ref="form" :model="form" label-width="80px">
@@ -117,24 +95,9 @@
         <el-form-item label="项目名称" prop="label">
           <el-input placeholder="请输入项目名称" v-model="form.label" clearable size="small" />
         </el-form-item>
-        <!-- <el-form-item label="归口单位" prop="underUnitId" v-if="addtype!='unit'">
-          <treeselect
-            v-model="form.underUnitId"
-            @select="seletnode"
-            :options="deptOptions"
-            placeholder="请选择归口单位"
-          />
-        </el-form-item>-->
         <el-form-item label="预算科目" prop="budgetItemId" v-if="addtype!='unit'">
           <treeselect v-model="form.budgetItemId" :options="proOptions" placeholder="请选择预算科目" />
-          <!-- <el-input placeholder="请输入预算科目表" v-model="form.itemId" clearable size="small" /> -->
         </el-form-item>
-        <!-- <el-form-item label="今年预算值" prop="balance">
-          <el-input placeholder="请输入今年预算值" v-model="form.balance" clearable size="small" />
-        </el-form-item>-->
-        <!-- <el-form-item label="去年预算值" prop="lastYearBalance">
-          <el-input placeholder="请输入去年预算值" v-model="form.lastYearBalance" clearable size="small" />
-        </el-form-item>-->
         <el-form-item label="金额阀值" prop="threshold" v-if="addtype!='unit'">
           <el-input
             placeholder="请输入金额阀值"
@@ -163,22 +126,6 @@
       </div>
     </el-dialog>
 
-    <!-- <el-upload
-        class="upload-demo"
-        ref="upload"
-        action="doUpload"
-        :limit="1"
-        :file-list="fileList"
-        :before-upload="beforeUpload"
-      >
-        <el-button slot="trigger" type="primary" plain>选取文件</el-button>
-        <div slot="tip" class="el-upload__tip">只能上传xlsx/xls文件</div>
-      </el-upload>
-      <div class="btn-box">
-        <el-button @click="handleClose">取 消</el-button>
-        <el-button type="primary" @click="submitUpload()">确 定</el-button>
-    </div>-->
-
     <el-dialog :visible.sync="centerDialogVisible" width="500px">
       <el-upload
         class="upload-demo"
@@ -194,10 +141,6 @@
         <el-button size="small" type="primary">点击上传</el-button>
         <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
       </el-upload>
-      <!-- <div class="btn-box">
-        <el-button @click="handleClose">取 消</el-button>
-        <el-button type="primary" @click="submitUpload()">确 定</el-button>
-      </div>-->
     </el-dialog>
   </div>
 </template>
@@ -267,17 +210,9 @@ export default {
       }
       callback();
     },
-    seletnode(node, instanceId) {
-      console.log("node", node);
-      getTree(node.id).then((response) => {
-        console.log("getTree", response);
-      });
-    },
     handleRemove(file, fileList) {
-      console.log(file, fileList);
     },
     handlePreview(file) {
-      console.log(file);
     },
     handleExceed(files, fileList) {
       this.$message.warning(
@@ -287,7 +222,6 @@ export default {
       );
     },
     handleSuccess(res) {
-      console.log("handleSuccess", res);
       this.fileList = [];
       this.centerDialogVisible = false;
       this.getList();
@@ -295,15 +229,6 @@ export default {
     beforeRemove(file, fileList) {
       return this.$confirm(`确定移除 ${file.name}？`);
     },
-    /** 查询角色列表 */
-    // getList() {
-    //   this.loading = true;
-    //   listBudget(this.queryParams).then(response => {
-    //     this.tableData = response;
-    //     // this.total = response.count;
-    //     this.loading = false;
-    //   });
-    // },
     // 多选框选中数据
     handleSelectionChange(selection) {
       this.ids = selection.map((item) => item.id);
@@ -328,7 +253,6 @@ export default {
     handleQuery() {
       if (this.queryParams.year) {
         this.queryParams.date = this.queryParams.year.getFullYear();
-        console.log("queryParams.date", this.queryParams.date);
       }
       this.getList();
     },
@@ -386,14 +310,6 @@ export default {
       }
     },
     handleDelete(row) {
-      let that = this;
-      // if (row.children) {
-      //   this.addtype = "unit";
-      //   console.log('存在')
-      // } else {
-      //   this.addtype = "item";
-      //   console.log(' 不存在')
-      // }
       this.$confirm(
         '是否确认删除项目名称为"' + row.label + '"的数据项?',
         "警告",
@@ -405,13 +321,11 @@ export default {
       ).then(() => {
         if (row.isParent) {
           DelBudgetItem(row.id).then((response) => {
-            console.log("DelBudget", response);
             this.msgSuccess("删除成功");
             this.getList();
           });
         } else {
           DelBudget(row.id).then((response) => {
-            console.log("DelBudget", response);
             this.msgSuccess("删除成功");
             this.getList();
           });
@@ -481,7 +395,6 @@ export default {
       this.centerDialogVisible = false;
     },
     handleNodeClick(data) {
-      console.log(data);
     },
     /** 导出按钮操作 */
     handleExport() {

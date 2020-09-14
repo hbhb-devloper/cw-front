@@ -343,7 +343,6 @@ export default {
     submitForm: function() {
       this.$refs["form"].validate(valid => {
         if (valid) {
-          console.log(this.form.id);
           if (this.form.id !== undefined) {
             updateMenu(this.form).then(() => {
               this.msgSuccess("修改成功");

@@ -9,7 +9,7 @@
         <div class="title">公告栏:</div>
         <div class="textBox">
           <transition name="slide">
-            <p class="text" :key="text.id">{{text.val}}</p>
+            <p class="text"  :key="text.id">{{text.val}}</p>
           </transition>
         </div>
       </div>
@@ -65,20 +65,17 @@ import SizeSelect from "@/components/SizeSelect";
 import Search from "@/components/HeaderSearch";
 import RuoYiGit from "@/components/RuoYi/Git";
 import RuoYiDoc from "@/components/RuoYi/Doc";
-import { getInfo } from "@/api/login.js";
 import {getNotice} from "@/api/system/notice"
+import { getInfo } from "@/api/login.js";
+import Stomp from "stompjs";
 
 export default {
   data() {
     return {
       name: "",
-      textArr: [
-        // "1 预算执行用户手册已更新到文档区，请查阅",
-        // "2 发起签报请选择“预算执行流程”",
-        // "3 渠道电子发票导出模板问题已解决",
-        // "4 渠道电子发票导出模板问题已解决",
-      ],
+      textArr: [],
       number: 0,
+      client: Stomp.client(process.env.VUE_APP_WS_URL),
     };
   },
   components: {
@@ -108,31 +105,26 @@ export default {
       };
     },
   },
-  watch:{
-    notices(newval){
-      this.handleNotice();
-    }
+  created() {
+    this.connect();
+    this.handleNotice();
   },
   mounted() {
     this.handleInfo();
     this.startMove();
-    this.handleNotice();
   },
   methods: {
     startMove() {
-      // eslint-disable-next-line
-      let timer = setTimeout(() => {
-        if (this.number === this.textArr.length-1) {
-          this.number = 0;
-        } else {
-          this.number += 1;
+      setInterval(()=>{
+        if(this.number===this.textArr.length-1||this.textArr.length-1===0||this.textArr.length===0||this.number>this.textArr.length){
+          this.number=0;
+        }else if(this.textArr.length>0){
+          this.number +=1;
         }
-        this.startMove();
-      }, 2000); // 滚动不需要停顿则将2000改成动画持续时间
+      },2000);
     },
     handleNotice(){
       getNotice().then(res=>{
-        console.log(res,999);
         this.textArr=res;
       })
     },
@@ -152,6 +144,29 @@ export default {
         });
       });
     },
+    onConnected: function () {
+      const dest = "/queue/" + process.env.VUE_APP_WS_QUEUE;
+      this.client.subscribe(dest, this.responseCallback, this.onFailed);
+    },
+    onFailed: function (frame) {
+    },
+    responseCallback: function (frame) {
+      let list = [];
+      let obj = eval("("+frame.body+")");
+      for(let key of obj){
+        list.push(key);
+      }
+      this.textArr = list;
+    },
+    connect: function () {
+      const headers = {
+        login: "root",
+        passcode: "cw_2020",
+      };
+      // 调试日志开关
+      this.client.debug = null;
+      this.client.connect(headers, this.onConnected, this.onFailed);
+    },
   },
 };
 </script>
@@ -163,7 +178,6 @@ export default {
   flex-direction: row;
 }
 .title {
-  // padding: 20px 0;
   width: 80px;
   line-height: 50px;
   font-size: 19px;
@@ -172,11 +186,9 @@ export default {
 .textBox {
   width: 400px;
   height: 50px;
-  // margin: 0 auto;
   overflow: hidden;
   position: relative;
   line-height: 50px;
-  // text-align: center;
 }
 .text {
   width: 100%;
@@ -214,12 +226,9 @@ export default {
   justify-content: space-between;
   .left-log {
     float: left;
-    /*padding-right: 20px;*/
-    /*border-right: 1px solid #b0b2b6;*/
     margin-left: 5px;
 
     img {
-      /*border-right: 1px solid #b0b2b6;*/
       padding-right: 20px;
     }
   }

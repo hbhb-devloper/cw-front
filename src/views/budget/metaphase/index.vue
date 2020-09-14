@@ -56,14 +56,10 @@
       v-loading="loading"
       header-cell-class-name="is-center"
     >
-      <!-- <el-table-column type="selection" width="55" align="center" /> -->
       <el-table-column prop="budgetName" label="项目类型" width="380"></el-table-column>
-      <!-- <el-table-column prop="company" label="计量单位" align="center" width="180"></el-table-column> -->
       <el-table-column prop="oldValue" align="center" label="调整前预算值(万元)"></el-table-column>
       <el-table-column prop="newValue" align="center" label="调整后预算值(万元)"></el-table-column>
       <el-table-column prop="difValue" align="center" label="差额(万元)"></el-table-column>
-      <!-- <el-table-column prop="threshold" align="center" label="金额阀值(万元)"></el-table-column> -->
-      <!-- <el-table-column prop="createTime" align="center" label="调整时间"></el-table-column> -->
       <el-table-column prop="remark" align="center" label="备注"></el-table-column>
       <el-table-column align="center" label="操作">
         <template slot-scope="scope">
@@ -71,24 +67,12 @@
         </template>
       </el-table-column>
     </el-table>
-
-    <!-- <pagination
-      v-show="total>0"
-      :total="total"
-      :page.sync="queryParams.pageNum"
-      :limit.sync="queryParams.pageSize"
-      @pagination="getList"
-    />-->
-
     <!-- 添加或修改角色配置对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px">
       <el-form ref="form" :model="form" label-width="80px">
         <el-form-item label="预算科目：" prop="budgetName">
           <el-input placeholder="请输入关键词" v-model="form.budgetName" disabled clearable size="small" />
         </el-form-item>
-        <!-- <el-form-item label="计量单位：" prop="company">
-          <el-input placeholder="请输入关键词" v-model="form.company" disabled clearable size="small" />
-        </el-form-item>-->
         <el-form-item label="调整前预算值：" prop="oldValue">
           <el-input
             placeholder="请输入调整前预算值"
@@ -164,12 +148,7 @@
         :file-list="fileList"
       >
         <el-button size="small" type="primary">点击上传</el-button>
-        <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
       </el-upload>
-      <!-- <div class="btn-box">
-        <el-button @click="handleClose">取 消</el-button>
-        <el-button type="primary" @click="submitUpload()">确 定</el-button>
-      </div>-->
     </el-dialog>
   </div>
 </template>
@@ -248,7 +227,6 @@ export default {
         spinner: "el-icon-loading",
         background: "rgba(0, 0, 0, 0.7)",
       });
-      console.log("loading", loading);
       this.loadingoption = loading;
     },
     handleFail() {
@@ -256,10 +234,8 @@ export default {
       this.$message.error("上传失败");
     },
     handleRemove(file, fileList) {
-      console.log(file, fileList);
     },
     handlePreview(file) {
-      console.log(file);
     },
     handleExceed(files, fileList) {
       this.$message.warning(
@@ -269,7 +245,6 @@ export default {
       );
     },
     handleSuccess(res) {
-      console.log("handleSuccess", res);
       this.fileList = [];
       this.loadingoption.close();
       this.centerDialogVisible = false;
@@ -368,21 +343,18 @@ export default {
     /** 导出按钮操作 */
     handleExport() {
       const queryParams = this.queryParams;
-      console.log("queryParams", queryParams);
       this.$confirm("是否确认导出所有中期预算数据项?", "导出表格", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
       })
         .then(function () {
-          console.log("queryParams", queryParams);
           return exportData(
             getToken(),
             queryParams,
             "/budget/history/export",
             "中期预算调整"
           );
-          // exportRole(queryParams);
         })
         .catch(function () {});
     },

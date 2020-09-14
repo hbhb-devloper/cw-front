@@ -34,26 +34,6 @@
         >新增
         </el-button>
       </el-col>
-      <!--      <el-col :span="1.5">-->
-      <!--        <el-button-->
-      <!--          type="success"-->
-      <!--          icon="el-icon-edit"-->
-      <!--          size="mini"-->
-      <!--          :disabled="single"-->
-      <!--          @click="handleUpdate"-->
-      <!--          v-hasPermi="['system:notice:edit']"-->
-      <!--        >修改</el-button>-->
-      <!--      </el-col>-->
-      <!--      <el-col :span="1.5">-->
-      <!--        <el-button-->
-      <!--          type="danger"-->
-      <!--          icon="el-icon-delete"-->
-      <!--          size="mini"-->
-      <!--          :disabled="multiple"-->
-      <!--          @click="handleDelete"-->
-      <!--          v-hasPermi="['system:notice:remove']"-->
-      <!--        >删除</el-button>-->
-      <!--      </el-col>-->
     </el-row>
 
     <el-table v-loading="loading" :data="noticeList">
@@ -238,7 +218,6 @@
       },
       // 开关事件
       handleChange(row) {
-        console.log(row);
         let datas = JSON.parse(JSON.stringify(row));
         delete datas.createTime;
         delete datas.createBy;

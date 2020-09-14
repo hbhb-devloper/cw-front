@@ -1,6 +1,6 @@
 <!--
- * @Descripttion: 
- * @version: 
+ * @Descripttion:
+ * @version:
  * @Author: CYZ
  * @Date: 2020-07-20 18:22:09
  * @LastEditors: CYZ
@@ -25,7 +25,7 @@
             <el-input v-model="maintain.email" :disabled="Isdisable"></el-input>
           </el-form-item>
         </el-form>
-        
+
         <div class="title-box" style="margin-top: 30px">
           <div class="title-solid"></div>
           <div class="title1">系统开发信息</div>
@@ -41,7 +41,7 @@
             <el-input v-model="maintain.devLanguage" :disabled="Isdisable"></el-input>
           </el-form-item>
         </el-form>
-        
+
         <div class="button">
           <el-button type="danger" size="mini" @click="Isdisable =!Isdisable">编辑</el-button>
           <el-button type="primary" size="mini" :disabled="Isdisable" @click="submit">保存</el-button>
@@ -67,13 +67,11 @@ export default {
   methods: {
     showinfo() {
       getMaintain().then((res) => {
-        console.log("getMaintain", res);
         this.maintain = res;
       });
     },
     submit(){
       PutMaintain(this.maintain).then((res) => {
-        console.log("PutMaintain", res);
         this.Isdisable=true
         this.$message.success("修改信息成功");
         this.getMaintain()

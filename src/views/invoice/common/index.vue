@@ -349,8 +349,6 @@
                 <el-option label="是" value="Y"></el-option>
                 <el-option label="否" value="N"></el-option>
               </el-select>
-              <!--              <el-radio v-model="obj.stateIdentity" label="Y">是</el-radio>-->
-              <!--              <el-radio v-model="obj.stateIdentity" label="N">否</el-radio>-->
             </el-form-item>
             <el-form-item v-if="obj.invoiceType==23||obj.invoiceType==24||obj.invoiceType==25||obj.invoiceType==''"
                           label="国内/国际：" prop="domesticAndForeign">
@@ -359,8 +357,6 @@
                 <el-option label="国内" value="IN"></el-option>
                 <el-option label="国际" value="OUT"></el-option>
               </el-select>
-              <!--              <el-radio v-model="obj.domesticAndForeign" label="IN">国内</el-radio>-->
-              <!--              <el-radio v-model="obj.domesticAndForeign" label="OUT">国际</el-radio>-->
             </el-form-item>
             <el-form-item v-if="obj.invoiceType==21||obj.invoiceType==22||obj.invoiceType==26||obj.invoiceType==''"
                           label="不含税金额：" prop="taxFreeAmount">
@@ -565,7 +561,6 @@
       handleSelect() {
         let params = {};
         params=JSON.parse(JSON.stringify(this.obj2));
-        console.log(params.itime);
         if(params.itime){
           params.beginTime=params.itime[0];
           params.endTime=params.itime[1];

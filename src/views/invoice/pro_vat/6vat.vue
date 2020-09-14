@@ -280,14 +280,6 @@
                 size="small"
               />
             </el-form-item>
-
-<!--            <el-form-item label="项目属性：" prop="phonenumber">-->
-<!--              <el-select v-model="obj.projectProperties" placeholder="请选择关键词">-->
-<!--                <el-option label="不动产" value="0"></el-option>-->
-<!--                <el-option label="动产" value="1"></el-option>-->
-<!--                <el-option label="其他" value="2"></el-option>-->
-<!--              </el-select>-->
-<!--            </el-form-item>-->
             <el-form-item label="红字信息表号：" v-if="insetUpdata==2" prop="phonenumber">
               <el-input
                 placeholder="请输入关键词"
@@ -389,7 +381,6 @@
       handleSelect() {
         let params = {};
         params=JSON.parse(JSON.stringify(this.obj2));
-        console.log(params.itime);
         if(params.itime){
           params.beginTime=params.itime[0];
           params.endTime=params.itime[1];

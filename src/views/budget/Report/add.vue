@@ -20,12 +20,14 @@
         </el-form-item>
 
         <el-form-item label="项目可分配预算(万元)" :required="true">
-          <el-input placeholder="请输入可供分配预算额" :max="obj2.amount" class="input-select-length" v-model="obj2.availableAmount" type="number"
+          <el-input placeholder="请输入可供分配预算额" :max="obj2.amount" class="input-select-length"
+                    v-model="obj2.availableAmount" type="number"
                     min="0" clearable/>
         </el-form-item>
 
         <el-form-item label="本年价税合计(万元)" :required="true">
-          <el-input placeholder="请输入本年价税合计" :max="obj2.amount" class="input-select-length" v-model="obj2.taxIncludeAmount" type="number"
+          <el-input placeholder="请输入本年价税合计" :max="obj2.amount" class="input-select-length"
+                    v-model="obj2.taxIncludeAmount" type="number"
                     @input="handleCost" min="0" clearable/>
         </el-form-item>
 
@@ -156,14 +158,19 @@
             <el-button slot="trigger" size="small" class="uploadImgBtn">选取文件</el-button>
           </el-upload>
           <div class="file-box">
-                        <div v-for="(item,index) in fileList" v-if="item.type==1"><i class="el-icon-folder"></i><span class="fileName">{{item.name}}</span><span @click="beforeRemove(item)" class="el-icon-circle-close"></span></div>
-                      </div>
+            <div v-for="(item,index) in fileList" v-if="item.type==1"><i class="el-icon-folder"></i><span
+              class="fileName">{{item.name}}</span><span @click="beforeRemove(item)"
+                                                         class="el-icon-circle-close"></span></div>
+          </div>
         </el-form-item>
         <br>
-        <el-form-item >
-          <el-button class="btn" type="primary" :disabled="formSubMit" v-if="!obj2.state" @click="handleSubmit">保存</el-button>
-          <el-button class="btn" type="primary" v-if="obj2.state==10||obj2.state==30" @click="handleSubmit">修改保存</el-button>
-          <el-button class="btn" type="primary" v-if="obj2.state==31" @click="handleSubmit">调整保存</el-button>
+        <el-form-item>
+          <el-button class="btn" type="primary" :disabled="formSubMit" v-if="!obj2.state" @click="handleSubmit">保存
+          </el-button>
+          <el-button class="btn" type="primary" v-if="obj2.state==10||obj2.state==30" @click="handleSubmit">修改保存
+          </el-button>
+          <el-button class="btn" type="primary" v-if="obj2.state==31||obj2.state==40" @click="handleSubmit">调整保存
+          </el-button>
         </el-form-item>
       </el-form>
     </el-col>
@@ -220,7 +227,6 @@
         },
         projectItem: [],//预算科目下拉菜单
         rate: [],//增值税率下拉
-        //stutic: 1,//1新增、2修改
         quota: null,//预算阀值
         checkArr: [true, true, true],//校验是否正确
         projectId: undefined,//记录id
@@ -243,7 +249,6 @@
     watch: {
       taxIncludeAmount(val) {
         if (!val) return
-        let vatRates = 1 + (this.obj2.vatRate / 100)
         let countss = parseFloat(this.obj2.taxIncludeAmount) - parseFloat(this.obj2.cost)
         this.obj2.vatAmount = countss.toFixed(6)
       }
@@ -269,11 +274,9 @@
             for (let key of res.files) {
               this.fileList.push({name: key.fileName, url: key.filePath, id: key.fileId, type: key.required})
             }
-            // res.files=[];
             this.$emit('changeType', 0, res.budgetId)
             getQuota(res.budgetId).then(res => {
               this.quota = res
-              // this.$message.warning(`当前项目预算总额阀值为${res}万元`);
             })
             res.vatRate = res.vatRate;
             this.obj2 = res;
@@ -283,7 +286,6 @@
       //计算本年项目成本
       handleCost() {
         if (!this.obj2.vatRate) {
-          // this.$message.warning('请选择增值税率');
           return
         }
         let vatRate = 1 + (this.obj2.vatRate / 100);
@@ -307,13 +309,6 @@
         let filters = null
         switch (type) {
           case 0:
-            // filters=/^[\u4e00-\u9fa5]{0,}$/g;
-            // if(!filters.test(this.obj2.projectName)){
-            //   this.$message.warning('请输入正确的项目名称');
-            //   this.checkArr[type]=false;
-            // }else{
-            //   this.checkArr[type]=true;
-            // }
             this.checkArr[type] = true
             break
           case 1:
@@ -327,12 +322,7 @@
             break
           case 2:
             filters = /^[A-Z0-9]{0,}$/g
-            // if (!filters.test(this.obj2.engineeringNum)) {
-            //   this.$message.warning('请输入正确的工程编号')
-            //   this.checkArr[type] = false
-            // } else {
             this.checkArr[type] = true
-            // }
             break
           case 3:
             if (parseFloat(this.obj2.amount) > parseFloat(this.quota)) {
@@ -370,11 +360,10 @@
       },
       //文件上传普通附件
       imageUpload(param) {
-        let that = this, list = {isApproved: 0};
+        let list = {isApproved: 0};
         if (this.stutic != 'add') {
           list.isApproved = this.obj2.state == 31 || this.obj2.state == 32 ? 1 : 0;
         }
-        console.log(param);
         const _file = param.file;
         let params = new FormData();
         params.append('files', _file);
@@ -420,7 +409,6 @@
           this.obj2.files.push(list);
         })
       },
-      //修改
 
       //获取金额阀值
       handleType() {
@@ -437,7 +425,6 @@
         this.$emit('changeType', 0, this.obj2.budgetId);
         getQuota(this.obj2.budgetId).then(res => {
           this.quota = res;
-          // this.$message.warning(`当前项目预算总额阀值为${res}万元`);
         })
       },
       //信息提交
@@ -450,35 +437,42 @@
           || !this.obj2.startTime || !this.obj2.endTime) {
           this.$message.warning('必填项不能为空')
           return
-        };
+        }
+        ;
 
-        if ((parseFloat(this.obj2.cost)+ parseFloat(this.obj2.vatAmount)).toFixed(6) != parseFloat(this.obj2.taxIncludeAmount)) {
+        if ((parseFloat(this.obj2.cost) + parseFloat(this.obj2.vatAmount)).toFixed(6) != parseFloat(this.obj2.taxIncludeAmount)) {
           this.$message.warning('本年价税合计有误，请填写正确值')
           return
-        };
+        }
+        ;
         if (parseFloat(this.obj2.amount) >= parseFloat(this.quota)) {
           let fileLength = this.obj2.files.filter(item => {
             if (item.required == 1) {
               return item;
-            };
+            }
+            ;
           }).length;
           if (fileLength == 0) {
             this.$message.warning(`项目预算总额超过${this.quota}万元，请上传管理层审批附件`);
             return
-          };
-        };
-        let startTimes=Date.parse(new Date(this.obj2.startTime));
-        startTimes=startTimes/1000;
-        let endTimes=Date.parse(new Date(this.obj2.endTime));
-        endTimes=endTimes/1000;
-        if(startTimes>endTimes){
+          }
+          ;
+        }
+        ;
+        let startTimes = Date.parse(new Date(this.obj2.startTime));
+        startTimes = startTimes / 1000;
+        let endTimes = Date.parse(new Date(this.obj2.endTime));
+        endTimes = endTimes / 1000;
+        if (startTimes > endTimes) {
           this.$message.error('项目开始时间不能大于项目结束时间！');
           return;
-        };
-        if(parseFloat(this.obj2.availableAmount)>parseFloat(this.obj2.amount)||parseFloat(this.obj2.taxIncludeAmount)>parseFloat(this.obj2.amount)){
+        }
+        ;
+        if (parseFloat(this.obj2.availableAmount) > parseFloat(this.obj2.amount) || parseFloat(this.obj2.taxIncludeAmount) > parseFloat(this.obj2.amount)) {
           this.$message.error('可供分配预算或本年价税合计不能高于项目预算总额！');
           return;
-        };
+        }
+        ;
 
         let checkLangth = this.checkArr.filter(item => {
           return item == false
@@ -489,16 +483,10 @@
           addData(this.obj2).then(res => {
             this.$message.success('添加成功');
             this.formSubMit = false;
-            // this.obj2={
-            //   files: [],
-            // };
-            // this.fileList=[];
             this.$emit('changeType', 1, res);
             this.obj2.id = res;
-            this.$store.dispatch('PROJECTID',res);
+            this.$store.dispatch('PROJECTID', res);
             this.$emit('changeType', 2, undefined);
-
-            // this.$router.go(-1);
           }).catch(err => {
             this.formSubMit = false;
           })
@@ -513,7 +501,6 @@
             }
             if (!this.$router.query.id) return;
             this.handleLoad();
-            // this.$router.go(-1);
           })
         }
 
@@ -526,6 +513,7 @@
   .input-select-length {
     width: 200px;
   }
+
   .file-box {
     color: #606266;
 
@@ -543,7 +531,8 @@
       cursor: pointer;
     }
   }
-  .btn{
+
+  .btn {
     margin-left: 165px;
   }
 </style>
