@@ -50,10 +50,8 @@
       @selection-change="handleSelectionChange"
       v-loading="loading"
     >
-      <!-- <el-table-column type="selection" width="50" align="center" /> -->
       <el-table-column prop="lineNumber" label="序号" align="center"  width="50"></el-table-column>
       <el-table-column prop="budgetItem" label="项目类型" align="center"  width="170"></el-table-column>
-      <!-- <el-table-column prop="measureUnit" label="计量单位" align="center" width="100"></el-table-column> -->
       <el-table-column prop="nowBudgetBalance" align="center" label="本年预算值"></el-table-column>
       <el-table-column prop="afterAdjustmentValue" align="center" label="本期调整后完成值"></el-table-column>
       <el-table-column prop="beforeCompletionValue" align="center" label="调整前累计完成值"></el-table-column>
@@ -81,11 +79,10 @@
 </template>
 
 <script>
-import { treeselect, DeptList } from "@/api/system/dept";
 import { resourceTreeByUN } from "@/api/system/unit";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
-import { updateBudget, BudgetExport } from "@/api/budget/decompose/decompose";
+import { updateBudget } from "@/api/budget/decompose/decompose";
 import { exportData } from "@/utils/export";
 import { getToken } from "@/utils/auth";
 
@@ -129,10 +126,8 @@ export default {
   },
   methods: {
     handleRemove(file, fileList) {
-      console.log(file, fileList);
     },
     handlePreview(file) {
-      console.log(file);
     },
     handleExceed(files, fileList) {
       this.$message.warning(
@@ -142,7 +137,6 @@ export default {
       );
     },
     handleSuccess(res) {
-      console.log("handleSuccess", res);
       this.fileList = [];
       this.centerDialogVisible = false;
       this.getList();
@@ -177,7 +171,6 @@ export default {
     handleQuery() {
       if (this.queryParams.year) {
         this.queryParams.date = this.queryParams.year.getFullYear();
-        console.log("queryParams.date", this.queryParams.date);
       }
       this.getList();
     },
@@ -186,7 +179,6 @@ export default {
       this.dateRange = [];
       this.resetForm("queryForm");
       this.queryParams.unitId = this.morenUnit;
-      // this.handleQuery();
     },
     // 表单重置
     reset() {
@@ -203,15 +195,9 @@ export default {
     //修改
     handleEdit(row) {
       this.reset();
-      console.log("row", row);
-
-      // const roleId = row.id || this.ids;
-
-      // getRole(roleId).then(response => {
       this.form = row;
       this.open = true;
       this.title = "预算调整";
-      // });
     },
     /** 提交按钮 */
     submitForm: function() {
@@ -243,7 +229,6 @@ export default {
         type: "warning"
       })
         .then(function() {
-          // return BudgetExport(queryParams);
           return exportData(
             getToken(),
             queryParams,

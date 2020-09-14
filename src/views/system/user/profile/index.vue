@@ -1,6 +1,6 @@
 <!--
- * @Descripttion: 
- * @version: 
+ * @Descripttion:
+ * @version:
  * @Author: CYZ
  * @Date: 2020-07-20 18:22:09
  * @LastEditors: CYZ
@@ -68,7 +68,7 @@
                   <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" :disabled="Isdisable"></el-input>
                 </el-form-item>
               </el-col>
-              
+
             </el-row>
             <div class="button" style="padding-left:50px">
                 <el-button type="danger" size="mini" @click="Isdisable =!Isdisable">编辑</el-button>
@@ -159,7 +159,6 @@ export default {
     },
     submit(){
       updateUserProfile(this.form).then((res) => {
-        console.log("updateUserProfile", res);
         this.Isdisable=true
         this.$message.success("修改信息成功");
         this.getUser()

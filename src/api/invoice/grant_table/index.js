@@ -8,8 +8,20 @@ export function getList(params) {
     params
   })
 }
-export function DeleteDate(id){
+//税率
+export function getTaxtype() {
   return request({
-    url:'/invoice/remuneration'
+    url:'/dict/budget/invoice-tax-type',
+    method:'get',
   })
 }
+//删除
+export function DeleteSerialNumber(data) {
+  return request({
+    url:`/invoice/remuneration`,
+    method:'delete',
+    data
+  })
+}
+
+

@@ -398,7 +398,6 @@
       handleSelect() {
         let params = {};
         params=JSON.parse(JSON.stringify(this.obj2));
-        console.log(params.itime);
         if(params.itime){
           params.beginTime=params.itime[0];
           params.endTime=params.itime[1];

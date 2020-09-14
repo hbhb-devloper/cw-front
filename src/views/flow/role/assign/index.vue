@@ -200,7 +200,6 @@ export default {
     getUserList() {
       this.loading1 = true;
       UserList(this.queryParams).then((response) => {
-        console.log(response);
         this.UserList = [];
         response.list.map((item) => {
           let UserItem = {
@@ -241,7 +240,6 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(row) {
-      console.log(row);
       let idIndex = this.form.userIds.indexOf(row.id);
       if (idIndex == -1) {
         this.form.userIds.push(row.id);

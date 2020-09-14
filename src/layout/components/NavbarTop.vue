@@ -125,7 +125,6 @@ export default {
     },
     handleNotice(){
       getNotice().then(res=>{
-        console.log(res,999);
         this.textArr=res;
       })
     },
@@ -150,7 +149,6 @@ export default {
       this.client.subscribe(dest, this.responseCallback, this.onFailed);
     },
     onFailed: function (frame) {
-      console.log("MQ Failed: " + frame);
     },
     responseCallback: function (frame) {
       let list = [];
@@ -180,7 +178,6 @@ export default {
   flex-direction: row;
 }
 .title {
-  // padding: 20px 0;
   width: 80px;
   line-height: 50px;
   font-size: 19px;
@@ -189,11 +186,9 @@ export default {
 .textBox {
   width: 400px;
   height: 50px;
-  // margin: 0 auto;
   overflow: hidden;
   position: relative;
   line-height: 50px;
-  // text-align: center;
 }
 .text {
   width: 100%;
@@ -231,12 +226,9 @@ export default {
   justify-content: space-between;
   .left-log {
     float: left;
-    /*padding-right: 20px;*/
-    /*border-right: 1px solid #b0b2b6;*/
     margin-left: 5px;
 
     img {
-      /*border-right: 1px solid #b0b2b6;*/
       padding-right: 20px;
     }
   }

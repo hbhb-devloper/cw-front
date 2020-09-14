@@ -108,6 +108,7 @@
             inactive-text="否">
           </el-switch>
         </el-form-item>
+
       </el-form>
       <el-button size="mini" @click="cancel">取消</el-button>
       <el-button type="primary" size="mini" @click="submitForm">提交</el-button>
@@ -163,7 +164,6 @@
     methods: {
       //文件上传
       UploadFile(param) {
-        console.log(param);
         const _file = param.file;
         let params = new FormData();
         params.append('file', _file);
@@ -176,10 +176,8 @@
             'Authorization': getToken()
           }
         }).then(res => {
-          console.log(res);
           this.tableData=[];
           for(let item in res.data.data){
-            console.log(res.data.data[item]);
             this.tableData.push({date:res.data.data[item]});
           }
           this.$message.success('附件上传成功！');
@@ -239,7 +237,6 @@
       /** 新增按钮操作 */
       handleAdd() {
         this.reset();
-        // this.getMenuTreeselect();
         this.open = true;
         this.title = "添加类型";
       },
@@ -256,7 +253,6 @@
 
       /** 提交按钮 */
       submitForm: function () {
-        // this.queryParams1.state=this.queryParams1.state?1:0;
         UpdateUnit(this.queryParams1).then(res=>{
           this.$message.success('修改成功');
           this.open=false;
@@ -269,9 +265,6 @@
   };
 </script>
 <style scoped>
-  /* .el-form-item--medium /deep/ .el-form-item__content {
-    width: 230px;
-  } */
   .uploadList {
     width: 100%;
     padding: 15px;
