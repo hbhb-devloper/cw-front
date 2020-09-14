@@ -75,7 +75,7 @@ export default {
       name: "",
       textArr: [],
       number: 0,
-      client: Stomp.client("wss://ws.yeexun.com.cn/ws"),
+      client: Stomp.client(process.env.VUE_APP_WS_URL),
     };
   },
   components: {
@@ -146,7 +146,7 @@ export default {
       });
     },
     onConnected: function () {
-      const dest = "/queue/test_queue";
+      const dest = "/queue/" + process.env.VUE_APP_WS_QUEUE;
       this.client.subscribe(dest, this.responseCallback, this.onFailed);
     },
     onFailed: function (frame) {
