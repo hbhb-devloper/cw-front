@@ -75,7 +75,7 @@ export default {
       name: "",
       textArr: [],
       number: 0,
-      client: Stomp.client("ws://mq.yeexun.com.cn:15674/ws"),
+      client: Stomp.client("wss://ws.yeexun.com.cn/ws"),
     };
   },
   components: {
@@ -146,7 +146,7 @@ export default {
       });
     },
     onConnected: function () {
-      const dest = "/queue/broadcast_queue";
+      const dest = "/queue/broadcast_dev";
       this.client.subscribe(dest, this.responseCallback, this.onFailed);
     },
     onFailed: function (frame) {
