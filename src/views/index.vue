@@ -297,7 +297,6 @@ export default {
         spinner: "el-icon-loading",
         background: "rgba(0, 0, 0, 0.7)",
       });
-      console.log("loading", loading);
       this.loadingoption = loading;
     },
     handleFail() {
@@ -305,10 +304,8 @@ export default {
       this.$message.error("上传失败");
     },
     handleRemove(file, fileList) {
-      console.log(file, fileList);
     },
     handlePreview(file) {
-      console.log(file);
     },
     handleExceed(files, fileList) {
       this.$message.warning(
@@ -318,7 +315,6 @@ export default {
       );
     },
     handleSuccess(res) {
-      console.log("handleSuccess", res);
       this.fileList = [];
       this.loadingoption.close();
       this.centerDialogVisible = false;
@@ -342,35 +338,15 @@ export default {
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
-      console.log("row", row);
       let that=this
       updateNotice(row.id).then((response) => {
-        console.log("updateNotice", response);
         that.getNoticeList();
       });
     },
-    // onConnected: function () {
-    //   const dest = "/exchange/testDirectExchange/test";
-    //   this.client.subscribe(dest, this.responseCallback, this.onFailed);
-    // },
-    // onFailed: function (frame) {
-    //   console.log("MQ Failed: " + frame);
-    // },
-    // responseCallback: function (frame) {
-    //   console.log("接收的消息为" + JSON.parse(frame.body));
-    // },
-    // connect: function () {
-    //   const headers = {
-    //     login: "root",
-    //     passcode: "cw_2020",
-    //   };
-    //   this.client.connect(headers, this.onConnected, this.onFailed);
-    // },
     /** 查询角色列表 */
     getList1() {
       this.loading1 = true;
       getNoticeList(this.queryParams).then((response) => {
-        console.log("getNoticeList", getNoticeList);
         this.total= response.count;  //Math.ceil(response.count/this.queryParams.pageSize);
         this.NoticeMoreData = response.list;
         this.loading1 = false;
@@ -379,11 +355,6 @@ export default {
     getNoticeList() {
       this.loading = true;
       getNoticeList().then((response) => {
-        console.log(response,222)
-        // console.log("getNoticeList", response);
-        // response=response.map(item=>{
-        //   item.createTime=item.createTime.substring(0,10)
-        // })
         this.NoticetableData = response.list;
         this.loading = false;
       });

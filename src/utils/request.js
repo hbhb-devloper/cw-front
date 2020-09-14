@@ -22,7 +22,6 @@ service.interceptors.request.use(config => {
   }
   return config
 }, error => {
-  console.log(error)
   Promise.reject(error)
 })
 
@@ -61,7 +60,6 @@ service.interceptors.response.use(
     }
   },
   error => {
-    console.log('err' + error)
     Notification.error({
       message: "系统出错啦！",
       duration: 3 * 1000

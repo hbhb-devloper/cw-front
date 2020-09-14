@@ -103,17 +103,6 @@
           return {
             total:0,
             queryParams:{
-              // dptId:undefined,//部门
-              // amountType:undefined,//款项类型
-              // downTime:undefined,//结束时间
-              // groupName:undefined,//集团信息
-              // busType:undefined,//办理业务
-              // fundFlows:undefined,//资金流向
-              // fcCode:undefined,//编号
-              // peopleDownTime:undefined,//时间
-              // userName:undefined,//录入人
-              // state:undefined,//流程状态
-              // year:undefined,//年份
               pageSize:10,
               pageNum:1
             },//条件搜索表单
@@ -134,7 +123,6 @@
         //获取部门列表
         getUnitId(){
           getUnitList().then(res=>{
-            // this.queryParams.dptId=res.checked[0];
             this.deptOptions=res;
           });
         },

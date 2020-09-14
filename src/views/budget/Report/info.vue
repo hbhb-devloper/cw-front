@@ -463,7 +463,7 @@
           <br>
           <el-form-item style="margin-left: 9%;">
             <el-button type="primary" size="mini" v-if="info.state==10||info.state==30" :disabled="info.state==20||info.state==50||parseInt(state)" @click="handleQuery">提交</el-button>
-            <el-button type="primary" size="mini" v-if="info.state==31"  :disabled="info.state==20||info.state==50||parseInt(state)" @click="handleQuery">调整保存</el-button>
+            <el-button type="primary" size="mini" v-if="info.state==31||info.state==40"  :disabled="info.state==20||info.state==50||parseInt(state)" @click="handleQuery">调整保存</el-button>
           </el-form-item>
         </el-form>
       </el-dialog>
@@ -609,23 +609,6 @@
       }else if(this.state==undefined){
         this.$store.dispatch('PROJECTID',this.$route.query.id);
         this.handleLoad(this.$route.query.id);
-        // GetInfo(this.projectIds).then(res => {
-        //   this.projectId=res.id;
-        //   this.form.budgetId = res.budgetId;
-        //   this.startTime = parseInt(res.startTime.substr(0, 4));
-        //   this.endTime = parseInt(res.endTime.substr(0, 4));
-        //   if (this.endTime == this.startTime) {
-        //     this.Span = false;
-        //   } else {
-        //     this.Span = true;
-        //   }
-        //   //分解预算表
-        //   getTable(res.id).then(res1 => {
-        //     this.tableDatas = res1
-        //   })
-        //   this.handleStatistics(res.budgetId,res.unitId);
-        // });
-
       }
     },
     methods: {
@@ -634,10 +617,6 @@
         //详情
         this.projectId=id;
         GetInfo(id).then(res => {
-          // res.detail=`${res.detail.replace(/\n/g, "<br/>")}`;
-          // res.introduction=`${res.introduction.replace(/\n/g, "<br/>")}`;
-          // res.target=`${res.target.replace(/\n/g, "<br/>")}`;
-          // res.remark=`${res.remark.replace(/\n/g, "<br/>")}`;
           this.info = res;
           this.form.budgetId = res.budgetId;
           this.fileTable1 = res.files.filter(item=>{
@@ -674,7 +653,6 @@
         })
         //分解预算表
         getTable(id).then(res1 => {
-          console.log(res1);
           this.tableDatas = res1
         });
         getList().then(res=>{
@@ -941,7 +919,6 @@
         margin-left: 10px;
         float: left;
         margin-bottom: 30px;
-        /*background: #F4F4F4;*/
         padding: 15px 0px 15px 15px;
         border:1.5px solid red;
         border-radius: 8px;

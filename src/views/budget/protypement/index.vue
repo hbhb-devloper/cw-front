@@ -4,12 +4,6 @@
       <el-col :span="20" :xs="24">
         <el-form ref="queryForm" :inline="true">
           <el-col :span="24">
-            <!--            <el-col :span="5">-->
-            <!--              <div style="display: flex;flex-direction: row;">-->
-            <!--                <div style="width:50px;line-height: 35px">单位</div>-->
-            <!--                <treeselect v-model="companyId" :options="companyArr" style="width: 80%" placeholder="请选择归属部门"/>-->
-            <!--              </div>-->
-            <!--            </el-col>-->
             <el-form-item label="项目年份" style="margin-left: 15px;">
               <el-date-picker
                 v-model="year"
@@ -50,7 +44,8 @@
             <div style="display: flex;flex-direction: row;margin:0 0 15px 0;width: 75%;">
               <div style="width:70px;line-height: 35px">归口单位</div>
               <treeselect v-model="companyId" :options="companyArr" style="width:45%" placeholder="请选择归口单位"/>
-              <div style="margin-left:1%;line-height: 35px">该单位归口于：<span v-if="checkboxArr[0]">{{checkboxArr[0].underUnitName}}</span></div>
+              <div style="margin-left:1%;line-height: 35px">该单位归口于：<span v-if="checkboxArr[0]">{{checkboxArr[0].underUnitName}}</span>
+              </div>
             </div>
             <el-form>
               <el-checkbox-group v-model="checkList" class="checkbox-big-box">
@@ -76,10 +71,10 @@
 </template>
 
 <script>
-  import { getCompany, getTree, getProejctType, getCheckBox, SubmitData } from '@/api/budget/protypement/protypement.js'
+  import {getCompany, getTree, getProejctType, getCheckBox, SubmitData} from '@/api/budget/protypement/protypement.js'
   import Treeselect from '@riophae/vue-treeselect'
   import '@riophae/vue-treeselect/dist/vue-treeselect.css'
-  import { dateTimes } from '../../../utils/date'
+  import {dateTimes} from '../../../utils/date'
 
   export default {
     name: 'index',
@@ -114,19 +109,17 @@
     mounted() {
     },
     watch: {
-      companyId: function(newVal, ss) {
+      companyId: function (newVal, ss) {
         this.compay = parseInt(newVal)
         if (!newVal || !this.treeid.id) {
           return
         }
         this.checkboxArr.map(items => {
-          items.flag=1;
-          items.input=items.underUnitName =items.input = undefined;
+          items.flag = 1;
+          items.input = items.underUnitName = items.input = undefined;
         });
         this.checkList = [];
-        getProejctType({ budgetId: this.treeid.id, deptId: parseInt(newVal) }).then(res => {
-
-          console.log(res);
+        getProejctType({budgetId: this.treeid.id, deptId: parseInt(newVal)}).then(res => {
           this.checkboxArr.map(items => {
             items.input = undefined;
             res.map(item => {
@@ -159,7 +152,7 @@
         getCheckBox().then(res => {
           this.checkboxArr = []
           for (let item of res) {
-            item.flag=1;
+            item.flag = 1;
             if (item.id) {
               this.checkboxArr.push(item)
             }
@@ -180,7 +173,7 @@
       //
       handleYear() {
         this.year = dateTimes(this.year).substr(0, 4)
-        let data = { projectItem: this.text, importDate: this.year }
+        let data = {projectItem: this.text, importDate: this.year}
         getTree(data).then(res => {
           this.treeArr = res
           this.arr = res
@@ -188,8 +181,8 @@
       },
       handleNodeClick(e) {
         this.checkboxArr.map(items => {
-          items.flag=1;
-          items.input = items.underUnitName =items.input = undefined;
+          items.flag = 1;
+          items.input = items.underUnitName = items.input = undefined;
         });
         this.checkList = [];
         this.treeid = e;
@@ -197,8 +190,7 @@
           return
         } else {
           if (!e.isParent) {
-            getProejctType({ budgetId: e.id, deptId: this.companyId }).then(res => {
-              console.log(res);
+            getProejctType({budgetId: e.id, deptId: this.companyId}).then(res => {
               this.checkboxArr.map(items => {
                 items.input = undefined;
                 res.map(item => {
@@ -229,7 +221,7 @@
           this.checkboxArr.map(items => {
             this.checkList.map(item => {
               if (items.label == item) {
-                data.push({ balance: items.input, budgetId: this.treeid.id, unitId: items.id, deptId: this.companyId })
+                data.push({balance: items.input, budgetId: this.treeid.id, unitId: items.id, deptId: this.companyId})
               }
 
             })
@@ -241,8 +233,8 @@
             this.$message.warning('请输入金额！')
             return
           }
-          if(data.length==0){
-            data[0]={deptId: this.companyId,budgetId: this.treeid.id}
+          if (data.length == 0) {
+            data[0] = {deptId: this.companyId, budgetId: this.treeid.id}
           }
           SubmitData(data).then(res => {
             this.$message.success('提交成功！')
@@ -261,16 +253,15 @@
     .main {
       display: flex;
       flex-direction: row;
-      /*height: calc(100vh - 100px);*/
 
       .tree-box {
-        /*width: 23%;*/
         background: #fff;
         border-radius: 8px;
         padding-top: 20px;
         height: 800px;
-        .trees{
-          height:700px;
+
+        .trees {
+          height: 700px;
 
           overflow: auto;
         }
@@ -278,17 +269,19 @@
 
       .checkbox-box {
         width: 80%;
-        margin-left:2%;
+        margin-left: 2%;
         background: #fff;
         border-radius: 8px;
         box-sizing: border-box;
         padding: 30px;
         height: 100%;
         overflow: auto;
-        .checkbox-big-box{
+
+        .checkbox-big-box {
           display: flex;
           flex-direction: row;
           flex-wrap: wrap;
+
           .checkbox_name {
             width: 80px;
           }
@@ -312,13 +305,12 @@
         }
 
 
-
       }
     }
 
   }
 
-  @media screen and (max-width: 700px){
+  @media screen and (max-width: 700px) {
     .containers {
       .main {
         display: flex;

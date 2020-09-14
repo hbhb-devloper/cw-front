@@ -98,7 +98,6 @@ export function fundSelectExprot(tokens, data, url,fileName) {
       'Authorization':tokens
     }
   }).then(res => {
-    console.log(res,66);
     const content = res.data
     const blob = new Blob([content])
     if ('download' in document.createElement('a')) {

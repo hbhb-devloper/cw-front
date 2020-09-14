@@ -61,7 +61,6 @@
       </el-form-item>
       <el-form-item label="流程状态" prop="state">
         <el-select v-model="queryParams.state" style="width:200px" filterable  placeholder="请选择">
-<!--          <el-option label="&#45;&#45;全部&#45;&#45;" value="undefined"></el-option>-->
           <el-option label="审批未发起" value="0"></el-option>
           <el-option label="正在审批" value="1"></el-option>
           <el-option label="审批未通过" value="2"></el-option>
@@ -120,18 +119,10 @@
       </el-table-column>
       <el-table-column prop="itemName" align="center" label="发起流程">
         <template slot-scope="scope">
-<!--          <el-button-->
-<!--            size="mini"-->
-<!--            type="text"-->
-<!--            :disabled="scope.row.state==0">查看流程-->
-<!--          </el-button>-->
           <router-link style="color:#409EFF;" :to="'/fund/select/info/'+scope.row.id">查看流程
           </router-link>
         </template>
       </el-table-column>
-<!--      <el-table-column prop="itemName" align="center" label="编辑"></el-table-column>-->
-<!--      <el-table-column prop="itemName" align="center" label="编辑发票"></el-table-column>-->
-<!--      <el-table-column prop="itemName" align="center" label="编辑附件"></el-table-column>-->
       <el-table-column prop="itemName" align="center" label="删除">
         <template slot-scope="scope">
           <el-button

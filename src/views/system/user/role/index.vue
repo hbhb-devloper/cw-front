@@ -337,8 +337,6 @@ export default {
       let checkedKeys = this.$refs.menu.getCheckedKeys();
       // 半选中的菜单节点
       let halfCheckedKeys = this.$refs.menu.getHalfCheckedKeys();
-      console.log("checkedKeys", checkedKeys);
-      console.log("halfCheckedKeys", halfCheckedKeys);
       let checkList = [];
       checkedKeys.map((checkItem) => {
         let checked = {
@@ -354,7 +352,6 @@ export default {
         };
         checkList.push(halfchecked);
       });
-      console.log("checkList", checkList);
       checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys);
       return checkList;
     },
