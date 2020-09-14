@@ -146,7 +146,7 @@ export default {
       });
     },
     onConnected: function () {
-      const dest = "/queue/broadcast_queue";
+      const dest = "/queue/test_queue";
       this.client.subscribe(dest, this.responseCallback, this.onFailed);
     },
     onFailed: function (frame) {
