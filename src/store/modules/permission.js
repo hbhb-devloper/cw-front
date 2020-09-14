@@ -11,7 +11,7 @@ const permission = {
     sideRouters: [],
     navRouters: [],
     menuArr: [],
-    projectId: undefined,
+
   },
   mutations: {
     SET_SIDEROUTERS: (state, sideRouters) => {
@@ -24,19 +24,13 @@ const permission = {
       state.menuArr = []
       state.menuArr.push(state.sideRouters[id])
     },
-    handleProjectId: (state, id) => {
 
-      state.projectId=id;
-      console.log(state.projectId, '123')
-    }
   },
   actions: {
-    HANDLESIDEBAR({ commit }, data) {
+    HANDLESIDEBAR({commit}, data) {
       commit('handleSidebar', data)
     },
-    PROJECTID({ commit }, id) {
-      commit('handleProjectId', id)
-    }
+
   }
 }
 

@@ -1,6 +1,6 @@
 /*
- * @Descripttion: 
- * @version: 
+ * @Descripttion:
+ * @version:
  * @Author: CYZ
  * @Date: 2020-07-20 18:22:09
  * @LastEditors: CYZ
@@ -10,6 +10,12 @@ import request from '@/utils/request'
 
 
 
+export function FlowTypeList(){
+  return request({
+    url:'/flow/type/select',
+    method:'get',
+  })
+}
 // 查询流程类型列表
 export function listFlow(query) {
     return request({

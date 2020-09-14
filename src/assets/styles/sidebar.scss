@@ -32,7 +32,7 @@
         }
         &.has-logo {
             .el-scrollbar {
-                height: calc(100% - 50px);
+                height: calc(100% - 106px);
             }
         }
         .is-horizontal {
@@ -62,7 +62,7 @@
         }
         .is-active>.el-submenu__title {
             background-color: $menuActiveText !important;
-            color: #fff !important;
+            // color: #fff !important;
             font-weight: bold;
         }
         & .nest-menu .el-submenu>.el-submenu__title,

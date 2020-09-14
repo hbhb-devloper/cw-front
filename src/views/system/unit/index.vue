@@ -64,22 +64,28 @@
         @row-click="getinfo"
         :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
         @selection-change="handleSelectionChange"
+        style="width:35%;"
       >
         <el-table-column type="selection" width="50" align="center" />
-        <el-table-column prop="label" label="单位名称" width="450"></el-table-column>
+        <el-table-column prop="label" label="单位名称" width="350"></el-table-column>
       </el-table>
       <el-form
         class="deptinfo"
         ref="form1"
         :model="form1"
         :rules="rules"
-        label-width="80px"
+        label-width="90px"
         v-if="deptId"
       >
         <el-row>
           <el-col :span="12">
             <el-form-item label="单位名称" prop="unitName">
               <el-input readonly v-model="form1.unitName" disabled />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="排序" prop="sortNum">
+              <el-input-number v-model="form1.sortNum" disabled :min="0" ></el-input-number>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -123,7 +129,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="单位名称" prop="unitHeader">
+            <el-form-item label="单位负责人" prop="unitHeader">
               <el-input readonly v-model="form1.unitHeader" disabled />
             </el-form-item>
           </el-col>
@@ -147,6 +153,11 @@
           <el-col :span="12">
             <el-form-item label="单位名称" prop="unitName">
               <el-input v-model="form.unitName" placeholder="请输入单位名称" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="排序" prop="sortNum">
+              <el-input-number v-model="form.sortNum" :min="0"></el-input-number>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -414,7 +425,6 @@ export default {
           that.msgSuccess("删除成功");
         })
         .catch((err) => {
-          console.log("err", err);
         });
     },
   },
@@ -422,7 +432,7 @@ export default {
 </script>
 
 <style scoped>
-.el-table {
+ .el-table {
   width: 30%;
   background-color: transparent;
 }

@@ -2,7 +2,7 @@
   <div class="app-container">
     <div class="app-top">
       <div>
-        <el-col :span="20" :xs="24">
+        <el-col :span="24" :xs="24">
           <el-form ref="queryForm" :inline="true" label-width="100px">
             <el-form-item label="发票代码：" prop="userName">
               <el-input
@@ -80,10 +80,11 @@
             <el-form-item label="导入时间：">
               <el-date-picker
                 v-model="obj2.itime"
-                type="datetimerange"
-                range-separator="-"
+                type="daterange"
                 start-placeholder="开始日期"
-                end-placeholder="结束日期">
+                end-placeholder="结束日期"
+                format="yyyy-MM-dd"
+                value-format="yyyy-MM-dd">
               </el-date-picker>
             </el-form-item>
             <el-form-item>
@@ -122,13 +123,13 @@
             prop="invoiceType"
             label="发票种类"
             align="center"
-            width="110">
+            width="180">
           </el-table-column>
           <el-table-column
             prop="invoiceCode"
             label="发票代码"
             align="center"
-            width="90">
+            width="180">
           </el-table-column>
           <el-table-column
             prop="invoiceNumber"
@@ -348,8 +349,6 @@
                 <el-option label="是" value="Y"></el-option>
                 <el-option label="否" value="N"></el-option>
               </el-select>
-              <!--              <el-radio v-model="obj.stateIdentity" label="Y">是</el-radio>-->
-              <!--              <el-radio v-model="obj.stateIdentity" label="N">否</el-radio>-->
             </el-form-item>
             <el-form-item v-if="obj.invoiceType==23||obj.invoiceType==24||obj.invoiceType==25||obj.invoiceType==''"
                           label="国内/国际：" prop="domesticAndForeign">
@@ -358,8 +357,6 @@
                 <el-option label="国内" value="IN"></el-option>
                 <el-option label="国际" value="OUT"></el-option>
               </el-select>
-              <!--              <el-radio v-model="obj.domesticAndForeign" label="IN">国内</el-radio>-->
-              <!--              <el-radio v-model="obj.domesticAndForeign" label="OUT">国际</el-radio>-->
             </el-form-item>
             <el-form-item v-if="obj.invoiceType==21||obj.invoiceType==22||obj.invoiceType==26||obj.invoiceType==''"
                           label="不含税金额：" prop="taxFreeAmount">
@@ -479,6 +476,7 @@
   import { exportData ,BatchExport} from '@/utils/export'
   import { getToken } from '@/utils/auth'
   import { dateTimes } from '@/utils/date.js'
+  import {param} from "../../../utils";
 
   export default {
     data() {
@@ -517,22 +515,24 @@
         page: 1,
         pagesize: 20,
         obj2: {
-          invoiceCode: '', //发票代码
-          invoiceNumber: '',//发票号码
-          invoiceDate: '',//开票日期
-          money: '',//金额
-          buyerTaxId: '', //购方税号
-          buyerName: '',//购方名称
-          branch: '',//分公司
-          itime: '',//导入时间
-          personnel: ''//导入人员
+          invoiceCode: undefined, //发票代码
+          invoiceNumber:undefined,//发票号码
+          invoiceDate: undefined,//开票日期
+          money: undefined,//金额
+          buyerTaxId: undefined, //购方税号
+          buyerName:undefined,//购方名称
+          branch: undefined,//分公司
+          itime: undefined,//导入时间
+          personnel:undefined,//导入人员
+          pageNum:1,
+          pageSize:20,
         },
         param: {},
         batch:{}
       }
     },
     mounted() {
-      this.handleList()
+      this.handleSelect()
     },
     computed:{
       pages(){
@@ -543,10 +543,9 @@
     watch: {
       //监听选择条数
       total: function(newVal, oldVal) {
-        getList({ pageNum: this.page, pageSize: newVal }).then(res => {
-          this.tableData = res.list
-          this.count = res.count
-        })
+        this.obj2.pageNum=this.page;
+        this.obj2.pageSize=newVal;
+        this.handleSelect();
       }
     },
     methods: {
@@ -560,29 +559,18 @@
       },
       //模糊查询
       handleSelect() {
-        let params = {
-          invoiceCode: this.obj2.invoiceCode || '', //发票代码
-          invoiceNumber: this.obj2.invoiceNumber || '',//发票号码
-          invoiceDate: this.obj2.invoiceDate || '',//开票日期
-          money: this.obj2.money || '',//金额
-          buyerTaxId: this.obj2.buyerTaxId || '', //购方税号
-          buyerName: this.obj2.buyerName || '',//购方名称
-          branch: this.obj2.branch || '',//分公司
-          personnel: this.obj2.personnel || '',
-          beginTime: dateTimes(this.obj2.itime[0]) || '',
-          endTime: dateTimes(this.obj2.itime[1]) || '',
-          pageNum: this.page || 1,
-          pageSize: this.pagesize || 20
-        }, paramt = {};
-        for (let key in params) {
-          if (!params[key]) {
-          } else {
-            paramt[key] = params[key];
-            this.param[key] = params[key];
-          }
-        };
-        this.batch=paramt;
-        getList(paramt).then(res => {
+        let params = {};
+        params=JSON.parse(JSON.stringify(this.obj2));
+        if(params.itime){
+          params.beginTime=params.itime[0];
+          params.endTime=params.itime[1];
+        }else{
+          params.beginTime=undefined;
+          params.endTime=undefined;
+        }
+        delete params.itime;
+        this.batch=params;
+        getList(params).then(res => {
           this.tableData = res.list;
           this.count = res.count;
         })
@@ -605,11 +593,10 @@
       },
       //分页
       handleCurrentChange(val) {
-        this.page = val
-        getList({ pageNum: this.page, pageSize: this.total }).then(res => {
-          this.tableData = res.list
-          this.count = res.count
-        })
+        this.page = val;
+        this.obj2.pageNum=val;
+        this.obj2.pageSize=this.total;
+        this.handleSelect();
       },
       //添加弹窗
       handleInsrt() {
@@ -635,9 +622,9 @@
           branch: '',
           itime: '',
           personnel: ''
-        },
-          this.centerDialogVisible = true
-        this.insetUpdata = 1
+        };
+        this.centerDialogVisible = true;
+        this.insetUpdata = 1;
       },
       //修改弹窗
       handleEdit(index, row, type) {
@@ -657,7 +644,7 @@
           delData(row.machineInvoiceId).then(res => {
 
             this.$message.success('删除成功！')
-            this.handleList({ pageNum: this.page, pageSize: this.total });
+            this.handleSelect();
           })
         }).catch(() => {
           this.$message({
@@ -692,7 +679,7 @@
               message: '删除成功！',
               type: 'success'
             })
-            this.handleList({ pageNum: this.page, pageSize: this.total })
+            this.handleSelect();
           })
         }).catch(() => {
           this.$message({
@@ -708,15 +695,19 @@
       //重置
       handleReset() {
         this.obj2 = {
-          invoiceCode: '',
-          invoiceNumber: '',
-          invoiceDate: '',
-          buyerTaxId: '',
-          taxFreeAmount: '',
-          branch: '',
-          itime: ''
+          invoiceCode:undefined,
+          invoiceNumber: undefined,
+          invoiceDate: undefined,
+          buyerTaxId: undefined,
+          taxFreeAmount: undefined,
+          branch: undefined,
+          itime:undefined,
+          pageNum: 1,
+          pageSize: 20
         };
-        this.batch={}
+        this.total=20;
+        this.page=1;
+        this.batch={};
       },
       //修改记录
       handleUpdata() {
@@ -786,13 +777,13 @@
 
           adddata(JSON.stringify(data1)).then(res => {
             this.$message.success('添加成功！')
-            this.handleList({ pageNum: this.page, pageSize: this.total })
+            this.handleSelect()
           })
         } else if (this.insetUpdata == 2) {
           this.obj.invoiceDate=dateTimes(this.obj.invoiceDate);
           update(this.obj).then(res => {
             this.$message.success('修改成功！')
-            this.handleList({ pageNum: this.page, pageSize: this.total })
+            this.handleSelect()
           })
         }
 

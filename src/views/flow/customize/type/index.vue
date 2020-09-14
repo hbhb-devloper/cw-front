@@ -25,7 +25,6 @@
           icon="el-icon-plus"
           size="mini"
           @click="handleAdd"
-          v-hasPermi="['system:role:add']"
         >新增</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -35,7 +34,6 @@
           size="mini"
           :disabled="single"
           @click="handleUpdate"
-          v-hasPermi="['system:role:edit']"
           v-if="false"
         >修改</el-button>
       </el-col>
@@ -46,7 +44,6 @@
           size="mini"
           :disabled="multiple"
           @click="handleDelete"
-          v-hasPermi="['system:role:remove']"
           v-if="false"
         >删除</el-button>
       </el-col>
@@ -56,7 +53,6 @@
           icon="el-icon-download"
           size="mini"
           @click="handleExport"
-          v-hasPermi="['system:post:export']"
           v-if="false"
         >导出</el-button>
       </el-col>
@@ -75,14 +71,12 @@
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
-            v-hasPermi="['system:role:edit']"
           >修改</el-button>
           <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
-            v-hasPermi="['system:role:remove']"
           >删除</el-button>
         </template>
       </el-table-column>
@@ -141,42 +135,8 @@ export default {
       title: "",
       // 是否显示弹出层
       open: false,
-      // 是否显示弹出层（数据权限）
-      openDataScope: false,
       // 日期范围
       dateRange: [],
-      // 状态数据字典
-      statusOptions: [
-        { dictValue: 1, dictLabel: "正常" },
-        { dictValue: 2, dictLabel: "停用" }
-      ],
-      // 数据范围选项
-      dataScopeOptions: [
-        {
-          value: "1",
-          label: "全部数据权限"
-        },
-        {
-          value: "2",
-          label: "自定数据权限"
-        },
-        {
-          value: "3",
-          label: "本部门数据权限"
-        },
-        {
-          value: "4",
-          label: "本部门及以下数据权限"
-        },
-        {
-          value: "5",
-          label: "仅本人数据权限"
-        }
-      ],
-      // 菜单列表
-      menuOptions: [],
-      // 部门列表
-      deptOptions: [],
       // 查询参数
       queryParams: {
         pageNum: 1,

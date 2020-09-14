@@ -1,10 +1,10 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true">
-      <el-form-item label="角色名称" prop="roleName">
+      <el-form-item label="菜单模板名称" prop="roleName">
         <el-input
           v-model="queryParams.roleName"
-          placeholder="请输入角色名称"
+          placeholder="请输入菜单模板名称"
           clearable
           size="small"
           style="width: 240px"
@@ -15,7 +15,7 @@
       <el-form-item label="状态" prop="state">
         <el-select
           v-model="queryParams.state"
-          placeholder="角色状态"
+          placeholder="菜单模板状态"
           clearable
           size="small"
           style="width: 240px"
@@ -80,8 +80,8 @@
 
     <el-table v-loading="loading" :data="roleList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="角色编号" prop="id" width="120" />
-      <el-table-column label="角色名称" prop="roleName" :show-overflow-tooltip="true" width="150" />
+      <el-table-column label="菜单模板编号" prop="id" width="120" align="center"/>
+      <el-table-column label="菜单模板名称" prop="roleName" :show-overflow-tooltip="true" width="150" align="center"/>
       <!-- <el-table-column label="权限字符" prop="roleKey" :show-overflow-tooltip="true" width="150" /> -->
       <!-- <el-table-column label="显示顺序" prop="sortNum" width="100" /> -->
       <el-table-column label="状态" align="center" width="100">
@@ -128,16 +128,16 @@
       @pagination="getList"
     />
 
-    <!-- 添加或修改角色配置对话框 -->
+    <!-- 添加或修改菜单模板配置对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px">
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="角色名称" prop="roleName">
-          <el-input v-model="form.roleName" placeholder="请输入角色名称" />
+        <el-form-item label="菜单模板名称" prop="roleName">
+          <el-input v-model="form.roleName" placeholder="请输入菜单模板名称" />
         </el-form-item>
         <el-form-item label="权限字符" prop="roleKey">
           <el-input v-model="form.roleKey" placeholder="请输入权限字符" />
         </el-form-item>
-        <el-form-item label="角色顺序" prop="sortNum">
+        <el-form-item label="菜单模板顺序" prop="sortNum">
           <el-input-number v-model="form.sortNum" controls-position="right" :min="0" />
         </el-form-item>
         <el-form-item label="状态">
@@ -169,10 +169,10 @@
       </div>
     </el-dialog>
 
-    <!-- 分配角色数据权限对话框 -->
+    <!-- 分配菜单模板数据权限对话框 -->
     <el-dialog :title="title" :visible.sync="openDataScope" width="500px">
       <el-form :model="form" label-width="80px">
-        <el-form-item label="角色名称">
+        <el-form-item label="菜单模板名称">
           <el-input v-model="form.roleName" :disabled="true" />
         </el-form-item>
         <el-form-item label="权限字符">
@@ -234,7 +234,7 @@ export default {
       multiple: true,
       // 总条数
       total: 0,
-      // 角色表格数据
+      // 菜单模板表格数据
       roleList: [],
       // 弹出层标题
       title: "",
@@ -294,13 +294,13 @@ export default {
       // 表单校验
       rules: {
         roleName: [
-          { required: true, message: "角色名称不能为空", trigger: "blur" },
+          { required: true, message: "菜单模板名称不能为空", trigger: "blur" },
         ],
         roleKey: [
           { required: true, message: "权限字符不能为空", trigger: "blur" },
         ],
         sortNum: [
-          { required: true, message: "角色顺序不能为空", trigger: "blur" },
+          { required: true, message: "菜单模板顺序不能为空", trigger: "blur" },
         ],
       },
     };
@@ -310,7 +310,7 @@ export default {
     this.getMenuTreeselect();
   },
   methods: {
-    /** 查询角色列表 */
+    /** 查询菜单模板列表 */
     getList() {
       this.loading = true;
       pageRole(this.queryParams).then((response) => {
@@ -337,8 +337,6 @@ export default {
       let checkedKeys = this.$refs.menu.getCheckedKeys();
       // 半选中的菜单节点
       let halfCheckedKeys = this.$refs.menu.getHalfCheckedKeys();
-      console.log("checkedKeys", checkedKeys);
-      console.log("halfCheckedKeys", halfCheckedKeys);
       let checkList = [];
       checkedKeys.map((checkItem) => {
         let checked = {
@@ -354,7 +352,6 @@ export default {
         };
         checkList.push(halfchecked);
       });
-      console.log("checkList", checkList);
       checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys);
       return checkList;
     },
@@ -367,24 +364,24 @@ export default {
       checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys);
       return checkedKeys;
     },
-    /** 根据角色ID查询菜单树结构 */
+    /** 根据菜单模板ID查询菜单树结构 */
     getRoleMenuTreeselect(roleId) {
       roleMenuTreeselect(roleId).then((response) => {
         // this.menuOptions = response.menus;
         this.$refs.menu.setCheckedKeys(response);
       });
     },
-    /** 根据角色ID查询部门树结构 */
+    /** 根据菜单模板ID查询部门树结构 */
     getRoleDeptTreeselect(roleId) {
       roleDeptTreeselect(roleId).then((response) => {
         this.deptOptions = response.depts;
         this.$refs.dept.setCheckedKeys(response.checkedKeys);
       });
     },
-    // 角色状态修改
+    // 菜单模板状态修改
     handleStatusChange(row) {
       let text = row.state === 1 ? "启用" : "停用";
-      this.$confirm("确认要" + text + "" + row.roleName + '"角色吗?', "警告", {
+      this.$confirm("确认要" + text + "" + row.roleName + '"菜单模板吗?', "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
@@ -449,7 +446,7 @@ export default {
       this.reset();
       // this.getMenuTreeselect();
       this.open = true;
-      this.title = "添加角色";
+      this.title = "添加菜单模板";
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
@@ -458,7 +455,7 @@ export default {
       getRole(roleId).then((response) => {
         this.form = response;
         this.open = true;
-        this.title = "修改角色";
+        this.title = "修改菜单模板";
         this.$nextTick(() => {
           this.getRoleMenuTreeselect(roleId);
         });
@@ -513,7 +510,7 @@ export default {
     handleDelete(row) {
       const roleIds = row.id || this.ids;
       this.$confirm(
-        '是否确认删除角色编号为"' + roleIds + '"的数据项?',
+        '是否确认删除菜单模板编号为"' + roleIds + '"的数据项?',
         "警告",
         {
           confirmButtonText: "确定",
@@ -533,7 +530,7 @@ export default {
     /** 导出按钮操作 */
     handleExport() {
       const queryParams = this.queryParams;
-      this.$confirm("是否确认导出所有角色数据项?", "警告", {
+      this.$confirm("是否确认导出所有菜单模板数据项?", "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",

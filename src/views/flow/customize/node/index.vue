@@ -33,7 +33,6 @@
           icon="el-icon-download"
           size="mini"
           @click="handleExport"
-          v-hasPermi="['system:post:export']"
         >导出</el-button>
       </el-col>
 
@@ -47,7 +46,7 @@
       <el-table-column label="流程名称" prop="flowName" :show-overflow-tooltip="true"  align="center"/>
       <el-table-column label="节点名称" prop="flowNodeName" align="center"/>
       <!-- <el-table-column label="环节名称" prop="linkName"  align="center" /> -->
-      <el-table-column label="角色" prop="roleLid"  align="center"/>
+      <el-table-column label="角色" prop="roleDescription"  align="center"/>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -55,7 +54,6 @@
             type="text"
             icon="el-icon-edit"
             @click.stop="handleUpdate(scope.row)"
-            v-hasPermi="['system:role:edit']"
           >查看详情</el-button>
         </template>
       </el-table-column>

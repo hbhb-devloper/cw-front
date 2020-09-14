@@ -1,11 +1,11 @@
 <!--
- * @Descripttion: 
- * @version: 
+ * @Descripttion:
+ * @version:
  * @Author: CYZ
  * @Date: 2020-07-17 09:35:24
  * @LastEditors: CYZ
- * @LastEditTime: 2020-07-22 17:46:19
---> 
+ * @LastEditTime: 2020-08-21 10:25:14
+-->
 <template>
   <div class="navbar">
     <hamburger
@@ -58,7 +58,7 @@ export default {
   z-index: 9;
   width: 100%;
   background: #409eff;
-
+      min-height: 40px;
   .hamburger-container {
     line-height: 36px;
     height: 100%;
@@ -83,7 +83,7 @@ export default {
     .el-menu-item {
       height: 40px;
       line-height: 40px;
-      width: 12.5%;
+      /*width: 12.5%;*/
       text-align: center;
       color: #fff;
       border-bottom: none;

@@ -35,7 +35,7 @@
     <el-dialog :title="title" :visible.sync="open" width="500px">
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="审批意见" prop="roleName">
-          <el-input v-model="form.suggestion" type="text"  placeholder="请输入流程角色名字" />
+          <el-input v-model="form.suggestion" type="text"  placeholder="请输入需要预设的意见" />
         </el-form-item>
         <el-form-item label="显示顺序">
           <el-input v-model="form.orderNumber" type="number" placeholder="请输入备注"></el-input>
@@ -79,7 +79,6 @@
       //页面初始化
       handleLoad(){
         getList().then(res=>{
-          console.log(res);
           this.flowList=res;
           this.loading=false;
         })

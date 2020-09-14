@@ -1,11 +1,11 @@
 <!--
- * @Descripttion: 
- * @version: 
+ * @Descripttion:
+ * @version:
  * @Author: CYZ
  * @Date: 2020-07-20 18:22:09
  * @LastEditors: CYZ
- * @LastEditTime: 2020-08-12 15:57:14
---> 
+ * @LastEditTime: 2020-08-24 18:29:27
+-->
 <template>
   <div v-if="easyFlowVisible" style="height: calc(100vh);">
     <el-row>
@@ -182,28 +182,22 @@ export default {
   mounted() {
     this.jsPlumb = jsPlumb.getInstance();
     this.showinfo();
-    // this.$nextTick(() => {
-    //   console.log('projectdata',this.projectdata);
-
-    //   // 默认加载流程A的数据、在这里可以根据具体的业务返回符合流程数据格式的数据即可
-    //   this.dataReload(this.projectdata);
-    //   // this.dataReload(getDataB());
-    // });
   },
   methods: {
     showinfo() {
       getProject(this.flowId).then((response) => {
-        console.log('getProject',response);
         this.projectdata = response;
         this.$nextTick(() => {
           this.dataReload(this.projectdata);
         });
       });
     },
+    S4() {
+        return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+    },
     // 返回唯一标识
     getUUID() {
-      return Math.random().toString(36).substr(3, 10);
-      // return this.flowId + Math.random().toString().substr(3, 8);
+      return (this.S4()+this.S4()+"-"+this.S4()+"-"+this.S4()+"-"+this.S4()+"-"+this.S4()+this.S4()+this.S4()).substring(24,36);
     },
     jsPlumbInit() {
       var that = this;
@@ -216,7 +210,6 @@ export default {
         this.loadEasyFlow();
         // 单点击了连接线, https://www.cnblogs.com/ysx215/p/7615677.html
         this.jsPlumb.bind("click", (conn, originalEvent) => {
-          console.log('conn',conn);
           this.activeElement.type = "line";
           this.activeElement.sourceId = conn.sourceId;
           this.activeElement.targetId = conn.targetId;
@@ -225,7 +218,6 @@ export default {
             to: conn.targetId,
             label: conn.getLabel(),
           });
-          //   this.$emit("clickLine", conn);
         });
         this.jsPlumb.bind("dblclick", (conn, originalEvent) => {
           this.$emit("clickLine", conn);
@@ -252,7 +244,6 @@ export default {
 
         // 连线右击
         this.jsPlumb.bind("contextmenu", (evt) => {
-          console.log("contextmenu", evt);
         });
 
         // 连线
@@ -277,7 +268,6 @@ export default {
 
         // beforeDetach
         this.jsPlumb.bind("beforeDetach", (evt) => {
-          console.log("beforeDetach", evt);
         });
         this.jsPlumb.setContainer(this.$refs.efContainer);
       });
@@ -346,7 +336,7 @@ export default {
         })
           .then(() => {
             let fromNodeId =that.activeElement.sourceId
-            let toNodeId =that.activeElement.targetId 
+            let toNodeId =that.activeElement.targetId
             delLine(fromNodeId,toNodeId).then((res) => {
               var conn = this.jsPlumb.getConnections({
                 source: this.activeElement.sourceId,
@@ -362,10 +352,8 @@ export default {
     deleteLine(from, to) {
       this.data.lineList = this.data.lineList.filter(function (line) {
         if (line.from == from && line.to == to) {
-          console.log("false");
           return false;
         }
-        console.log("true");
         return true;
       });
     },
@@ -492,11 +480,11 @@ export default {
       this.$refs.nodeForm.nodeInit(this.data, nodeId);
       // this.$emit('clickItem', nodeId)
     },
-    clickNodeDB(nodeId) {
+    clickNodeDB(nodeId,nodeName) {
       this.activeElement.type = "node";
       this.activeElement.nodeId = nodeId;
       this.$refs.nodeForm.nodeInit(this.data, nodeId);
-      this.$emit("clickItem", nodeId);
+      this.$emit("clickItem", nodeId,nodeName);
     },
     // 是否具有该线
     hasLine(from, to) {
@@ -519,7 +507,6 @@ export default {
       this.menu.top = evt.y + "px";
     },
     repaintEverything() {
-      console.log("重绘");
       this.jsPlumb.repaint();
     },
     // 流程数据信息
@@ -602,18 +589,11 @@ export default {
     savaData() {
       this.data.flowId = Number(this.flowId);
       this.data.nodeList.map((nodeitem,index)=>{
-        console.log('nodeitem',nodeitem);
         nodeitem.sortNum=''
 
         nodeitem.sortNum=index+1
       })
-      // for (let i = 0; i < this.data.nodeList.length; i++) {
-      //     this.data.nodeList[i].sortNum = i+1
-      // }
-      console.log('this.data',this.data);
-      console.log('this.data.nodeList',this.data.nodeList);
       addProject(this.data).then((res) => {
-        console.log("addProject", res);
         this.showinfo();
         this.$message.success("保存成功");
         this.$emit("saveFlow");

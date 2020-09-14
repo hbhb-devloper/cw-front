@@ -1,10 +1,10 @@
 <template>
-  <div class="container">
+  <div class="containers">
     <el-button icon="el-icon-back" type="primary" size="mini" style="margin-bottom: 20px" @click="handleBack">返回</el-button>
     <div class="program-box" v-if="parseInt(id)||info.state!=10">
       <div style="width: 100%;position: relative;">
-        <div style="position: absolute;right:20%;top:-50px;">
-          <el-button size="mini" v-if="info.state==30||info.state==31" @click="handleGetHistory">查看历史</el-button>
+        <div style="position: absolute;right:20%;top:-50px;" >
+          <el-button size="mini" v-if="parseInt(state)" :disabled="info.state==10"  @click="handleGetHistory">查看历史</el-button>
         </div>
       </div>
       <div style="width: 100%;text-align: center;font-weight: 900;" v-if="parseInt(state)"><span v-if="program[0]">{{program[0].projectFlowName}}</span></div>
@@ -12,17 +12,23 @@
         <div v-for="(item,index) in program" class="programList">
           <i class="el-icon-close" v-if="item.isDelete" @click="handleDeleteApprove(item)"></i>
           <div class="programList-div">
-            <span>
+            <span style="max-width: 160px;line-height: 19px;">
               <i class="el-icon-success" v-if="item.operation.value==1"></i>
               <i class="el-icon-error" v-if="item.operation.value==0"></i>
               {{item.approverRole}}：
             </span>
-            <el-select  placeholder="请选择" v-model="item.form.id" :disabled="item.approver.readOnly"
-                       >
+            <el-select  v-if="item.operation.value==2" placeholder="请选择" v-model="item.form.id" style="width:120px;" :disabled="item.approver.readOnly">
               <el-option
                 v-for="items in item.approverSelect"
                 :value="items.userId"
-                :label="items.userName">
+                :label="items.nickName">
+              </el-option>
+            </el-select>
+            <el-select  v-else placeholder="请选择" v-model="item.nickName" style="width:120px;" :disabled="item.approver.readOnly">
+              <el-option
+                v-for="items in item.approverSelect"
+                :value="items.userId"
+                :label="items.nickName">
               </el-option>
             </el-select>
           </div>
@@ -32,10 +38,10 @@
             <el-button size="small" v-if="!item.operation.hidden" @click="handleApprove(item,0,index)">拒绝</el-button>
           </div>
           <div class="programList-div">
-            <span style="display: inline-block;width: 80px;">意见：</span>
+            <span style="display: inline-block;">意见：</span>
 
             <el-input v-if="item.suggestion.readOnly" :disabled="item.suggestion.readOnly"
-                      v-model="item.suggestion.value" placeholder="请输入审批意见"></el-input>
+                      v-model="item.suggestion.value" style="width:180px" placeholder="请输入审批意见"></el-input>
 <!--            <el-input :disabled="item.suggestion.readOnly" v-model="programObj.suggestion" :placeholder="'请输入审批意见'"></el-input>-->
             <el-select
               v-else
@@ -43,6 +49,7 @@
               slot="empty"
               filterable
               allow-create
+              style="width:150px"
               default-first-option
               placeholder="请输入审批意见">
               <el-option
@@ -54,7 +61,7 @@
             </el-select>
           </div>
           <div style="height:32px">
-            <div v-if="item.operation.value!=2" ><span style="opacity: 0.7;">{{item.userName}}</span>({{item.updateTime}})</div>
+            <div v-if="item.operation.value!=2" ><span style="opacity: 0.7;">{{item.nickName}}</span>({{item.updateTime|filterTime}})</div>
           </div>
         </div>
         <div style="clear: both"></div>
@@ -167,7 +174,7 @@
             <div class="row-div">
               <label>责任人：</label>
               <span>{{info.director}}</span>
-              <label>工程编号：</label>
+              <label>预算编号：</label>
               <span>{{info.engineeringNum}}</span>
             </div>
             <div class="row-div">
@@ -184,19 +191,19 @@
             </div>
             <div class="row-div">
               <label>项目简介：</label>
-              <span>{{info.introduction}}</span>
+              <span class="info-textarea">{{info.introduction}}</span>
             </div>
             <div class="row-div">
               <label>项目详细说明：</label>
-              <span style="width:79%">{{info.detail}}</span>
+              <span class="info-textarea">{{info.detail}}</span>
             </div>
             <div class="row-div">
               <label>项目实施目标：</label>
-              <span style="width:79%">{{info.target}}</span>
+              <span class="info-textarea">{{info.target}}</span>
             </div>
             <div class="row-div">
               <label>备注：</label>
-              <span style="width:79%">{{info.remarks}}</span>
+              <span class="info-textarea">{{info.remark}}</span>
             </div>
             <div class="row-div">
               <label>附件：</label>
@@ -233,10 +240,10 @@
         </el-tab-pane>
 
         <el-tab-pane v-if="state=='add'" label="项目信息" name="project">
-          <add-eidt @changeType="handleStatistics" :stutic="state"/>
+          <add-eidt @changeType="handleReceive" :stutic="state"/>
         </el-tab-pane>
         <el-tab-pane v-if="state==undefined" label="项目信息" name="project">
-          <add-eidt @changeType="handleStatistics" :stutic="'eidt'"/>
+          <add-eidt @changeType="handleReceive" stutic="eidt"/>
         </el-tab-pane>
         <el-tab-pane label="分类预算" name="budget">
           <div>
@@ -308,41 +315,39 @@
                     />
                   </el-form-item>
                   <br>
-                  <el-form-item label="说明：">
+                  <el-form-item label="说明："
+                                :form-class="'column is-12 no-padding'"
+                                :content-class="'column is-9 no-padding'">
                     <el-input
                       type="textarea"
                       placeholder="请输入说明内容"
                       v-model="form.explains"
                       maxlength="30"
                       show-word-limit
-                      style="width: 460%;"
                     >
                     </el-input>
                   </el-form-item>
                   <br>
                   <br>
                   <el-form-item style="margin-left: 9%;">
-                    <el-button type="primary" size="mini" :disabled="info.state==20||info.state==50||state=='add'" @click="handleQuery">添加</el-button>
+                    <el-button type="primary" size="mini" :disabled="info.state==20||info.state==50||parseInt(state)" @click="handleQuery">添加</el-button>
                   </el-form-item>
                 </el-form>
                 <label>项目分类预算信息</label>
                 <div>
                   <el-table :data="tableDatas" style="width: 100%">>
-                    <el-table-column prop="id" label="序号">
-                      <template slot-scope="scope">
-                        <span>{{scope.$index+1}}</span>
-                      </template>
+                    <el-table-column prop="id" type="index" label="序号">
                     </el-table-column>
                     <el-table-column prop="years" label="年份">
                       <template slot-scope="scope">
-                        <span>{{scope.row.years.substr(0,4)}}</span>
+                        <span>{{scope.row.years?scope.row.years.substr(0,4):''}}</span>
                       </template>
                     </el-table-column>
                     <el-table-column prop="className" label="名称"></el-table-column>
                     <el-table-column prop="amount" label="数量"></el-table-column>
                     <el-table-column prop="price" label="单价(万元)"></el-table-column>
                     <el-table-column prop="cost" label="金额(万元)"></el-table-column>
-                    <el-table-column prop="itemName" width="120px" label="科目"></el-table-column>
+                    <el-table-column prop="itemName" label="科目"></el-table-column>
                     <el-table-column prop="explains" label="说明"></el-table-column>
                     <el-table-column prop="address" label="编辑">
                       <template slot-scope="scope">
@@ -350,7 +355,7 @@
                           size="mini"
                           type="text"
                           icon="el-icon-edit"
-                          :disabled="info.state==20||info.state==50"
+                          :disabled="info.state==20||info.state==50||info.state==32||parseInt(state)"
                           @click="handleEidt(scope.$index, scope.row)">编辑
                         </el-button>
                       </template>
@@ -361,8 +366,8 @@
                           size="mini"
                           type="text"
                           icon="el-icon-delete"
-                          :disabled="info.state==20||info.state==50"
-                          @click="handleDelete(scope.$index, scope.row)">删除
+                          :disabled="info.state==20||info.state==50||info.state==31||info.state==32||parseInt(state)"
+                          @click="handleDelete(scope.row)">删除
                         </el-button>
                       </template>
                     </el-table-column>
@@ -457,7 +462,8 @@
           <br>
           <br>
           <el-form-item style="margin-left: 9%;">
-            <el-button type="primary" size="mini" :disabled="info.state==20||info.state==50||state=='add'" @click="handleQuery">提交</el-button>
+            <el-button type="primary" size="mini" v-if="info.state==10||info.state==30" :disabled="info.state==20||info.state==50||parseInt(state)" @click="handleQuery">提交</el-button>
+            <el-button type="primary" size="mini" v-if="info.state==31||info.state==40"  :disabled="info.state==20||info.state==50||parseInt(state)" @click="handleQuery">调整保存</el-button>
           </el-form-item>
         </el-form>
       </el-dialog>
@@ -478,24 +484,19 @@
       <!-- 流程查看历史记录    -->
       <el-dialog title="历史流程" :visible.sync="programOpen">
         <el-table
+          v-loading="historyLoading"
           :data="programTable"
           style="width: 100%">
-          <el-table-column prop="moder" label="流程版本">
+          <el-table-column width="250px" prop="moder" label="流程版本">
             <template slot-scope="scope">
               <span v-if="scope.row.operation==0" class="danger">{{scope.row.moder}}</span>
               <span v-else  >{{scope.row.moder}}</span>
             </template>
           </el-table-column>
-          <el-table-column prop="roleDesc" label="处理环节">
+          <el-table-column prop="nickName" label="处理人">
             <template slot-scope="scope">
-              <span v-if="scope.row.operation==0" class="danger" >{{scope.row.roleDesc}}</span>
-              <span v-else >{{scope.row.roleDesc}}</span>
-            </template>
-          </el-table-column>
-          <el-table-column prop="userName" label="处理人">
-            <template slot-scope="scope">
-              <span v-if="scope.row.operation==0" class="danger" >{{scope.row.userName}}</span>
-              <span v-else >{{scope.row.userName}}</span>
+              <span v-if="scope.row.operation==0" class="danger" >{{scope.row.nickName}}</span>
+              <span v-else >{{scope.row.nickName}}</span>
             </template>
           </el-table-column>
           <el-table-column prop="suggestion" label="处理意见">
@@ -504,39 +505,19 @@
               <span v-else >{{scope.row.suggestion}}</span>
             </template>
           </el-table-column>
-          <el-table-column prop="arrivalTime" label="到达时间">
+          <el-table-column width="200px" prop="arrivalTime" label="到达时间">
             <template slot-scope="scope">
               <span v-if="scope.row.operation==0" class="danger" >{{scope.row.arrivalTime}}</span>
               <span v-else >{{scope.row.arrivalTime}}</span>
             </template>
           </el-table-column>
-          <el-table-column prop="sendingTime" label="发出时间">
+          <el-table-column width="200px" prop="sendingTime" label="发出时间">
             <template slot-scope="scope">
               <span v-if="scope.row.operation==0" class="danger" >{{scope.row.sendingTime}}</span>
               <span v-else >{{scope.row.sendingTime}}</span>
             </template>
           </el-table-column>
         </el-table>
-      </el-dialog>
-      <!--  重新发起流程    -->
-      <el-dialog title="发起审批" :visible.sync="isLaunch" width="500px">
-        <el-form>
-          <el-form-item label="选择流程">
-            <el-select v-model="LaunchId" filterable placeholder="请选择">
-              <el-option
-                v-for="item in LaunchOption"
-                :key="item.id"
-                :label="item.label"
-                :value="item.id">
-              </el-option>
-            </el-select>
-          </el-form-item>
-        </el-form>
-
-        <div style="width: 100%;text-align:center;">
-          <el-button type="primary" @click="handleCancel" style="margin-right: 50px;">取消</el-button>
-          <el-button type="primary" @click="SubmitLaunch">提交</el-button>
-        </div>
       </el-dialog>
     </div>
   </div>
@@ -565,10 +546,9 @@
   import { mapGetters } from 'vuex'
   import { exportWord } from '@/utils/export.js'
   import { getToken } from '@/utils/auth'
-
+  import ElFormItem from '@/components/customize/ElFormItem';
 
   export default {
-    name: 'add',
     data() {
       return {
         tableData: [],
@@ -600,47 +580,43 @@
           id: undefined,  //
           suggestion: undefined
         },
-        isLaunch:false,//选择流程弹窗
-        LaunchOption:[],//流程类型
-        LaunchId:undefined,//流程类型id
         projectId:undefined,//记录id
         budgetId:undefined,//类型id
         opinion:[],//意见下拉
+        historyLoading:true,
+      }
+    },
+    filters:{
+      filterTime(e){
+        if(e){
+          return e.substr(0,19);
+        }else{
+          return undefined;
+        }
+
       }
     },
     components:{
-      AddEidt
+      AddEidt,
+      ElFormItem
     },
     computed:{
       ...mapGetters(['projectIds']),
     },
     mounted() {
       if(parseInt(this.state)){
-        this.handleLoad()
+        this.handleLoad(this.$route.params.id)
       }else if(this.state==undefined){
         this.$store.dispatch('PROJECTID',this.$route.query.id);
-        if(!this.projectIds)return;
-
-        GetInfo(this.projectIds).then(res => {
-          this.form.budgetId = res.budgetId;
-          this.startTime = parseInt(res.startTime.substr(0, 4));
-          this.endTime = parseInt(res.endTime.substr(0, 4));
-          if (this.endTime == this.startTime) {
-            this.Span = false;
-          } else {
-            this.Span = true;
-          }
-        });
-        //分解预算表
-        getTable(this.projectIds).then(res1 => {
-          this.tableDatas = res1
-        })
+        this.handleLoad(this.$route.query.id);
       }
     },
     methods: {
-      handleLoad() {
+      handleLoad(id) {
+
         //详情
-        GetInfo(this.$route.params.id).then(res => {
+        this.projectId=id;
+        GetInfo(id).then(res => {
           this.info = res;
           this.form.budgetId = res.budgetId;
           this.fileTable1 = res.files.filter(item=>{
@@ -654,7 +630,7 @@
             }
           });
           if(res.state!=10){
-            getFlow(this.$route.params.id).then(res1 => {
+            getFlow(id).then(res1 => {
               for(let key of res1){
                 key.form={
                   id:key.approver.value||undefined,
@@ -664,19 +640,19 @@
               }
               this.program = res1;
             })
-          }
-          this.handleStatistics(res.budgetId)
-          this.startTime = parseInt(res.startTime.substr(0, 4))
-          this.endTime = parseInt(res.endTime.substr(0, 4))
+          };
+          this.handleStatistics(res.budgetId,res.unitId,res.createTime);
+          this.startTime = parseInt(res.startTime.substr(0, 4));
+          this.endTime = parseInt(res.endTime.substr(0, 4));
           if (this.endTime == this.startTime) {
-            this.Span = false
+            this.Span = false;
           } else {
-            this.Span = true
-          }
+            this.Span = true;
+          };
 
         })
         //分解预算表
-        getTable(this.$route.params.id).then(res1 => {
+        getTable(id).then(res1 => {
           this.tableDatas = res1
         });
         getList().then(res=>{
@@ -684,11 +660,22 @@
         })
 
       },
-      //子组件改变父组件
-      handleStatistics(budgetId){
+      handleReceive(type,id){
+        if(type==0){
+          this.handleStatistics(id)
+        }else if(type==1){
+          this.handleLoad(id);
+        }else{
+          if(this.state=='add'){
+            this.state=undefined;
+          }
+        }
+      },
+      //子组件改变父组件的审批统计表
+      handleStatistics(budgetId,unitId,dateTime){
         this.budgetId=budgetId;
         this.projectItem=this.tableData=[]
-        getSubject({ budgetId:budgetId}).then(res1 => {
+        getSubject({ budgetId:budgetId,unitId:unitId,importDate:dateTime}).then(res1 => {
           let table = {
             lineNumber: res1.lineNumber,//序号
             itemName: res1.projectItemName,//科目名称
@@ -707,6 +694,7 @@
           this.projectItem = [res1];
         })
       },
+
       //返回
       handleBack(){
         this.$router.go(-1);
@@ -724,7 +712,6 @@
       },
       handleGetDel(){
         getDeleteApprove(this.$route.params.id).then(res=>{
-          console.log(res);
           for(let obj of this.program){
             for(let val of res){
               if(obj.id==val){
@@ -738,36 +725,37 @@
       handleGetProject(type) {
         let data = {
           budgetId: this.info.budgetId||this.budgetId,
-          unitId: this.info.unitId
+          unitId: this.info.unitId,
+          importDate:this.info.createTime
         };
-        if (type == 10) {
+        if (type === 10) {
           this.titleProject = '未发起审批和审批拒绝项目列表(未申报)：'
           data.state = type;
           getProject(data).then(res => {
             this.tableProjectData = res;
           });
-        } else if (type == 20) {
+        } else if (type === 20) {
           this.titleProject = '审批中项目列表：'
           data.state = type
           getProject(data).then(res => {
             this.tableProjectData = res;
           });
-        } else if (type == 31) {
-          this.titleProject = '已审批通过项目列表：'
-          data.state = type
+        } else if (type === 31) {
+          this.titleProject = '已审批通过项目列表：';
+          data.state = type;
           getProject(data).then(res => {
-            this.tableProjectData = res
+            this.tableProjectData = res;
           })
         }
-        this.projectPopup = true
+        this.projectPopup = true;
       },
 
       //分解表记录修改
       handleEidt(index, row) {
-        this.statics = 2
-        this.centerDialogVisible = true
+        this.statics = 2;
+        this.centerDialogVisible = true;
         getClassInfo(row.id).then(res => {
-          this.form2 = res
+          this.form2 = res;
         })
       },
       //流程节点删除
@@ -778,21 +766,21 @@
           type: 'warning'
         }).then(() => {
           deleteApprove(row.id).then(res => {
-            this.handleLoad()
+            this.handleLoad(this.$route.params.id)
             this.$message.success('删除成功')
           })
         })
       },
       //删除
-      handleDelete(index, id) {
+      handleDelete(row) {
         this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          ClassDelete(id.id).then(res => {
-            getTable(this.$route.params.id).then(res1 => {
-              this.tableDatas = res1
+          ClassDelete(row.id).then(res => {
+            getTable(this.projectId).then(res1 => {
+              this.tableDatas = res1;
             })
             this.$message({
               type: 'success',
@@ -802,14 +790,10 @@
         })
       },
       handleType() {
-        if (!this.obj2.budgetId) return
+        if (!this.obj2.budgetId) return;
         getQuota(this.obj2.budgetId).then(res => {
-          this.quota = res
+          this.quota = res;
         })
-      },
-      //关闭弹窗
-      handleCancel() {
-        this.isLaunch=false;
       },
       //流程
       handleRestLaunch(){
@@ -829,20 +813,7 @@
         this.programOpen=true;
         getHistory(this.$route.params.id).then(res=>{
           this.programTable=res;
-        })
-      },
-      //发起审批
-      SubmitLaunch(){
-        if(!this.LaunchId){
-          this.$message.warning('请选择流程');
-          return;
-        }
-
-        LaunchApprove({flowTypeId:this.LaunchId,projectId:this.$route.params.id}).then(res=>{
-          this.isLaunch=false;
-          this.handleLoad();
-          this.LaunchId=undefined;
-          this.$message.success('流程发起成功！');
+          this.historyLoading=false;
         })
       },
       //分解添加
@@ -850,37 +821,43 @@
         if(this.state==undefined){
           this.projectId=this.form2.projectId=this.form.projectId=this.projectIds;
         }else if(this.state=='add'){
-          return;
+          this.form2.projectId=this.form.projectId=this.projectId;
         }else{
           this.projectId=this.form2.projectId=this.form.projectId=this.state;
         }
         if (this.statics == 1) {
           if (!this.form.className || !this.form.budgetId || !this.form.cost) {
-            this.$message.warning('必填项不能为空！')
-            return
+            this.$message.warning('必填项不能为空！');
+            return;
           }
 
           addClass(this.form).then(res => {
-            this.$message.success('添加成功')
+            this.$message.success('添加成功');
             this.form = {
               budgetId: this.form.budgetId
             }
             getTable(this.projectId).then(res1 => {
-              this.tableDatas = res1
+              this.tableDatas = res1;
             })
           })
         } else {
           if (!this.form2.className || !this.form2.budgetId || !this.form2.cost) {
-            this.$message.warning('必填项不能为空！')
-            return
+            this.$message.warning('必填项不能为空！');
+            return;
           }
           UpdateClass(this.form2).then(res => {
-            this.$message.success('修改成功')
+            if (this.info.state == 10 || this.info.state == 30) {
+              this.$message.success('修改成功');
+            } else if (this.info.state == 31 || this.info.state == 40) {
+              this.$message.success('调整成功');
+            } else {
+              this.$message.success('修改成功');
+            }
             getTable(this.projectId).then(res1 => {
-              this.tableDatas = res1
+              this.tableDatas = res1;
             })
-            this.centerDialogVisible = false
-            this.statics = 1
+            this.centerDialogVisible = false;
+            this.statics = 1;
           })
         }
       },
@@ -888,32 +865,37 @@
       //提交审批
       handleApprove(item, type,index) {
         if (!this.programObj.suggestion) {
-          this.$message.warning('请输入你的审批意见')
-          return
+          this.$message.warning('请输入你的审批意见');
+          return;
         }
-        this.programObj.approvers = []
+        this.programObj.approvers = [];
         for (let key of this.program) {
-          this.programObj.approvers.push({ flowNodeId:key.flowNodeId,userId:key.form.id})
+          this.programObj.approvers.push({ flowNodeId:key.flowNodeId,userId:key.form.id});
         }
 
         this.programObj.operation = type;
         this.programObj.id=item.id;
         SubmitApprove(this.programObj).then(res => {
-          this.handleLoad();
+          this.handleLoad(this.$route.params.id);
           this.programObj.suggestion=undefined;
-          this.$message.success('提交成功')
+          this.$message.success('提交成功');
         })
 
       },
       //导出
       handleExport(){
+        let exportData={
+          statistics:[this.headinfo],
+          flows:this.program,
+          splits:this.tableDatas,
+          detail:this.info
+        }
         this.$confirm('是否确认导出签报的详情数据数据?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          console.log(5555)
-          exportWord(getToken(), { id:parseInt(this.$route.params.id),budgetId:this.info.budgetId }, '/budget/project/exports',this.info.projectName);
+          exportWord(getToken(), exportData, `/budget/project/info/export`,this.info.projectName);
         });
       }
     }
@@ -921,7 +903,7 @@
 </script>
 
 <style lang="scss" scoped>
-  .container {
+  .containers {
     width: 95%;
     margin: 30px auto 30px auto;
     padding: 30px 20px;
@@ -932,18 +914,19 @@
       margin-top: 20px;
 
       .programList {
-        width: 430px;
-        margin-left: 30px;
+        width: 330px;
+        max-width: 380px;
+        margin-left: 10px;
         float: left;
         margin-bottom: 30px;
-        background: #F4F4F4;
-        padding: 15px 25px;
+        padding: 15px 0px 15px 15px;
+        border:1.5px solid red;
         border-radius: 8px;
         position: relative;
 
         .el-icon-close {
           display: inline-block;
-          margin: 0 0 10px 370px;
+          margin: 0 0 10px 330px;
           cursor: pointer;
         }
 
@@ -965,6 +948,9 @@
 
         .programList-div {
           margin-bottom: 10px;
+          span{
+            font-size:13px;
+          }
         }
       }
     }
@@ -1015,21 +1001,16 @@
       border: none;
     }
 
-    .textareas {
-      display: flex;
-      flex-direction: row;
-      line-height: 40px;
-      margin-bottom: 15px;
-
-      label {
-        display: inline-block;
-        width: 140px;
-        text-align: right;
-        padding-right: 15px;
-      }
-    }
     .danger{
       color:red;
     }
+    .info-textarea{
+      width:79% !important;
+      white-space: pre-line;
+    }
+  }
+
+  .column-no-padding {
+    padding: 0;
   }
 </style>

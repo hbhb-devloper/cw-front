@@ -63,7 +63,6 @@
           size="mini"
           :disabled="multiple"
           @click="handleDelete"
-          v-hasPermi="['system:logininfor:remove']"
         >删除</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -72,7 +71,6 @@
           icon="el-icon-delete"
           size="mini"
           @click="handleClean"
-          v-hasPermi="['system:logininfor:remove']"
         >清空</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -81,7 +79,6 @@
           icon="el-icon-download"
           size="mini"
           @click="handleExport"
-          v-hasPermi="['system:logininfor:export']"
         >导出</el-button>
       </el-col>
     </el-row>

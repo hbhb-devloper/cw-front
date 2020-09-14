@@ -126,6 +126,32 @@ export const constantRoutes = [{
             meta: { title: '修改生成配置' }
         }]
     },
+  {
+    path: '/budget',
+    component: Layout,
+    hidden: true,
+    children: [{
+      path: 'edit',
+      component: (resolve) => require(['@/views/budget/Report/info'], resolve),
+      meta: { title: '签报新增修改' }
+    }]
+  },
+  {
+    path: '/fund',
+    component: Layout,
+    hidden: true,
+    children: [{
+      path: 'select/info/:id',
+      component: (resolve) => require(['@/views/fund/fundSelect/info'], resolve),
+      meta: { title: '签报新增修改' }
+    }]
+  },
+  // {
+  //   path:'/budget/edit',
+  //   component: layout,
+  //   hidden: true,
+  //
+  // }
     // {
     //     path: '/flow',
     //     component: Layout,

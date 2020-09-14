@@ -4,19 +4,20 @@
  * @Author: CYZ
  * @Date: 2020-07-20 18:22:09
  * @LastEditors: CYZ
- * @LastEditTime: 2020-08-13 10:04:51
+ * @LastEditTime: 2020-08-14 19:04:57
 -->
 <template>
   <div class="dashboard-editor-container">
     <el-row type="flex" class="row-bg" justify="space-around">
-      <el-col :span="11">
+      <el-col :span="23">
         <el-card class="box-card">
           <div slot="header" class="clearfix">
             <span>重点看点待办事宜</span>
             <el-button @click="opendialog" style="float: right; padding: 3px 0" type="text">更多</el-button>
           </div>
           <el-table :data="NoticetableData" v-loading='loading' style="width: 100%;font-size: 13px;" height="250">
-            <el-table-column prop="content" label="待办内容" align="center" class-name="ellipsis2">
+            <el-table-column prop="content" label="待办内容" align="center">
+              <!--  class-name="ellipsis2" -->
               <template style="color:#409EFF" slot-scope="scope">
                 <router-link
                   style="color:#409EFF;"
@@ -41,6 +42,23 @@
           </el-table>
         </el-card>
       </el-col>
+    </el-row>
+    <el-row type="flex" class="row-bg" justify="space-around">
+      <el-col :span="11">
+        <el-card class="box-card">
+          <div slot="header" class="clearfix">
+            <span>通告提醒</span>
+            <el-button style="float: right; padding: 3px 0" type="text">更多</el-button>
+          </div>
+          <div class="noticelist">
+            <div class="noticeitem" v-for="(item,index) in noticelists" :key="index">
+              <div class="title">{{item.title}}</div>
+              <div class="date">{{item.date}}</div>
+            </div>
+          </div>
+        </el-card>
+
+      </el-col>
       <el-col :span="11">
         <el-card class="box-card">
           <div slot="header" class="clearfix">
@@ -52,7 +70,8 @@
             >上传</el-button>
           </div>
           <el-table :data="FiletableData" v-loading='loading2' style="width: 100%;font-size: 13px;" height="250">
-            <el-table-column prop="fileName" label="文件名称" align="center" class-name="ellipsis2"></el-table-column>
+            <el-table-column prop="fileName" label="文件名称" align="center"></el-table-column>
+              <!--  class-name="ellipsis2" -->
             <el-table-column prop="uploadTime" label="日期" align="center">
               <template slot-scope="scope">{{scope.row.uploadTime | dataFormat}}</template>
             </el-table-column>
@@ -73,22 +92,7 @@
         </el-card>
       </el-col>
     </el-row>
-    <el-row type="flex" class="row-bg" justify="space-around">
-      <el-col :span="23">
-        <el-card class="box-card">
-          <div slot="header" class="clearfix">
-            <span>通告提醒</span>
-            <el-button style="float: right; padding: 3px 0" type="text">更多</el-button>
-          </div>
-          <div class="noticelist">
-            <div class="noticeitem" v-for="(item,index) in noticelists" :key="index">
-              <div class="title">{{item.title}}</div>
-              <div class="date">{{item.date}}</div>
-            </div>
-          </div>
-        </el-card>
-      </el-col>
-    </el-row>
+
     <!-- 添加或修改角色配置对话框 -->
     <el-dialog title="待办事宜" :visible.sync="open" width="1200px">
       <el-form :model="queryParams" ref="queryForm" :inline="true">
@@ -125,8 +129,8 @@
         </el-form-item>
       </el-form>
       <el-table :data="NoticeMoreData" style="width: 100%" v-loading='loading1'>
-        <el-table-column prop="id" label="序号" align="center"></el-table-column>
-        <el-table-column prop="content" label="待办内容" align="center">
+        <el-table-column prop="id" label="序号" align="center" width="50"></el-table-column>
+        <el-table-column prop="content" label="待办内容" align="center" width="400">
           <template style="color:#409EFF" slot-scope="scope">
             <router-link
               style="color:#409EFF;"
@@ -134,13 +138,17 @@
             >{{scope.row.content}}</router-link>
           </template>
         </el-table-column>
-        <el-table-column prop="amount" label="流程发起时金额(万元)" width="200" align="center"></el-table-column>
+        <el-table-column prop="amount" label="金额(万元)" width="150" align="center">
+          <!-- <template slot-scope="scope">{{scope.row.amount | dataFixed}}</template> -->
+        </el-table-column>
         <el-table-column prop="flowType" label="流程类型" align="center"></el-table-column>
         <el-table-column prop="userName" label="发起人" align="center"></el-table-column>
         <el-table-column prop="unitName" label="发起单位" align="center"></el-table-column>
-        <el-table-column prop="createTime" label="发起时间" align="center"></el-table-column>
+        <el-table-column prop="createTime" label="发起时间" align="center">
+          <template slot-scope="scope">{{scope.row.createTime | dataFormat}}</template>
+        </el-table-column>
         <el-table-column prop="stateLabel" label="流程状态" align="center"></el-table-column>
-        <el-table-column prop="remark" label="备注信息" align="center"></el-table-column>
+        <!-- <el-table-column prop="remark" label="备注信息" align="center"></el-table-column> -->
       </el-table>
       <pagination
         v-show="total>0"
@@ -251,6 +259,9 @@ export default {
     dataFormat(msg) {
       return msg.substring(0, 10);
     },
+    dataFixed(num) {
+      return num.toFixed(2);
+    },
   },
   created() {
     this.getNoticeList();
@@ -286,7 +297,6 @@ export default {
         spinner: "el-icon-loading",
         background: "rgba(0, 0, 0, 0.7)",
       });
-      console.log("loading", loading);
       this.loadingoption = loading;
     },
     handleFail() {
@@ -294,10 +304,8 @@ export default {
       this.$message.error("上传失败");
     },
     handleRemove(file, fileList) {
-      console.log(file, fileList);
     },
     handlePreview(file) {
-      console.log(file);
     },
     handleExceed(files, fileList) {
       this.$message.warning(
@@ -307,7 +315,6 @@ export default {
       );
     },
     handleSuccess(res) {
-      console.log("handleSuccess", res);
       this.fileList = [];
       this.loadingoption.close();
       this.centerDialogVisible = false;
@@ -331,35 +338,15 @@ export default {
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
-      console.log("row", row);
       let that=this
       updateNotice(row.id).then((response) => {
-        console.log("updateNotice", response);
         that.getNoticeList();
       });
     },
-    // onConnected: function () {
-    //   const dest = "/exchange/testDirectExchange/test";
-    //   this.client.subscribe(dest, this.responseCallback, this.onFailed);
-    // },
-    // onFailed: function (frame) {
-    //   console.log("MQ Failed: " + frame);
-    // },
-    // responseCallback: function (frame) {
-    //   console.log("接收的消息为" + JSON.parse(frame.body));
-    // },
-    // connect: function () {
-    //   const headers = {
-    //     login: "root",
-    //     passcode: "cw_2020",
-    //   };
-    //   this.client.connect(headers, this.onConnected, this.onFailed);
-    // },
     /** 查询角色列表 */
     getList1() {
       this.loading1 = true;
       getNoticeList(this.queryParams).then((response) => {
-        console.log("getNoticeList", getNoticeList);
         this.total= response.count;  //Math.ceil(response.count/this.queryParams.pageSize);
         this.NoticeMoreData = response.list;
         this.loading1 = false;
@@ -367,13 +354,7 @@ export default {
     },
     getNoticeList() {
       this.loading = true;
-      this.loading2 = true;
       getNoticeList().then((response) => {
-        console.log(response,222)
-        // console.log("getNoticeList", response);
-        // response=response.map(item=>{
-        //   item.createTime=item.createTime.substring(0,10)
-        // })
         this.NoticetableData = response.list;
         this.loading = false;
       });
@@ -426,6 +407,6 @@ export default {
     text-overflow: ellipsis;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
-    
+
 }
 </style>

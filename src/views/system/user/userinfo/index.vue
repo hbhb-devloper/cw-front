@@ -179,14 +179,6 @@
                 @click="handleUpdate(scope.row)"
                 v-hasPermi="['system:user:edit']"
               >修改</el-button>
-              <!--              <el-button-->
-              <!--                v-if="scope.row.userId !== 1"-->
-              <!--                size="mini"-->
-              <!--                type="text"-->
-              <!--                icon="el-icon-delete"-->
-              <!--                @click="handleDelete(scope.row)"-->
-              <!--                v-hasPermi="['system:user:remove']"-->
-              <!--              >删除</el-button>-->
               <el-button
                 size="mini"
                 type="text"
@@ -241,7 +233,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="7">
-            <el-form-item label="默认归属单位" prop="defaultUnitId">
+            <el-form-item label="默认数据单位" prop="defaultUnitId">
               <!-- :disable-branch-nodes="true"
               :show-count="true"-->
               <treeselect
@@ -249,7 +241,7 @@
                 :options="deptOptions"
                 :disable-branch-nodes="true"
                 :show-count="true"
-                placeholder="请选择归属部门"
+                placeholder="请选择数据部门"
               />
             </el-form-item>
           </el-col>
@@ -269,18 +261,6 @@
               <el-input v-model="form.jobNum" placeholder="请输入工号" />
             </el-form-item>
           </el-col>
-          <!-- <el-col :span="7">
-            <el-form-item label="用户性别">
-              <el-select v-model="form.sex" placeholder="请选择">
-                <el-option
-                  v-for="dict in sexOptions"
-                  :key="dict.dictValue"
-                  :label="dict.dictLabel"
-                  :value="dict.dictValue"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>-->
           <el-col :span="7">
             <el-form-item label="状态">
               <el-radio-group v-model="form.state">
@@ -298,19 +278,6 @@
               <el-input v-model="form.jobName" placeholder="请输入职务" />
             </el-form-item>
           </el-col>
-          <!-- <el-col :span="7">
-            <el-form-item label="角色">
-              <el-select v-model="form.roleIds" multiple placeholder="请选择">
-                <el-option
-                  v-for="item in roleOptions"
-                  :key="item.roleId"
-                  :label="item.roleName"
-                  :value="item.roleId"
-                  :disabled="item.status == 1"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>-->
           <el-col :span="24">
             <el-form-item label="备注">
               <el-input v-model="form.remark" type="textarea" placeholder="请输入内容"></el-input>
@@ -322,11 +289,10 @@
         <el-card class="box-card">
           <div slot="header" class="clearfix">
             <span>菜单权限</span>
-            <!-- <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button> -->
           </div>
           <el-scrollbar style="height:160px">
-            <!-- <div v-for="(item,index) in RSlist" :key="index" class="text item">{{item.label}}</div> -->
-            <el-checkbox-group v-model="checkedRsRoleIds">
+            <el-checkbox-group v-model="checkedRsRoleIds"
+                               class="tree-box">
               <el-checkbox
                 v-for="item in RSlist"
                 :label="item.id"
@@ -355,6 +321,7 @@
               :data="menuOptions"
               show-checkbox
               ref="menu"
+              class="tree-box"
               node-key="id"
               empty-text="加载中，请稍后"
               :props="defaultProps"
@@ -367,7 +334,8 @@
             <!-- <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button> -->
           </div>
           <el-scrollbar style="height:160px">
-            <el-checkbox-group v-model="checkedUnRoleIds">
+            <el-checkbox-group v-model="checkedUnRoleIds"
+                               class="tree-box">
               <el-checkbox v-for="item in UNlist" :label="item.id" :key="item.id">
                 <span @click.prevent="handleCheckedUNChange(item)">{{item.label}}</span>
               </el-checkbox>
@@ -394,6 +362,7 @@
               show-checkbox
               ref="menu1"
               node-key="id"
+              class="tree-box"
               empty-text="加载中，请稍后"
               :props="defaultProps"
             ></el-tree>
@@ -570,12 +539,8 @@ export default {
           { required: true, message: "归属单位不能为空", trigger: "blur" }
         ],
         defaultUnitId: [
-          { required: true, message: "默认归属单位不能为空", trigger: "blur" }
+          { required: true, message: "默认数据单位不能为空", trigger: "blur" }
         ],
-        // pwd: [{ required: true, message: "用户密码不能为空", trigger: "blur" }],
-        // CheckPassword: [
-        //   { required: true, validator: validatePass2, trigger: "blur" }
-        // ],
         jobNum: [{ required: true, message: "工号不能为空", trigger: "blur" }],
         email: [
           { required: true, message: "邮箱地址不能为空", trigger: "blur" },
@@ -804,7 +769,6 @@ export default {
             });
           } else {
             adduser(this.form).then(response => {
-              console.log("adduser", response);
               this.msgSuccess("新增成功");
               this.open = false;
               this.getList();
@@ -812,28 +776,6 @@ export default {
           }
         }
       });
-    },
-    /** 删除按钮操作 */
-    handleDelete(row) {
-      const userIds = row.userId || this.ids;
-      console.log(row);
-      this.$confirm(
-        '是否确认删除用户编号为"' + userIds + '"的数据项?',
-        "警告",
-        {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        }
-      )
-        .then(function() {
-          return delUser(userIds);
-        })
-        .then(() => {
-          this.getList();
-          this.msgSuccess("删除成功");
-        })
-        .catch(function() {});
     },
     /** 导出按钮操作 */
     handleExport() {
@@ -905,5 +847,8 @@ export default {
 .el-checkbox-group {
   display: flex;
   flex-direction: column;
+}
+.tree-box{
+  padding-bottom: 20px;
 }
 </style>

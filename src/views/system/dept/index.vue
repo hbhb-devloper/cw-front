@@ -1,4 +1,4 @@
-金额不能超过100000<template>
+<template>
   <div class="app-container">
     <el-form :inline="true">
       <el-form-item label="部门名称">
@@ -34,7 +34,6 @@
           icon="el-icon-plus"
           size="mini"
           @click="handleAdd"
-          v-hasPermi="['system:dept:add']"
         >新增</el-button>
       </el-form-item>
     </el-form>
@@ -61,14 +60,12 @@
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
-            v-hasPermi="['system:dept:edit']"
           >修改</el-button>
           <el-button
             size="mini"
             type="text"
             icon="el-icon-plus"
             @click="handleAdd(scope.row)"
-            v-hasPermi="['system:dept:add']"
           >新增</el-button>
           <el-button
             v-if="scope.row.parentId != 0"
@@ -76,7 +73,6 @@
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
-            v-hasPermi="['system:dept:remove']"
           >删除</el-button>
         </template>
       </el-table-column>
