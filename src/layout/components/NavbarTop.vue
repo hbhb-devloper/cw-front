@@ -75,7 +75,7 @@ export default {
       name: "",
       textArr: [],
       number: 0,
-      client: Stomp.client("wss://mq.yeexun.com.cn:15674/ws"),
+      client: Stomp.client("wss://ws.yeexun.com.cn/ws"),
     };
   },
   components: {
