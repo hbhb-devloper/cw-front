@@ -118,7 +118,7 @@ var bcrypt = require('bcryptjs');
             this.loading = true
             this.$store.dispatch('Login', this.loginForm).then(() => {
               this.$router.push('/');
-              console.log('登陆成功')
+              // console.log('登陆成功')
 
             })
               .catch(() => {
