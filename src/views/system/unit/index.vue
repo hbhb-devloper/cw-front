@@ -85,7 +85,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="排序" prop="sortNum">
-              <el-input-number v-model="form1.sortNum" disabled :min="0" ></el-input-number>
+              <el-input-number v-model="form1.sortNum" disabled :min="0" :max="9999"></el-input-number>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -157,7 +157,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="排序" prop="sortNum">
-              <el-input-number v-model="form.sortNum" :min="0"></el-input-number>
+              <el-input-number v-model="form.sortNum" :min="0" :max="9999"></el-input-number>
             </el-form-item>
           </el-col>
           <el-col :span="12">

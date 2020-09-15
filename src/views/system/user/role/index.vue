@@ -138,7 +138,7 @@
           <el-input v-model="form.roleKey" placeholder="请输入权限字符" />
         </el-form-item>
         <el-form-item label="菜单模板顺序" prop="sortNum">
-          <el-input-number v-model="form.sortNum" controls-position="right" :min="0" />
+          <el-input-number v-model="form.sortNum" controls-position="right" :min="0" :max="9999" />
         </el-form-item>
         <el-form-item label="状态">
           <el-radio-group v-model="form.state">

@@ -100,7 +100,7 @@
           <el-input v-model="form.authorizedGrantTypes" placeholder="请输入授权类型" />
         </el-form-item>
         <el-form-item label="令牌时效" prop="accessTokenValidity">
-          <el-input-number v-model="form.accessTokenValidity" controls-position="right" :min="0" />
+          <el-input-number v-model="form.accessTokenValidity" controls-position="right"  />
         </el-form-item>
         <el-form-item label="刷新时效" prop="refreshTokenValidity">
           <el-input-number v-model="form.refreshTokenValidity" controls-position="right" :min="0" />

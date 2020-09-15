@@ -10,7 +10,13 @@ export function listType(query) {
         params: query
     })
 }
-
+// 查询模块类型列表
+export function listModule() {
+    return request({
+        url: '/dict/module',
+        method: 'get',
+    })
+}
 // 查询流程类型详细
 export function getType(TypeId) {
     return request({
