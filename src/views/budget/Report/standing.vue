@@ -83,7 +83,7 @@
         v-hasPermi="['budget:project:export']"
       >导出数据</el-button>
       <div style="overflow:auto;margin-top:20px;">
-        <el-table v-loading="loading" ref="multipleTable" :data="tableData">
+        <el-table v-loading="loading" height="600px" ref="multipleTable" :data="tableData">
           <el-table-column prop="projectNum" label="项目编号" align="center" width="180px"></el-table-column>
           <el-table-column
             prop="projectName"
@@ -278,8 +278,7 @@ export default {
   },
   created() {
     let times = new Date();
-    console.log('this.budgetSelect',this.budgetSelect);
-    // this.obj.projectYear = times.getFullYear().toString();
+    this.radio=this.radioVal;
     this.obj = this.budgetSelect;
     if (!this.obj.projectYear) {
       this.$set(this.obj, "projectYear", times.getFullYear().toString());
@@ -290,21 +289,9 @@ export default {
     Treeselect,
   },
   computed: {
-    ...mapGetters(["budgetSelect"]),
+    ...mapGetters(["budgetSelect",'radioVal']),
     taxIncludeAmount() {
       return this.obj2.taxIncludeAmount;
-    },
-  },
-  watch: {
-    obj: {
-      deep: true,
-      handler(val) {
-        console.log("val", val);
-        // this.barChart = val;
-        // this.$nextTick(() => {
-        //   this.initChart();
-        // });
-      },
     },
   },
   methods: {
@@ -339,15 +326,16 @@ export default {
       } else {
         this.obj.createTime = '';
       }
-      // let data = {};
-      // for (let key in this.obj) {
-      //   if (!this.obj[key]) {
-      //   } else {
-      //     data[key] = this.obj[key];
-      //   }
-      // }
       this.$store.dispatch("SET_BUDGET_SELECT", this.obj);
-      getList(this.obj).then((res) => {
+      this.$store.dispatch("SET_BUDGET_RADIO",this.radio);
+      let data = {};
+      for (let key in this.obj) {
+        if (!this.obj[key]) {
+        } else {
+          data[key] = this.obj[key];
+        }
+      }
+      getList(data).then((res) => {
         this.total = res.count;
         this.tableData = res.list;
         this.loading = false;
@@ -523,14 +511,6 @@ export default {
   position: relative;
   background: #fff;
   padding: 30px 20px;
-
-  .tables {
-    width: 100%;
-    height: 600px;
-    margin-top: 20px;
-    text-align: center;
-    overflow: auto;
-  }
 }
 
 .el-icon-printer {

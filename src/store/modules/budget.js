@@ -13,6 +13,7 @@ const budget ={
       pageNum: 1, //页码
       pageSize: 20,
     },
+    radio:3,
     notice: 0
   },
   mutations:{
@@ -20,14 +21,13 @@ const budget ={
       state.projectId = id;
     },
     setBudgetSelect: (state, data) => {
-      console.log('Vdata',data);
-      state.budgetSelect = data;
-    },
-    setBudgetRest: (state, data) => {
       state.budgetSelect = data;
     },
     setNotice: (state) => {
       state.notice=state.notice+1;
+    },
+    setRadio:(state,data)=>{
+      state.radio=data;
     }
   },
   actions:{
@@ -39,6 +39,9 @@ const budget ={
     },
     SET_GETNOTICE({commit}) {
       commit('setNotice')
+    },
+    SET_BUDGET_RADIO({commit},data){
+      commit('setRadio',data);
     }
   }
 }

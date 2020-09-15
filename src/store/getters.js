@@ -20,5 +20,6 @@ const getters = {
     projectIds:state=>state.budget.projectId,
     budgetSelect:state=>state.budget.budgetSelect,
     notices:state=>state.budget.notice,
+    radioVal:state=>state.budget.radio,
 }
 export default getters
