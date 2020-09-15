@@ -22,10 +22,10 @@
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
-        <el-form-item label="项目编号" prop="flowTypeName">
+        <el-form-item label="迁改项目编号" prop="flowTypeName">
           <el-input
             v-model="queryParams.flowTypeName"
-            placeholder="请输入项目编号"
+            placeholder="请输入迁改项目编号"
             clearable
             size="small"
             style="width: 240px"

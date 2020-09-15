@@ -75,10 +75,8 @@
     </div>
     <div class="table-btn-box">
       <el-button type="primary" icon="el-icon-plus" size="mini" @click="handleAdd">新增签报</el-button>
-      <el-button type="warning" icon="el-icon-download" size="mini" @click="handleExport"
-                 v-hasPermi="['budget:project:export']">导出数据
-      </el-button>
-      <div style="height: 600px;overflow:auto;margin-top:20px;">
+      <el-button type="warning" icon="el-icon-download" size="mini" @click="handleExport" v-hasPermi="['budget:project:export']">导出数据</el-button>
+      <div style="overflow:auto;margin-top:20px;">
         <el-table
           v-loading="loading"
           ref="multipleTable"

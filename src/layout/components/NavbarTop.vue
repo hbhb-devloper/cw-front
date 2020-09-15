@@ -145,7 +145,7 @@ export default {
       });
     },
     onConnected: function () {
-      const dest = "/queue/" + process.env.VUE_APP_WS_QUEUE;
+      const dest = "/exchange/" + process.env.VUE_APP_WS_EXCHANGE;
       this.client.subscribe(dest, this.responseCallback, this.onFailed);
     },
     onFailed: function (frame) {
