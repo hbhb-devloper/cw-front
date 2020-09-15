@@ -104,7 +104,6 @@
     <el-table v-loading="loading" :data="tableData">
       <el-table-column label="序号" type="index" align="center"/>
       <el-table-column label="发票开具部门" prop="invoiceUnit" width="180" align="center"/>
-      <!--      <el-table-column label="对应用户" prop="nickName" align="center" />-->
       <el-table-column label="客户经理" prop="clientManager" width="180" align="center"/>
       <el-table-column label="发票金额（元）" prop="invoiceAmount" width="120" align="center"/>
       <el-table-column label="单位编号" prop="unitNumber" width="180" align="center"/>
@@ -122,21 +121,12 @@
       <el-table-column label="开票人" prop="invoiceUser" align="center"/>
       <el-table-column label="出票时间" prop="invoiceCreateTime" width="180" align="center"/>
       <el-table-column prop="stateLabel" align="center" label="流程状态" width="130">
-        <!--        <template slot-scope="scope">-->
-        <!--          <span style="color:#409EFF;" v-if="scope.row.state==0">审批未发起</span>-->
-        <!--          <span style="color:#409EFF;" v-if="scope.row.state==1">正在审批</span>-->
-        <!--          <span style="color:#409EFF;" v-if="scope.row.state==2">审批未通过</span>-->
-        <!--          <span style="color:#409EFF;" v-if="scope.row.state==3">审批通过</span>-->
-        <!--        </template>-->
       </el-table-column>
       <el-table-column prop="itemName" align="center" label="发起流程">
         <template slot-scope="scope">
           <el-button size="mini" type="text" :disabled="scope.row.state==20||scope.row.state==31" @click="examined(scope.row)">发起审批</el-button>
         </template>
       </el-table-column>
-      <!--      <el-table-column prop="itemName" align="center" label="编辑"></el-table-column>-->
-      <!--      <el-table-column prop="itemName" align="center" label="编辑发票"></el-table-column>-->
-      <!--      <el-table-column prop="itemName" align="center" label="编辑附件"></el-table-column>-->
       <el-table-column prop="itemName" align="center" width="150" label="操作">
         <template slot-scope="scope">
           <el-button
@@ -350,14 +340,7 @@
               :value="dict.id"
             />
           </el-select>
-<!--          <el-button size="mini" type="text">-->
-<!--            <router-link :to="'/flow/customize/list'">查看流程</router-link>-->
-<!--          </el-button>-->
         </el-form-item>
-
-<!--        <el-form-item label="备注" style="width:100%;">-->
-<!--          <el-input v-model="form.remark" type="textarea" placeholder="请输入内容"></el-input>-->
-<!--        </el-form-item>-->
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm2">确 定</el-button>
@@ -382,8 +365,6 @@
     approveFlow
   } from "@/api/fund/management/index";
   import {getLaunchType} from '@/api/budget/report/report'
-  import {listFlowRole, listFlowRoles, delRoleUser} from "@/api/flow/flowrole";
-  import {listType} from "@/api/flow/type";
   import {listUnit} from "@/api/system/unit";
   import Treeselect from "@riophae/vue-treeselect";
   import "@riophae/vue-treeselect/dist/vue-treeselect.css";
@@ -461,25 +442,21 @@
     methods: {
       getMenuTreeselect() {
         listUnit().then((response) => {
-          console.log(response, '单位')
           this.deptOptions = response;
         });
       },
       handleGetBusiness() {
         getBusiness().then(res => {
-          console.log(res, 69);
           this.typeList = res;
         })
       },
       handleGetContent() {
         getContentList().then(res => {
-          console.log(res, 68);
           this.InvoiceContentList = res;
         })
       },
       handleGetStatusList() {
         getStatusList().then(res => {
-          console.log(res, 66);
           this.StateOptions = res;
         })
       },
@@ -494,12 +471,8 @@
       },
       // 取消按钮
       cancel() {
-        // this.UnitList = res;
         this.open = false;
-
-
         this.open1 = false;
-        // this.reset();
       },
       // 表单重置
       reset() {
@@ -535,7 +508,6 @@
       },
       //文件上传
       UploadFile(param) {
-        console.log(param);
         const _file = param.file;
         let params = new FormData();
         params.append('files', _file);
@@ -548,10 +520,8 @@
             'Authorization': getToken()
           }
         }).then(res => {
-          console.log(res);
           this.fileList.push({fileId:res.data.data[0].id,fileName:res.data.data[0].fileName,fileSize:res.data.data[0].fileSize});
           this.form.files.push({fileId:res.data.data[0].id,fileName:res.data.data[0].fileName,fileSize:res.data.data[0].fileSize});
-          console.log(this.fileList,this.form);
           this.$message.success('附件上传成功！');
         })
       },
@@ -688,7 +658,6 @@
           return;
         }
         approveFlow(this.flow).then(res=>{
-          console.log(res);
           this.open1=false;
           this.flow={};
           this.msgSuccess('流程发起成功！')
@@ -713,21 +682,18 @@
       /** 导出按钮操作 */
       handleExport() {
         const queryParams = this.queryParams;
-        console.log("queryParams", queryParams);
         this.$confirm("是否确认导出所有流程角色列表?", "导出表格", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning",
         })
           .then(function () {
-            console.log("queryParams", queryParams);
             return exportData(
               getToken(),
               queryParams,
               "/fund/advance/export",
               "发票预开管理"
             );
-            // exportRole(queryParams);
           })
           .catch(function () {
           });
@@ -736,9 +702,6 @@
   };
 </script>
 <style lang="scss" scoped>
-  /* .el-form-item--medium /deep/ .el-form-item__content {
-    width: 240px;
-  } */
   .el-col-12 {
     height: 58px;
   }

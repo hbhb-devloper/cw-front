@@ -196,7 +196,6 @@
     methods: {
       handleGetStatistics(id){
         getInfo(parseInt(id)).then(res=>{
-          console.log(res);
           this.info=res;
           this.Filetable=res.sysFile;
         })

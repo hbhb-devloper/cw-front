@@ -79,7 +79,6 @@
       //页面初始化
       handleLoad(){
         getList().then(res=>{
-          console.log(res);
           this.flowList=res;
           this.loading=false;
         })
