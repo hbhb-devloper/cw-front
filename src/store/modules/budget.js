@@ -1,7 +1,18 @@
 const budget ={
   state:{
     projectId: undefined,
-    budgetSelect: {},
+    budgetSelect: {
+      //顶部条件查询
+      unitId: undefined,
+      projectYear: '',
+      createTime: '',
+      budgetId: undefined,
+      projectName: undefined,
+      projectNum: undefined,
+      state: undefined,
+      pageNum: 1, //页码
+      pageSize: 20,
+    },
     notice: 0
   },
   mutations:{
@@ -9,6 +20,7 @@ const budget ={
       state.projectId = id;
     },
     setBudgetSelect: (state, data) => {
+      console.log('Vdata',data);
       state.budgetSelect = data;
     },
     setBudgetRest: (state, data) => {
