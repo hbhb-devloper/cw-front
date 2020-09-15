@@ -22,14 +22,14 @@
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
-       
         <el-form-item label="开票时间" prop="flowTypeName">
           <el-date-picker v-model="queryParams.data1" type="date" placeholder="选择开票时间"></el-date-picker>
         </el-form-item>
         <el-form-item label="至" prop="flowTypeName" label-width="25px">
           <el-date-picker v-model="queryParams.data2" type="date" placeholder="选择开票时间"></el-date-picker>
         </el-form-item>
-         <el-form-item label="县区" prop="flowTypeName">
+
+        <el-form-item label="县区" prop="flowTypeName">
           <el-input
             v-model="queryParams.flowTypeName"
             placeholder="请输入县区"
@@ -39,11 +39,11 @@
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
+
         <el-form-item>
           <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
           <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
         </el-form-item>
-        
       </el-row>
     </el-form>
 
