@@ -7,13 +7,10 @@ const state = {
     },
     device: 'desktop',
     size: Cookies.get('size') || 'medium',
-    projectdata: {}
 }
 
 const mutations = {
-    SET_PROJECT: (state, data) => {
-        state.projectdata = data
-    },
+    
     TOGGLE_SIDEBAR: state => {
         state.sidebar.opened = !state.sidebar.opened
         state.sidebar.withoutAnimation = false
@@ -50,9 +47,7 @@ const actions = {
     setSize({ commit }, size) {
         commit('SET_SIZE', size)
     },
-    setProject({ commit }, data) {
-        commit('SET_PROJECT', data)
-    }
+    
 }
 
 export default {
