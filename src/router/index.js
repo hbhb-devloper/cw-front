@@ -143,7 +143,17 @@ export const constantRoutes = [{
     children: [{
       path: 'select/info/:id',
       component: (resolve) => require(['@/views/fund/fundSelect/info'], resolve),
-      meta: { title: '签报新增修改' }
+      meta: { title: '客户资金查询详情' }
+    }]
+  },
+  {
+    path: '/fund',
+    component: Layout,
+    hidden: true,
+    children: [{
+      path: 'management/info/:id',
+      component: (resolve) => require(['@/views/fund/management/info'], resolve),
+      meta: { title: '发票预开详情' }
     }]
   },
   // {

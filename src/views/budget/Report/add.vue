@@ -87,6 +87,7 @@
           <el-input
             type="textarea"
             placeholder="请输入项目简介信息"
+            :rows="4"
             v-model="obj2.introduction"
             show-word-limit
           >
@@ -100,6 +101,7 @@
           <el-input
             type="textarea"
             placeholder="请输入项目详细说明信息"
+            :rows="4"
             v-model="obj2.detail"
             show-word-limit
           >
@@ -111,6 +113,7 @@
           <el-input
             type="textarea"
             placeholder="请输入项目实施目标信息"
+            :rows="4"
             v-model="obj2.target"
             show-word-limit
           >
@@ -122,7 +125,8 @@
           <el-input
             type="textarea"
             placeholder="请输入备注信息"
-            v-model="obj2.remarks"
+            :rows="4"
+            v-model="obj2.remark"
             show-word-limit
           >
           </el-input>
@@ -265,30 +269,37 @@
           this.projectItem = res
         })
         //获取增值税下拉
-        getVatRate().then(res => {
-          this.VatRateOption = res;
-        })
-        if (this.stutic == 'eidt') {
-          this.fileList = [];
-          GetInfo(this.$route.query.id).then(res => {
-            for (let key of res.files) {
-              this.fileList.push({name: key.fileName, url: key.filePath, id: key.fileId, type: key.required})
-            }
-            this.$emit('changeType', 0, res.budgetId)
-            getQuota(res.budgetId).then(res => {
-              this.quota = res
+        getVatRate().then(res1 => {
+          this.VatRateOption = res1;
+          if (this.stutic == 'eidt') {
+            this.fileList = [];
+            GetInfo(this.$route.query.id).then(res => {
+              for (let key of res.files) {
+                this.fileList.push({name: key.fileName, url: key.filePath, id: key.fileId, type: key.required})
+              }
+              this.$emit('changeType', 0, res.budgetId)
+              getQuota(res.budgetId).then(res => {
+                this.quota = res
+              })
+              let arrs=this.VatRateOption.filter(item=>{
+                if(item.label==res.vatRate){
+                  res.vatRate=item.value;
+                  return item;
+                }
+              })
+              this.obj2 = res;
             })
-            res.vatRate = res.vatRate;
-            this.obj2 = res;
-          })
-        }
+          }
+        })
+
       },
       //计算本年项目成本
       handleCost() {
         if (!this.obj2.vatRate) {
           return
         }
-        let vatRate = 1 + (this.obj2.vatRate / 100);
+        console.log(this.obj2.vatRate);
+        let vatRate = 1 + parseFloat(this.obj2.vatRate) ;
         let counts = parseFloat(this.obj2.taxIncludeAmount) / vatRate;
         this.obj2.cost = counts.toFixed(6);
         let countss = parseFloat(this.obj2.taxIncludeAmount) - parseFloat(this.obj2.cost);
@@ -300,7 +311,7 @@
           // this.$message.warning('请选择增值税率');
           return
         }
-        let vatRate = 1 + (this.obj2.vatRate / 100)
+        let vatRate = 1 + parseFloat(this.obj2.vatRate);
         let counts = parseFloat(this.obj2.cost) * vatRate
         this.obj2.taxIncludeAmount = counts.toFixed(6)
       },
