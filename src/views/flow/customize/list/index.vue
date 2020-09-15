@@ -138,7 +138,7 @@
         </el-form-item>
 
         <el-form-item label="显示顺序" prop="sortNum">
-          <el-input-number v-model="form.sortNum" controls-position="right" :min="0" />
+          <el-input-number v-model="form.sortNum" controls-position="right" :min="0" :max="9999" />
         </el-form-item>
         <el-form-item label="关联单位" prop="unitId">
           <el-tree

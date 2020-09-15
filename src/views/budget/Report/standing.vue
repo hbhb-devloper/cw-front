@@ -423,7 +423,7 @@ export default {
           res.state == 40
         ) {
           this.projectId = row.id;
-          getLaunchType().then((response) => {
+          getLaunchType({module:100}).then((response) => {
             this.LaunchOption = response;
             this.isLaunch = true;
             this.LaunchId = 1;

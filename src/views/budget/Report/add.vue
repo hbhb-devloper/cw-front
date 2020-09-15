@@ -87,6 +87,7 @@
           <el-input
             type="textarea"
             placeholder="请输入项目简介信息"
+            :rows="4"
             v-model="obj2.introduction"
             show-word-limit
           >
@@ -100,6 +101,7 @@
           <el-input
             type="textarea"
             placeholder="请输入项目详细说明信息"
+            :rows="4"
             v-model="obj2.detail"
             show-word-limit
           >
@@ -111,6 +113,7 @@
           <el-input
             type="textarea"
             placeholder="请输入项目实施目标信息"
+            :rows="4"
             v-model="obj2.target"
             show-word-limit
           >
@@ -122,6 +125,7 @@
           <el-input
             type="textarea"
             placeholder="请输入备注信息"
+            :rows="4"
             v-model="obj2.remark"
             show-word-limit
           >
