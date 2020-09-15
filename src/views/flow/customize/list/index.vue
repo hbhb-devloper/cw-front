@@ -12,9 +12,14 @@
         />
       </el-form-item>
       <el-form-item label="流程类型" prop="flowTypeId">
-        <el-select v-model="queryParams.flowTypeId" placeholder="请选择" style="">
+        <el-select v-model="queryParams.flowTypeId" placeholder="请选择" style>
           <el-option :value="undefined" label="全部类型"></el-option>
-          <el-option v-for="item in flowTypeArr" :value="item.id" :label="item.label"></el-option>
+          <el-option
+            v-for="item in flowTypeArr"
+            :value="item.id"
+            :label="item.label"
+            :key="item.id"
+          ></el-option>
         </el-select>
       </el-form-item>
 
@@ -26,12 +31,7 @@
 
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
-        <el-button
-          type="primary"
-          icon="el-icon-plus"
-          size="mini"
-          @click="handleAdd"
-        >新增</el-button>
+        <el-button type="primary" icon="el-icon-plus" size="mini" @click="handleAdd">新增</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -169,7 +169,7 @@ import {
   updateFlow,
   delarr,
   getFlow,
-  FlowTypeList
+  FlowTypeList,
 } from "@/api/flow/list";
 import { listType } from "@/api/flow/type";
 import { listUnit } from "@/api/system/unit";
@@ -177,7 +177,7 @@ export default {
   name: "Flowtype",
   data() {
     return {
-      flowTypeArr:[],
+      flowTypeArr: [],
       // 遮罩层
       loading: true,
       // 选中数组
@@ -274,10 +274,10 @@ export default {
       // checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys);
       return halfCheckedKeys;
     },
-    getFlowTypeList(){
-      FlowTypeList().then(res=>{
-        this.flowTypeArr=res;
-      })
+    getFlowTypeList() {
+      FlowTypeList().then((res) => {
+        this.flowTypeArr = res;
+      });
     },
     getMenuTreeselect() {
       listUnit().then((response) => {
