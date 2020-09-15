@@ -83,7 +83,7 @@
         v-hasPermi="['budget:project:export']"
       >导出数据</el-button>
       <div style="overflow:auto;margin-top:20px;">
-        <el-table v-loading="loading" height="600px" ref="multipleTable" :data="tableData">
+        <el-table v-loading="loading"  ref="multipleTable" :data="tableData">
           <el-table-column prop="projectNum" label="项目编号" align="center" width="180px"></el-table-column>
           <el-table-column
             prop="projectName"
