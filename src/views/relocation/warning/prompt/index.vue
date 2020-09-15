@@ -2,17 +2,14 @@
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true">
       <el-row>
-        <el-form-item label="起始时间" prop="flowTypeName">
-          <el-date-picker v-model="queryParams.data1" type="date" placeholder="选择起始时间"></el-date-picker>
-        </el-form-item>
-        <el-form-item label="至" prop="flowTypeName" label-width="25px">
-          <el-date-picker v-model="queryParams.data2" type="date" placeholder="选择结束时间"></el-date-picker>
-        </el-form-item>
-        <el-form-item label="合同截止时间" prop="flowTypeName">
-          <el-date-picker v-model="queryParams.data1" type="date" placeholder="选择起始时间"></el-date-picker>
-        </el-form-item>
-        <el-form-item label="至" prop="flowTypeName" label-width="25px">
-          <el-date-picker v-model="queryParams.data2" type="date" placeholder="选择结束时间"></el-date-picker>
+        <el-form-item label="未全额回款合同历时" prop="flowTypeName">
+          <el-input
+            v-model="queryParams.flowTypeName"
+            placeholder="请输入未全额回款合同历时"
+            clearable
+            size="small"
+            style="width: 240px"
+          />
         </el-form-item>
         <el-form-item label="合同编号" prop="flowTypeName">
           <el-input
@@ -20,28 +17,16 @@
             placeholder="请输入合同编号"
             clearable
             size="small"
-            style="width: 150px"
-            @keyup.enter.native="handleQuery"
+            style="width: 240px"
           />
         </el-form-item>
-        <el-form-item label="经办单位" prop="flowTypeName">
+        <el-form-item label="项目编号" prop="flowTypeName">
           <el-input
             v-model="queryParams.flowTypeName"
-            placeholder="请输入经办单位"
+            placeholder="请输入项目编号"
             clearable
             size="small"
             style="width: 240px"
-            @keyup.enter.native="handleQuery"
-          />
-        </el-form-item>
-        <el-form-item label="合同名称" prop="flowTypeName">
-          <el-input
-            v-model="queryParams.flowTypeName"
-            placeholder="请输入合同名称"
-            clearable
-            size="small"
-            style="width: 240px"
-            @keyup.enter.native="handleQuery"
           />
         </el-form-item>
         <el-form-item>
@@ -53,47 +38,30 @@
 
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
-        <el-button
-          type="success"
-          icon="el-icon-download"
-          size="mini"
-          @click="centerDialogVisible=true"
-        >导入</el-button>
-      </el-col>
-      <el-col :span="1.5">
         <el-button type="warning" icon="el-icon-download" size="mini" @click="handleExport">导出</el-button>
       </el-col>
     </el-row>
 
     <el-table v-loading="loading" :data="typeList" @selection-change="handleSelectionChange">
       <!-- <el-table-column type="selection" width="55" align="center" /> -->
-      <el-table-column label="序号" prop="id" width="120" align="center" />
-      <el-table-column label="类别" prop="flowTypeName" width="150" align="center" />
-      <el-table-column label="经办单位" prop="flowTypeName" width="150" align="center" />
-      <el-table-column label="供应商" prop="flowTypeName" width="150" align="center" />
+      <el-table-column label="项目编号" prop="id" align="center" />
+       <el-table-column label="区市" prop="flowTypeName" width="150" align="center" />
+      <el-table-column label="施工单位" prop="flowTypeName" width="150" align="center" />
+      <el-table-column label="工程单位" prop="flowTypeName" width="150" align="center" />
+      <el-table-column label="对方单位" prop="flowTypeName" width="150" align="center" />
       <el-table-column label="合同编号" prop="flowTypeName" width="150" align="center" />
-      <el-table-column label="合同名称" prop="flowTypeName" width="150" align="center" />
-      <el-table-column label="起始时间" prop="flowTypeName" width="150" align="center" />
-      <el-table-column label="合同截止时间" prop="flowTypeName" width="150" align="center" />
-      <el-table-column label="合同金额" prop="flowTypeName" width="150" align="center" />
-      <el-table-column label="开票日期" prop="flowTypeName" width="150" align="center" />
-      <el-table-column label="发票类型" prop="flowTypeName" width="150" align="center" />
-      <el-table-column label="价款" prop="flowTypeName" width="150" align="center" />
-      <el-table-column label="税额" prop="flowTypeName" width="150" align="center" />
-      <el-table-column label="价税合计" prop="flowTypeName" width="150" align="center" />
-      <el-table-column label="工程名" prop="flowTypeName" width="150" align="center" />
-      <el-table-column label="收款情况" prop="flowTypeName" width="150" align="center" />
-      <el-table-column label="账龄" prop="flowTypeName" width="150" align="center" />
-      <el-table-column label="应收" prop="flowTypeName" width="150" align="center" />
-      <el-table-column label="已收" prop="flowTypeName" width="150" align="center" />
-      <el-table-column label="未收" prop="flowTypeName" width="150" align="center" />
-      <el-table-column label="款项类型" prop="flowTypeName" width="150" align="center" />
-      <el-table-column label="当月收款金额" prop="flowTypeName" width="150" align="center" />
-      <el-table-column label="收款单号" prop="flowTypeName" width="150" align="center" />
-      <el-table-column label="收款人" prop="flowTypeName" width="150" align="center" />
-      <!-- <el-table-column label="操作" align="center" width="150" class-name="small-padding fixed-width">
+      <el-table-column label="预付款到账金额（元）" prop="flowTypeName" width="150" align="center" />
+      <el-table-column label="是否已经收款" prop="flowTypeName" width="150" align="center" />
+      <el-table-column label="决算款到账金额（元）（注：决算款不包含预算款）" prop="flowTypeName" width="150" align="center" />
+      <el-table-column label="未全款回款合同历时" prop="flowTypeName" width="150" align="center" />
+      <el-table-column label="操作" align="center" width="150" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)">修改</el-button>
+           <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-upload2"
+            @click="handleDelete(scope.row)"
+          >上传附件</el-button>
           <el-button
             size="mini"
             type="text"
@@ -101,7 +69,7 @@
             @click="handleDelete(scope.row)"
           >删除</el-button>
         </template>
-      </el-table-column> -->
+      </el-table-column>
     </el-table>
 
     <pagination
@@ -112,25 +80,7 @@
       @pagination="getList"
     />
 
-    <!-- 添加或修改角色配置对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="500px">
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="类型名称" prop="flowTypeName">
-          <el-input v-model="form.flowTypeName" placeholder="请输入类型名称" />
-        </el-form-item>
-
-        <el-form-item label="显示顺序" prop="sortNum">
-          <el-input-number v-model="form.sortNum" controls-position="right" :min="0" />
-        </el-form-item>
-        <el-form-item label="备注">
-          <el-input v-model="form.remark" type="textarea" placeholder="请输入内容"></el-input>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
-        <el-button @click="cancel">取 消</el-button>
-      </div>
-    </el-dialog>
+    
   </div>
 </template>
 
@@ -217,7 +167,7 @@ export default {
     },
     /** 重置按钮操作 */
     resetQuery() {
-      this.dateRange = [];
+      this.queryParams.data = [];
       this.resetForm("queryForm");
       this.handleQuery();
     },
@@ -298,3 +248,24 @@ export default {
   },
 };
 </script>
+<style scoped>
+.el-dialog .el-form-item--medium /deep/ .el-form-item__label {
+  line-height: 20px;
+  font-size: 12px;
+}
+.el-dialog .el-form-item {
+  display: flex;
+  align-items: center;
+}
+.el-dialog .el-form-item--medium /deep/ .el-form-item__content {
+  margin-left: 0 !important;
+  width: 220px;
+}
+body .el-table /deep/ th.gutter {
+  display: table-cell !important;
+}
+
+body .el-table /deep/ colgroup.gutter {
+  display: table-cell !important;
+}
+</style>
