@@ -145,7 +145,7 @@ export default {
       });
     },
     onConnected: function () {
-      const dest = "/exchange/" + process.env.VUE_APP_WS_EXCHANGE;
+      const dest = "/exchange/" + process.env.VUE_APP_WS_TOPIC_EXCHANGE + "/" + process.env.VUE_APP_WS_KEY_BROADCAST;
       this.client.subscribe(dest, this.responseCallback, this.onFailed);
     },
     onFailed: function (frame) {
