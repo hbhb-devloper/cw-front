@@ -145,7 +145,8 @@ export default {
       });
     },
     onConnected: function () {
-      const dest = "/exchange/" + process.env.VUE_APP_WS_EXCHANGE;
+      // const dest = "/exchange/" + process.env.VUE_APP_WS_EXCHANGE;
+      const dest = "/exchange/cw_topic_exchange/dev.#";
       this.client.subscribe(dest, this.responseCallback, this.onFailed);
     },
     onFailed: function (frame) {
@@ -164,7 +165,7 @@ export default {
         passcode: "cw_2020",
       };
       // 调试日志开关
-      this.client.debug = null;
+      // this.client.debug = null;
       this.client.connect(headers, this.onConnected, this.onFailed);
     },
   },
