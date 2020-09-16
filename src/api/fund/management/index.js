@@ -88,3 +88,11 @@ export function approveFlow(data) {
     data
   })
 }
+
+export function updateInfo(data) {
+  return request({
+    url:'/fund/advance/update-info',
+    method:'put',
+    data
+  })
+}
