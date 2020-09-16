@@ -72,13 +72,13 @@
     <section class="table-box">
       <el-row :gutter="10">
         <el-col :span="1.5">
-          <el-button type="primary" size="mini" @click="handleAdd">支付明细</el-button>
+          <el-button type="primary" size="mini" @click="handleExportExcel(0)">支付明细</el-button>
         </el-col>
         <el-col :span="1.5">
-          <el-button type="warning" size="mini" @click="handleRemunerationExport">酬金月份导出</el-button>
+          <el-button type="warning" size="mini" @click="handleExportExcel(1)">酬金月份导出</el-button>
         </el-col>
         <el-col :span="1.5">
-          <el-button type="warning" size="mini" @click="handleExport">查验结果导出</el-button>
+          <el-button type="warning" size="mini" @click="handleExportExcel(2)">查验结果导出</el-button>
         </el-col>
       </el-row>
       <el-table v-loading="loading" :data="tableData"  height="500">
@@ -162,16 +162,26 @@
         }
         this.getLists();
       },
-      handleRemunerationExport(){
-        this.$confirm("是否确认导出酬金月份数据?", "数据导出", {
+      handleExportExcel(type){
+        let url=undefined,fileName=undefined;
+        if(type==0){
+          url='/invoice/remuneration/export/subsidy';
+          fileName='支付明细'
+        }else if(type==1){
+          url='/invoice/remuneration/export/month';
+          fileName='酬金月份'
+        }else if(type==2){
+          url='/invoice/remuneration/export/check';
+          fileName='查验结果'
+        }
+        this.$confirm(`是否确认导出${fileName}数据?`, "数据导出", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning",
+        }).then(()=>{
+          exportData(getToken(),this.queryParams,url,fileName)
         })
-          .then(()=>{
-            exportData(getToken(),this.queryParams,'/invoice/remuneration/export/month','酬金月份')
-          })
-      }
+      },
     }
   }
 </script>

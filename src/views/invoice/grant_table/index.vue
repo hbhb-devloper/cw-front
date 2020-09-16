@@ -163,7 +163,7 @@
         }
       },
       mounted() {
-        this.getLists();
+        // this.getLists();
         this.getListUnit();
       },
       methods:{
