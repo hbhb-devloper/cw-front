@@ -164,7 +164,7 @@ export default {
         passcode: "cw_2020",
       };
       // 调试日志开关
-      this.client.debug = null;
+      // this.client.debug = null;
       this.client.connect(headers, this.onConnected, this.onFailed);
     },
   },
