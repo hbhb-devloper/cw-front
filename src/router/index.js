@@ -156,6 +156,16 @@ export const constantRoutes = [{
       meta: { title: '发票预开详情' }
     }]
   },
+  {
+    path: '/fund',
+    component: Layout,
+    hidden: true,
+    children: [{
+      path: 'management/info/:id',
+      component: (resolve) => require(['@/views/fund/management/info'], resolve),
+      meta: { title: '签报新增修改' }
+    }]
+  },
   // {
   //   path:'/budget/edit',
   //   component: layout,

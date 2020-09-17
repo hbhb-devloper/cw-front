@@ -34,16 +34,38 @@
             <el-input v-model="info.amount" placeholder="请输入金额(元)" disabled style="width: 200px"/>
           </el-form-item>
           <el-form-item label="款项类型" :required="true">
-            <el-input v-model="info.amountType" disabled style="width: 200px"/>
+            <el-select v-model="info.amountType" disabled style="width: 200px" placeholder="请选择">
+              <el-option label="现金" value="1"></el-option>
+              <el-option label="支票" value="2"></el-option>
+            </el-select>
           </el-form-item>
           <el-form-item label="办理业务" :required="true">
-            <el-input v-model="info.busType" disabled style="width: 200px"/>
+<!--            <el-input v-model="info.busType" disabled style="width: 200px"/>-->
+            <el-select disabled
+              v-model="info.busType"
+              placeholder="请选择办理业务内容"
+              clearable
+              size="medium"
+              style="width: 100%"
+            >
+              <el-option
+                v-for="dict in typeList"
+                :label="dict.label"
+                :value="dict.value"
+              />
+            </el-select>
           </el-form-item>
+
           <el-form-item label="集团信息" :required="true">
             <el-input v-model="info.groupName" disabled style="width: 200px"/>
           </el-form-item>
           <el-form-item label="资金流向" :required="true">
-            <el-input v-model="info.fundFlows" disabled style="width: 200px"/>
+<!--            <el-input v-model="info.fundFlows" disabled style="width: 200px"/>-->
+            <el-select v-model="info.fundFlows" disabled style="width: 200px" placeholder="请选择">
+              <el-option label="使用" value="1"></el-option>
+              <el-option label="收款" value="2"></el-option>
+              <el-option label="退款" value="3"></el-option>
+            </el-select>
           </el-form-item>
           <el-form-item label="资金到账时间" :required="true">
             <el-input v-model="info.intoAccountDate" disabled style="width: 200px"/>
@@ -93,18 +115,18 @@
       <el-table :data="tableData" v-loading="loading">
         <el-table-column align="center" type="index" label="序号"></el-table-column>
         <el-table-column prop="dptName" align="center" label="部门"></el-table-column>
-        <el-table-column prop="groupName" width="120px" align="center" label="集团信息"></el-table-column>
-        <el-table-column prop="amount" width="120px" align="center" label="初期余额(元)"></el-table-column>
-        <el-table-column prop="amount" width="120px" align="center" label="本期增加(元)"></el-table-column>
-        <el-table-column prop="amount" width="120px" align="center" label="核销收款(元)"></el-table-column>
-        <el-table-column prop="amount" width="120px" align="center" label="本期减少(元)"></el-table-column>
-        <el-table-column prop="amount" width="120px" align="center" label="本期收款冻结(元)"></el-table-column>
-        <el-table-column prop="amount" width="120px" align="center" label="本期使用冻结(元)"></el-table-column>
-        <el-table-column prop="amount" width="120px" align="center" label="本期退款冻结(元)"></el-table-column>
-        <el-table-column prop="amount" width="120px" align="center" label="本期退款(元)"></el-table-column>
-        <el-table-column prop="amount" width="120px" align="center" label="本期余额(元)"></el-table-column>
-        <el-table-column prop="amount" width="120px" align="center" label="累积开票金额(元)"></el-table-column>
-        <el-table-column prop="amount" width="120px" align="center" label="累积入账金额(元)"></el-table-column>
+        <el-table-column prop="groupName" width="180" align="center" label="集团信息"></el-table-column>
+        <el-table-column prop="beginAmount" width="120" align="center" label="初期余额(元)"></el-table-column>
+        <el-table-column prop="addAmount" width="120" align="center" label="本期增加(元)"></el-table-column>
+        <el-table-column prop="verifyAmount" width="120" align="center" label="核销收款(元)"></el-table-column>
+        <el-table-column prop="reduceAmount" width="120" align="center" label="本期减少(元)"></el-table-column>
+        <el-table-column prop="collectionFrozen" width="140" align="center" label="本期收款冻结(元)"></el-table-column>
+        <el-table-column prop="useFrozen" width="140" align="center" label="本期使用冻结(元)"></el-table-column>
+        <el-table-column prop="refundFrozen" width="140" align="center" label="本期退款冻结(元)"></el-table-column>
+        <el-table-column prop="refund" width="120" align="center" label="本期退款(元)"></el-table-column>
+        <el-table-column prop="balance" width="120" align="center" label="本期余额(元)"></el-table-column>
+        <el-table-column prop="totalInvoiceAmount" width="140" align="center" label="累积开票金额(元)"></el-table-column>
+        <el-table-column prop="totalEnterAmount" width="140" align="center" label="累积入账金额(元)"></el-table-column>
       </el-table>
     </section>
   </div>
@@ -112,7 +134,8 @@
 
 <script>
   import ElFormItem from '@/components/customize/ElFormItem';
-  import {getInfo} from '@/api/fund/fundSelect/info'
+  import {getInfo,getStateDetail,getBusiness} from '@/api/fund/fundSelect/info'
+
 
   export default {
     components: {
@@ -188,16 +211,35 @@
         contentClass: 'column is-9 no-padding',
         tableData:[],
         Filetable:[],
+        loading:false,
+        typeList:[],
       }
     },
     created() {
-      this.handleGetStatistics(this.$route.params.id)
+      this.handleGetStatistics(this.$route.params.id);
+      this.getStateDetails(this.$route.params.id);
+      this.handleGetBusiness();
     },
     methods: {
       handleGetStatistics(id){
         getInfo(parseInt(id)).then(res=>{
           this.info=res;
           this.Filetable=res.sysFile;
+        })
+      },
+      handleGetBusiness() {
+        getBusiness().then(res => {
+          console.log(res);
+          this.typeList = res;
+        })
+      },
+      getStateDetails(id){
+        this.loading=true;
+        this.tableData=[];
+        getStateDetail(id).then(res=>{
+          this.tableData.push(res);
+          this.loading=false;
+          console.log(this.tableData)
         })
       }
     }
@@ -240,6 +282,9 @@
       .form-box{
         margin-top: 15px;
       }
+    }
+    .statistics-box{
+      margin-bottom: 30px;
     }
   }
 
