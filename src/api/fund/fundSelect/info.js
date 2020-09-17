@@ -6,7 +6,18 @@ import request from '@/utils/request'
     method:'get'
   })
  }
-
+export function getStateDetail(id){
+  return request({
+    url:`/fund/stat/statDetail/${id}`,
+    method:'get'
+  })
+}
+export function getBusiness() {
+  return request({
+    url:'/dict/fund/business-type',
+    method:'get'
+  })
+}
 
 
 

@@ -103,44 +103,65 @@
 
     <el-table v-loading="loading" :data="tableData">
       <el-table-column label="序号" type="index" align="center"/>
+
       <el-table-column label="发票开具部门" prop="invoiceUnit" width="180" align="center"/>
+
       <el-table-column label="客户经理" prop="clientManager" width="180" align="center"/>
+
       <el-table-column label="发票金额（元）" prop="invoiceAmount" width="120" align="center"/>
+
       <el-table-column label="单位编号" prop="unitNumber" width="180" align="center"/>
+
       <el-table-column label="单位名称" prop="unitName" width="180" align="center"/>
+
       <el-table-column label="发票内容" prop="invoiceContent" align="center"/>
+
       <el-table-column label="办理业务" prop="businessLabel" width="130" align="center"/>
+
       <el-table-column label="欠费月份" prop="arrearageMonth" align="center"/>
+
       <el-table-column label="欠费金额" prop="arrearageMoney" align="center"/>
+
       <el-table-column label="计费号" prop="billingNumber" align="center"/>
+
       <el-table-column label="发票账户" prop="invoiceAccount" align="center"/>
+
       <el-table-column label="发票版本号" prop="versions" width="130" align="center"/>
+
       <el-table-column label="发票编号" prop="invoiceNumber" align="center"/>
+
       <el-table-column label="到账时间" prop="accountTime" width="180" align="center"/>
+
       <el-table-column label="到账金额（元）" prop="accountMoney" width="130" align="center"/>
+
       <el-table-column label="开票人" prop="invoiceUser" align="center"/>
+
       <el-table-column label="出票时间" prop="invoiceCreateTime" width="180" align="center">
         <template slot-scope="scope">
           <span>{{scope.row.invoiceCreateTime?scope.row.invoiceCreateTime.substr(0,19):scope.row.invoiceCreateTime}}</span>
         </template>
       </el-table-column>
+
       <el-table-column prop="stateLabel" align="center" label="流程状态" width="130">
         <template slot-scope="scope">
-          <router-link style="color:#409EFF;" :to="'/fund/management/info/'+scope.row.id">{{scope.row.stateLabel}}
-          </router-link>
+          <router-link style="color:#409EFF;" :to="'/fund/management/info/'+scope.row.id">{{scope.row.stateLabel}}</router-link>
         </template>
       </el-table-column>
+
       <el-table-column prop="itemName" align="center" label="发起流程">
         <template slot-scope="scope">
-          <el-button size="mini" type="text" :disabled="scope.row.state==20||scope.row.state==31" @click="examined(scope.row)">发起审批</el-button>
+          <el-button size="mini" type="text" :disabled="scope.row.state==20||scope.row.state==31"
+                     @click="examined(scope.row)">发起审批
+          </el-button>
         </template>
       </el-table-column>
+
       <el-table-column prop="itemName" align="center" width="150" label="操作">
         <template slot-scope="scope">
           <el-button
             size="mini"
             type="text"
-            :disabled="parseInt(scope.row.state)==20||parseInt(scope.row.state)==31"
+            :disabled="parseInt(scope.row.state)==31"
             icon="el-icon-delete"
             @click="handleUpdate(scope.row)"
           >修改
@@ -158,16 +179,16 @@
 
       <el-table-column label="编辑到账" prop="invoiceCreateTime" align="center">
         <template slot-scope="scope">
-          <el-button size="mini" type="text" @click="handleEdits(scope.row)">编辑</el-button>
+          <el-button size="mini" type="text" :disabled="scope.row.state!=31" @click="handleEdits(scope.row)">编辑</el-button>
         </template>
       </el-table-column>
-      <el-table-column label="是否作废" prop="isCancellation" align="center"/>
-      <template slot-scope="scope">
-        <span>{{scope.row.isFile==1?'是':'否'}}</span>
-      </template>
+
+      <el-table-column label="是否作废" prop="isCancellation" align="center">
+        <template slot-scope="scope"> </template>
+      </el-table-column>
       <el-table-column label="是否含文件" width="130" prop="isFile" align="center">
         <template slot-scope="scope">
-          <span>{{scope.row.isFile==1?'是':'否'}}</span>
+           <span>{{scope.row.isFile==1?'是':'否'}}</span>
         </template>
       </el-table-column>
     </el-table>
@@ -182,20 +203,20 @@
 
     <!-- 添加或修改角色配置对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="900px">
-      <el-form ref="form" :model="form" :rules="rules" label-width="120px">
+      <el-form ref="form" :model="form" label-width="120px">
         <el-col :span="12">
           <el-form-item label="客户经理" prop="clientManager" :required="true">
-            <el-input v-model="form.clientManager" placeholder="请输入客户经理"/>
+            <el-input v-model="form.clientManager" :disabled="form.state==20" placeholder="请输入客户经理"/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="开票金额" prop="invoiceAmount" :required="true">
-            <el-input v-model="form.invoiceAmount" type="number" min="0" placeholder="请输入开票金额"/>
+            <el-input v-model="form.invoiceAmount" :disabled="form.state==20" type="number" min="0" placeholder="请输入开票金额"/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="发票账户" prop="invoiceAccount" :required="true">
-            <el-input v-model="form.invoiceAccount" placeholder="请输入发票账户"/>
+            <el-input v-model="form.invoiceAccount" :disabled="form.state==20" placeholder="请输入发票账户"/>
           </el-form-item>
         </el-col>
         <el-col :span="12"></el-col>
@@ -347,9 +368,9 @@
     <!-- 发起审批 -->
     <el-dialog :title="title" :visible.sync="open1" width="450px">
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-<!--        <el-form-item label="名称" prop="flowName">-->
-<!--          <el-input v-model="form.flowName" placeholder="请输入名称"/>-->
-<!--        </el-form-item>-->
+        <!--        <el-form-item label="名称" prop="flowName">-->
+        <!--          <el-input v-model="form.flowName" placeholder="请输入名称"/>-->
+        <!--        </el-form-item>-->
 
         <el-form-item label="选择流程" prop="flowName">
           <el-select v-model="flow.flowTypeId" placeholder="请选择流程" clearable size="medium">
@@ -370,23 +391,23 @@
 
     <el-dialog :title="'编辑到账'" :visible.sync="open2" width="480px">
       <el-form ref="form2" :model="form2" label-width="120px">
-        <el-form-item label="发票版本号" :required="true">
-          <el-input v-model="form2.versions" placeholder="请输入发票版本号"/>
-        </el-form-item>
-        <el-form-item label="发票编号"  :required="true">
-          <el-input v-model="form2.invoiceNumber" placeholder="请输入发票编号"/>
-        </el-form-item>
-        <el-form-item label="出票时间" :required="true">
-          <el-date-picker
-            v-model="form2.invoiceCreateTime"
-            type="date"
-            style="width: 100%"
-            format="yyyy-MM-dd"
-            value-format="yyyy-MM-dd"
-            placeholder="选择日期">
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item label="到账金额"  :required="true">
+<!--        <el-form-item label="发票版本号" :required="true">-->
+<!--          <el-input v-model="form2.versions" placeholder="请输入发票版本号"/>-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="发票编号" :required="true">-->
+<!--          <el-input v-model="form2.invoiceNumber" placeholder="请输入发票编号"/>-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="出票时间" :required="true">-->
+<!--          <el-date-picker-->
+<!--            v-model="form2.invoiceCreateTime"-->
+<!--            type="date"-->
+<!--            style="width: 100%"-->
+<!--            format="yyyy-MM-dd"-->
+<!--            value-format="yyyy-MM-dd"-->
+<!--            placeholder="选择日期">-->
+<!--          </el-date-picker>-->
+<!--        </el-form-item>-->
+        <el-form-item label="到账金额" :required="true">
           <el-input v-model="form2.accountMoney" type="number" min="0" placeholder="请输入到账金额"/>
         </el-form-item>
         <el-form-item label="到账时间" :required="true">
@@ -452,7 +473,7 @@
         // 是否显示弹出层
         open: false,
         open1: false,
-        open2:false,
+        open2: false,
         // 是否显示弹出层（数据权限）
         openDataScope: false,
         // 日期范围
@@ -466,8 +487,8 @@
         },
         // 表单参数
         form: {},
-        form2:{},
-        flow:{},
+        form2: {},
+        flow: {},
         defaultProps: {
           children: "children",
           label: "label",
@@ -486,7 +507,7 @@
         BusinessList: [],
         UnitList: [],
         typeList: [],
-        typeState:[],
+        typeState: [],
       };
     },
     computed: {
@@ -534,7 +555,7 @@
       cancel() {
         this.open = false;
         this.open1 = false;
-        this.open2=false;
+        this.open2 = false;
       },
       // 表单重置
       reset() {
@@ -582,33 +603,42 @@
             'Authorization': getToken()
           }
         }).then(res => {
-          this.fileList.push({fileId:res.data.data[0].id,fileName:res.data.data[0].fileName,fileSize:res.data.data[0].fileSize});
-          this.form.files.push({fileId:res.data.data[0].id,fileName:res.data.data[0].fileName,fileSize:res.data.data[0].fileSize});
+          this.fileList.push({
+            fileId: res.data.data[0].id,
+            fileName: res.data.data[0].fileName,
+            fileSize: res.data.data[0].fileSize
+          });
+          this.form.files.push({
+            fileId: res.data.data[0].id,
+            fileName: res.data.data[0].fileName,
+            fileSize: res.data.data[0].fileSize
+          });
           this.$message.success('附件上传成功！');
         })
       },
       examined(row) {
-        getLaunchType({module:888}).then(res=>{
-          this.typeState=res;
+        getLaunchType({module: 888}).then(res => {
+          this.typeState = res;
           this.open1 = true;
           this.title = "发起审批";
-          this.flow.invoiceId=row.id
+          this.flow.invoiceId = row.id
         })
       },
-      handleEdits(row){
-        getInfo(row.id).then(res=>{
-          if(res.state!=20){
+      handleEdits(row) {
+        getInfo(row.id).then(res => {
+          if (res.state != 31) {
             this.msgError('当前记录不在审批中！无法编辑');
             return;
           }
-          getFlowList(row.id).then(res1=>{
-            let end=res1[res1.length-1];
-            let disables=end.operation.hidden;
-            if(!disables){
-              this.open2=true;
-              this.form2.id=row.id;
-            }
-          })
+          // getFlowList(row.id).then(res1 => {
+          //   let end = res1[res1.length - 1];
+          //   let disables = end.operation.hidden;
+          //   if (!disables) {
+          //
+          //   }
+          // })
+          this.open2 = true;
+          this.form2.id = row.id;
         })
 
       },
@@ -621,8 +651,8 @@
           this.open = true;
           this.title = "添加";
           this.form.clientManager = this.nickName
-          this.fileList=[];
-          this.form.files=[];
+          this.fileList = [];
+          this.form.files = [];
         });
       },
       /** 修改按钮操作 */
@@ -632,30 +662,31 @@
         getInfo(typeId).then(response => {
           response.invoiceContent = String(response.invoiceContent);
           response.business = String(response.business);
-          if(response.files){
-            this.fileList=response.files;
-          };
-          response.files=[];
+          if (response.files) {
+            this.fileList = response.files;
+          }
+          ;
+          response.files = [];
           this.form = response;
           this.open = true;
           this.title = "修改类型";
         });
       },
       //文件删除
-      beforeRemove(row){
+      beforeRemove(row) {
         this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          fileDelete(row.id).then(res=>{
-            this.fileList=this.fileList.filter(item=>{
-              if(item.fileId!=row.fileId){
+          fileDelete(row.id).then(res => {
+            this.fileList = this.fileList.filter(item => {
+              if (item.fileId != row.fileId) {
                 return item;
               }
             })
-            this.form.files=this.form.files.filter(item=>{
-              if(item.fileId!=row.fileId){
+            this.form.files = this.form.files.filter(item => {
+              if (item.fileId != row.fileId) {
                 return item;
               }
             })
@@ -696,14 +727,14 @@
             return;
           }
         }
-        if(this.form.invoiceAmount){
-          this.form.invoiceAmount=parseInt(this.form.invoiceAmount).toFixed(2);
+        if (this.form.invoiceAmount) {
+          this.form.invoiceAmount = parseInt(this.form.invoiceAmount).toFixed(2);
         }
-        if(this.form.arrearageMonth){
-          this.form.arrearageMonth=parseInt(this.form.arrearageMonth).toFixed(2);
+        if (this.form.arrearageMonth) {
+          this.form.arrearageMonth = parseInt(this.form.arrearageMonth).toFixed(2);
         }
-        if(this.form.accountMoney){
-          this.form.accountMoney=parseInt(this.form.accountMoney).toFixed(2);
+        if (this.form.accountMoney) {
+          this.form.accountMoney = parseInt(this.form.accountMoney).toFixed(2);
         }
         if (this.form.id != undefined) {
           let datas = JSON.parse(JSON.stringify(this.form))
@@ -714,8 +745,8 @@
               this.msgSuccess("修改成功");
               this.open = false;
               this.getList();
-              this.form.files=[];
-              this.fileList=[];
+              this.form.files = [];
+              this.fileList = [];
             })
         } else {
           addDate(this.form)
@@ -723,35 +754,35 @@
               this.msgSuccess("新增成功");
               this.open = false;
               this.getList();
-              this.form.files=[];
-              this.fileList=[];
+              this.form.files = [];
+              this.fileList = [];
             })
         }
       },
 
-      submitForm2(){
-        if(!this.flow.flowTypeId){
+      submitForm2() {
+        if (!this.flow.flowTypeId) {
           this.msgError('请选择流程');
           return;
         }
-        approveFlow(this.flow).then(res=>{
-          this.open1=false;
-          this.flow={};
+        approveFlow(this.flow).then(res => {
+          this.open1 = false;
+          this.flow = {};
           this.getList();
           this.msgSuccess('流程发起成功！')
         })
       },
 
-      submitForm3(){
-        if(!this.form2.accountMoney||!this.form2.accountTime||!this.form2.invoiceCreateTime||!this.form2.invoiceNumber||!this.form2.versions){
+      submitForm3() {
+        if (!this.form2.accountMoney || !this.form2.accountTime) {
           this.msgError('必填项不能为空');
           return;
         }
-        this.form2.accountMoney=parseFloat(this.form2.accountMoney).toFixed(2)
+        this.form2.accountMoney = parseFloat(this.form2.accountMoney).toFixed(2)
         console.log(this.form2);
-        updateInfo(this.form2).then(res=>{
-          this.form2={};
-          this.open2=false;
+        updateInfo(this.form2).then(res => {
+          this.form2 = {};
+          this.open2 = false;
           this.msgSuccess('编辑成功');
           this.getList();
         })
@@ -798,8 +829,10 @@
   .el-col-12 {
     height: 58px;
   }
+
   .file-box {
     color: #606266;
+
     .fileName {
       font-size: 13px;
       text-align: left;

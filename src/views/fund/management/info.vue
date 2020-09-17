@@ -1,6 +1,6 @@
 <template>
   <div class="containers">
-
+    <el-button icon="el-icon-back" type="primary" size="mini" style="margin-bottom: 20px" @click="handleBack">返回</el-button>
     <section class="flow-box">
       <div class="program-box">
         <div style="width: 100%;position: relative;">
@@ -90,10 +90,10 @@
       </el-row>
       <el-row :span="24" class="info-row">
         <el-col :span="12"><el-col :span="8" class="label-text">推送地址：</el-col><el-col :span="12">{{info.pushAddress}}</el-col></el-col>
-        <el-col :span="12"><el-col :span="8" class="label-text">发票版本号：</el-col><el-col :span="12">{{info.versions}}</el-col></el-col>
+        <el-col :span="12"><el-col :span="8" class="label-text">发票版本号：</el-col><el-col :span="12"><el-input v-if="info.state==20" v-model="form2.versions" type="number" :min="0" placeholder="请输入发票版本号"/><span v-else>{{info.versions}}</span></el-col></el-col>
       </el-row>
       <el-row :span="24" class="info-row">
-        <el-col :span="12"><el-col :span="8" class="label-text">发票编号：</el-col><el-col :span="12">{{info.invoiceNumber}}</el-col></el-col>
+        <el-col :span="12"><el-col :span="8" class="label-text">发票编号：</el-col><el-col :span="12"><el-input v-if="info.state==20" v-model="form2.invoiceNumber" type="number" :min="0" placeholder="请输入发票编号"/><span v-else>{{info.invoiceNumber}}</span></el-col></el-col>
         <el-col :span="12"><el-col :span="8" class="label-text">到账时间：</el-col><el-col :span="12">{{info.accountTime}}</el-col></el-col>
       </el-row>
       <el-row :span="24" class="info-row">
@@ -109,7 +109,7 @@
           <el-table :data="fileTable" style="width: 100%">
             <el-table-column style="color:#409EFF" prop="fileName" label="标题">
               <template style="color:#409EFF" slot-scope="scope">
-                <a :download="scope.row.fileName" :href="scope.row.filePath">{{scope.row.fileName}}</a>
+<!--                <a :download="scope.row.fileName" :href="scope.row.filePath">{{scope.row.fileName}}</a>-->
               </template>
             </el-table-column>
             <el-table-column prop="author" label="作者"></el-table-column>
@@ -119,11 +119,35 @@
         </el-col>
       </el-row>
     </section>
+    <section>
+      <el-dialog :title="'编辑发票'" :visible.sync="open" width="480px">
+        <el-form ref="form" :model="form" label-width="120px">
+          <el-form-item label="发票版本号" :required="true">
+            <el-input v-model="form.versions" placeholder="请输入发票版本号"/>
+          </el-form-item>
+          <el-form-item label="发票编号" :required="true">
+            <el-input v-model="form.invoiceNumber" placeholder="请输入发票编号"/>
+          </el-form-item>
+<!--          <el-form-item label="出票时间" :required="true">-->
+<!--            <el-date-picker-->
+<!--              v-model="form.invoiceCreateTime"-->
+<!--              type="date"-->
+<!--              style="width: 100%"-->
+<!--              format="yyyy-MM-dd"-->
+<!--              value-format="yyyy-MM-dd"-->
+<!--              placeholder="选择日期">-->
+<!--            </el-date-picker>-->
+<!--          </el-form-item>-->
+        </el-form>
+        <el-button type="primary" @click="submitForm">确 定</el-button>
+        <el-button @click="open=false">取 消</el-button>
+      </el-dialog>
+    </section>
   </div>
 </template>
 
 <script>
-  import {getInfo,getFlowList,advanceApprove} from '@/api/fund/management/info'
+  import {getInfo,getFlowList,advanceApprove,getOpinionList,upDateInvoice} from '@/api/fund/management/info'
     export default {
       data(){
         return {
@@ -136,12 +160,15 @@
           },
           opinion:[],
           form:{},
+          form2:{},
           disables:false,
+          open:false,
         }
       },
       mounted() {
         this.getDateInfo(this.$route.params.id);
         this.getFlowLists(this.$route.params.id);
+        this.getOpinionLists();
       },
       filters:{
         filterTime(e){
@@ -175,6 +202,12 @@
             this.flowList=res;
             let end=this.flowList[this.flowList.length-1];
             this.disables=end.operation.hidden;
+            console.log(this.disables);
+          })
+        },
+        getOpinionLists(){
+          getOpinionList().then(res=>{
+            this.opinion=res;
           })
         },
         handleApprove(item, type,index) {
@@ -189,11 +222,38 @@
 
           this.programObj.operation = type;
           this.programObj.id = item.id;
-          advanceApprove(this.programObj).then(res=>{
-            console.log(res);
-            this.getFlowLists(this.$route.params.id);
-          })
-        }
+          if(!this.disables){
+            if(!this.form2.versions||!this.form2.invoiceNumber){
+              this.msgError('发票版本号或发票编号不能为空！');
+              return;
+            }
+            this.form2.id=this.$route.params.id;
+            console.log(this.form2);
+            upDateInvoice(this.form2).then(res=>{
+              if(res.status==1000){
+                advanceApprove(this.programObj).then(res1=>{
+                  console.log(res1);
+                  this.getFlowLists(this.$route.params.id);
+                })
+              }
+            })
+          }else{
+            advanceApprove(this.programObj).then(res=>{
+              console.log(res);
+              this.getFlowLists(this.$route.params.id);
+            })
+          }
+        },
+        //返回
+        handleBack(){
+          this.$router.go(-1);
+        },
+        //发票编辑
+        handleInvoiceEdit(){
+          this.open=true;
+          this.form.id=this.info.id;
+        },
+        submitForm(){}
       }
     }
 </script>

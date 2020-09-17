@@ -19,3 +19,16 @@ export function advanceApprove(data) {
     data
   })
 }
+export function getOpinionList() {
+  return request({
+    url:'/flow/suggestion/list',
+    method:'get'
+  })
+}
+export function upDateInvoice(data) {
+  return request({
+    url:'/fund/advance/update-info',
+    method:'put',
+    data
+  })
+}
