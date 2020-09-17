@@ -174,7 +174,20 @@
         <el-row>
           <el-col :span="12">
             <el-form-item v-if="form.userId == undefined" label="区域" prop="userName">
-              <el-input v-model="form.userName" placeholder="请输入区域" />
+              <el-select
+                v-model="queryParams.state"
+                placeholder="请选择区域"
+                clearable
+                size="medium"
+                style="width: 220px"
+              >
+                <el-option
+                  v-for="dict in statusOptions"
+                  :key="dict.dictValue"
+                  :label="dict.dictLabel"
+                  :value="dict.dictValue"
+                />
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12"></el-col>
@@ -215,7 +228,20 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="是否农网" prop="nickName">
-              <el-input v-model="form.nickName" placeholder="请输入是否农网" />
+              <el-select
+                v-model="queryParams.state"
+                placeholder="请选择是否农网"
+                clearable
+                size="medium"
+                style="width: 220px"
+              >
+                <el-option
+                  v-for="dict in statusOptions"
+                  :key="dict.dictValue"
+                  :label="dict.dictLabel"
+                  :value="dict.dictValue"
+                />
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -392,7 +418,7 @@ export default {
       // 状态数据字典
       statusOptions: [
         { dictValue: 1, dictLabel: "正常" },
-        { dictValue: 0, dictLabel: "停用" }
+        { dictValue: 0, dictLabel: "停用" },
       ],
     };
   },

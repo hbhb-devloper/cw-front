@@ -30,14 +30,20 @@
           <el-date-picker v-model="queryParams.data2" type="date" placeholder="选择开票时间"></el-date-picker>
         </el-form-item>
         <el-form-item label="县区" prop="flowTypeName">
-          <el-input
-            v-model="queryParams.flowTypeName"
-            placeholder="请输入县区"
+          <el-select
+            v-model="queryParams.state"
+            placeholder="请选择县区"
             clearable
             size="small"
-            style="width: 240px"
-            @keyup.enter.native="handleQuery"
-          />
+            style="width: 220px"
+          >
+            <el-option
+              v-for="dict in statusOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
@@ -213,6 +219,11 @@ export default {
           { required: true, message: "显示顺序不能为空", trigger: "blur" },
         ],
       },
+      // 状态数据字典
+      statusOptions: [
+        { dictValue: 1, dictLabel: "正常" },
+        { dictValue: 0, dictLabel: "停用" },
+      ],
     };
   },
   created() {
