@@ -47,9 +47,9 @@
         <el-form-item label="导入时间(账期)" prop="importDate">
           <el-date-picker
             v-model="queryParams.importDate"
-            type="date"
-            format="yyyy-MM-dd"
-            value-format="yyyy-MM-dd"
+            type="month"
+            format="yyyy-MM"
+            value-format="yyyy-MM"
             class="search-input"
             placeholder="选择日期">
           </el-date-picker>
