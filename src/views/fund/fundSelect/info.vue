@@ -101,10 +101,10 @@
           <el-form-item label="附件" :form-class="formClass" :content-class="contentClass">
             <el-table :data="Filetable">
               <el-table-column prop="fileName" align="center" label="标题"></el-table-column>
-              <el-table-column prop="author" align="center" label="作者"></el-table-column>
+              <el-table-column prop="auther" align="center" label="作者"></el-table-column>
               <el-table-column prop="uploadTime" align="center" label="时间"></el-table-column>
               <el-table-column prop="fileSize" align="center" label="大小"></el-table-column>
-              <el-table-column align="center" label="删除"></el-table-column>
+<!--              <el-table-column align="center" label="删除"></el-table-column>-->
             </el-table>
           </el-form-item>
         </el-form>
@@ -224,12 +224,12 @@
       handleGetStatistics(id){
         getInfo(parseInt(id)).then(res=>{
           this.info=res;
-          this.Filetable=res.sysFile;
+          this.Filetable=[];
+          this.Filetable.push(res.sysFile);
         })
       },
       handleGetBusiness() {
         getBusiness().then(res => {
-          console.log(res);
           this.typeList = res;
         })
       },
@@ -239,7 +239,6 @@
         getStateDetail(id).then(res=>{
           this.tableData.push(res);
           this.loading=false;
-          console.log(this.tableData)
         })
       }
     }
