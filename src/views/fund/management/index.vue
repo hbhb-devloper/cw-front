@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true" label-width="70px">
-      <el-form-item label="单位" prop="unitId">
+      <el-form-item label="单位">
         <treeselect
           v-model="queryParams.unitId"
           :options="deptOptions"
@@ -15,6 +15,8 @@
           placeholder="请输入开票金额"
           clearable
           size="small"
+          :min="0"
+          type="number"
           style="width: 240px"
         />
       </el-form-item>
@@ -104,53 +106,117 @@
     <el-table v-loading="loading" :data="tableData">
       <el-table-column label="序号" type="index" align="center"/>
 
-      <el-table-column label="发票开具部门" prop="invoiceUnit" width="180" align="center"/>
+      <el-table-column label="发票开具部门" prop="invoiceUnit" width="180" align="center">
+        <template slot-scope="scope">
+          <span :class="scope.row.isCancellation?'red':''">{{scope.row.invoiceUnit}}</span>
+        </template>
+      </el-table-column>
 
-      <el-table-column label="客户经理" prop="clientManager" width="180" align="center"/>
+      <el-table-column label="客户经理" prop="clientManager" width="180" align="center">
+        <template slot-scope="scope">
+          <span :class="scope.row.isCancellation?'red':''">{{scope.row.clientManager}}</span>
+        </template>
+      </el-table-column>
 
-      <el-table-column label="发票金额（元）" prop="invoiceAmount" width="120" align="center"/>
+      <el-table-column label="发票金额（元）" prop="invoiceAmount" width="120" align="center">
+        <template slot-scope="scope">
+          <span :class="scope.row.isCancellation?'red':''">{{scope.row.invoiceAmount}}</span>
+        </template>
+      </el-table-column>
 
-      <el-table-column label="单位编号" prop="unitNumber" width="180" align="center"/>
+      <el-table-column label="单位编号" prop="unitNumber" width="180" align="center">
+        <template slot-scope="scope">
+          <span :class="scope.row.isCancellation?'red':''">{{scope.row.unitNumber}}</span>
+        </template>
+      </el-table-column>
 
-      <el-table-column label="单位名称" prop="unitName" width="180" align="center"/>
+      <el-table-column label="单位名称" prop="unitName" width="180" align="center">
+        <template slot-scope="scope">
+          <span :class="scope.row.isCancellation?'red':''">{{scope.row.unitName}}</span>
+        </template>
+      </el-table-column>
 
-      <el-table-column label="发票内容" prop="invoiceContent" align="center"/>
+      <el-table-column label="发票内容" prop="invoiceContent" align="center">
+        <template slot-scope="scope">
+          <span :class="scope.row.isCancellation?'red':''">{{scope.row.invoiceContent}}</span>
+        </template>
+      </el-table-column>
 
-      <el-table-column label="办理业务" prop="businessLabel" width="130" align="center"/>
+      <el-table-column label="办理业务" prop="businessLabel" width="130" align="center">
+        <template slot-scope="scope">
+          <span :class="scope.row.isCancellation?'red':''">{{scope.row.businessLabel}}</span>
+        </template>
+      </el-table-column>
 
-      <el-table-column label="欠费月份" prop="arrearageMonth" align="center"/>
+      <el-table-column label="欠费月份" prop="arrearageMonth" align="center">
+        <template slot-scope="scope">
+          <span :class="scope.row.isCancellation?'red':''">{{scope.row.arrearageMonth}}</span>
+        </template>
+      </el-table-column>
 
-      <el-table-column label="欠费金额" prop="arrearageMoney" align="center"/>
+      <el-table-column label="欠费金额" prop="arrearageMoney" align="center">
+        <template slot-scope="scope">
+          <span :class="scope.row.isCancellation?'red':''">{{scope.row.arrearageMoney}}</span>
+        </template>
+      </el-table-column>
 
-      <el-table-column label="计费号" prop="billingNumber" align="center"/>
+      <el-table-column label="计费号" prop="billingNumber" align="center">
+        <template slot-scope="scope">
+          <span :class="scope.row.isCancellation?'red':''">{{scope.row.billingNumber}}</span>
+        </template>
+      </el-table-column>
 
-      <el-table-column label="发票账户" prop="invoiceAccount" align="center"/>
+      <el-table-column label="发票账户" prop="invoiceAccount" align="center">
+        <template slot-scope="scope">
+          <span :class="scope.row.isCancellation?'red':''">{{scope.row.invoiceAccount}}</span>
+        </template>
+      </el-table-column>
 
-      <el-table-column label="发票版本号" prop="versions" width="130" align="center"/>
+      <el-table-column label="发票版本号" prop="versions" width="130" align="center">
+        <template slot-scope="scope">
+          <span :class="scope.row.isCancellation?'red':''">{{scope.row.versions}}</span>
+        </template>
+      </el-table-column>
 
-      <el-table-column label="发票编号" prop="invoiceNumber" align="center"/>
+      <el-table-column label="发票编号" prop="invoiceNumber" align="center">
+        <template slot-scope="scope">
+          <span :class="scope.row.isCancellation?'red':''">{{scope.row.invoiceNumber}}</span>
+        </template>
+      </el-table-column>
 
-      <el-table-column label="到账时间" prop="accountTime" width="180" align="center"/>
+      <el-table-column label="到账时间" prop="accountTime" width="180" align="center">
+        <template slot-scope="scope">
+          <span :class="scope.row.isCancellation?'red':''">{{scope.row.accountTime}}</span>
+        </template>
+      </el-table-column>
 
-      <el-table-column label="到账金额（元）" prop="accountMoney" width="130" align="center"/>
+      <el-table-column label="到账金额（元）" prop="accountMoney" width="130" align="center">
+        <template slot-scope="scope">
+          <span :class="scope.row.isCancellation?'red':''">{{scope.row.accountMoney}}</span>
+        </template>
+      </el-table-column>
 
-      <el-table-column label="开票人" prop="invoiceUser" align="center"/>
+      <el-table-column label="开票人" prop="invoiceUser" align="center">
+        <template slot-scope="scope">
+          <span :class="scope.row.isCancellation?'red':''">{{scope.row.invoiceUser}}</span>
+        </template>
+      </el-table-column>
 
       <el-table-column label="出票时间" prop="invoiceCreateTime" width="180" align="center">
         <template slot-scope="scope">
-          <span>{{scope.row.invoiceCreateTime?scope.row.invoiceCreateTime.substr(0,19):scope.row.invoiceCreateTime}}</span>
+          <span :class="scope.row.isCancellation?'red':''">{{scope.row.invoiceCreateTime?scope.row.invoiceCreateTime.substr(0,19):scope.row.invoiceCreateTime}}</span>
         </template>
       </el-table-column>
 
       <el-table-column prop="stateLabel" align="center" label="流程状态" width="130">
         <template slot-scope="scope">
-          <router-link style="color:#409EFF;" :to="'/fund/management/info/'+scope.row.id">{{scope.row.stateLabel}}</router-link>
+          <router-link :class="scope.row.isCancellation?'red':''" style="color:#409EFF;" :to="scope.row.isCancellation?'#':'/fund/management/info/'+scope.row.id">{{scope.row.stateLabel}}</router-link>
         </template>
       </el-table-column>
 
       <el-table-column prop="itemName" align="center" label="发起流程">
         <template slot-scope="scope">
-          <el-button size="mini" type="text" :disabled="scope.row.state==20||scope.row.state==31"
+          <el-button :class="scope.row.isCancellation?'red':''" size="mini" type="text" :disabled="scope.row.state==20||scope.row.state==31"
                      @click="examined(scope.row)">发起审批
           </el-button>
         </template>
@@ -158,15 +224,15 @@
 
       <el-table-column prop="itemName" align="center" width="150" label="操作">
         <template slot-scope="scope">
-          <el-button
+          <el-button :class="scope.row.isCancellation?'red':''"
             size="mini"
             type="text"
-            :disabled="parseInt(scope.row.state)==31"
+            :disabled="scope.row.state==20||parseInt(scope.row.state)==31"
             icon="el-icon-delete"
             @click="handleUpdate(scope.row)"
           >修改
           </el-button>
-          <el-button
+          <el-button :class="scope.row.isCancellation?'red':''"
             size="mini"
             type="text"
             :disabled="parseInt(scope.row.state)==20||parseInt(scope.row.state)==31"
@@ -179,16 +245,20 @@
 
       <el-table-column label="编辑到账" prop="invoiceCreateTime" align="center">
         <template slot-scope="scope">
-          <el-button size="mini" type="text" :disabled="scope.row.state!=31" @click="handleEdits(scope.row)">编辑</el-button>
+          <el-button :class="scope.row.isCancellation?'red':''" size="mini" type="text" :disabled="scope.row.state!=31" @click="handleEdits(scope.row)">编辑</el-button>
         </template>
       </el-table-column>
 
       <el-table-column label="是否作废" prop="isCancellation" align="center">
-        <template slot-scope="scope"> </template>
+        <template slot-scope="scope">
+          <el-switch
+            v-model="scope.row.isCancellation" @change="handleTovoid(scope.row)">
+          </el-switch>
+        </template>
       </el-table-column>
       <el-table-column label="是否含文件" width="130" prop="isFile" align="center">
         <template slot-scope="scope">
-           <span>{{scope.row.isFile==1?'是':'否'}}</span>
+           <span :class="scope.row.isCancellation?'red':''">{{scope.row.isFile==1?'是':'否'}}</span>
         </template>
       </el-table-column>
     </el-table>
@@ -310,12 +380,12 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="发票版本号" prop="versions" :required="true">
-            <el-input v-model="form.versions" :disabled="!form.id" placeholder="请输入发票版本号"/>
+            <el-input v-model="form.versions" disabled placeholder="请输入发票版本号"/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="发票编号" prop="invoiceNumber" :required="true">
-            <el-input v-model="form.invoiceNumber" :disabled="!form.id" placeholder="请输入发票编号"/>
+            <el-input v-model="form.invoiceNumber" disabled placeholder="请输入发票编号"/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -324,7 +394,7 @@
               v-model="form.accountTime"
               type="date"
               style="width: 100%"
-              :disabled="!form.id"
+              disabled
               format="yyyy-MM-dd"
               value-format="yyyy-MM-dd"
               placeholder="选择日期">
@@ -333,7 +403,7 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="到账金额" prop="accountMoney" :required="true">
-            <el-input v-model="form.accountMoney" :disabled="!form.id" type="number" min="0" placeholder="请输入到账金额"/>
+            <el-input v-model="form.accountMoney" disabled type="number" min="0" placeholder="请输入到账金额"/>
           </el-form-item>
         </el-col>
         <el-col :span="24">
@@ -440,7 +510,9 @@
     fileDelete,
     DeleteDate,
     approveFlow,
-    updateInfo
+    updateInfo,
+    cancellation,
+    getCompany
   } from "@/api/fund/management/index";
   import {getFlowList} from '@/api/fund/management/info'
   import {getLaunchType} from '@/api/budget/report/report'
@@ -515,15 +587,16 @@
     },
     created() {
       this.getMenuTreeselect();
-      this.getList();
       this.handleGetBusiness();
       this.handleGetContent();
       this.handleGetStatusList();
     },
     methods: {
       getMenuTreeselect() {
-        listUnit().then((response) => {
-          this.deptOptions = response;
+        getCompany().then((response) => {
+          this.queryParams.unitId = response.checked[0]
+          this.deptOptions = response.list;
+          this.getList();
         });
       },
       handleGetBusiness() {
@@ -617,7 +690,11 @@
         })
       },
       examined(row) {
-        getLaunchType({module: 888}).then(res => {
+        if(row.isCancellation){
+          this.$message.warning('该发票已作废');
+          return;
+        }
+        getLaunchType({module: 101}).then(res => {
           this.typeState = res;
           this.open1 = true;
           this.title = "发起审批";
@@ -625,6 +702,10 @@
         })
       },
       handleEdits(row) {
+        if(row.isCancellation){
+          this.$message.warning('该发票已作废');
+          return;
+        }
         getInfo(row.id).then(res => {
           if (res.state != 31) {
             this.msgError('当前记录不在审批中！无法编辑');
@@ -638,6 +719,7 @@
           //   }
           // })
           this.open2 = true;
+          this.form2={};
           this.form2.id = row.id;
         })
 
@@ -657,6 +739,10 @@
       },
       /** 修改按钮操作 */
       handleUpdate(row) {
+        if(row.isCancellation){
+          this.$message.warning('该发票已作废');
+          return;
+        }
         this.reset();
         const typeId = row.id;
         getInfo(typeId).then(response => {
@@ -705,6 +791,8 @@
             !this.form.unitName ||
             !this.form.unitNumber ||
             !this.form.invoiceContent ||
+            !this.form.arrearageMonth||
+            !this.form.arrearageMoney||
             !this.form.business ||
             !this.form.billingNumber ||
             !this.form.pushAddress
@@ -728,13 +816,13 @@
           }
         }
         if (this.form.invoiceAmount) {
-          this.form.invoiceAmount = parseInt(this.form.invoiceAmount).toFixed(2);
+          this.form.invoiceAmount = parseFloat(this.form.invoiceAmount).toFixed(2);
         }
-        if (this.form.arrearageMonth) {
-          this.form.arrearageMonth = parseInt(this.form.arrearageMonth).toFixed(2);
+        if(this.form.arrearageMoney){
+          this.form.arrearageMoney=parseFloat(this.form.arrearageMoney).toFixed(2)
         }
         if (this.form.accountMoney) {
-          this.form.accountMoney = parseInt(this.form.accountMoney).toFixed(2);
+          this.form.accountMoney = parseFloat(this.form.accountMoney).toFixed(2);
         }
         if (this.form.id != undefined) {
           let datas = JSON.parse(JSON.stringify(this.form))
@@ -787,9 +875,26 @@
           this.getList();
         })
       },
+      //是否作废
+      handleTovoid(row){
+        console.log(row);
+        cancellation(row.id,row.isCancellation).then(res=>{
+          if(row.isCancellation){
+            this.msgSuccess('已作废')
+            this.getList();
+          }else{
+            this.msgSuccess('已启用')
+            this.getList();
+          }
 
+        })
+      },
       /** 删除按钮操作 */
       handleDelete(row) {
+        if(row.isCancellation){
+          this.$message.warning('该发票已作废');
+          return;
+        }
         this.$confirm("是否确认删除该条数据?", "删除", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
@@ -843,5 +948,8 @@
       width: 20px;
       cursor: pointer;
     }
+  }
+  .red{
+    color:red !important;
   }
 </style>
