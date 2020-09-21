@@ -177,10 +177,16 @@
           }
         }).then(res => {
           this.tableData=[];
-          for(let item in res.data.data){
-            this.tableData.push({date:res.data.data[item]});
+
+          if(!res.data.data&&res.data.status==1000){
+            this.msgSuccess('数据导入成功');
+            this.getList();
+          }else{
+            for(let item in res.data.data){
+              this.tableData.push({date:res.data.data[item]});
+            }
+            this.msgError('数据导入失败，请查看错误信息重新导入');
           }
-          this.$message.success('附件上传成功！');
         })
       },
       //获取列表
