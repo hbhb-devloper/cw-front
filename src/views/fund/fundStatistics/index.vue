@@ -36,7 +36,7 @@
       </el-form-item>
       <el-form-item label="结束时间" prop="peopleDownTime">
         <el-date-picker
-          v-model="queryParams.downTime"
+          v-model="queryParams.endTime"
           type="date"
           placeholder="选择时间"
           style="width:200px"
@@ -78,16 +78,16 @@
       <el-table-column prop="periodTime" width="200px" align="center" label="期间"></el-table-column>
       <el-table-column prop="dptName" align="center" label="部门"></el-table-column>
       <el-table-column prop="groupName" width="200px" align="center" label="集团信息"></el-table-column>
-      <el-table-column prop="userName" align="center" label="录入人"></el-table-column>
+      <el-table-column prop="createMan" align="center" label="录入人"></el-table-column>
       <el-table-column prop="beginAmount" align="center" width="150px" label="期初余额(元)"></el-table-column>
-      <el-table-column prop="thisAddAmount" align="center" width="150px" label="本期增加(元)"></el-table-column>
+      <el-table-column prop="addAmount" align="center" width="150px" label="本期增加(元)"></el-table-column>
       <el-table-column prop="verifyAmount" align="center" width="150px" label="核销收款(元)"></el-table-column>
-      <el-table-column prop="thisReduceAmount" align="center" width="150px" label="本期减少(元)"></el-table-column>
-      <el-table-column prop="thisCollectionFrozen" align="center" width="150px" label="本期收款冻结(元)"></el-table-column>
-      <el-table-column prop="thisUseFrozen" align="center" width="150px" label="本期使用冻结(元)"></el-table-column>
-      <el-table-column prop="thisRefundFrozen" align="center" width="150px" label="本期退款冻结(元)"></el-table-column>
-      <el-table-column prop="thisRefund" align="center" width="150px" label="本期退款(元)"></el-table-column>
-      <el-table-column prop="thisBalance" align="center" width="150px" label="本期余额(元)"></el-table-column>
+      <el-table-column prop="reduceAmount" align="center" width="150px" label="本期减少(元)"></el-table-column>
+      <el-table-column prop="collectionFrozen" align="center" width="150px" label="本期收款冻结(元)"></el-table-column>
+      <el-table-column prop="useFrozen" align="center" width="150px" label="本期使用冻结(元)"></el-table-column>
+      <el-table-column prop="refundFrozen" align="center" width="150px" label="本期退款冻结(元)"></el-table-column>
+      <el-table-column prop="refund" align="center" width="150px" label="本期退款(元)"></el-table-column>
+      <el-table-column prop="balance" align="center" width="150px" label="本期余额(元)"></el-table-column>
       <el-table-column prop="totalInvoiceAmount" align="center" width="150px" label="积累开票金额(元)"></el-table-column>
       <el-table-column prop="totalEnterAmount" align="center" width="150px" label="积累入账金额(元)"></el-table-column>
     </el-table>
@@ -97,37 +97,42 @@
 <script>
   import Treeselect from "@riophae/vue-treeselect";
   import "@riophae/vue-treeselect/dist/vue-treeselect.css";
-  import {listUnit} from "@/api/system/unit";
   import {getListData} from '@/api/fund/fundStaticstics'
+  import {getCompany} from "@/api/fund/management/index";
+  import {exportData} from "../../../utils/export";
+  import {getToken} from '@/utils/auth'
 
   export default {
     data() {
       return {
         total: 0,
         queryParams: {
+          startTime: undefined,
+          endTime: undefined,
           pageSize: 10,
           pageNum: 1
         },//条件搜索表单
         deptOptions: [],//单位下拉
         busTypeOptions: ['一次性收入', '集团统付', '可变资金划账', '购卡', '现金充值', '预缴(除统付外)', '开户', '终端捆绑', '退款', '其它', '欠费缴纳', '集团预付(预开发票)'],//业务下拉类
         tableData: [],//表格数据
-        loading: true,//表格加载动画
+        loading: false,//表格加载动画
       }
     },
     components: {
       Treeselect,
     },
     created() {
-      this.queryParams.startTime=this.getCurrentMonthFirst();
-      this.queryParams.downTime=this.getCurrentMonthLast()
+      this.queryParams.startTime = undefined || this.getCurrentMonthFirst();
+      this.queryParams.endTime = undefined || this.getCurrentMonthLast()
       this.getUnitId();
-      this.getList();
+      // this.getList();
     },
     methods: {
       //获取部门列表
       getUnitId() {
-        listUnit().then(res => {
-          this.deptOptions = res;
+        getCompany().then(res => {
+          this.queryParams.dptId = res.checked[0];
+          this.deptOptions = res.list;
         });
       },
       //表格数据列表
@@ -142,10 +147,10 @@
         })
       },
       //获取本月第一天
-      getCurrentMonthFirst(){
+      getCurrentMonthFirst() {
         let dates = new Date();
         dates.setDate(1);
-        let months = parseInt(dates.getMonth()+1);
+        let months = parseInt(dates.getMonth() + 1);
         let days = dates.getDate();
         if (months < 10) {
           months = '0' + months
@@ -174,11 +179,30 @@
         return date.getFullYear() + '-' + month + '-' + day;
       },
       resetQuery() {
+        this.queryParams={
+          dptId:this.queryParams.dptId,
+          startTime: this.getCurrentMonthFirst(),
+          endTime: this.getCurrentMonthLast(),
+          pageSize: 10,
+          pageNum: 1
+        }
       },
       handleExport() {
-      },
-    }
+        this.$confirm("是否确认导出客户资金统计数据?", "数据导出", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning",
+        })
+          .then(() => {
+            let data =JSON.parse(JSON.stringify(this.queryParams));
+            delete data.pageSize;
+            delete data.pageNum;
+            exportData(getToken(),data, '/fund/stat/export', '酬金月份')
+          })
+      }
+    },
   }
+
 </script>
 
 <style scoped>
