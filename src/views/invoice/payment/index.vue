@@ -111,9 +111,9 @@
 
 <script>
   import {getTaxtype,getList} from '@/api/invoice/grant_table/index'
-  import {listUnit} from "@/api/system/unit";
   import {exportData} from "@/utils/export"
   import {getToken} from '@/utils/auth'
+  import {getCompany} from '@/api/budget/report/report'
 
   import Treeselect from "@riophae/vue-treeselect";
   import "@riophae/vue-treeselect/dist/vue-treeselect.css";
@@ -129,27 +129,33 @@
         },
         loading: false,
         tableData: [],
-        total: undefined,
+        total: 1,
         unitList:[],
         typeOptions:[],
       }
     },
     mounted() {
-      this.getLists();
       this.getListUnit();
     },
     methods: {
       getLists(){
         this.loading=true;
-        getList(this.queryParams).then(res=>{
+        let data=JSON.parse(JSON.stringify(this.queryParams));
+        if(data.channelMonth){
+          data.channelMonth=data.channelMonth.split('-').join("");
+          console.log( data.channelMonth)
+        }
+        getList(data).then(res=>{
           this.total=res.count;
           this.tableData=res.list;
           this.loading=false;
         })
       },
       getListUnit(){
-        listUnit().then(res=>{
-          this.unitList=res;
+        getCompany().then(res=>{
+          this.queryParams.unitId=res.checked[0];
+          this.unitList=res.list;
+          this.getLists();
         })
         getTaxtype().then(res=>{
           this.typeOptions=res;
@@ -157,6 +163,7 @@
       },
       resetQuery(){
         this.queryParams={
+          unitId:this.queryParams.unitId,
           pageNum:1,
           pageSize:20
         }
