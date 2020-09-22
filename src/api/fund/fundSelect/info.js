@@ -18,6 +18,13 @@ export function getBusiness() {
     method:'get'
   })
 }
+export function getFlowList(id){
+  return request({
+    url:`/fund/history/flow/${id}`,
+    method:'get'
+  })
+}
+
 
 
 

@@ -2,20 +2,47 @@
   <div class="containers">
     <!--  流程详情    -->
     <section class="approval-box">
-      <div class="node-box" v-for="item in approvalData">
-        <div class="approval-people">
-          <i class="el-icon-success"></i>
-          <span>{{item.approvalName}}</span>
-          <el-select placeholder="请选择" v-model="item.defaultName" disabled>
-            <el-option v-for="items in item.selectName" :value="items.lable" :label="items.lable"></el-option>
-          </el-select>
-        </div>
-        <div style="display: flex;flex-direction: row">
-          <span style="width:60px;line-height: 38px;">意见</span>
+<!--      <div class="node-box" v-for="item in approvalData">-->
+<!--        <div class="approval-people">-->
+<!--          <i class="el-icon-success" v-if="item.operation==1"></i>-->
+<!--          <i class="el-icon-error" v-if="item.operation==0"></i>-->
+<!--          <span>{{item.roleDesc}}</span>-->
+<!--          <el-select placeholder="请选择" v-model="item.userId" disabled>-->
+<!--            <el-option ></el-option>-->
+<!--          </el-select>-->
+<!--        </div>-->
+<!--        <div style="display: flex;flex-direction: row">-->
+<!--          <span style="width:60px;line-height: 38px;">意见</span>-->
 
-          <el-input disabled v-model="item.opinion" placeholder="请输入审批意见"></el-input>
+<!--          <el-input disabled v-model="item.suggestion" placeholder="请输入审批意见"></el-input>-->
+<!--        </div>-->
+<!--        <div style="text-align: center;"><span>{{item.userId}}</span><span>({{item.createTime}})</span></div>-->
+<!--      </div>-->
+      <div class="program" >
+        <div v-for="(item,index) in approvalData" class="programList">
+          <div class="programList-div">
+            <span style="max-width: 160px;line-height: 19px;">
+              <i class="el-icon-success" v-if="item.operation==1"></i>
+              <i class="el-icon-error" v-if="item.operation==0"></i>
+              {{item.roleDesc}}：
+            </span>
+            <el-select placeholder="请选择" v-model="item.userId" style="width:120px;" disabled>
+              <el-option> </el-option>
+            </el-select>
+          </div>
+
+          <div class="programList-div">
+            <span style="display: inline-block;">意见：</span>
+
+            <el-input disabled v-model="item.suggestion" style="width:180px" placeholder="请输入审批意见"></el-input>
+            <!--            <el-input :disabled="item.suggestion.readOnly" v-model="programObj.suggestion" :placeholder="'请输入审批意见'"></el-input>-->
+          </div>
+          <div style="height:32px">
+            <div ><span style="opacity: 0.7;">{{item.userId}}</span>({{item.createTime}})
+            </div>
+          </div>
         </div>
-        <div style="text-align: center;"><span>{{item.defaultName}}</span><span>({{item.time}})</span></div>
+        <div style="clear: both"></div>
       </div>
     </section>
     <!--  记录详情    -->
@@ -34,10 +61,7 @@
             <el-input v-model="info.amount" placeholder="请输入金额(元)" disabled style="width: 200px"/>
           </el-form-item>
           <el-form-item label="款项类型" :required="true">
-            <el-select v-model="info.amountType" disabled style="width: 200px" placeholder="请选择">
-              <el-option label="现金" value="1"></el-option>
-              <el-option label="支票" value="2"></el-option>
-            </el-select>
+            <el-input v-model="info.amountType" disabled style="width: 200px"/>
           </el-form-item>
           <el-form-item label="办理业务" :required="true">
 <!--            <el-input v-model="info.busType" disabled style="width: 200px"/>-->
@@ -104,7 +128,7 @@
               <el-table-column prop="auther" align="center" label="作者"></el-table-column>
               <el-table-column prop="uploadTime" align="center" label="时间"></el-table-column>
               <el-table-column prop="fileSize" align="center" label="大小"></el-table-column>
-<!--              <el-table-column align="center" label="删除"></el-table-column>-->
+              <el-table-column align="center" label="删除"></el-table-column>
             </el-table>
           </el-form-item>
         </el-form>
@@ -134,8 +158,7 @@
 
 <script>
   import ElFormItem from '@/components/customize/ElFormItem';
-  import {getInfo,getStateDetail,getBusiness} from '@/api/fund/fundSelect/info'
-
+  import {getInfo} from '@/api/fund/fundSelect/info'
 
   export default {
     components: {
@@ -218,6 +241,7 @@
     created() {
       this.handleGetStatistics(this.$route.params.id);
       this.getStateDetails(this.$route.params.id);
+      this.getFlowLists(this.$route.params.id);
       this.handleGetBusiness();
     },
     methods: {
@@ -226,6 +250,13 @@
           this.info=res;
           this.Filetable=[];
           this.Filetable.push(res.sysFile);
+
+        })
+      },
+      getFlowLists(id){
+        getFlowList(id).then(res=>{
+          console.log(res);
+          this.approvalData=res;
         })
       },
       handleGetBusiness() {
@@ -251,24 +282,48 @@
     margin: 20px auto 0 auto;
     display: flex;
     flex-direction: column;
-
-    .approval-box {
+    .approval-box{
+      padding: 2%;
       background: #fff;
-      padding: 10px;
-      display: flex;
-      flex-direction: row;
-      flex-wrap: wrap;
+      .programList {
+        width: 330px;
+        max-width: 380px;
+        margin-left: 10px;
+        float: left;
+        margin-bottom: 30px;
+        padding: 15px 0px 15px 15px;
+        border: 1.5px solid red;
+        border-radius: 8px;
+        position: relative;
 
-      .node-box {
-        width: 30%;
-        margin-right: 3%;
-
-        .el-icon-success {
-          color: #67c23a;
+        .el-icon-close {
+          display: inline-block;
+          margin: 0 0 10px 330px;
+          cursor: pointer;
         }
 
         div {
-          line-height: 45px;
+          display: flex;
+          flex-direction: row;
+          line-height: 40px;
+
+          .el-icon-success {
+            color: #67c23a;
+            font-size: 27px;
+          }
+
+          .el-icon-error {
+            color: #f56c6c;
+            font-size: 27px;
+          }
+        }
+
+        .programList-div {
+          margin-bottom: 10px;
+
+          span {
+            font-size: 13px;
+          }
         }
       }
     }
