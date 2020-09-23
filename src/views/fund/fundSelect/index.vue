@@ -117,17 +117,7 @@
           </router-link>
         </template>
       </el-table-column>
-      <el-table-column prop="itemName" align="center" label="删除">
-        <template slot-scope="scope">
-          <el-button
-            size="mini"
-            type="text"
-            :disabled="scope.row.state==1||scope.row.state==3"
-            icon="el-icon-delete">删除
-          </el-button>
-        </template>
-      </el-table-column>
-      <el-table-column prop="document" align="center" label="是否含附件"></el-table-column>
+      <el-table-column prop="document" align="center" width="120" label="是否含附件"></el-table-column>
     </el-table>
     <pagination
       v-show="total>0"
@@ -167,7 +157,7 @@
           pageNum:1
         },//条件搜索表单
         deptOptions:[],//单位下拉
-        busTypeOptions:['一次性收入','集团统付','可变资金划账','购卡','现金充值','预缴(除统付外)','开户','终端捆绑','退款','其它','欠费缴纳','集团预付(预开发票)'],//业务下拉类
+        busTypeOptions:[],//业务下拉类
         tableData:[
           {
             id:8,
