@@ -138,7 +138,7 @@
 
       <el-table-column label="发票内容" prop="invoiceContent" align="center">
         <template slot-scope="scope">
-          <span :class="scope.row.isCancellation?'red':''">{{scope.row.invoiceContent}}</span>
+          <span :class="scope.row.isCancellation?'red':''">{{scope.row.invoiceContentLabel}}</span>
         </template>
       </el-table-column>
 
@@ -324,6 +324,8 @@
               clearable
               size="medium"
               style="width: 100%"
+              :disabled="invoiceDisabel"
+              @change="handleInvoiceContent"
             >
               <el-option :value="undefined" label="--请选择业务内容--"></el-option>
               <el-option
@@ -342,11 +344,13 @@
               clearable
               size="medium"
               style="width: 100%"
+              @change="handleBusiness"
             >
               <el-option
-                v-for="dict in typeList"
+                v-for="dict in formTypeList"
                 :label="dict.label"
                 :value="dict.value"
+                :disabled="dict.disabled"
               />
             </el-select>
           </el-form-item>
@@ -560,9 +564,11 @@
         },
         StateOptions: [],
         InvoiceContentList: [],
+        invoiceDisabel: false,
         BusinessList: [],
         UnitList: [],
         typeList: [],
+        formTypeList: [],
         typeState: [],
       };
     },
@@ -586,6 +592,7 @@
       handleGetBusiness() {
         getBusiness().then(res => {
           this.typeList = res;
+          this.formTypeList=res;
         })
       },
       handleGetContent() {
@@ -613,6 +620,29 @@
         this.open = false;
         this.open1 = false;
         this.open2 = false;
+      },
+      handleInvoiceContent(){
+        console.log(99)
+        if(this.form.invoiceContent){
+          this.formTypeList.map(item=>{
+            if(parseInt(item.value)==10||parseInt(item.value)==20){
+              item.disabled=true;
+            }
+          })
+        }else{
+          this.formTypeList.map(item=>{
+            if(parseInt(item.value)==10||parseInt(item.value)==20){
+              item.disabled=false;
+            }
+          })
+        }
+      },
+      handleBusiness(){
+        if(parseInt(this.form.business)==10||parseInt(this.form.business)==20){
+          this.invoiceDisabel=true;
+        }else{
+          this.invoiceDisabel=false;
+        }
       },
       // 表单重置
       reset() {
@@ -717,6 +747,12 @@
           this.open = true;
           this.title = "添加";
           this.form.clientManager = this.nickName
+          this.formTypeList.map(item=>{
+            if(parseInt(item.value)==10||parseInt(item.value)==20){
+              item.disabled=false;
+            }
+          });
+          this.invoiceDisabel=false;
           this.fileList = [];
           this.form.files = [];
         });
@@ -734,8 +770,7 @@
           response.business = String(response.business);
           if (response.files) {
             this.fileList = response.files;
-          }
-          ;
+          };
           response.files = [];
           this.form = response;
           this.open = true;
@@ -774,7 +809,6 @@
             !this.form.invoiceAccount ||
             !this.form.unitName ||
             !this.form.unitNumber ||
-            !this.form.invoiceContent ||
             !this.form.arrearageMonth||
             !this.form.arrearageMoney||
             !this.form.business ||
@@ -784,13 +818,12 @@
             this.msgError("必填项不能为空！");
             return;
           }
-        } else {
+        } else if(parseInt(this.form.business) == 10){
           if (!this.form.clientManager ||
             !this.form.invoiceAmount ||
             !this.form.invoiceAccount ||
             !this.form.unitName ||
             !this.form.unitNumber ||
-            !this.form.invoiceContent ||
             !this.form.business ||
             !this.form.billingNumber ||
             !this.form.pushAddress
@@ -798,6 +831,18 @@
             this.msgError("必填项不能为空！");
             return;
           }
+        }else if (!this.form.clientManager ||
+          !this.form.invoiceAmount ||
+          !this.form.invoiceAccount ||
+          !this.form.unitName ||
+          !this.form.unitNumber ||
+          !this.form.invoiceContent ||
+          !this.form.business ||
+          !this.form.billingNumber ||
+          !this.form.pushAddress
+        ) {
+            this.msgError("必填项不能为空！");
+            return;
         }
         if (this.form.invoiceAmount) {
           this.form.invoiceAmount = parseFloat(this.form.invoiceAmount).toFixed(2);
