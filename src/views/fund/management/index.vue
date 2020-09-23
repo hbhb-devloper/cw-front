@@ -275,23 +275,23 @@
     <el-dialog :title="title" :visible.sync="open" width="900px">
       <el-form ref="form" :model="form" label-width="120px">
         <el-col :span="12">
-          <el-form-item label="客户经理" prop="clientManager" :required="true">
+          <el-form-item label="客户经理" :required="true">
             <el-input v-model="form.clientManager" :disabled="form.state==20" placeholder="请输入客户经理"/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="开票金额" prop="invoiceAmount" :required="true">
+          <el-form-item label="开票金额" :required="true">
             <el-input v-model="form.invoiceAmount" :disabled="form.state==20" type="number" min="0" placeholder="请输入开票金额"/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="发票账户" prop="invoiceAccount" :required="true">
+          <el-form-item label="发票账户" :required="true">
             <el-input v-model="form.invoiceAccount" :disabled="form.state==20" placeholder="请输入发票账户"/>
           </el-form-item>
         </el-col>
         <el-col :span="12"></el-col>
         <el-col :span="12">
-          <el-form-item label="单位名称" prop="unitName" :required="true">
+          <el-form-item label="单位名称" :required="true">
             <el-select v-model="form.unitName" @change="handleSearchUnit(true)" filterable placeholder="请选择"
                        style="width: 100%">
               <el-option
@@ -304,7 +304,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="单位编号" prop="unitNumber" :required="true">
+          <el-form-item label="单位编号" :required="true">
             <el-select v-model="form.unitNumber" @change="handleSearchUnit(false)" filterable placeholder="请选择"
                        style="width: 100%">
               <el-option
@@ -317,7 +317,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="开票内容" prop="invoiceContent" :required="true">
+          <el-form-item label="开票内容" :required="true">
             <el-select
               v-model="form.invoiceContent"
               placeholder="请选择开票内容"
@@ -335,7 +335,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="办理业务内容" prop="business" :required="true">
+          <el-form-item label="办理业务内容" :required="true">
             <el-select
               v-model="form.business"
               placeholder="请选择办理业务内容"
@@ -352,7 +352,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="12" v-if="parseInt(form.business)==20">
-          <el-form-item label="欠费时间" prop="arrearageMonth" :required="true">
+          <el-form-item label="欠费时间" :required="true">
             <el-date-picker
               v-model="form.arrearageMonth"
               type="date"
@@ -364,32 +364,32 @@
           </el-form-item>
         </el-col>
         <el-col :span="12" v-if="parseInt(form.business)==20">
-          <el-form-item label="欠费金额" prop="arrearageMoney" :required="true">
+          <el-form-item label="欠费金额" :required="true">
             <el-input v-model="form.arrearageMoney" type="number" min="0" placeholder="请输入欠费金额"/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="计号费" prop="billingNumber" :required="true">
+          <el-form-item label="计号费" :required="true">
             <el-input v-model="form.billingNumber" placeholder="请输入计号费"/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="推送地址" prop="pushAddress" :required="true">
+          <el-form-item label="推送地址" :required="true">
             <el-input v-model="form.pushAddress" placeholder="请输入推送地址"/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="发票版本号" prop="versions" :required="true">
+          <el-form-item label="发票版本号" :required="true">
             <el-input v-model="form.versions" disabled placeholder="请输入发票版本号"/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="发票编号" prop="invoiceNumber" :required="true">
+          <el-form-item label="发票编号" :required="true">
             <el-input v-model="form.invoiceNumber" disabled placeholder="请输入发票编号"/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="到账时间" prop="accountTime" :required="true">
+          <el-form-item label="到账时间" :required="true">
             <el-date-picker
               v-model="form.accountTime"
               type="date"
@@ -402,17 +402,17 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="到账金额" prop="accountMoney" :required="true">
+          <el-form-item label="到账金额" :required="true">
             <el-input v-model="form.accountMoney" disabled type="number" min="0" placeholder="请输入到账金额"/>
           </el-form-item>
         </el-col>
         <el-col :span="24">
-          <el-form-item label="备注" style="width:100%;" prop="remark">
+          <el-form-item label="备注" style="width:100%;" >
             <el-input v-model="form.remark" type="remark" placeholder="请输入内容"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="24">
-          <el-form-item label="附件" style="width:100%;" prop="remark">
+          <el-form-item label="附件" style="width:100%;">
             <el-upload
               class="upload-demo"
               :show-file-list="false"
@@ -851,7 +851,6 @@
           return;
         }
         this.form2.accountMoney = parseFloat(this.form2.accountMoney).toFixed(2)
-        console.log(this.form2);
         updateInfo(this.form2).then(res => {
           this.form2 = {};
           this.open2 = false;
@@ -861,16 +860,18 @@
       },
       //是否作废
       handleTovoid(row){
-        console.log(row);
         cancellation(row.id,row.isCancellation).then(res=>{
-          if(row.isCancellation){
-            this.msgSuccess('已作废')
-            this.getList();
-          }else{
-            this.msgSuccess('已启用')
-            this.getList();
+          if(!res){
+            if(row.isCancellation){
+              this.msgSuccess('已作废')
+              this.getList();
+            }else{
+              this.msgSuccess('已启用')
+              this.getList();
+            }
           }
-
+        }).catch(err=>{
+          this.getList();
         })
       },
       /** 删除按钮操作 */
