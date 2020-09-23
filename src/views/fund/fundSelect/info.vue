@@ -255,7 +255,6 @@
       },
       getFlowLists(id){
         getFlowList(id).then(res=>{
-          console.log(res);
           this.approvalData=res;
         })
       },

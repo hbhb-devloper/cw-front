@@ -184,16 +184,6 @@
           <el-form-item label="发票编号" :required="true">
             <el-input v-model="form.invoiceNumber" placeholder="请输入发票编号"/>
           </el-form-item>
-          <!--          <el-form-item label="出票时间" :required="true">-->
-          <!--            <el-date-picker-->
-          <!--              v-model="form.invoiceCreateTime"-->
-          <!--              type="date"-->
-          <!--              style="width: 100%"-->
-          <!--              format="yyyy-MM-dd"-->
-          <!--              value-format="yyyy-MM-dd"-->
-          <!--              placeholder="选择日期">-->
-          <!--            </el-date-picker>-->
-          <!--          </el-form-item>-->
         </el-form>
         <el-button type="primary" @click="submitForm">确 定</el-button>
         <el-button @click="open=false">取 消</el-button>
@@ -291,7 +281,6 @@
             return;
           }
           this.form2.id = this.$route.params.id;
-          console.log(this.form2);
           upDateInvoice(this.form2).then(res => {
             advanceApprove(this.programObj).then(res1 => {
               this.getFlowLists(this.$route.params.id);
