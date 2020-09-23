@@ -8,7 +8,6 @@
             placeholder="请输入金额范围"
             clearable
             size="small"
-            style="width: 150px"
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
@@ -18,7 +17,6 @@
             placeholder="请输入金额范围"
             clearable
             size="small"
-            style="width: 150px"
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
@@ -29,22 +27,8 @@
           <el-date-picker v-model="queryParams.data2" type="date" placeholder="选择开票时间"></el-date-picker>
         </el-form-item>
 
-        <el-form-item label="县区" prop="flowTypeName">
-          
-          <el-select
-            v-model="queryParams.state"
-            placeholder="请选择县区"
-            clearable
-            size="small"
-            style="width: 240px"
-          >
-            <el-option
-              v-for="dict in statusOptions"
-              :key="dict.dictValue"
-              :label="dict.dictLabel"
-              :value="dict.dictValue"
-            />
-          </el-select>
+        <el-form-item label="县市" prop="flowTypeName">
+          <treeselect v-model="queryParams.unitId" :options="deptOptions" placeholder="请选择县市" />
         </el-form-item>
 
         <el-form-item>
@@ -127,14 +111,14 @@
       <el-form ref="form" :model="form" :rules="rules" label-width="140px">
         <el-row>
           <el-col :span="12">
-            <el-form-item v-if="form.userId == undefined" label="地区" prop="userName">
+            <el-form-item label="地区" prop="userName">
               <el-input v-model="form.userName" placeholder="请输入地区" />
             </el-form-item>
           </el-col>
           <el-col :span="12"></el-col>
           <el-col :span="12">
-            <el-form-item v-if="form.userId == undefined" label="县市" prop="CheckPassword">
-              <el-input v-model="form.CheckPassword" placeholder="请输入县市" type="password" />
+            <el-form-item label="县市" prop="CheckPassword">
+              <treeselect v-model="form.unitId" :options="deptOptions" placeholder="请选择县市" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -244,9 +228,12 @@
 
 <script>
 import { listType, addType, updateType, delFlowType } from "@/api/flow/type";
-
+import { resourceTreeByUN } from "@/api/system/unit";
+import Treeselect from "@riophae/vue-treeselect";
+import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 export default {
   name: "Flowtype",
+  components: { Treeselect },
   data() {
     return {
       // 遮罩层
@@ -293,10 +280,13 @@ export default {
         { dictValue: 1, dictLabel: "正常" },
         { dictValue: 0, dictLabel: "停用" },
       ],
+      deptOptions: [],
+      morenUnit: undefined,
     };
   },
   created() {
-    this.getList();
+    // this.getList();
+    this.getTreeselect();
   },
   methods: {
     /** 查询角色列表 */
@@ -306,6 +296,15 @@ export default {
         this.typeList = response.list;
         this.total = response.count;
         this.loading = false;
+      });
+    },
+    getTreeselect() {
+      let that = this;
+      resourceTreeByUN().then((response) => {
+        that.deptOptions = response.list;
+        that.morenUnit = response.checked[0];
+        that.queryParams.unitId = that.morenUnit;
+        that.getList();
       });
     },
     // 取消按钮
@@ -423,5 +422,11 @@ export default {
 .el-dialog .el-form-item--medium /deep/ .el-form-item__content {
   margin-left: 0 !important;
   width: 220px;
+}
+.el-form-item--medium /deep/ .el-form-item__content {
+  width: 230px;
+}
+.el-col-12 {
+  height: 59px;
 }
 </style>
