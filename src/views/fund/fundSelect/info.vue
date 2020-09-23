@@ -54,14 +54,17 @@
             <el-input v-model="info.fcCode" placeholder="请输入编号" disabled style="width: 200px"/>
           </el-form-item>
           <el-form-item label="部门" :required="true">
-            <el-input v-model="info.dptId" placeholder="请输入部门" disabled style="width: 120px"/>
+            <el-input v-model="info.dptName" placeholder="请输入部门" disabled style="width: 120px"/>
             <el-checkbox disabled v-model="info.directSelling">是否核销</el-checkbox>
           </el-form-item>
           <el-form-item label="金额(元)"  :required="true">
             <el-input v-model="info.amount" placeholder="请输入金额(元)" disabled style="width: 200px"/>
           </el-form-item>
           <el-form-item label="款项类型" :required="true">
-            <el-input v-model="info.amountType" disabled style="width: 200px"/>
+            <el-select v-model="info.amountType" disabled style="width:200px" placeholder="请选择">
+              <el-option label="现金" value="1"></el-option>
+              <el-option label="支票" value="2"></el-option>
+            </el-select>
           </el-form-item>
           <el-form-item label="办理业务" :required="true">
 <!--            <el-input v-model="info.busType" disabled style="width: 200px"/>-->
@@ -128,7 +131,6 @@
               <el-table-column prop="auther" align="center" label="作者"></el-table-column>
               <el-table-column prop="uploadTime" align="center" label="时间"></el-table-column>
               <el-table-column prop="fileSize" align="center" label="大小"></el-table-column>
-              <el-table-column align="center" label="删除"></el-table-column>
             </el-table>
           </el-form-item>
         </el-form>
@@ -158,7 +160,7 @@
 
 <script>
   import ElFormItem from '@/components/customize/ElFormItem';
-  import {getInfo} from '@/api/fund/fundSelect/info'
+  import {getInfo,getFlowList,getBusiness,getStateDetail} from '@/api/fund/fundSelect/info'
 
   export default {
     components: {
@@ -166,68 +168,7 @@
     },
     data() {
       return {
-        approvalData: [
-          {
-            approvalName: '客户经理',
-            defaultName: '陈燕',
-            selectName: [
-              {id: 1, lable: '陈燕'},
-              {id: 1, lable: '陈燕'},
-            ],
-            opinion: '同意',
-            time: '2020-08-27 15:25:47'
-          },
-          {
-            approvalName: '客户经理',
-            defaultName: '陈燕',
-            selectName: [
-              {id: 1, lable: '陈燕'},
-              {id: 1, lable: '陈燕'},
-            ],
-            opinion: '同意',
-            time: '2020-08-27 15:25:47'
-          },
-          {
-            approvalName: '客户经理',
-            defaultName: '陈燕',
-            selectName: [
-              {id: 1, lable: '陈燕'},
-              {id: 1, lable: '陈燕'},
-            ],
-            opinion: '同意',
-            time: '2020-08-27 15:25:47'
-          },
-          {
-            approvalName: '客户经理',
-            defaultName: '陈燕',
-            selectName: [
-              {id: 1, lable: '陈燕'},
-              {id: 1, lable: '陈燕'},
-            ],
-            opinion: '同意',
-            time: '2020-08-27 15:25:47'
-          },
-          {
-            approvalName: '客户经理',
-            defaultName: '陈燕',
-            selectName: [
-              {id: 1, lable: '陈燕'},
-              {id: 1, lable: '陈燕'},
-            ],
-            opinion: '同意',
-            time: '2020-08-27 15:25:47'
-          },
-          {
-            approvalName: '客户经理',
-            defaultName: '陈燕',
-            selectName: [
-              {id: 1, lable: '陈燕'},
-              {id: 1, lable: '陈燕'},
-            ],
-            opinion: '同意',
-            time: '2020-08-27 15:25:47'
-          }
-        ],
+        approvalData: [],
         info:{},
         checked:true,
         formClass: 'column is-12 no-padding',
