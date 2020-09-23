@@ -78,63 +78,63 @@
       <el-row :span="24" class="info-row">
         <el-col :span="12">
           <el-col :span="8" class="label-text">客户经理：</el-col>
-          <el-col :span="12">{{info.clientManager}}</el-col>
+          <el-col :span="12" class="label-content">{{info.clientManager}}</el-col>
         </el-col>
         <el-col :span="12">
           <el-col :span="8" class="label-text">开票金额：</el-col>
-          <el-col :span="12">{{info.invoiceAmount}}</el-col>
+          <el-col :span="12" class="label-content">{{info.invoiceAmount}}</el-col>
         </el-col>
       </el-row>
       <el-row :span="24" class="info-row">
         <el-col :span="12">
           <el-col :span="8" class="label-text">发票账户：</el-col>
-          <el-col :span="12">{{info.invoiceAccount}}</el-col>
+          <el-col :span="12" class="label-content">{{info.invoiceAccount}}</el-col>
         </el-col>
         <el-col :span="12">
           <el-col :span="8" class="label-text">单位名称：</el-col>
-          <el-col :span="12">{{info.unitName}}</el-col>
+          <el-col :span="12" class="label-content">{{info.unitName}}</el-col>
         </el-col>
       </el-row>
       <el-row :span="24" class="info-row">
         <el-col :span="12">
           <el-col :span="8" class="label-text">单位编号：</el-col>
-          <el-col :span="12">{{info.unitNumber}}</el-col>
+          <el-col :span="12" class="label-content">{{info.unitNumber}}</el-col>
         </el-col>
         <el-col :span="12">
           <el-col :span="8" class="label-text">开票内容：</el-col>
-          <el-col :span="12">{{info.invoiceContentLabel}}</el-col>
+          <el-col :span="12" class="label-content">{{info.invoiceContentLabel}}</el-col>
         </el-col>
       </el-row>
       <el-row :span="24" class="info-row">
         <el-col :span="12">
           <el-col :span="8" class="label-text">办理业务内容：</el-col>
-          <el-col :span="12">{{info.businessLabel}}</el-col>
+          <el-col :span="12" class="label-content">{{info.businessLabel}}</el-col>
         </el-col>
         <el-col :span="12">
           <el-col :span="8" class="label-text">欠费时间：</el-col>
-          <el-col :span="12">{{info.arrearageMonth}}</el-col>
+          <el-col :span="12" class="label-content">{{info.arrearageMonth}}</el-col>
         </el-col>
       </el-row>
       <el-row :span="24" class="info-row">
         <el-col :span="12">
           <el-col :span="8" class="label-text">欠费金额：</el-col>
-          <el-col :span="12">{{info.arrearageMoney}}</el-col>
+          <el-col :span="12" class="label-content">{{info.arrearageMoney}}</el-col>
         </el-col>
         <el-col :span="12">
           <el-col :span="8" class="label-text">计号费：</el-col>
-          <el-col :span="12">{{info.billingNumber}}</el-col>
+          <el-col :span="12" class="label-content">{{info.billingNumber}}</el-col>
         </el-col>
       </el-row>
       <el-row :span="24" class="info-row">
         <el-col :span="12">
           <el-col :span="8" class="label-text">推送地址：</el-col>
-          <el-col :span="12">{{info.pushAddress}}</el-col>
+          <el-col :span="12" class="label-content">{{info.pushAddress}}</el-col>
         </el-col>
         <el-col :span="12">
           <el-col :span="8" class="label-text">发票版本号：</el-col>
           <el-col :span="12">
             <el-input v-if="info.state==20" v-model="form2.versions" type="number" :min="0" placeholder="请输入发票版本号"/>
-            <span v-else>{{info.versions}}</span></el-col>
+            <span v-else class="label-content">{{info.versions}}</span></el-col>
         </el-col>
       </el-row>
       <el-row :span="24" class="info-row">
@@ -142,22 +142,22 @@
           <el-col :span="8" class="label-text">发票编号：</el-col>
           <el-col :span="12">
             <el-input v-if="info.state==20" v-model="form2.invoiceNumber" type="number" :min="0" placeholder="请输入发票编号"/>
-            <span v-else>{{info.invoiceNumber}}</span></el-col>
+            <span v-else class="label-content">{{info.invoiceNumber}}</span></el-col>
         </el-col>
         <el-col :span="12">
           <el-col :span="8" class="label-text">到账时间：</el-col>
-          <el-col :span="12">{{info.accountTime}}</el-col>
+          <el-col :span="12" class="label-content">{{info.accountTime}}</el-col>
         </el-col>
       </el-row>
       <el-row :span="24" class="info-row">
         <el-col :span="12">
           <el-col :span="8" class="label-text">到账金额：</el-col>
-          <el-col :span="12">{{info.accountMoney}}</el-col>
+          <el-col :span="12" class="label-content">{{info.accountMoney}}</el-col>
         </el-col>
       </el-row>
       <el-row :span="24" class="info-row">
         <el-col :span="4" class="label-text">备注：</el-col>
-        <el-col :span="20">{{info.remark}}</el-col>
+        <el-col :span="20" class="label-content">{{info.remark}}</el-col>
       </el-row>
       <el-row :span="24">
         <el-col :span="4" class="label-text">附件：</el-col>
@@ -384,11 +384,18 @@
 
         .label-text {
           text-align: right;
+          font-size: 14px;
+          font-weight: 700;
+        }
+        .label-content{
+          font-size: 14px;
         }
       }
 
       .label-text {
         text-align: right;
+        font-size: 14px;
+        font-weight: 700;
       }
     }
   }
