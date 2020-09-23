@@ -193,6 +193,7 @@
 </template>
 
 <script>
+
   import {getInfo, getFlowList, advanceApprove, getOpinionList, upDateInvoice} from '@/api/fund/management/info'
 
   export default {
