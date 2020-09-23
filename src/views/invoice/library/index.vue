@@ -60,12 +60,16 @@
           if(res.data.status==1000){
             this.msgSuccess('导入成功');
             this.handleNotie();
+          }else{
+            this.msgError(res.data.message);
           }
         })
       },
       handleNotie(){
         getImportTime().then(res=>{
-          if(res){
+          if(res==='无更新时间'){
+            this.updateTime=res;
+          }else{
             let str=`${res.substr(0,4)}年${res.substr(5,2)}月${res.substr(8,2)}日数据已更新`
             this.updateTime=str;
           }
