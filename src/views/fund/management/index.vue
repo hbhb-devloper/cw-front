@@ -180,7 +180,7 @@
 
       <el-table-column label="发票编号" prop="invoiceNumber" align="center">
         <template slot-scope="scope">
-          <span :class="scope.row.isCancellation?'red':''">{{scope.row.invoiceNumber}}</span>
+          <span :class="scope.row.isCancellation?'red':''">{{scope.row.invoiceNumberLabel}}</span>
         </template>
       </el-table-column>
 
