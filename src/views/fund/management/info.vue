@@ -25,6 +25,7 @@
                   :label="items.nickName">
                 </el-option>
               </el-select>
+
               <el-select v-else placeholder="请选择" v-model="item.nickName" style="width:120px;"
                          :disabled="item.approver.readOnly">
                 <el-option
