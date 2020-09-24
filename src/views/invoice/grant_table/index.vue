@@ -95,7 +95,7 @@
       <el-dialog :title="title" :visible.sync="open1">
         <el-form :inline="true" label-width="80px">
           <el-row :span="12">
-            <el-form-item label="税率选择">
+            <el-form-item label="税率选择" required>
               <el-select v-model="tax" placeholder="请选择" style="width: 100%">
                 <el-option
                   v-for="item in taxrate"
