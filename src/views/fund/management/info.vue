@@ -216,6 +216,8 @@
     mounted() {
       this.getDateInfo(this.$route.params.id);
       this.getOpinionLists();
+
+
     },
     filters: {
       filterTime(e) {
