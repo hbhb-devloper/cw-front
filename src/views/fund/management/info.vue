@@ -315,7 +315,7 @@
     margin: 20px auto;
 
     .flow-box {
-      padding: 20px;
+      padding: 20px 0;
       background: #fff;
       border-radius: 8px;
       margin-bottom: 30px;
