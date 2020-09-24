@@ -289,7 +289,7 @@
     flex-direction: row;
     border:1px solid #0d8efd;
     ul{
-      width: 15%;
+      width: 20%;
       text-align: center;
       margin:0 20px;
       li{
