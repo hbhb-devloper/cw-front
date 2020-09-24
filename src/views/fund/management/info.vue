@@ -12,7 +12,7 @@
           <div v-for="(item,index) in flowList" class="programList">
             <i class="el-icon-close" v-if="item.isDelete"></i>
             <div class="programList-div">
-            <span style="max-width: 160px;line-height: 19px;">
+            <span style="max-width: 160px;line-height: 40px;">
               <i class="el-icon-success" v-if="item.operation.value==1"></i>
               <i class="el-icon-error" v-if="item.operation.value==0"></i>
               {{item.approverRole}}：
@@ -315,6 +315,10 @@
     margin: 20px auto;
 
     .flow-box {
+      padding: 20px;
+      background: #fff;
+      border-radius: 8px;
+      margin-bottom: 30px;
       .program {
         width: 100%;
         margin-top: 20px;
