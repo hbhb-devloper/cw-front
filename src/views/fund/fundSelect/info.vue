@@ -1,5 +1,7 @@
 <template>
   <div class="containers">
+    <el-button icon="el-icon-back" type="primary" size="mini" style="margin-bottom: 20px" @click="handleBack">返回
+    </el-button>
     <!--  流程详情    -->
     <section class="approval-box">
 <!--      <div class="node-box" v-for="item in approvalData">-->
@@ -203,6 +205,10 @@
         getBusiness().then(res => {
           this.typeList = res;
         })
+      },
+      //返回
+      handleBack() {
+        this.$router.go(-1);
       },
       getStateDetails(id){
         this.loading=true;
