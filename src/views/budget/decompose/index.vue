@@ -2,10 +2,10 @@
   <div class="container">
     <el-form :model="queryParams" ref="queryForm" :inline="true">
       <el-form-item label="单位" prop="unitId">
-        <treeselect v-model="queryParams.unitId" :options="deptOptions" placeholder="请选择单位"/>
+        <treeselect v-model="queryParams.unitId" :options="deptOptions" placeholder="请选择单位" />
       </el-form-item>
       <el-form-item label="项目类型" prop="projectItem">
-        <el-input placeholder="请输入项目类型" v-model="queryParams.projectItem" size="small"/>
+        <el-input placeholder="请输入项目类型" v-model="queryParams.projectItem" size="small" />
       </el-form-item>
       <el-form-item label="年份" prop="importDate">
         <el-date-picker
@@ -29,8 +29,7 @@
           size="mini"
           @click="centerDialogVisible=true"
           v-hasPermi="['budget:split:import']"
-        >导入
-        </el-button>
+        >导入</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -39,8 +38,7 @@
           size="mini"
           @click="handleExport"
           v-hasPermi="['budget:split:export']"
-        >导出
-        </el-button>
+        >导出</el-button>
       </el-col>
     </el-row>
     <el-table
@@ -59,15 +57,13 @@
       <el-table-column prop="lastYearFinishedBalance" align="center" label="去年完成值(万元)"></el-table-column>
       <el-table-column prop="balance" align="center" label="本年预算值(万元)"></el-table-column>
       <el-table-column prop="remark" align="center" label="备注"></el-table-column>
-      </el-table-column>-->
     </el-table>
-
 
     <!-- 添加或修改角色配置对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px">
       <el-form ref="form" :model="form" label-width="80px">
         <el-form-item label="预算科目：" prop="itemName">
-          <el-input placeholder="请输入关键词" v-model="form.itemName" disabled clearable size="small"/>
+          <el-input placeholder="请输入关键词" v-model="form.itemName" disabled clearable size="small" />
         </el-form-item>
         <el-form-item label="去年预算值：" prop="lastYearBalance">
           <el-input
@@ -79,13 +75,13 @@
           />
         </el-form-item>
         <el-form-item label="本年预算值：" prop="balance">
-          <el-input placeholder="请输入关键词" v-model="form.balance" clearable size="small"/>
+          <el-input placeholder="请输入关键词" v-model="form.balance" clearable size="small" />
         </el-form-item>
         <el-form-item label="金额阀值：" prop="threshold">
-          <el-input placeholder="请输入关键词" v-model="form.threshold" clearable size="small"/>
+          <el-input placeholder="请输入关键词" v-model="form.threshold" clearable size="small" />
         </el-form-item>
         <el-form-item label="备注：" prop="remark">
-          <el-input placeholder="请输入关键词" v-model="form.remark" clearable size="small"/>
+          <el-input placeholder="请输入关键词" v-model="form.remark" clearable size="small" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -133,223 +129,216 @@
 </template>
 
 <script>
-  import {resourceTreeByUN} from "@/api/system/unit";
-  import Treeselect from "@riophae/vue-treeselect";
-  import "@riophae/vue-treeselect/dist/vue-treeselect.css";
-  import {
-    listBudget,
-    updateBudget,
-  } from "@/api/budget/decompose/decompose";
-  import {exportData} from "@/utils/export";
-  import {getToken} from "@/utils/auth";
+import { resourceTreeByUN } from "@/api/system/unit";
+import Treeselect from "@riophae/vue-treeselect";
+import "@riophae/vue-treeselect/dist/vue-treeselect.css";
+import { listBudget, updateBudget } from "@/api/budget/decompose/decompose";
+import { exportData } from "@/utils/export";
+import { getToken } from "@/utils/auth";
 
-  export default {
-    components: {Treeselect},
-    data() {
-      return {
-        loading: true,
-        headers: {
-          Authorization: getToken(),
-        },
-        uploadData: {},
-        importDate: "",
-        fileList: [],
-        queryParams: {
-          unitId: undefined,
-          year: undefined,
-          projectItem: undefined,
-        },
+export default {
+  components: { Treeselect },
+  data() {
+    return {
+      loading: true,
+      headers: {
+        Authorization: getToken(),
+      },
+      uploadData: {},
+      importDate: "",
+      fileList: [],
+      queryParams: {
         unitId: undefined,
-        tableData: [],
-        city: "",
-        year: "",
-        centerDialogVisible: false,
-        obj: {
-          subject: "",
-          company: "",
-          budget: "",
-          threshold: "",
-          yearthis: "",
-          remarks: "",
-        },
-        deptOptions: [],
-        // 弹出层标题
-        title: "",
-        // 是否显示弹出层
-        open: false,
-        // 表单参数
-        form: {},
-        ActionUrl: process.env.VUE_APP_BASE_API + "/budget/import", // 上传的图片服务器地址
-        morenUnit: undefined,
-      };
+        year: undefined,
+        projectItem: undefined,
+      },
+      unitId: undefined,
+      tableData: [],
+      city: "",
+      year: "",
+      centerDialogVisible: false,
+      obj: {
+        subject: "",
+        company: "",
+        budget: "",
+        threshold: "",
+        yearthis: "",
+        remarks: "",
+      },
+      deptOptions: [],
+      // 弹出层标题
+      title: "",
+      // 是否显示弹出层
+      open: false,
+      // 表单参数
+      form: {},
+      ActionUrl: process.env.VUE_APP_BASE_API + "/budget/import", // 上传的图片服务器地址
+      morenUnit: undefined,
+    };
+  },
+  created() {
+    this.getTreeselect();
+  },
+  methods: {
+    handleupload() {
+      const loading = this.$loading({
+        lock: true,
+        text: "正在导入表格",
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.7)",
+      });
+      this.loadingoption = loading;
     },
-    created() {
-      this.getTreeselect();
+    handleFail() {
+      this.loadingoption.close();
+      this.$message.error("上传失败");
     },
-    methods: {
-      handleupload() {
-        const loading = this.$loading({
-          lock: true,
-          text: "正在导入表格",
-          spinner: "el-icon-loading",
-          background: "rgba(0, 0, 0, 0.7)",
-        });
-        this.loadingoption = loading;
-      },
-      handleFail() {
-        this.loadingoption.close();
-        this.$message.error("上传失败");
-      },
-      handleRemove(file, fileList) {
-      },
-      handlePreview(file) {
-      },
-      handleExceed(files, fileList) {
-        this.$message.warning(
-          `当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${
-            files.length + fileList.length
-          } 个文件`
-        );
-      },
-      handleSuccess(res) {
-        this.fileList = [];
-        this.loadingoption.close();
-        this.centerDialogVisible = false;
-        if (res.status == 1000) {
-          this.$message.success("文件上传成功");
-          this.getList();
-        } else {
-          this.$message({
-            message: res.message,
-            type: "error",
-          });
-          this.getList();
-        }
-      },
-      beforeRemove(file, fileList) {
-        return this.$confirm(`确定移除 ${file.name}？`);
-      },
-      /** 查询角色列表 */
-      getList() {
-        this.loading = true;
-        listBudget(this.queryParams).then((response) => {
-          this.tableData = response;
-          // this.total = response.count;
-          this.loading = false;
-        });
-      },
-      // 多选框选中数据
-      handleSelectionChange(selection) {
-        this.ids = selection.map((item) => item.id);
-        this.single = selection.length != 1;
-        this.multiple = !selection.length;
-      },
-      getTreeselect() {
-        let that = this;
-        resourceTreeByUN().then((response) => {
-          that.deptOptions = response.list;
-          that.morenUnit = response.checked[0];
-          that.queryParams.unitId = that.morenUnit;
-          that.getList();
-        });
-      },
-      handleQuery() {
+    handleRemove(file, fileList) {},
+    handlePreview(file) {},
+    handleExceed(files, fileList) {
+      this.$message.warning(
+        `当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${
+          files.length + fileList.length
+        } 个文件`
+      );
+    },
+    handleSuccess(res) {
+      this.fileList = [];
+      this.loadingoption.close();
+      this.centerDialogVisible = false;
+      if (res.status == 1000) {
+        this.$message.success("文件上传成功");
         this.getList();
-      },
-      /** 重置按钮操作 */
-      resetQuery() {
-        this.dateRange = [];
-        this.resetForm("queryForm");
-        this.queryParams.unitId = this.morenUnit;
-      },
-      // 表单重置
-      reset() {
-        this.form = {
-          itemName: undefined,
-          company: undefined,
-          oldValue: undefined,
-          newValue: undefined,
-          difValue: undefined,
-          remark: undefined,
-        };
-        this.resetForm("form");
-      },
-      //修改
-      handleEdit(row) {
-        this.reset();
-        this.form = row;
-        this.open = true;
-        this.title = "预算调整";
-      },
-      /** 提交按钮 */
-      submitForm: function () {
-        updateBudget(this.form)
-          .then((response) => {
-            this.msgSuccess("修改成功");
-            this.open = false;
-            this.getList();
-          })
-          .catch((err) => {
-            this.msgError(err.message);
-          });
-      },
-      // 取消按钮
-      cancel() {
-        this.open = false;
-        this.reset();
-      },
-
-      /** 导出按钮操作 */
-      handleExport() {
-        const queryParams = this.queryParams;
-
-        this.$confirm("是否确认导出该预算分解的数据项?", "导出表格", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning",
-        })
-          .then(function () {
-            return exportData(
-              getToken(),
-              queryParams,
-              "/budget/export",
-              "预算分解"
-            );
-          })
-          .then((response) => {
-            this.download(response.msg);
-          })
-          .catch(function () {
-          });
-      },
+      } else {
+        this.$message({
+          message: res.message,
+          type: "error",
+        });
+        this.getList();
+      }
     },
-  };
+    beforeRemove(file, fileList) {
+      return this.$confirm(`确定移除 ${file.name}？`);
+    },
+    /** 查询角色列表 */
+    getList() {
+      this.loading = true;
+      listBudget(this.queryParams).then((response) => {
+        this.tableData = response;
+        // this.total = response.count;
+        this.loading = false;
+      });
+    },
+    // 多选框选中数据
+    handleSelectionChange(selection) {
+      this.ids = selection.map((item) => item.id);
+      this.single = selection.length != 1;
+      this.multiple = !selection.length;
+    },
+    getTreeselect() {
+      let that = this;
+      resourceTreeByUN().then((response) => {
+        that.deptOptions = response.list;
+        that.morenUnit = response.checked[0];
+        that.queryParams.unitId = that.morenUnit;
+        that.getList();
+      });
+    },
+    handleQuery() {
+      this.getList();
+    },
+    /** 重置按钮操作 */
+    resetQuery() {
+      this.dateRange = [];
+      this.resetForm("queryForm");
+      this.queryParams.unitId = this.morenUnit;
+    },
+    // 表单重置
+    reset() {
+      this.form = {
+        itemName: undefined,
+        company: undefined,
+        oldValue: undefined,
+        newValue: undefined,
+        difValue: undefined,
+        remark: undefined,
+      };
+      this.resetForm("form");
+    },
+    //修改
+    handleEdit(row) {
+      this.reset();
+      this.form = row;
+      this.open = true;
+      this.title = "预算调整";
+    },
+    /** 提交按钮 */
+    submitForm: function () {
+      updateBudget(this.form)
+        .then((response) => {
+          this.msgSuccess("修改成功");
+          this.open = false;
+          this.getList();
+        })
+        .catch((err) => {
+          this.msgError(err.message);
+        });
+    },
+    // 取消按钮
+    cancel() {
+      this.open = false;
+      this.reset();
+    },
+
+    /** 导出按钮操作 */
+    handleExport() {
+      const queryParams = this.queryParams;
+
+      this.$confirm("是否确认导出该预算分解的数据项?", "导出表格", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(function () {
+          return exportData(
+            getToken(),
+            queryParams,
+            "/budget/export",
+            "预算分解"
+          );
+        })
+        .then((response) => {
+          this.download(response.msg);
+        })
+        .catch(function () {});
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
+.el-form-item--medium /deep/ .el-form-item__content {
+  width: 230px;
+}
 
-  .el-form-item--medium /deep/ .el-form-item__content {
-    width: 230px;
-  }
+.container {
+  width: 90%;
+  margin: 20px auto 0 auto;
 
-  .container {
-    width: 90%;
-    margin: 20px auto 0 auto;
+  .top-control {
+    margin-bottom: 20px;
 
-    .top-control {
-      margin-bottom: 20px;
-
-      label {
-        margin-right: 30px;
-      }
+    label {
+      margin-right: 30px;
     }
   }
+}
 
-  .uploadCss {
-    margin-bottom: 10px;
-  }
+.uploadCss {
+  margin-bottom: 10px;
+}
 
-  /deep/ .el-table__row--level-0 {
-    background: #f5f7fa;
-  }
+/deep/ .el-table__row--level-0 {
+  background: #f5f7fa;
+}
 </style>

@@ -2,9 +2,9 @@
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true">
       <el-row>
-        <el-form-item label="金额范围" prop="flowTypeName">
+        <el-form-item label="金额范围" prop="amountFrom">
           <el-input
-            v-model="queryParams.flowTypeName"
+            v-model="queryParams.amountFrom"
             placeholder="请输入金额范围"
             clearable
             size="small"
@@ -12,9 +12,9 @@
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
-        <el-form-item label="至" prop="flowTypeName" label-width="25px">
+        <el-form-item label="至" prop="amountTo" label-width="25px">
           <el-input
-            v-model="queryParams.flowTypeName"
+            v-model="queryParams.amountTo"
             placeholder="请输入金额范围"
             clearable
             size="small"
@@ -23,15 +23,15 @@
           />
         </el-form-item>
 
-        <el-form-item label="开票时间" prop="flowTypeName">
-          <el-date-picker v-model="queryParams.data1" type="date" placeholder="选择开票时间"></el-date-picker>
+        <el-form-item label="开票时间" prop="invoiceTimeFrom">
+          <el-date-picker v-model="queryParams.invoiceTimeFrom" type="date" placeholder="选择开票时间"></el-date-picker>
         </el-form-item>
-        <el-form-item label="至" prop="flowTypeName" label-width="25px">
-          <el-date-picker v-model="queryParams.data2" type="date" placeholder="选择开票时间"></el-date-picker>
+        <el-form-item label="至" prop="invoiceTimeTo" label-width="25px">
+          <el-date-picker v-model="queryParams.invoiceTimeTo" type="date" placeholder="选择开票时间"></el-date-picker>
         </el-form-item>
-        <el-form-item label="县区" prop="flowTypeName">
+        <el-form-item label="县区" prop="unitId">
           <el-select
-            v-model="queryParams.state"
+            v-model="queryParams.unitId"
             placeholder="请选择县区"
             clearable
             size="small"
@@ -70,20 +70,20 @@
       </el-col>
     </el-row>
 
-    <el-table v-loading="loading" :data="typeList" @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="typeList">
       <!-- <el-table-column type="selection" width="55" align="center" /> -->
-      <el-table-column label="类型" prop="id" width="120" align="center" />
-      <el-table-column label="区域" prop="flowTypeName" width="150" align="center" />
-      <el-table-column label="赔补金额" prop="flowTypeName" width="150" align="center" />
-      <el-table-column label="已到账金额" prop="flowTypeName" width="150" align="center" />
-      <el-table-column label="赔补合同名" prop="flowTypeName" width="150" align="center" />
-      <el-table-column label="合同编号" prop="flowTypeName" width="150" align="center" />
-      <el-table-column label="赔补金额到账情况说明" prop="flowTypeName" width="150" align="center" />
-      <el-table-column label="本年开收据（元）" prop="flowTypeName" width="150" align="center" />
-      <el-table-column label="开收据时间" prop="flowTypeName" width="150" align="center" />
+      <el-table-column label="类别" prop="category" width="120" align="center" />
+      <el-table-column label="区域" prop="unit" width="150" align="center" />
+      <el-table-column label="赔补金额" prop="compensationAmount" width="150" align="center" />
+      <el-table-column label="已到账金额" prop="paymentAmount" width="150" align="center" />
+      <el-table-column label="赔补合同名" prop="contractName" width="150" align="center" />
+      <el-table-column label="合同编号" prop="contractNum" width="150" align="center" />
+      <el-table-column label="赔补金额到账情况说明" prop="paymentDesc" width="150" align="center" />
+      <el-table-column label="本年开收据（元）" prop="receiptAmount" width="150" align="center" />
+      <el-table-column label="开收据时间" prop="receiptTime" width="150" align="center" />
       <el-table-column
         label="备注格式：合同号；区县；款项性质；项目信息"
-        prop="flowTypeName"
+        prop="remake"
         width="150"
         align="center"
       />
@@ -113,54 +113,54 @@
       <el-form ref="form" :model="form" :rules="rules" label-width="140px">
         <el-row>
           <el-col :span="12">
-            <el-form-item v-if="form.userId == undefined" label="类别" prop="userName">
-              <el-input v-model="form.userName" placeholder="请输入类别" />
+            <el-form-item label="类别" prop="category">
+              <el-input v-model="form.category" placeholder="请输入类别" />
             </el-form-item>
           </el-col>
           <el-col :span="12"></el-col>
           <el-col :span="12">
-            <el-form-item v-if="form.userId == undefined" label="区域" prop="CheckPassword">
-              <el-input v-model="form.CheckPassword" placeholder="请输入区域" type="password" />
+            <el-form-item label="区域" prop="unitId">
+              <el-input v-model="form.unitId" placeholder="请输入区域" type="password" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="赔补金额" prop="nickName">
-              <el-input v-model="form.nickName" placeholder="请输入赔补金额" />
+            <el-form-item label="赔补金额" prop="compensationAmount">
+              <el-input v-model="form.compensationAmount" placeholder="请输入赔补金额" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="已到账金额" prop="nickName">
-              <el-input v-model="form.nickName" placeholder="请输入已到账金额" />
+            <el-form-item label="已到账金额" prop="paymentAmount">
+              <el-input v-model="form.paymentAmount" placeholder="请输入已到账金额" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="赔补合同名" prop="nickName">
-              <el-date-picker v-model="form.data" type="date" placeholder="选择赔补合同名"></el-date-picker>
+            <el-form-item label="赔补合同名" prop="contractName">
+              <el-date-picker v-model="form.contractName" type="date" placeholder="选择赔补合同名"></el-date-picker>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="合同编号" prop="nickName">
-              <el-date-picker v-model="form.data" type="date" placeholder="选择合同编号"></el-date-picker>
+            <el-form-item label="合同编号" prop="contractNum">
+              <el-date-picker v-model="form.contractNum" type="date" placeholder="选择合同编号"></el-date-picker>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="赔补金额到账情况说明" prop="nickName">
-              <el-input v-model="form.nickName" placeholder="请输入赔补金额到账情况说明" />
+            <el-form-item label="赔补金额到账情况说明" prop="paymentDesc">
+              <el-input v-model="form.paymentDesc" placeholder="请输入赔补金额到账情况说明" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="本年开收据（元）" prop="nickName">
-              <el-input v-model="form.nickName" placeholder="请输入本年开收据（元）" />
+            <el-form-item label="本年开收据（元）" prop="receiptAmount">
+              <el-input v-model="form.receiptAmount" placeholder="请输入本年开收据（元）" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="开收据时间" prop="nickName">
-              <el-input v-model="form.nickName" placeholder="请输入开收据时间" />
+            <el-form-item label="开收据时间" prop="receiptTime">
+              <el-input v-model="form.receiptTime" placeholder="请输入开收据时间" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="备注格式：合同号；区县；款项性质；项目信息" prop="nickName">
-              <el-input v-model="form.nickName" placeholder="请输入备注格式：合同号；区县；款项性质；项目信息" />
+            <el-form-item label="备注格式：合同号；区县；款项性质；项目信息" prop="remake">
+              <el-input v-model="form.remake" placeholder="请输入备注格式：合同号；区县；款项性质；项目信息" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -174,7 +174,7 @@
 </template>
 
 <script>
-import { listType, addType, updateType, delFlowType } from "@/api/flow/type";
+import { listReceipt, addReceipt, updateReceipt, delarr } from "@/api/relocation/basis/receipt.js";
 
 export default {
   name: "Flowtype",
@@ -233,7 +233,7 @@ export default {
     /** 查询角色列表 */
     getList() {
       this.loading = true;
-      listType(this.queryParams).then((response) => {
+      listReceipt(this.queryParams).then((response) => {
         this.typeList = response.list;
         this.total = response.count;
         this.loading = false;
@@ -265,12 +265,6 @@ export default {
       this.resetForm("queryForm");
       this.handleQuery();
     },
-    // 多选框选中数据
-    handleSelectionChange(selection) {
-      this.ids = selection.map((item) => item.id);
-      this.single = selection.length != 1;
-      this.multiple = !selection.length;
-    },
     /** 新增按钮操作 */
     handleAdd() {
       this.reset();
@@ -294,7 +288,7 @@ export default {
       this.$refs["form"].validate((valid) => {
         if (valid) {
           if (this.form.id != undefined) {
-            updateType(this.form)
+            updateReceipt(this.form)
               .then((response) => {
                 this.msgSuccess("修改成功");
                 this.open = false;
@@ -304,7 +298,7 @@ export default {
                 this.msgError(err.message);
               });
           } else {
-            addType(this.form)
+            addReceipt(this.form)
               .then((response) => {
                 this.msgSuccess("新增成功");
                 this.open = false;
@@ -331,7 +325,7 @@ export default {
         }
       )
         .then(function () {
-          return delFlowType(typeIds);
+          return delarr(typeIds);
         })
         .then(() => {
           this.getList();

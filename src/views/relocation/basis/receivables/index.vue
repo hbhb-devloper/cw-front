@@ -2,21 +2,21 @@
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true">
       <el-row>
-        <el-form-item label="起始时间" prop="flowTypeName">
-          <el-date-picker v-model="queryParams.data1" type="date" placeholder="选择起始时间"></el-date-picker>
+        <el-form-item label="起始时间" prop="startTimeFrom">
+          <el-date-picker v-model="queryParams.startTimeFrom" type="date" placeholder="选择起始时间"></el-date-picker>
         </el-form-item>
-        <el-form-item label="至" prop="flowTypeName" label-width="25px">
-          <el-date-picker v-model="queryParams.data2" type="date" placeholder="选择结束时间"></el-date-picker>
+        <el-form-item label="至" prop="startTimeTo" label-width="25px">
+          <el-date-picker v-model="queryParams.startTimeTo" type="date" placeholder="选择结束时间"></el-date-picker>
         </el-form-item>
-        <el-form-item label="合同截止时间" prop="flowTypeName">
-          <el-date-picker v-model="queryParams.data1" type="date" placeholder="选择起始时间"></el-date-picker>
+        <el-form-item label="合同截止时间" prop="contractDeadlineFrom">
+          <el-date-picker v-model="queryParams.contractDeadlineFrom" type="date" placeholder="选择起始时间"></el-date-picker>
         </el-form-item>
-        <el-form-item label="至" prop="flowTypeName" label-width="25px">
-          <el-date-picker v-model="queryParams.data2" type="date" placeholder="选择结束时间"></el-date-picker>
+        <el-form-item label="至" prop="contractDeadlineTo" label-width="25px">
+          <el-date-picker v-model="queryParams.contractDeadlineTo" type="date" placeholder="选择结束时间"></el-date-picker>
         </el-form-item>
-        <el-form-item label="合同编号" prop="flowTypeName">
+        <el-form-item label="合同编号" prop="contractNum">
           <el-input
-            v-model="queryParams.flowTypeName"
+            v-model="queryParams.contractNum"
             placeholder="请输入合同编号"
             clearable
             size="small"
@@ -24,10 +24,10 @@
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
-        <el-form-item label="经办单位" prop="flowTypeName">
+        <el-form-item label="经办单位" prop="unitId">
           
           <el-select
-            v-model="queryParams.state"
+            v-model="queryParams.unitId"
             placeholder="请选择经办单位"
             clearable
             size="small"
@@ -41,9 +41,9 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="合同名称" prop="flowTypeName">
+        <el-form-item label="合同名称" prop="contractName">
           <el-input
-            v-model="queryParams.flowTypeName"
+            v-model="queryParams.contractName"
             placeholder="请输入合同名称"
             clearable
             size="small"
@@ -51,6 +51,7 @@
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
+
         <el-form-item>
           <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
           <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -72,32 +73,33 @@
       </el-col>
     </el-row>
 
-    <el-table v-loading="loading" :data="typeList" @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="typeList" >
       <!-- <el-table-column type="selection" width="55" align="center" /> -->
       <el-table-column label="序号" prop="id" width="120" align="center" />
-      <el-table-column label="类别" prop="flowTypeName" width="150" align="center" />
-      <el-table-column label="经办单位" prop="flowTypeName" width="150" align="center" />
-      <el-table-column label="供应商" prop="flowTypeName" width="150" align="center" />
-      <el-table-column label="合同编号" prop="flowTypeName" width="150" align="center" />
-      <el-table-column label="合同名称" prop="flowTypeName" width="150" align="center" />
-      <el-table-column label="起始时间" prop="flowTypeName" width="150" align="center" />
-      <el-table-column label="合同截止时间" prop="flowTypeName" width="150" align="center" />
-      <el-table-column label="合同金额" prop="flowTypeName" width="150" align="center" />
-      <el-table-column label="开票日期" prop="flowTypeName" width="150" align="center" />
-      <el-table-column label="发票类型" prop="flowTypeName" width="150" align="center" />
-      <el-table-column label="价款" prop="flowTypeName" width="150" align="center" />
-      <el-table-column label="税额" prop="flowTypeName" width="150" align="center" />
-      <el-table-column label="价税合计" prop="flowTypeName" width="150" align="center" />
-      <el-table-column label="工程名" prop="flowTypeName" width="150" align="center" />
-      <el-table-column label="收款情况" prop="flowTypeName" width="150" align="center" />
-      <el-table-column label="账龄" prop="flowTypeName" width="150" align="center" />
-      <el-table-column label="应收" prop="flowTypeName" width="150" align="center" />
-      <el-table-column label="已收" prop="flowTypeName" width="150" align="center" />
-      <el-table-column label="未收" prop="flowTypeName" width="150" align="center" />
-      <el-table-column label="款项类型" prop="flowTypeName" width="150" align="center" />
+      <el-table-column label="类别" prop="category" width="150" align="center" />
+      <el-table-column label="经办单位" prop="unit" width="150" align="center" />
+      <el-table-column label="供应商" prop="supplier" width="150" align="center" />
+      <el-table-column label="合同编号" prop="contractNum" width="150" align="center" />
+      <el-table-column label="合同名称" prop="contractName" width="150" align="center" />
+      <el-table-column label="发票号码" prop="invoiceNum" width="150" align="center" />
+      <el-table-column label="起始时间" prop="startTime" width="150" align="center" />
+      <el-table-column label="合同截止时间" prop="contractDeadline" width="150" align="center" />
+      <el-table-column label="合同金额" prop="contractAmount" width="150" align="center" />
+      <el-table-column label="开票日期" prop="invoiceTime" width="150" align="center" />
+      <el-table-column label="发票类型" prop="invoiceType" width="150" align="center" />
+      <el-table-column label="价款" prop="amount" width="150" align="center" />
+      <el-table-column label="税额" prop="tax" width="150" align="center" />
+      <el-table-column label="价税合计" prop="taxIncludeAmount" width="150" align="center" />
+      <el-table-column label="工程名" prop="constructionName" width="150" align="center" />
+      <el-table-column label="收款情况" prop="isReceived" width="150" align="center" />
+      <el-table-column label="账龄" prop="aging" width="150" align="center" />
+      <el-table-column label="应收" prop="receivable" width="150" align="center" />
+      <el-table-column label="已收" prop="received" width="150" align="center" />
+      <el-table-column label="未收" prop="unreceived" width="150" align="center" />
+      <el-table-column label="款项类型" prop="paymentType" width="150" align="center" />
       <el-table-column label="当月收款金额" prop="flowTypeName" width="150" align="center" />
-      <el-table-column label="收款单号" prop="flowTypeName" width="150" align="center" />
-      <el-table-column label="收款人" prop="flowTypeName" width="150" align="center" />
+      <el-table-column label="收款单号" prop="receiptNum" width="150" align="center" />
+      <el-table-column label="收款人" prop="payee" width="150" align="center" />
       <!-- <el-table-column label="操作" align="center" width="150" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)">修改</el-button>
@@ -120,7 +122,7 @@
     />
 
     <!-- 添加或修改角色配置对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="500px">
+    <!-- <el-dialog :title="title" :visible.sync="open" width="500px">
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="类型名称" prop="flowTypeName">
           <el-input v-model="form.flowTypeName" placeholder="请输入类型名称" />
@@ -137,12 +139,12 @@
         <el-button type="primary" @click="submitForm">确 定</el-button>
         <el-button @click="cancel">取 消</el-button>
       </div>
-    </el-dialog>
+    </el-dialog> -->
   </div>
 </template>
 
 <script>
-import { listType, addType, updateType, delFlowType } from "@/api/flow/type";
+import { listIncome } from "@/api/relocation/basis/receivables.js";
 
 export default {
   name: "Flowtype",
@@ -201,7 +203,7 @@ export default {
     /** 查询角色列表 */
     getList() {
       this.loading = true;
-      listType(this.queryParams).then((response) => {
+      listIncome(this.queryParams).then((response) => {
         this.typeList = response.list;
         this.total = response.count;
         this.loading = false;
@@ -232,80 +234,6 @@ export default {
       this.dateRange = [];
       this.resetForm("queryForm");
       this.handleQuery();
-    },
-    // 多选框选中数据
-    handleSelectionChange(selection) {
-      this.ids = selection.map((item) => item.id);
-      this.single = selection.length != 1;
-      this.multiple = !selection.length;
-    },
-    /** 新增按钮操作 */
-    handleAdd() {
-      this.reset();
-      // this.getMenuTreeselect();
-      this.open = true;
-      this.title = "添加类型";
-    },
-    /** 修改按钮操作 */
-    handleUpdate(row) {
-      this.reset();
-      const typeId = row.id || this.ids;
-      //   getRole(typeId).then(response => {
-      this.form = row;
-      this.open = true;
-      this.title = "修改类型";
-      //   });
-    },
-
-    /** 提交按钮 */
-    submitForm: function () {
-      this.$refs["form"].validate((valid) => {
-        if (valid) {
-          if (this.form.id != undefined) {
-            updateType(this.form)
-              .then((response) => {
-                this.msgSuccess("修改成功");
-                this.open = false;
-                this.getList();
-              })
-              .catch((err) => {
-                this.msgError(err.message);
-              });
-          } else {
-            addType(this.form)
-              .then((response) => {
-                this.msgSuccess("新增成功");
-                this.open = false;
-                this.getList();
-              })
-              .catch((err) => {
-                this.msgError(err.message);
-              });
-          }
-        }
-      });
-    },
-
-    /** 删除按钮操作 */
-    handleDelete(row) {
-      const typeIds = row.id;
-      this.$confirm(
-        '是否确认删除流程类型名称为"' + row.flowTypeName + '"的数据项?',
-        "警告",
-        {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning",
-        }
-      )
-        .then(function () {
-          return delFlowType(typeIds);
-        })
-        .then(() => {
-          this.getList();
-          this.msgSuccess("删除成功");
-        })
-        .catch(function () {});
     },
   },
 };

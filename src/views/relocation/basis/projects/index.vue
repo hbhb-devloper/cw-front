@@ -70,29 +70,14 @@
       <el-col :span="1.5">
         <el-button
           type="success"
-          icon="el-icon-edit"
+          icon="el-icon-download"
           size="mini"
-          :disabled="single"
-          @click="handleUpdate"
-          v-if="false"
-        >修改</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="danger"
-          icon="el-icon-delete"
-          size="mini"
-          :disabled="multiple"
-          @click="handleDelete"
-          v-if="false"
-        >删除</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button type="warning" icon="el-icon-download" size="mini" @click="handleExport">导出</el-button>
+          @click="centerDialogVisible=true"
+        >导入</el-button>
       </el-col>
     </el-row>
 
-    <el-table v-loading="loading" :data="typeList" @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="typeList" >
       <!-- <el-table-column type="selection" width="55" align="center" /> -->
       <el-table-column label="区域" prop="unitId" width="120" align="center" />
       <el-table-column label="工程名称" prop="projectName" width="120" align="center" />
@@ -339,14 +324,40 @@
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
+
+    <el-dialog title="导入" :visible.sync="centerDialogVisible" width="500px">
+      <el-upload
+        class="upload-demo"
+        :headers="headers"
+        :on-preview="handlePreview"
+        :on-remove="handleRemove"
+        :before-remove="beforeRemove"
+        :on-success="handleSuccess"
+        :on-progress="handleupload"
+        :on-error="handleFail"
+        multiple
+        :limit="1"
+        :on-exceed="handleExceed"
+        :action="ActionUrl"
+        :file-list="fileList"
+      >
+        <el-button size="small" type="primary">点击上传</el-button>
+      </el-upload>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { listType, addType, updateType, delFlowType } from "@/api/flow/type";
 import { resourceTreeByUN } from "@/api/system/unit";
+import {
+  listProject,
+  addProject,
+  updateProject,
+  delarr,
+} from "@/api/relocation/basis/projects.js";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
+import { getToken } from "@/utils/auth";
 export default {
   name: "Flowtype",
   components: { Treeselect },
@@ -486,6 +497,12 @@ export default {
       ],
       morenUnit: undefined,
       deptOptions: [],
+      centerDialogVisible: false,
+      ActionUrl: process.env.VUE_APP_BASE_API + "/project/import", // 上传的图片服务器地址
+      fileList: [],
+      headers: {
+        Authorization: getToken(),
+      },
     };
   },
   created() {
@@ -493,10 +510,50 @@ export default {
     this.getTreeselect();
   },
   methods: {
+    handleupload() {
+      const loading = this.$loading({
+        lock: true,
+        text: "正在导入表格",
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.7)",
+      });
+      this.loadingoption = loading;
+    },
+    handleFail() {
+      this.loadingoption.close();
+      this.$message.error("上传失败");
+    },
+    handleRemove(file, fileList) {},
+    handlePreview(file) {},
+    handleExceed(files, fileList) {
+      this.$message.warning(
+        `当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${
+          files.length + fileList.length
+        } 个文件`
+      );
+    },
+    handleSuccess(res) {
+      this.fileList = [];
+      this.loadingoption.close();
+      this.centerDialogVisible = false;
+      if (res.status == 1000) {
+        this.$message.success("文件上传成功");
+        this.getList();
+      } else {
+        this.$message({
+          message: res.message,
+          type: "error",
+        });
+        this.getList();
+      }
+    },
+    beforeRemove(file, fileList) {
+      return this.$confirm(`确定移除 ${file.name}？`);
+    },
     /** 查询角色列表 */
     getList() {
       this.loading = true;
-      listType(this.queryParams).then((response) => {
+      listProject(this.queryParams).then((response) => {
         this.typeList = response.list;
         this.total = response.count;
         this.loading = false;
@@ -537,12 +594,6 @@ export default {
       this.resetForm("queryForm");
       this.handleQuery();
     },
-    // 多选框选中数据
-    handleSelectionChange(selection) {
-      this.ids = selection.map((item) => item.id);
-      this.single = selection.length != 1;
-      this.multiple = !selection.length;
-    },
     /** 新增按钮操作 */
     handleAdd() {
       this.reset();
@@ -566,7 +617,7 @@ export default {
       this.$refs["form"].validate((valid) => {
         if (valid) {
           if (this.form.id != undefined) {
-            updateType(this.form)
+            updateProject(this.form)
               .then((response) => {
                 this.msgSuccess("修改成功");
                 this.open = false;
@@ -576,7 +627,7 @@ export default {
                 this.msgError(err.message);
               });
           } else {
-            addType(this.form)
+            addProject(this.form)
               .then((response) => {
                 this.msgSuccess("新增成功");
                 this.open = false;
@@ -594,7 +645,7 @@ export default {
     handleDelete(row) {
       const typeIds = row.id;
       this.$confirm(
-        '是否确认删除流程类型名称为"' + row.flowTypeName + '"的数据项?',
+        '是否确认删除工程名称为"' + row.projectName + '"的数据项?',
         "警告",
         {
           confirmButtonText: "确定",
@@ -603,7 +654,7 @@ export default {
         }
       )
         .then(function () {
-          return delFlowType(typeIds);
+          return delarr(typeIds);
         })
         .then(() => {
           this.getList();
@@ -631,7 +682,7 @@ export default {
 .el-form-item--medium /deep/ .el-form-item__content {
   width: 230px;
 }
-.el-form-item--medium /deep/ .el-form-item__error{
+.el-form-item--medium /deep/ .el-form-item__error {
   top: 37px;
 }
 .el-col-12 {
