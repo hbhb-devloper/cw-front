@@ -257,7 +257,7 @@
 </template>
 
 <script>
-  import {getCompany,getDataList,addDate,getTypeList,getInfoDate} from '@/api/budget/daily/index'
+  import {getCompany,getDataList,addDate,getTypeList,getInfoDate,deleteDate} from '@/api/budget/daily/index'
   import {getVatRate} from '@/api/budget/report/report.js'
   import Treeselect from '@riophae/vue-treeselect'
   import '@riophae/vue-treeselect/dist/vue-treeselect.css'
@@ -392,7 +392,18 @@
         })
       },
       //删除
-      handleDelete(){},
+      handleDelete(row){
+        this.$confirm('此操作将永久删除该申报, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          deleteDate(row.id).then(res => {
+            this.msgSuccess('删除成功！');
+            this.handleGetList();
+          })
+        })
+      },
       //文件上传
       imageUpload(param){
         let list = {isApproved: 0};

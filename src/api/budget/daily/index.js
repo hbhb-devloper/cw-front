@@ -33,3 +33,10 @@ export function getInfoDate(id) {
     method:'get'
   })
 }
+export function deleteDate(id) {
+  return request({
+    url:`/budget/agile/delete/${id}`,
+    method:'delete'
+  })
+
+}
