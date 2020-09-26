@@ -367,6 +367,7 @@
         this.obj2={
           files:[]
         };
+        this.fileList=[];
       },
       handleVatRate(){
         if(parseFloat(this.obj2.cost)){
