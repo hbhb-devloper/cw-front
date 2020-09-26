@@ -315,6 +315,7 @@
         return this.obj2.cost;
       },
     },
+
     watch:{
       cost(newVal){
         this.handleVatRate();
