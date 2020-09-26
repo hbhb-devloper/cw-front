@@ -38,5 +38,10 @@ export function deleteDate(id) {
     url:`/budget/agile/delete/${id}`,
     method:'delete'
   })
-
+}
+export function DeleteFile(id) {
+  return request({
+    url:`/budget/agile/delete/file/${id}`,
+    method:'delete'
+  })
 }

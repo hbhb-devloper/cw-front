@@ -257,7 +257,7 @@
 </template>
 
 <script>
-  import {getCompany,getDataList,addDate,getTypeList,getInfoDate,deleteDate} from '@/api/budget/daily/index'
+  import {getCompany,getDataList,addDate,getTypeList,getInfoDate,deleteDate,DeleteFile} from '@/api/budget/daily/index'
   import {getVatRate} from '@/api/budget/report/report.js'
   import Treeselect from '@riophae/vue-treeselect'
   import '@riophae/vue-treeselect/dist/vue-treeselect.css'
@@ -319,6 +319,14 @@
       cost(newVal){
         this.handleVatRate();
       },
+      radio(newVal){
+        let dates=new Date();
+        if(newVal==3){
+          this.obj.date = dates.getFullYear().toString();
+        }else{
+          this.obj.date = dates.getFullYear().toString()+'-'+(dates.getMonth()+1<10?'0'+(dates.getMonth()+1).toString():dates.getMonth()+1).toString();
+        }
+      }
     },
     methods:{
       //获取单位
@@ -425,10 +433,24 @@
 
           this.fileList.push({name: res.data.data[0].fileName, id: res.data.data[0].id, type: list.required});
           this.obj2.files.push(list);
+          console.log(this.fileList,this.obj2.files);
         })
       },
       //文件删除
-      beforeRemove(){},
+      beforeRemove(item){
+        this.$confirm(`确定移除 ${item.name}？`).then(res => {
+          if (!item.id) return
+          DeleteFile(item.id).then(res1 => {
+            this.$message.success('文件删除成功！');
+            this.fileList = this.fileList.filter(items => {
+              return items.id != item.id
+            });
+            this.obj2.files = this.obj2.files.filter(items => {
+              return items.fileId != item.id
+            })
+          })
+        })
+      },
       //数据提交
       submitForm(){
         if(!this.obj2.cost||!this.obj2.budgetType||!this.obj2.projectName||!this.obj2.taxIncludeAmount||!this.obj2.vatRate){
