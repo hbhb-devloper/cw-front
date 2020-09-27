@@ -166,7 +166,7 @@
           <el-table :data="fileTable" style="width: 100%">
             <el-table-column style="color:#409EFF" prop="fileName" label="标题">
               <template style="color:#409EFF" slot-scope="scope">
-                <!--                <a :download="scope.row.fileName" :href="scope.row.filePath">{{scope.row.fileName}}</a>-->
+                <a :download="scope.row.fileName" :href="scope.row.filePath">{{scope.row.fileName}}</a>
               </template>
             </el-table-column>
             <el-table-column prop="author" label="作者"></el-table-column>
