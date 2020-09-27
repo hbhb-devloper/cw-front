@@ -745,13 +745,6 @@
             this.msgError('当前记录不在审批中！无法编辑');
             return;
           }
-          // getFlowList(row.id).then(res1 => {
-          //   let end = res1[res1.length - 1];
-          //   let disables = end.operation.hidden;
-          //   if (!disables) {
-          //
-          //   }
-          // })
           this.open2 = true;
           this.form2={};
           this.form2.id = row.id;
