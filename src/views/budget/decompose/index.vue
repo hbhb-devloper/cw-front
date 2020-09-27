@@ -59,7 +59,6 @@
       <el-table-column prop="lastYearFinishedBalance" align="center" label="去年完成值(万元)"></el-table-column>
       <el-table-column prop="balance" align="center" label="本年预算值(万元)"></el-table-column>
       <el-table-column prop="remark" align="center" label="备注"></el-table-column>
-      </el-table-column>-->
     </el-table>
 
 
