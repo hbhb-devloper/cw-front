@@ -91,6 +91,13 @@
       <el-table-column prop="totalInvoiceAmount" align="center" width="150px" label="积累开票金额(元)"></el-table-column>
       <el-table-column prop="totalEnterAmount" align="center" width="150px" label="积累入账金额(元)"></el-table-column>
     </el-table>
+    <pagination
+      v-show="total>0"
+      :total="total"
+      :page.sync="queryParams.pageNum"
+      :limit.sync="queryParams.pageSize"
+      @pagination="getList"
+    />
   </div>
 </template>
 
@@ -147,6 +154,10 @@
       getList() {
         this.loading = true;
         let data=JSON.parse(JSON.stringify(this.queryParams));
+        if(!data.startTime||!data.endTime){
+          this.$message.warning('请选择开始时间或结束时间');
+          return;
+        }
         if(data.isBalanceZero){
           data.isBalanceZero=1;
         }else{
