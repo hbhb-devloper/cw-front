@@ -369,6 +369,8 @@
           })
         })
       },
+
+
       //文件上传普通附件
       imageUpload(param) {
         let list = {isApproved: 0};
