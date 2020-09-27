@@ -67,6 +67,7 @@
             <span>{{scope.row.invoiceDate|filterTime}}</span>
           </template>
         </el-table-column>
+
         <el-table-column label="发票状态" prop="invoiceState" width="110" align="center"/>
         <el-table-column label="销售方纳税号" prop="sellerTax" width="180" align="center"/>
         <el-table-column label="销售方名称" prop="sellerName" width="180" align="center"/>
