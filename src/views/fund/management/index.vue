@@ -804,7 +804,7 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          fileDelete(row.id).then(res => {
+          fileDelete(row.fileId).then(res => {
             this.fileList = this.fileList.filter(item => {
               if (item.fileId != row.fileId) {
                 return item;
