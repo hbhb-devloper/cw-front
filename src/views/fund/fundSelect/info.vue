@@ -1,6 +1,6 @@
 <template>
   <div class="containers">
-    <el-button icon="el-icon-back" type="primary" size="mini" style="margin-bottom: 20px" @click="handleBack">返回
+    <el-button icon="el-icon-back" type="primary" size="mini" style="width:73px;margin-bottom: 20px" @click="handleBack">返回
     </el-button>
     <!--  流程详情    -->
     <section class="approval-box">
