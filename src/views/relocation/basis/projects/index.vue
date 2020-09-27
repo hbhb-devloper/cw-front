@@ -477,10 +477,20 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="主动迁改或者被动" prop="isInitiative">
-              <el-input
+              <el-select
                 v-model="form.isInitiative"
-                placeholder="请输入主动迁改或者被动"
-              />
+                placeholder="请选择主动迁改或者被动"
+                clearable
+                size="small"
+                style="width:220px"
+              >
+                <el-option
+                  v-for="dict in InitiativeOptions"
+                  :key="dict.dictValue"
+                  :label="dict.dictLabel"
+                  :value="dict.dictValue"
+                />
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -522,10 +532,22 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="有无赔补" prop="hasCompensation">
-              <el-input
+              
+              <el-select
                 v-model="form.hasCompensation"
-                placeholder="请输入有无赔补"
-              />
+                placeholder="赔补状态"
+                clearable
+                size="small"
+                style="width:220px"
+              >
+                <el-option
+                  v-for="dict in compensateOptions"
+                  :key="dict.dictValue"
+                  :label="dict.dictLabel"
+                  :value="dict.dictValue"
+                />
+              </el-select>
+              
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -594,6 +616,7 @@
                 placeholder="赔补状态"
                 clearable
                 size="small"
+                style="width:220px"
               >
                 <el-option
                   v-for="dict in compensationOptions"
@@ -679,7 +702,13 @@ export default {
   name: "Flowtype",
   components: { Treeselect },
   data() {
+    var validatePass = (rule, value, callback) => {
+        if (this.form.hasCompensation === '0') {
+          callback(new Error('请输入被动无赔类型'));
+        } 
+      };
     return {
+      
       // 遮罩层
       loading: true,
       // 选中数组
@@ -776,7 +805,7 @@ export default {
           { required: true, message: "请选择有无赔补", trigger: "blur" },
         ],
         compensationType: [
-          { required: true, message: "请输入被动无赔类型", trigger: "blur" },
+          {validator: validatePass, trigger: "blur" },
         ],
         contractNum: [
           { required: true, message: "请输入合同编号", trigger: "blur" },
@@ -811,8 +840,18 @@ export default {
       },
       // 状态数据字典
       statusOptions: [
-        { dictValue: 1, dictLabel: "正常" },
-        { dictValue: 0, dictLabel: "停用" },
+        { dictValue: '1', dictLabel: "正常" },
+        { dictValue: '0', dictLabel: "停用" },
+      ],
+      // 有无赔补
+      compensateOptions: [
+        { dictValue: '1', dictLabel: "有" },
+        { dictValue: '0', dictLabel: "无" },
+      ],
+      // 主动迁改火被动
+      InitiativeOptions: [
+        { dictValue: true, dictLabel: "主动" },
+        { dictValue: false, dictLabel: "被动" },
       ],
       morenUnit: undefined,
       deptOptions: [],
