@@ -673,7 +673,11 @@
       /** 重置按钮操作 */
       resetQuery() {
         this.dateRange = [];
-        this.resetForm("queryForm");
+        this.queryParams={
+          unitId:this.queryParams.unitId,
+          pageNum: 1,
+          pageSize: 20,
+        }
         this.handleQuery();
       },
       // 单位筛选

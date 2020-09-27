@@ -231,7 +231,10 @@
       },
       /** 重置按钮操作 */
       resetQuery() {
-        this.resetForm("queryForm");
+        this.queryParams={
+          pageNum: 1,
+          pageSize: 10,
+        }
         this.handleQuery();
       },
       // 多选框选中数据
@@ -274,6 +277,7 @@
   .uploadList {
     width: 100%;
     padding: 15px;
+    background:#fff;
     border: 1px solid #0d8efd;
     border-radius: 15px;
     margin-bottom: 15px;
