@@ -210,7 +210,7 @@
 
       <el-table-column prop="stateLabel" align="center" label="流程状态" width="130">
         <template slot-scope="scope">
-          <router-link :class="scope.row.isCancellation?'red':''" style="color:#409EFF;" :to="scope.row.isCancellation?'#':'/fund/management/info/'+scope.row.id">{{scope.row.stateLabel}}</router-link>
+          <router-link :class="scope.row.isCancellation?'red':''" style="color:#409EFF;font-size: 12px;" :to="scope.row.isCancellation?'#':'/fund/management/info/'+scope.row.id">{{scope.row.stateLabel}}</router-link>
         </template>
       </el-table-column>
 
