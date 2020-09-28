@@ -291,52 +291,54 @@
       </el-dialog>
       <el-dialog title="申报详情" :visible.sync="open2" width="900px">
         <el-row :span="24" class="info-row">
-          <el-col :span="12">
+          <el-col :span="12" class="diaBorder">
             <el-col :span="7" class="info-title">序号</el-col
             ><el-col :span="12">{{ info.lineNumber }}</el-col>
           </el-col>
-          <el-col :span="12">
+          <el-col :span="12" class="diaBorder">
             <el-col :span="8" class="info-title">编号</el-col
             ><el-col :span="12">{{ info.projectNum }}</el-col>
           </el-col>
         </el-row>
         <el-row :span="24" class="info-row">
-          <el-col :span="12">
+          <el-col :span="12" class="diaBorder">
             <el-col :span="7" class="info-title">名称</el-col
             ><el-col :span="12">{{ info.projectName }}</el-col>
           </el-col>
-          <el-col :span="12">
+          <el-col :span="12" class="diaBorder">
             <el-col :span="8" class="info-title">单位</el-col
             ><el-col :span="12">{{ info.unitName }}</el-col>
           </el-col>
         </el-row>
         <el-row :span="24" class="info-row">
-          <el-col :span="12">
+          <el-col :span="12" class="diaBorder">
             <el-col :span="7" class="info-title">项目类型</el-col
             ><el-col :span="12">{{ info.budgetName }}</el-col>
           </el-col>
-          <el-col :span="12">
+          <el-col :span="12" class="diaBorder">
             <el-col :span="8" class="info-title">不含税金额(万元)</el-col
             ><el-col :span="12">￥{{ info.cost }}</el-col>
           </el-col>
         </el-row>
         <el-row :span="24" class="info-row">
-          <el-col :span="12">
+          <el-col :span="12" class="diaBorder">
             <el-col :span="7" class="info-title">税率</el-col
             ><el-col :span="12">{{ info.vatRate | filterVat }}</el-col>
           </el-col>
-          <el-col :span="12">
+          <el-col :span="12" class="diaBorder">
             <el-col :span="8" class="info-title">价税合计</el-col
             ><el-col :span="12">{{ info.taxIncludeAmount }}</el-col>
           </el-col>
         </el-row>
         <el-row :span="24" class="info-row">
-          <el-col :span="12">
+          <el-col :span="12" class="diaBorder">
             <el-col :span="7" class="info-title">申报人</el-col
             ><el-col :span="12">{{ info.createBy }}</el-col>
           </el-col>
+          <el-col :span="12" class="diaBorder">
+          </el-col>
         </el-row>
-        <el-row>
+        <el-row class="diaBorder">
           <el-col class="info-title">附件</el-col>
           <el-col>
             <el-table :data="Filetable">
@@ -658,5 +660,14 @@ export default {
       font-weight: 600;
     }
   }
+}
+.diaBorder {
+  border: 1px solid;
+  padding-left: 10px;
+  padding-right: 10px;
+  // border-radius: 10px;
+}
+.el-col-12 {
+    height: 47px;
 }
 </style>
