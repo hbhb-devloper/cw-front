@@ -225,7 +225,7 @@
       />
       <el-table-column
         label="有无赔补"
-        prop="hasCompensation"
+        prop="hasCompensationName"
         width="150"
         align="center"
       />
@@ -846,8 +846,8 @@ export default {
       ],
       // 有无赔补
       compensateOptions: [
-        { dictValue: '1', dictLabel: "有" },
-        { dictValue: '0', dictLabel: "无" },
+        { dictValue: true, dictLabel: "有" },
+        { dictValue: false, dictLabel: "无" },
       ],
       // 主动迁改火被动
       InitiativeOptions: [
@@ -919,9 +919,9 @@ export default {
       listProject(this.queryParams).then((response) => {
         response.list.map((item) => {
           if (item.hasCompensation) {
-            item.hasCompensation = "有";
+            item.hasCompensationName= "有"
           } else {
-            item.hasCompensation = "无";
+            item.hasCompensationName = "无";
           }
           that.compensationOptions.map((sationItem) => {
             if (item.compensationSate == sationItem.value) {
