@@ -706,6 +706,7 @@ export default {
         if (this.form.hasCompensation === '0') {
           callback(new Error('请输入被动无赔类型'));
         } 
+        callback()
       };
     return {
       
@@ -989,7 +990,9 @@ export default {
 
     /** 提交按钮 */
     submitForm: function () {
+      console.log('123');
       this.$refs["form"].validate((valid) => {
+        console.log('valid',valid);
         if (valid) {
           if (this.form.id != undefined) {
             updateProject(this.form)
