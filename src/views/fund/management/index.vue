@@ -954,7 +954,7 @@
       /** 导出按钮操作 */
       handleExport() {
         const queryParams = this.queryParams;
-        this.$confirm("是否确认导出所有流程角色列表?", "导出表格", {
+        this.$confirm("是否确认导出发票预开列表?", "导出表格", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning",
