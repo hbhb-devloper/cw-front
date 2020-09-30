@@ -27,25 +27,26 @@
 
     <el-table v-loading="loading" :data="typeList" @selection-change="handleSelectionChange">
       <!-- <el-table-column type="selection" width="55" align="center" /> -->
-      <el-table-column label="地区" prop="id" align="center" />
-      <el-table-column label="合同签订请款" prop="flowTypeName" align="center">
-        <el-table-column label="有赔迁改项目数量（个）" prop="flowTypeName" width="150" align="center" />
-        <el-table-column label="已签订赔补协议项目数" prop="flowTypeName" width="150" align="center" />
-        <el-table-column label="未签订赔补协议项目数" prop="flowTypeName" width="150" align="center" />
-        <el-table-column label="赔补合同签订率（按项目个数计）" prop="flowTypeName" width="150" align="center" />
-        <el-table-column label="签订赔补协议金额（万元）" prop="flowTypeName" width="150" align="center" />
-        <el-table-column label="未签订赔补现已项目成本金额（万元）" prop="flowTypeName" width="150" align="center" />
+      <el-table-column label="地区" prop="unitName" align="center" />
+      <el-table-column label="合同签订请款" align="center">
+        <el-table-column label="有赔迁改项目数量（个）" prop="compensationAmount" width="150" align="center" />
+        <el-table-column label="签订赔补协议数量（个）" prop="contractAmount" width="150" align="center" />
+        <el-table-column label="已签订赔补协议项目数" prop="contractNumAmount" width="150" align="center" />
+        <el-table-column label="未签订赔补协议项目数" prop="notContractNumAmount" width="150" align="center" />
+        <el-table-column label="赔补合同签订率（按项目个数计）" prop="compensationRatio" width="150" align="center" />
+        <el-table-column label="签订赔补协议金额（万元）" prop="contractAccount" width="150" align="center" />
+        <el-table-column label="未签订赔补现已项目成本金额（万元）" prop="notContractAccount" width="150" align="center" />
       </el-table-column>
-      <el-table-column label="合同履行情况" prop="flowTypeName" width="150" align="center">
-        <el-table-column label="赔补款累计到账金额（万元）" prop="flowTypeName" width="150" align="center" />
-        <el-table-column label="有赔迁改项目累计成本金额（万元）" prop="flowTypeName" width="150" align="center" />
-        <el-table-column label="回款成本收支比" prop="flowTypeName" width="150" align="center" />
-        <el-table-column label="预付款未收金（万元）" prop="flowTypeName" width="150" align="center" />
-        <el-table-column label="尾款未收金（万元）" prop="flowTypeName" width="150" align="center" />
-        <el-table-column label="未全额回款合同1年内（个）" prop="flowTypeName" width="150" align="center" />
-        <el-table-column label="未全额回款合同1-3年（个）" prop="flowTypeName" width="150" align="center" />
-        <el-table-column label="未全额回款合同3年以上（个）" prop="flowTypeName" width="150" align="center" />
-        <el-table-column label="当年赔补开票（万元）" prop="flowTypeName" width="150" align="center" />
+      <el-table-column label="合同履行情况" width="150" align="center">
+        <el-table-column label="赔补款累计到账金额（万元）" prop="compensationTotal" width="150" align="center" />
+        <el-table-column label="有赔迁改项目累计成本金额（万元）" prop="costTotal" width="150" align="center" />
+        <el-table-column label="回款成本收支比" prop="costRation" width="150" align="center" />
+        <el-table-column label="预付款未收金（万元）" prop="budgetNotAccount" width="150" align="center" />
+        <el-table-column label="尾款未收金（万元）" prop="finalNotPayment" width="150" align="center" />
+        <el-table-column label="未全额回款合同1年内（个）" prop="oneNotCostAmount" width="150" align="center" />
+        <el-table-column label="未全额回款合同1-3年（个）" prop="twoNotCostAmount" width="150" align="center" />
+        <el-table-column label="未全额回款合同3年以上（个）" prop="threeNotCostAmount" width="150" align="center" />
+        <el-table-column label="当年赔补开票（万元）" prop="thisYearInvoiceAccount" width="150" align="center" />
       </el-table-column>
     </el-table>
 
