@@ -4,60 +4,91 @@
  * @Author: CYZ
  * @Date: 2020-07-20 18:22:09
  * @LastEditors: CYZ
- * @LastEditTime: 2020-08-14 19:04:57
+ * @LastEditTime: 2020-10-09 18:12:06
 -->
 <template>
   <div class="dashboard-editor-container">
     <el-row type="flex" class="row-bg" justify="space-around">
       <el-col :span="23">
+        <panel-group :workList="workList" @selectModule="selectModule" />
+      </el-col>
+    </el-row>
+    <!-- <el-row type="flex" class="row-bg" justify="space-around">
+      <el-col :span="23">
         <el-card class="box-card">
           <div slot="header" class="clearfix">
             <span>重点看点待办事宜</span>
-            <el-button @click="opendialog" style="float: right; padding: 3px 0" type="text">更多</el-button>
+            <el-button
+              @click="opendialog"
+              style="float: right; padding: 3px 0"
+              type="text"
+              >更多</el-button
+            >
           </div>
-          <el-table :data="NoticetableData" v-loading='loading' style="width: 100%;font-size: 13px;" height="250">
+          <el-table
+            :data="NoticetableData"
+            v-loading="loading"
+            style="width: 100%; font-size: 13px"
+            height="250"
+          >
             <el-table-column prop="content" label="待办内容" align="center">
-              <!--  class-name="ellipsis2" -->
-              <template style="color:#409EFF" slot-scope="scope">
+              <template style="color: #409eff" slot-scope="scope">
                 <router-link
-                  style="color:#409EFF;"
-                  :to="'/budget/info/'+scope.row.projectId"
-                >{{scope.row.content}}</router-link>
+                  style="color: #409eff"
+                  :to="'/budget/info/' + scope.row.projectId"
+                  >{{ scope.row.content }}</router-link
+                >
               </template>
             </el-table-column>
             <el-table-column prop="createTime" label="日期" align="center">
-              <template slot-scope="scope">{{scope.row.createTime | dataFormat}}</template>
+              <template slot-scope="scope">{{
+                scope.row.createTime | dataFormat
+              }}</template>
             </el-table-column>
-            <el-table-column prop="userName" label="签报人" align="center"></el-table-column>
-            <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+            <el-table-column
+              prop="userName"
+              label="签报人"
+              align="center"
+            ></el-table-column>
+            <el-table-column
+              label="操作"
+              align="center"
+              class-name="small-padding fixed-width"
+            >
               <template slot-scope="scope">
                 <el-button
                   size="mini"
                   type="text"
                   icon="el-icon-edit"
                   @click.stop="handleUpdate(scope.row)"
-                >设为已读</el-button>
+                  >设为已读</el-button
+                >
               </template>
             </el-table-column>
           </el-table>
         </el-card>
       </el-col>
-    </el-row>
+    </el-row> -->
     <el-row type="flex" class="row-bg" justify="space-around">
       <el-col :span="11">
         <el-card class="box-card">
           <div slot="header" class="clearfix">
             <span>通告提醒</span>
-            <el-button style="float: right; padding: 3px 0" type="text">更多</el-button>
+            <el-button style="float: right; padding: 3px 0" type="text"
+              >更多</el-button
+            >
           </div>
           <div class="noticelist">
-            <div class="noticeitem" v-for="(item,index) in noticelists" :key="index">
-              <div class="title">{{item.title}}</div>
-              <div class="date">{{item.date}}</div>
+            <div
+              class="noticeitem"
+              v-for="(item, index) in noticelists"
+              :key="index"
+            >
+              <div class="title">{{ item.title }}</div>
+              <div class="date">{{ item.date }}</div>
             </div>
           </div>
         </el-card>
-
       </el-col>
       <el-col :span="11">
         <el-card class="box-card">
@@ -66,18 +97,34 @@
             <el-button
               style="float: right; padding: 3px 0"
               type="text"
-              @click="centerDialogVisible=true"
-            >上传</el-button>
+              @click="centerDialogVisible = true"
+              >上传</el-button
+            >
           </div>
-          <el-table :data="FiletableData" v-loading='loading2' style="width: 100%;font-size: 13px;" height="250">
-            <el-table-column prop="fileName" label="文件名称" align="center"></el-table-column>
-              <!--  class-name="ellipsis2" -->
+          <el-table
+            :data="FiletableData"
+            v-loading="loading2"
+            style="width: 100%; font-size: 13px"
+            height="250"
+          >
+            <el-table-column
+              prop="fileName"
+              label="文件名称"
+              align="center"
+            ></el-table-column>
+            <!--  class-name="ellipsis2" -->
             <el-table-column prop="uploadTime" label="日期" align="center">
-              <template slot-scope="scope">{{scope.row.uploadTime | dataFormat}}</template>
+              <template slot-scope="scope">{{
+                scope.row.uploadTime | dataFormat
+              }}</template>
             </el-table-column>
             <el-table-column prop="name" label="操作" align="center">
               <template slot-scope="scope">
-                <a :download="scope.row.fileName" style="color:#409EFF;" :href="scope.row.filePath">
+                <a
+                  :download="scope.row.fileName"
+                  style="color: #409eff"
+                  :href="scope.row.filePath"
+                >
                   <i class="el-icon-download"></i>下载
                 </a>
                 <el-button
@@ -85,21 +132,84 @@
                   type="text"
                   icon="el-icon-delete"
                   @click="handleDelete(scope.row)"
-                >删除</el-button>
+                  >删除</el-button
+                >
               </template>
             </el-table-column>
           </el-table>
         </el-card>
       </el-col>
     </el-row>
-
-    <!-- 添加或修改角色配置对话框 -->
-    <el-dialog title="待办事宜" :visible.sync="open" width="1200px">
+    <!-- 待办事项弹出框 -->
+    <el-dialog :title="moduleTitle" :visible.sync="open1" width="1200px">
+      <el-card class="box-card">
+        <div slot="header" class="clearfix">
+          <!-- <span>重点看点待办事宜</span> -->
+          <el-button
+            @click="opendialog"
+            style="float: right; padding: 3px 0"
+            type="text"
+            >更多</el-button
+          >
+        </div>
+        <el-table
+          :data="NoticetableData"
+          v-loading="loading"
+          style="width: 100%; font-size: 13px"
+          height="250"
+        >
+          <el-table-column prop="content" label="待办内容" align="center">
+            <!--  class-name="ellipsis2" -->
+            <template style="color: #409eff" slot-scope="scope">
+              <div style="color: #409eff" @click="gotoDetail(scope.row)">
+                {{ scope.row.content }}
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column prop="date" label="日期" align="center">
+            <template slot-scope="scope">{{
+              scope.row.date | dataFormat
+            }}</template>
+          </el-table-column>
+          <el-table-column
+            prop="userName"
+            label="签报人"
+            align="center"
+          ></el-table-column>
+          <el-table-column
+            label="操作"
+            align="center"
+            class-name="small-padding fixed-width"
+          >
+            <template slot-scope="scope">
+              <el-button
+                size="mini"
+                type="text"
+                icon="el-icon-edit"
+                @click.stop="handleUpdate(scope.row)"
+                >设为已读</el-button
+              >
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-card>
+    </el-dialog>
+    <!-- 更多待办事项对话框 -->
+    <el-dialog title="待办事宜" :visible.sync="open" width="1100px">
       <el-form :model="queryParams" ref="queryForm" :inline="true">
-        <el-form-item label="编码查询" prop="projectNum">
+        <el-form-item label="编码查询" prop="projectNum" v-if="module1==100">
           <el-input
             v-model="queryParams.projectNum"
             placeholder="请输入编码"
+            clearable
+            size="small"
+            style="width: 240px"
+          />
+        </el-form-item>
+        <el-form-item label="单位编号" prop="unitNum" v-if="module1==101">
+          <el-input
+            v-model="queryParams.unitNum"
+            placeholder="请输入单位编号"
             clearable
             size="small"
             style="width: 240px"
@@ -124,41 +234,90 @@
           />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-          <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+          <el-button
+            type="primary"
+            icon="el-icon-search"
+            size="mini"
+            @click="handleQuery"
+            >搜索</el-button
+          >
+          <el-button icon="el-icon-refresh" size="mini" @click="resetQuery"
+            >重置</el-button
+          >
         </el-form-item>
       </el-form>
-      <el-table :data="NoticeMoreData" style="width: 100%" v-loading='loading1'>
-        <el-table-column prop="id" label="序号" align="center" width="50"></el-table-column>
-        <el-table-column prop="content" label="待办内容" align="center" width="400">
-          <template style="color:#409EFF" slot-scope="scope">
-            <router-link
-              style="color:#409EFF;"
-              :to="'/budget/info/'+scope.row.projectId"
-            >{{scope.row.content}}</router-link>
+      <el-table :data="NoticeMoreData" style="width: 100%" v-loading="loading1">
+        <el-table-column
+          prop="id"
+          label="序号"
+          align="center"
+          width="50"
+        ></el-table-column>
+        <el-table-column
+          prop="content"
+          label="待办内容"
+          align="center"
+          width="400"
+        >
+          <template style="color: #409eff" slot-scope="scope">
+            <!-- <router-link
+              style="color: #409eff"
+              :to="'/budget/info/' + scope.row.projectId"
+              >{{ scope.row.content }}</router-link
+            > -->
+            <div style="color: #409eff" @click="gotoDetail1(scope.row)">
+                {{ scope.row.content }}
+              </div>
           </template>
         </el-table-column>
-        <el-table-column prop="amount" label="金额(万元)" width="150" align="center">
+        <el-table-column
+          prop="amount"
+          label="金额(万元)"
+          width="150"
+          align="center"
+        >
           <!-- <template slot-scope="scope">{{scope.row.amount | dataFixed}}</template> -->
         </el-table-column>
-        <el-table-column prop="flowType" label="流程类型" align="center"></el-table-column>
-        <el-table-column prop="userName" label="发起人" align="center"></el-table-column>
-        <el-table-column prop="unitName" label="发起单位" align="center"></el-table-column>
+        <el-table-column
+          prop="flowType"
+          label="流程类型"
+          align="center"
+        ></el-table-column>
+        <el-table-column
+          prop="userName"
+          label="发起人"
+          align="center"
+        ></el-table-column>
+        <el-table-column
+          prop="unitName"
+          label="发起单位"
+          align="center"
+        ></el-table-column>
         <el-table-column prop="createTime" label="发起时间" align="center">
-          <template slot-scope="scope">{{scope.row.createTime | dataFormat}}</template>
+          <template slot-scope="scope">{{
+            scope.row.createTime | dataFormat
+          }}</template>
         </el-table-column>
-        <el-table-column prop="stateLabel" label="流程状态" align="center"></el-table-column>
+        <el-table-column
+          prop="stateLabel"
+          label="流程状态"
+          align="center"
+        ></el-table-column>
         <!-- <el-table-column prop="remark" label="备注信息" align="center"></el-table-column> -->
       </el-table>
       <pagination
-        v-show="total>0"
+        v-show="total > 0"
         :total="total"
         :page.sync="queryParams.pageNum"
         :limit.sync="queryParams.pageSize"
         @pagination="getList1"
       />
     </el-dialog>
-    <el-dialog title="上传文件" :visible.sync="centerDialogVisible" width="500px">
+    <el-dialog
+      title="上传文件"
+      :visible.sync="centerDialogVisible"
+      width="500px"
+    >
       <el-upload
         class="upload-demo"
         :headers="headers"
@@ -194,14 +353,23 @@ import {
   updateNotice,
   getFileList,
   delFileList,
+  getWorkList,
+  getWorkDetailList,
+  updateFund,
+  getFundList
 } from "@/api/workbench/workbench";
+import PanelGroup from "./dashboard/PanelGroup";
+
 export default {
   name: "Index",
-  components: {},
-  computed:{},
+  components: {
+    PanelGroup,
+  },
+  computed: {},
   data() {
     return {
-      centerDialogVisible:false,
+      module1:undefined,
+      centerDialogVisible: false,
       ActionUrl: process.env.VUE_APP_BASE_API + "/file/system", // 上传的图片服务器地址
       headers: {
         Authorization: getToken(),
@@ -211,12 +379,15 @@ export default {
       NoticetableData: [],
       // client: Stomp.client("ws://mq.yeexun.com.cn:15674/ws"),
       total: 1,
+      moduleTitle: "",
       open: false,
+      open1: false,
       loading1: false,
       loading2: false,
       loading: false,
       NoticeMoreData: [],
-      FiletableData:[],
+      FiletableData: [],
+      workList: [],
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -225,33 +396,8 @@ export default {
         firstNum: undefined,
         twoNum: undefined,
       },
-      tableData: [
-        // {
-        //   date: "2016-05-02",
-        //   name: "朱丽丽",
-        //   address: "移动财务系统用户指南PPT",
-        // },
-        // {
-        //   date: "2016-05-04",
-        //   name: "朱丽丽",
-        //   address: "渠道发票小程序指南",
-        // },
-        // {
-        //   date: "2016-05-01",
-        //   name: "朱丽丽",
-        //   address: "杭州移动财务系统流程图",
-        // },
-        // {
-        //   date: "2016-05-03",
-        //   name: "朱丽丽",
-        //   address: "杭州移动财务系统流程图",
-        // },
-      ],
-      noticelists: [
-        // { title: "中国移动中国移动中国移动中国移动", date: "2020-12-12" },
-        // { title: "中国移动中国移动中国移动中国移动", date: "2020-12-12" },
-        // { title: "中国移动中国移动中国移动中国移动", date: "2020-12-12" },
-      ],
+      tableData: [],
+      noticelists: [],
     };
   },
   //定义私用局部过滤器。只能在当前 vue 对象中使用
@@ -264,11 +410,49 @@ export default {
     },
   },
   created() {
-    this.getNoticeList();
+    // this.getNoticeList();
     this.getFileList();
+    this.getWorkList();
+
     // this.connect();
   },
   methods: {
+    gotoDetail(row) {
+      let that = this;
+      if (this.module1 == 100) {
+        this.$router.push(`/budget/info/${row.projectId}`);
+      } else if (this.module1 == 101) {
+        this.$router.push(`/fund/management/info/${row.projectId}`);
+      }
+    },
+    gotoDetail1(row) {
+      let that = this;
+      if (this.module1 == 100) {
+        this.$router.push(`/budget/info/${row.projectId}`);
+      } else if (this.module1 == 101) {
+        this.$router.push(`/fund/management/info/${row.invoiceId}`);
+      }
+    },
+    getWorkList() {
+      getWorkList().then((response) => {
+        this.workList = response;
+      });
+    },
+    selectModule(module1,moduleName) {
+      this.module1 = module1;
+      this.moduleTitle = moduleName;
+      this.open1 = true;
+
+      this.getWorkDetailList(module1);
+    },
+    getWorkDetailList(module1) {
+      let that = this;
+      this.loading = true;
+      getWorkDetailList(module1).then((response) => {
+        that.NoticetableData = response;
+        that.loading = false;
+      });
+    },
     handleDelete(row) {
       const Filename = row.fileName;
       const FileId = row.id;
@@ -303,10 +487,8 @@ export default {
       this.loadingoption.close();
       this.$message.error("上传失败");
     },
-    handleRemove(file, fileList) {
-    },
-    handlePreview(file) {
-    },
+    handleRemove(file, fileList) {},
+    handlePreview(file) {},
     handleExceed(files, fileList) {
       this.$message.warning(
         `当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${
@@ -334,31 +516,50 @@ export default {
     },
     opendialog() {
       this.open = true;
-      this.getList1();
+      if (this.module1 == 100) {
+        this.getList1();
+      } else if (this.module1 == 101) {
+        this.getList2();
+      }
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
-      let that=this
-      updateNotice(row.id).then((response) => {
-        that.getNoticeList();
-      });
+      let that = this;
+      if (this.module1 == 100) {
+        updateNotice(row.id).then((response) => {
+          that.getWorkDetailList(this.module1);
+        });
+      } else if (this.module1 == 101) {
+        updateFund(row.id).then((response) => {
+          that.getWorkDetailList(this.module1);
+        });
+      }
     },
-    /** 查询角色列表 */
+    /** 预算执行列表 */
     getList1() {
       this.loading1 = true;
       getNoticeList(this.queryParams).then((response) => {
-        this.total= response.count;  //Math.ceil(response.count/this.queryParams.pageSize);
+        this.total = response.count; //Math.ceil(response.count/this.queryParams.pageSize);
         this.NoticeMoreData = response.list;
         this.loading1 = false;
       });
     },
-    getNoticeList() {
-      this.loading = true;
-      getNoticeList().then((response) => {
-        this.NoticetableData = response.list;
-        this.loading = false;
+    /** 用户资金列表 */
+    getList2() {
+      this.loading1 = true;
+      getFundList(this.queryParams).then((response) => {
+        this.total = response.count; //Math.ceil(response.count/this.queryParams.pageSize);
+        this.NoticeMoreData = response.list;
+        this.loading1 = false;
       });
     },
+    // getNoticeList() {
+    //   this.loading = true;
+    //   getNoticeList().then((response) => {
+    //     this.NoticetableData = response.list;
+    //     this.loading = false;
+    //   });
+    // },
     getFileList() {
       this.loading2 = true;
       getFileList().then((response) => {
@@ -369,7 +570,11 @@ export default {
     /** 搜索按钮操作 */
     handleQuery() {
       this.queryParams.pageNum = 1;
-      this.getList1();
+       if (this.module1 == 100) {
+        this.getList1();
+      } else if (this.module1 == 101) {
+        this.getList2();
+      }
     },
     /** 重置按钮操作 */
     resetQuery() {
@@ -384,16 +589,20 @@ export default {
 .title {
   margin: 0;
 }
+
 .el-row {
   margin-top: 20px;
+
   &:last-child {
     margin-bottom: 0;
   }
 }
+
 .noticelist {
   display: flex;
   flex-direction: column;
   justify-content: center;
+
   .noticeitem {
     display: flex;
     flex-direction: row;
@@ -401,12 +610,12 @@ export default {
     margin: 10px;
   }
 }
-/deep/ .ellipsis2 {
-    display: -webkit-box;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
 
+/deep/ .ellipsis2 {
+  display: -webkit-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 </style>
