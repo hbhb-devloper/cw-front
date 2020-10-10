@@ -887,7 +887,6 @@
             })
         }
       },
-
       submitForm2() {
         if (!this.flow.flowTypeId) {
           this.msgError('请选择流程');
