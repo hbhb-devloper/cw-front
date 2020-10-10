@@ -140,7 +140,7 @@
             label="登录账号"
             align="center"
             prop="userName"
-            :show-overflow-tooltip="true"
+            width="150"
           />
           <el-table-column
             label="用户姓名"
@@ -168,7 +168,7 @@
           <el-table-column
             label="操作"
             align="center"
-            width="180"
+            width="140"
             class-name="small-padding fixed-width"
           >
             <template slot-scope="scope">

@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-07-20 18:22:09
  * @LastEditors: CYZ
- * @LastEditTime: 2020-10-09 18:12:06
+ * @LastEditTime: 2020-10-10 14:43:55
 -->
 <template>
   <div class="dashboard-editor-container">
@@ -528,10 +528,12 @@ export default {
       if (this.module1 == 100) {
         updateNotice(row.id).then((response) => {
           that.getWorkDetailList(this.module1);
+          that.getWorkList();
         });
       } else if (this.module1 == 101) {
         updateFund(row.id).then((response) => {
           that.getWorkDetailList(this.module1);
+          that.getWorkList();
         });
       }
     },
