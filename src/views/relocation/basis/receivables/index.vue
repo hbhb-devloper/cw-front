@@ -346,6 +346,7 @@ export default {
   components: { Treeselect },
   data() {
     return {
+      morenUnit:undefined,
       deptOptions: [],
       // 遮罩层
       loading: true,

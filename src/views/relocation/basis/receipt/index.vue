@@ -8,7 +8,6 @@
             placeholder="请输入金额范围"
             clearable
             size="small"
-            style="width: 150px"
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
@@ -18,7 +17,6 @@
             placeholder="请输入金额范围"
             clearable
             size="small"
-            style="width: 150px"
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
@@ -38,20 +36,11 @@
           ></el-date-picker>
         </el-form-item>
         <el-form-item label="县区" prop="unitId">
-          <el-select
+          <treeselect
             v-model="queryParams.unitId"
+            :options="deptOptions"
             placeholder="请选择县区"
-            clearable
-            size="small"
-            style="width: 220px"
-          >
-            <el-option
-              v-for="dict in statusOptions"
-              :key="dict.dictValue"
-              :label="dict.dictLabel"
-              :value="dict.dictValue"
-            />
-          </el-select>
+          />
         </el-form-item>
         <el-form-item>
           <el-button
@@ -69,6 +58,15 @@
     </el-form>
 
     <el-row :gutter="10" class="mb8">
+      <el-col :span="1.5">
+        <el-button
+          type="primary"
+          icon="el-icon-plus"
+          size="mini"
+          @click="handleAdd"
+          >新增</el-button
+        >
+      </el-col>
       <el-col :span="1.5">
         <el-button
           type="success"
@@ -98,7 +96,7 @@
         width="120"
         align="center"
       />
-      <el-table-column label="区域" prop="unit" width="150" align="center" />
+      <el-table-column label="区域" prop="unitName" width="150" align="center" />
       <el-table-column
         label="赔补金额"
         prop="compensationAmount"
@@ -140,7 +138,11 @@
         prop="receiptTime"
         width="150"
         align="center"
-      />
+      >
+        <template slot-scope="scope">{{
+          scope.row.receiptTime | dataFormat
+        }}</template>
+      </el-table-column>
       <el-table-column
         label="备注格式：合同号；区县；款项性质；项目信息"
         prop="remake"
@@ -210,16 +212,24 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="类别" prop="category">
-              <el-input v-model="form.category" placeholder="请输入类别" />
+              <el-select
+                v-model="form.category"
+                placeholder="请选择类别"
+                style="width: 220px"
+                clearable
+              >
+                <el-option key="迁改" label="迁改" value="迁改" />
+                <el-option key="搬迁" label="搬迁" value="搬迁" />
+              </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="12"></el-col>
+          <!-- <el-col :span="12"></el-col> -->
           <el-col :span="12">
             <el-form-item label="区域" prop="unitId">
-              <el-input
+              <treeselect
                 v-model="form.unitId"
-                placeholder="请输入区域"
-                type="password"
+                :options="deptOptions"
+                placeholder="请选择区域"
               />
             </el-form-item>
           </el-col>
@@ -241,20 +251,18 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="赔补合同名" prop="contractName">
-              <el-date-picker
+              <el-input
                 v-model="form.contractName"
-                type="date"
                 placeholder="选择赔补合同名"
-              ></el-date-picker>
+              ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="合同编号" prop="contractNum">
-              <el-date-picker
+              <el-input
                 v-model="form.contractNum"
-                type="date"
                 placeholder="选择合同编号"
-              ></el-date-picker>
+              ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -275,8 +283,9 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="开收据时间" prop="receiptTime">
-              <el-input
+              <el-date-picker
                 v-model="form.receiptTime"
+                type="date"
                 placeholder="请输入开收据时间"
               />
             </el-form-item>
@@ -311,10 +320,16 @@ import {
 } from "@/api/relocation/basis/receipt.js";
 import { getToken } from "@/utils/auth";
 import { exportData } from "@/utils/export";
+import { resourceTreeByUN } from "@/api/system/unit";
+import Treeselect from "@riophae/vue-treeselect";
+import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 export default {
   name: "Flowtype",
+  components: { Treeselect },
   data() {
     return {
+      morenUnit: undefined,
+      deptOptions: [],
       // 遮罩层
       loading: true,
       // 选中数组
@@ -347,18 +362,37 @@ export default {
       },
       // 表单校验
       rules: {
-        flowTypeName: [
-          { required: true, message: "类型名称不能为空", trigger: "blur" },
+        category: [
+          { required: true, message: "类别不能为空", trigger: "blur" },
         ],
-        sortNum: [
-          { required: true, message: "显示顺序不能为空", trigger: "blur" },
+        unitId: [{ required: true, message: "区域不能为空", trigger: "blur" }],
+        compensationAmount: [
+          { required: true, message: "赔补金额不能为空", trigger: "blur" },
         ],
+        paymentAmount: [
+          { required: true, message: "已到账金额不能为空", trigger: "blur" },
+        ],
+        contractName: [
+          { required: true, message: "赔补合同名不能为空", trigger: "blur" },
+        ],
+        contractNum: [
+          { required: true, message: "合同编号不能为空", trigger: "blur" },
+        ],
+        paymentDesc: [
+          {
+            required: true,
+            message: "赔补金额到账情况说明不能为空",
+            trigger: "blur",
+          },
+        ],
+        receiptAmount: [
+          { required: true, message: "本年开收据不能为空", trigger: "blur" },
+        ],
+        receiptTime: [
+          { required: true, message: "开收据时间不能为空", trigger: "blur" },
+        ],
+        remake: [{ required: true, message: "备注不能为空", trigger: "blur" }],
       },
-      // 状态数据字典
-      statusOptions: [
-        { dictValue: 1, dictLabel: "正常" },
-        { dictValue: 0, dictLabel: "停用" },
-      ],
       centerDialogVisible: false,
       ActionUrl: process.env.VUE_APP_BASE_API + "/relocation/receipt/import", // 上传的图片服务器地址
       fileList: [],
@@ -367,10 +401,28 @@ export default {
       },
     };
   },
+  filters: {
+    dataFormat(msg) {
+      return msg.substring(0, 10);
+    },
+    dataFixed(num) {
+      return num.toFixed(2);
+    },
+  },
   created() {
-    this.getList();
+    // this.getList();
+    this.getTreeselect();
   },
   methods: {
+    getTreeselect() {
+      let that = this;
+      resourceTreeByUN().then((response) => {
+        that.deptOptions = response.list;
+        that.morenUnit = response.checked[0];
+        that.queryParams.unitId = that.morenUnit;
+        that.getList();
+      });
+    },
     handleupload() {
       const loading = this.$loading({
         lock: true,
@@ -454,11 +506,71 @@ export default {
         })
         .catch(function () {});
     },
+    // 取消按钮
+    cancel() {
+      this.open = false;
+      this.reset();
+    },
+    // 表单重置
+    reset() {
+      this.form = {
+        id: undefined,
+        flowTypeName: undefined,
+        sortNum: 0,
+        remark: undefined,
+      };
+      this.resetForm("form");
+    },
+    /** 新增按钮操作 */
+    handleAdd() {
+      this.reset();
+      // this.getMenuTreeselect();
+      this.open = true;
+      this.title = "添加类型";
+    },
+    /** 修改按钮操作 */
+    handleUpdate(row) {
+      this.reset();
+      const typeId = row.id || this.ids;
+      //   getRole(typeId).then(response => {
+      this.form = row;
+      this.open = true;
+      this.title = "修改类型";
+      //   });
+    },
+    /** 提交按钮 */
+    submitForm: function () {
+      this.$refs["form"].validate((valid) => {
+        if (valid) {
+          if (this.form.id != undefined) {
+            updateReceipt(this.form)
+              .then((response) => {
+                this.msgSuccess("修改成功");
+                this.open = false;
+                this.getList();
+              })
+              .catch((err) => {
+                this.msgError(err.message);
+              });
+          } else {
+            addReceipt(this.form)
+              .then((response) => {
+                this.msgSuccess("新增成功");
+                this.open = false;
+                this.getList();
+              })
+              .catch((err) => {
+                this.msgError(err.message);
+              });
+          }
+        }
+      });
+    },
     /** 删除按钮操作 */
     handleDelete(row) {
       const typeIds = row.id;
       this.$confirm(
-        '是否确认删除流程类型名称为"' + row.flowTypeName + '"的数据项?',
+        '是否确认删除合同编号为"' + row.contractNum + '"的数据项?',
         "警告",
         {
           confirmButtonText: "确定",
@@ -490,5 +602,11 @@ export default {
 .el-dialog .el-form-item--medium /deep/ .el-form-item__content {
   margin-left: 0 !important;
   width: 220px;
+}
+.el-form-item--medium /deep/ .el-form-item__content {
+  width: 230px;
+}
+.el-col-12 {
+  height: 59px;
 }
 </style>
