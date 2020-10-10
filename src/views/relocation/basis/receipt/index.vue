@@ -24,10 +24,18 @@
         </el-form-item>
 
         <el-form-item label="开票时间" prop="invoiceTimeFrom">
-          <el-date-picker v-model="queryParams.invoiceTimeFrom" type="date" placeholder="选择开票时间"></el-date-picker>
+          <el-date-picker
+            v-model="queryParams.invoiceTimeFrom"
+            type="date"
+            placeholder="选择开票时间"
+          ></el-date-picker>
         </el-form-item>
         <el-form-item label="至" prop="invoiceTimeTo" label-width="25px">
-          <el-date-picker v-model="queryParams.invoiceTimeTo" type="date" placeholder="选择开票时间"></el-date-picker>
+          <el-date-picker
+            v-model="queryParams.invoiceTimeTo"
+            type="date"
+            placeholder="选择开票时间"
+          ></el-date-picker>
         </el-form-item>
         <el-form-item label="县区" prop="unitId">
           <el-select
@@ -46,68 +54,156 @@
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-          <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+          <el-button
+            type="primary"
+            icon="el-icon-search"
+            size="mini"
+            @click="handleQuery"
+            >搜索</el-button
+          >
+          <el-button icon="el-icon-refresh" size="mini" @click="resetQuery"
+            >重置</el-button
+          >
         </el-form-item>
       </el-row>
     </el-form>
 
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
-        <el-button type="primary" icon="el-icon-plus" size="mini" @click="handleAdd">新增</el-button>
-      </el-col>
-      <el-col :span="1.5">
         <el-button
           type="success"
           icon="el-icon-download"
           size="mini"
-          @click="centerDialogVisible=true"
-        >导入</el-button>
+          @click="centerDialogVisible = true"
+          >导入</el-button
+        >
       </el-col>
 
       <el-col :span="1.5">
-        <el-button type="warning" icon="el-icon-download" size="mini" @click="handleExport">导出</el-button>
+        <el-button
+          type="warning"
+          icon="el-icon-download"
+          size="mini"
+          @click="handleExport"
+          >导出</el-button
+        >
       </el-col>
     </el-row>
 
     <el-table v-loading="loading" :data="typeList">
       <!-- <el-table-column type="selection" width="55" align="center" /> -->
-      <el-table-column label="类别" prop="category" width="120" align="center" />
+      <el-table-column
+        label="类别"
+        prop="category"
+        width="120"
+        align="center"
+      />
       <el-table-column label="区域" prop="unit" width="150" align="center" />
-      <el-table-column label="赔补金额" prop="compensationAmount" width="150" align="center" />
-      <el-table-column label="已到账金额" prop="paymentAmount" width="150" align="center" />
-      <el-table-column label="赔补合同名" prop="contractName" width="150" align="center" />
-      <el-table-column label="合同编号" prop="contractNum" width="150" align="center" />
-      <el-table-column label="赔补金额到账情况说明" prop="paymentDesc" width="150" align="center" />
-      <el-table-column label="本年开收据（元）" prop="receiptAmount" width="150" align="center" />
-      <el-table-column label="开收据时间" prop="receiptTime" width="150" align="center" />
+      <el-table-column
+        label="赔补金额"
+        prop="compensationAmount"
+        width="150"
+        align="center"
+      />
+      <el-table-column
+        label="已到账金额"
+        prop="paymentAmount"
+        width="150"
+        align="center"
+      />
+      <el-table-column
+        label="赔补合同名"
+        prop="contractName"
+        width="150"
+        align="center"
+      />
+      <el-table-column
+        label="合同编号"
+        prop="contractNum"
+        width="150"
+        align="center"
+      />
+      <el-table-column
+        label="赔补金额到账情况说明"
+        prop="paymentDesc"
+        width="150"
+        align="center"
+      />
+      <el-table-column
+        label="本年开收据（元）"
+        prop="receiptAmount"
+        width="150"
+        align="center"
+      />
+      <el-table-column
+        label="开收据时间"
+        prop="receiptTime"
+        width="150"
+        align="center"
+      />
       <el-table-column
         label="备注格式：合同号；区县；款项性质；项目信息"
         prop="remake"
         width="150"
         align="center"
       />
-      <el-table-column label="操作" align="center" width="150" class-name="small-padding fixed-width">
+      <el-table-column
+        label="操作"
+        align="center"
+        width="150"
+        class-name="small-padding fixed-width"
+      >
         <template slot-scope="scope">
-          <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)">修改</el-button>
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-edit"
+            @click="handleUpdate(scope.row)"
+            >修改</el-button
+          >
           <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
-          >删除</el-button>
+            >删除</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
 
     <pagination
-      v-show="total>0"
+      v-show="total > 0"
       :total="total"
       :page.sync="queryParams.pageNum"
       :limit.sync="queryParams.pageSize"
       @pagination="getList"
     />
-
+    <!-- 导入弹框 -->
+    <el-dialog title="导入" :visible.sync="centerDialogVisible" width="500px">
+      <!-- <div style="margin-bottom: 10px">
+        <el-button type="primary" @click="downTemplate">
+          <i class="el-icon-download"></i>下载导入模板
+        </el-button>
+      </div> -->
+      <el-upload
+        class="upload-demo"
+        :headers="headers"
+        :on-preview="handlePreview"
+        :on-remove="handleRemove"
+        :before-remove="beforeRemove"
+        :on-success="handleSuccess"
+        :on-progress="handleupload"
+        :on-error="handleFail"
+        multiple
+        :limit="1"
+        :on-exceed="handleExceed"
+        :action="ActionUrl"
+        :file-list="fileList"
+      >
+        <el-button size="small" type="primary">点击上传</el-button>
+      </el-upload>
+    </el-dialog>
     <!-- 添加或修改角色配置对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="1000px">
       <el-form ref="form" :model="form" :rules="rules" label-width="140px">
@@ -120,47 +216,80 @@
           <el-col :span="12"></el-col>
           <el-col :span="12">
             <el-form-item label="区域" prop="unitId">
-              <el-input v-model="form.unitId" placeholder="请输入区域" type="password" />
+              <el-input
+                v-model="form.unitId"
+                placeholder="请输入区域"
+                type="password"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="赔补金额" prop="compensationAmount">
-              <el-input v-model="form.compensationAmount" placeholder="请输入赔补金额" />
+              <el-input
+                v-model="form.compensationAmount"
+                placeholder="请输入赔补金额"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="已到账金额" prop="paymentAmount">
-              <el-input v-model="form.paymentAmount" placeholder="请输入已到账金额" />
+              <el-input
+                v-model="form.paymentAmount"
+                placeholder="请输入已到账金额"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="赔补合同名" prop="contractName">
-              <el-date-picker v-model="form.contractName" type="date" placeholder="选择赔补合同名"></el-date-picker>
+              <el-date-picker
+                v-model="form.contractName"
+                type="date"
+                placeholder="选择赔补合同名"
+              ></el-date-picker>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="合同编号" prop="contractNum">
-              <el-date-picker v-model="form.contractNum" type="date" placeholder="选择合同编号"></el-date-picker>
+              <el-date-picker
+                v-model="form.contractNum"
+                type="date"
+                placeholder="选择合同编号"
+              ></el-date-picker>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="赔补金额到账情况说明" prop="paymentDesc">
-              <el-input v-model="form.paymentDesc" placeholder="请输入赔补金额到账情况说明" />
+              <el-input
+                v-model="form.paymentDesc"
+                placeholder="请输入赔补金额到账情况说明"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="本年开收据（元）" prop="receiptAmount">
-              <el-input v-model="form.receiptAmount" placeholder="请输入本年开收据（元）" />
+              <el-input
+                v-model="form.receiptAmount"
+                placeholder="请输入本年开收据（元）"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="开收据时间" prop="receiptTime">
-              <el-input v-model="form.receiptTime" placeholder="请输入开收据时间" />
+              <el-input
+                v-model="form.receiptTime"
+                placeholder="请输入开收据时间"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="备注格式：合同号；区县；款项性质；项目信息" prop="remake">
-              <el-input v-model="form.remake" placeholder="请输入备注格式：合同号；区县；款项性质；项目信息" />
+            <el-form-item
+              label="备注格式：合同号；区县；款项性质；项目信息"
+              prop="remake"
+            >
+              <el-input
+                v-model="form.remake"
+                placeholder="请输入备注格式：合同号；区县；款项性质；项目信息"
+              />
             </el-form-item>
           </el-col>
         </el-row>
@@ -174,8 +303,14 @@
 </template>
 
 <script>
-import { listReceipt, addReceipt, updateReceipt, delarr } from "@/api/relocation/basis/receipt.js";
-
+import {
+  listReceipt,
+  addReceipt,
+  updateReceipt,
+  delarr,
+} from "@/api/relocation/basis/receipt.js";
+import { getToken } from "@/utils/auth";
+import { exportData } from "@/utils/export";
 export default {
   name: "Flowtype",
   data() {
@@ -224,12 +359,59 @@ export default {
         { dictValue: 1, dictLabel: "正常" },
         { dictValue: 0, dictLabel: "停用" },
       ],
+      centerDialogVisible: false,
+      ActionUrl: process.env.VUE_APP_BASE_API + "/relocation/receipt/import", // 上传的图片服务器地址
+      fileList: [],
+      headers: {
+        Authorization: getToken(),
+      },
     };
   },
   created() {
     this.getList();
   },
   methods: {
+    handleupload() {
+      const loading = this.$loading({
+        lock: true,
+        text: "正在导入表格",
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.7)",
+      });
+      this.loadingoption = loading;
+    },
+    handleFail() {
+      this.loadingoption.close();
+      this.$message.error("上传失败");
+    },
+    handleRemove(file, fileList) {},
+    handlePreview(file) {},
+    handleExceed(files, fileList) {
+      this.$message.warning(
+        `当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${
+          files.length + fileList.length
+        } 个文件`
+      );
+    },
+    handleSuccess(res) {
+      this.fileList = [];
+      this.loadingoption.close();
+      this.centerDialogVisible = false;
+      if (res.status == 1000) {
+        this.$message.success("文件上传成功");
+        this.getList();
+      } else {
+        this.$message({
+          message: res.message,
+          type: "error",
+        });
+        this.getList();
+      }
+    },
+    beforeRemove(file, fileList) {
+      return this.$confirm(`确定移除 ${file.name}？`);
+    },
+
     /** 查询角色列表 */
     getList() {
       this.loading = true;
@@ -238,21 +420,6 @@ export default {
         this.total = response.count;
         this.loading = false;
       });
-    },
-    // 取消按钮
-    cancel() {
-      this.open = false;
-      this.reset();
-    },
-    // 表单重置
-    reset() {
-      this.form = {
-        id: undefined,
-        flowTypeName: undefined,
-        sortNum: 0,
-        remark: undefined,
-      };
-      this.resetForm("form");
     },
     /** 搜索按钮操作 */
     handleQuery() {
@@ -265,53 +432,28 @@ export default {
       this.resetForm("queryForm");
       this.handleQuery();
     },
-    /** 新增按钮操作 */
-    handleAdd() {
-      this.reset();
-      // this.getMenuTreeselect();
-      this.open = true;
-      this.title = "添加类型";
-    },
-    /** 修改按钮操作 */
-    handleUpdate(row) {
-      this.reset();
-      const typeId = row.id || this.ids;
-      //   getRole(typeId).then(response => {
-      this.form = row;
-      this.open = true;
-      this.title = "修改类型";
-      //   });
-    },
+    /** 导出按钮操作 */
+    handleExport() {
+      const queryParams = this.queryParams;
 
-    /** 提交按钮 */
-    submitForm: function () {
-      this.$refs["form"].validate((valid) => {
-        if (valid) {
-          if (this.form.id != undefined) {
-            updateReceipt(this.form)
-              .then((response) => {
-                this.msgSuccess("修改成功");
-                this.open = false;
-                this.getList();
-              })
-              .catch((err) => {
-                this.msgError(err.message);
-              });
-          } else {
-            addReceipt(this.form)
-              .then((response) => {
-                this.msgSuccess("新增成功");
-                this.open = false;
-                this.getList();
-              })
-              .catch((err) => {
-                this.msgError(err.message);
-              });
-          }
-        }
-      });
+      this.$confirm("是否确认导出收据管理的数据项?", "导出表格", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(function () {
+          return exportData(
+            getToken(),
+            queryParams,
+            "/relocation/receipt/export",
+            "收款管理"
+          );
+        })
+        .then((response) => {
+          this.download(response.msg);
+        })
+        .catch(function () {});
     },
-
     /** 删除按钮操作 */
     handleDelete(row) {
       const typeIds = row.id;
