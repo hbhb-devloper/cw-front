@@ -625,7 +625,6 @@
       getList() {
         this.loading = true;
         getListTable(this.queryParams).then((response) => {
-
           this.tableData = response.list;
           this.total = response.count;
           this.loading = false;
@@ -638,7 +637,6 @@
         this.open2 = false;
       },
       handleInvoiceContent(){
-        console.log(99)
         if(this.form.invoiceContent){
           this.formTypeList.map(item=>{
             if(parseInt(item.value)==10||parseInt(item.value)==20){
@@ -897,9 +895,10 @@
         }
         approveFlow(this.flow).then(res => {
           this.open1 = false;
-          this.flow = {};
           this.getList();
-          this.msgSuccess('流程发起成功！')
+          this.msgSuccess('流程发起成功！');
+          this.$router.push({path:`/fund/management/info/${this.flow.invoiceId}`});
+          this.flow = {};
         })
       },
 
