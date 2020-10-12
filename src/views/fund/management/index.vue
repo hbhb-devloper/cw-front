@@ -327,7 +327,7 @@
               :disabled="invoiceDisabel"
               @change="handleInvoiceContent"
             >
-              <el-option :value="undefined" label="--请选择业务内容--"></el-option>
+              <el-option value="undefined" label="--请选择业务内容--"></el-option>
               <el-option
                 v-for="dict in InvoiceContentList"
                 :label="dict.label"
