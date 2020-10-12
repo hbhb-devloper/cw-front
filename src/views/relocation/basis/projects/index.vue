@@ -849,7 +849,7 @@ export default {
         { dictValue: true, dictLabel: "有" },
         { dictValue: false, dictLabel: "无" },
       ],
-      // 主动迁改火被动
+      // 主动迁改或被动
       InitiativeOptions: [
         { dictValue: true, dictLabel: "主动" },
         { dictValue: false, dictLabel: "被动" },
