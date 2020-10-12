@@ -1,21 +1,8 @@
 <template>
   <div class="app-container">
     <div class="uploadList">
-      <div style="color:blue;">发票单位信息导入模板下载</div>
+      <div style="color:blue;cursor: pointer;" @click="handleDow">发票单位信息导入模板下载</div>
       <div style="color:red;">注意：导入单位模块后，请认真查看返回信息，若没有提示导入成功，则需要重新编辑模板导入</div>
-      <!--      <el-upload-->
-      <!--        class="upload-demo"-->
-      <!--        action="https://jsonplaceholder.typicode.com/posts/"-->
-      <!--        :on-preview="handlePreview"-->
-      <!--        :on-remove="handleRemove"-->
-      <!--        :before-remove="beforeRemove"-->
-      <!--        multiple-->
-      <!--        :limit="3"-->
-      <!--        :on-exceed="handleExceed"-->
-      <!--        :file-list="fileList"-->
-      <!--      >-->
-      <!--        <el-button size="small" type="primary">点击上传</el-button>-->
-      <!--      </el-upload>-->
       <el-upload
         class="upload-demo"
         :show-file-list="false"
@@ -214,6 +201,10 @@
         this.open = false;
         this.reset();
       },
+      handleDow(){
+        exportData(getToken(),{}, '/fund/export', '发票信息导入模板')
+      },
+
       // 表单重置
       reset() {
         this.form = {
@@ -231,7 +222,10 @@
       },
       /** 重置按钮操作 */
       resetQuery() {
-        this.resetForm("queryForm");
+        this.queryParams={
+          pageNum: 1,
+          pageSize: 10,
+        }
         this.handleQuery();
       },
       // 多选框选中数据
@@ -274,6 +268,7 @@
   .uploadList {
     width: 100%;
     padding: 15px;
+    background:#fff;
     border: 1px solid #0d8efd;
     border-radius: 15px;
     margin-bottom: 15px;

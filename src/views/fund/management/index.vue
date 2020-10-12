@@ -138,7 +138,7 @@
 
       <el-table-column label="发票内容" prop="invoiceContent" align="center">
         <template slot-scope="scope">
-          <span :class="scope.row.isCancellation?'red':''">{{scope.row.invoiceContent}}</span>
+          <span :class="scope.row.isCancellation?'red':''">{{scope.row.invoiceContentLabel}}</span>
         </template>
       </el-table-column>
 
@@ -210,7 +210,7 @@
 
       <el-table-column prop="stateLabel" align="center" label="流程状态" width="130">
         <template slot-scope="scope">
-          <router-link :class="scope.row.isCancellation?'red':''" style="color:#409EFF;" :to="scope.row.isCancellation?'#':'/fund/management/info/'+scope.row.id">{{scope.row.stateLabel}}</router-link>
+          <router-link :class="scope.row.isCancellation?'red':''" style="color:#409EFF;font-size: 12px;" :to="scope.row.isCancellation?'#':'/fund/management/info/'+scope.row.id">{{scope.row.stateLabel}}</router-link>
         </template>
       </el-table-column>
 
@@ -275,23 +275,23 @@
     <el-dialog :title="title" :visible.sync="open" width="900px">
       <el-form ref="form" :model="form" label-width="120px">
         <el-col :span="12">
-          <el-form-item label="客户经理" prop="clientManager" :required="true">
+          <el-form-item label="客户经理" :required="true">
             <el-input v-model="form.clientManager" :disabled="form.state==20" placeholder="请输入客户经理"/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="开票金额" prop="invoiceAmount" :required="true">
+          <el-form-item label="开票金额" :required="true">
             <el-input v-model="form.invoiceAmount" :disabled="form.state==20" type="number" min="0" placeholder="请输入开票金额"/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="发票账户" prop="invoiceAccount" :required="true">
+          <el-form-item label="发票账户" :required="true">
             <el-input v-model="form.invoiceAccount" :disabled="form.state==20" placeholder="请输入发票账户"/>
           </el-form-item>
         </el-col>
         <el-col :span="12"></el-col>
         <el-col :span="12">
-          <el-form-item label="单位名称" prop="unitName" :required="true">
+          <el-form-item label="单位名称" :required="true">
             <el-select v-model="form.unitName" @change="handleSearchUnit(true)" filterable placeholder="请选择"
                        style="width: 100%">
               <el-option
@@ -304,7 +304,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="单位编号" prop="unitNumber" :required="true">
+          <el-form-item label="单位编号" :required="true">
             <el-select v-model="form.unitNumber" @change="handleSearchUnit(false)" filterable placeholder="请选择"
                        style="width: 100%">
               <el-option
@@ -317,13 +317,15 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="开票内容" prop="invoiceContent" :required="true">
+          <el-form-item label="开票内容" :required="true">
             <el-select
               v-model="form.invoiceContent"
               placeholder="请选择开票内容"
               clearable
               size="medium"
               style="width: 100%"
+              :disabled="invoiceDisabel"
+              @change="handleInvoiceContent"
             >
               <el-option :value="undefined" label="--请选择业务内容--"></el-option>
               <el-option
@@ -335,24 +337,26 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="办理业务内容" prop="business" :required="true">
+          <el-form-item label="办理业务内容" :required="true">
             <el-select
               v-model="form.business"
               placeholder="请选择办理业务内容"
               clearable
               size="medium"
               style="width: 100%"
+              @change="handleBusiness"
             >
               <el-option
-                v-for="dict in typeList"
+                v-for="dict in formTypeList"
                 :label="dict.label"
                 :value="dict.value"
+                :disabled="dict.disabled"
               />
             </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="12" v-if="parseInt(form.business)==20">
-          <el-form-item label="欠费时间" prop="arrearageMonth" :required="true">
+          <el-form-item label="欠费时间" :required="true">
             <el-date-picker
               v-model="form.arrearageMonth"
               type="date"
@@ -364,12 +368,12 @@
           </el-form-item>
         </el-col>
         <el-col :span="12" v-if="parseInt(form.business)==20">
-          <el-form-item label="欠费金额" prop="arrearageMoney" :required="true">
+          <el-form-item label="欠费金额" :required="true">
             <el-input v-model="form.arrearageMoney" type="number" min="0" placeholder="请输入欠费金额"/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="计号费" prop="billingNumber" :required="true">
+          <el-form-item label="计号费" :required="true">
             <el-input v-model="form.billingNumber" placeholder="请输入计号费"/>
           </el-form-item>
         </el-col>
@@ -379,17 +383,17 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="发票版本号" prop="versions" :required="true">
+          <el-form-item label="发票版本号" :required="true">
             <el-input v-model="form.versions" disabled placeholder="请输入发票版本号"/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="发票编号" prop="invoiceNumber" :required="true">
+          <el-form-item label="发票编号" :required="true">
             <el-input v-model="form.invoiceNumber" disabled placeholder="请输入发票编号"/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="到账时间" prop="accountTime" :required="true">
+          <el-form-item label="到账时间" :required="true">
             <el-date-picker
               v-model="form.accountTime"
               type="date"
@@ -402,17 +406,17 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="到账金额" prop="accountMoney" :required="true">
+          <el-form-item label="到账金额" :required="true">
             <el-input v-model="form.accountMoney" disabled type="number" min="0" placeholder="请输入到账金额"/>
           </el-form-item>
         </el-col>
         <el-col :span="24">
-          <el-form-item label="备注" style="width:100%;" prop="remark">
+          <el-form-item label="备注" style="width:100%;" >
             <el-input v-model="form.remark" type="remark" placeholder="请输入内容"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="24">
-          <el-form-item label="附件" style="width:100%;" prop="remark">
+          <el-form-item label="附件" style="width:100%;">
             <el-upload
               class="upload-demo"
               :show-file-list="false"
@@ -555,7 +559,7 @@
         // 查询参数
         queryParams: {
           pageNum: 1,
-          pageSize: 10,
+          pageSize: 20,
         },
         // 表单参数
         form: {},
@@ -576,9 +580,11 @@
         },
         StateOptions: [],
         InvoiceContentList: [],
+        invoiceDisabel: false,
         BusinessList: [],
         UnitList: [],
         typeList: [],
+        formTypeList: [],
         typeState: [],
       };
     },
@@ -602,6 +608,7 @@
       handleGetBusiness() {
         getBusiness().then(res => {
           this.typeList = res;
+          this.formTypeList=res;
         })
       },
       handleGetContent() {
@@ -618,7 +625,6 @@
       getList() {
         this.loading = true;
         getListTable(this.queryParams).then((response) => {
-
           this.tableData = response.list;
           this.total = response.count;
           this.loading = false;
@@ -629,6 +635,28 @@
         this.open = false;
         this.open1 = false;
         this.open2 = false;
+      },
+      handleInvoiceContent(){
+        if(this.form.invoiceContent){
+          this.formTypeList.map(item=>{
+            if(parseInt(item.value)==10||parseInt(item.value)==20){
+              item.disabled=true;
+            }
+          })
+        }else{
+          this.formTypeList.map(item=>{
+            if(parseInt(item.value)==10||parseInt(item.value)==20){
+              item.disabled=false;
+            }
+          })
+        }
+      },
+      handleBusiness(){
+        if(parseInt(this.form.business)==10||parseInt(this.form.business)==20){
+          this.invoiceDisabel=true;
+        }else{
+          this.invoiceDisabel=false;
+        }
       },
       // 表单重置
       reset() {
@@ -643,7 +671,11 @@
       /** 重置按钮操作 */
       resetQuery() {
         this.dateRange = [];
-        this.resetForm("queryForm");
+        this.queryParams={
+          unitId:this.queryParams.unitId,
+          pageNum: 1,
+          pageSize: 20,
+        }
         this.handleQuery();
       },
       // 单位筛选
@@ -711,13 +743,6 @@
             this.msgError('当前记录不在审批中！无法编辑');
             return;
           }
-          // getFlowList(row.id).then(res1 => {
-          //   let end = res1[res1.length - 1];
-          //   let disables = end.operation.hidden;
-          //   if (!disables) {
-          //
-          //   }
-          // })
           this.open2 = true;
           this.form2={};
           this.form2.id = row.id;
@@ -733,6 +758,12 @@
           this.open = true;
           this.title = "添加";
           this.form.clientManager = this.nickName
+          this.formTypeList.map(item=>{
+            if(parseInt(item.value)==10||parseInt(item.value)==20){
+              item.disabled=false;
+            }
+          });
+          this.invoiceDisabel=false;
           this.fileList = [];
           this.form.files = [];
         });
@@ -750,8 +781,7 @@
           response.business = String(response.business);
           if (response.files) {
             this.fileList = response.files;
-          }
-          ;
+          };
           response.files = [];
           this.form = response;
           this.open = true;
@@ -765,7 +795,7 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          fileDelete(row.id).then(res => {
+          fileDelete(row.fileId).then(res => {
             this.fileList = this.fileList.filter(item => {
               if (item.fileId != row.fileId) {
                 return item;
@@ -790,7 +820,6 @@
             !this.form.invoiceAccount ||
             !this.form.unitName ||
             !this.form.unitNumber ||
-            !this.form.invoiceContent ||
             !this.form.arrearageMonth||
             !this.form.arrearageMoney||
             !this.form.business ||
@@ -800,13 +829,12 @@
             this.msgError("必填项不能为空！");
             return;
           }
-        } else {
+        } else if(parseInt(this.form.business) == 10){
           if (!this.form.clientManager ||
             !this.form.invoiceAmount ||
             !this.form.invoiceAccount ||
             !this.form.unitName ||
             !this.form.unitNumber ||
-            !this.form.invoiceContent ||
             !this.form.business ||
             !this.form.billingNumber ||
             !this.form.pushAddress
@@ -814,6 +842,18 @@
             this.msgError("必填项不能为空！");
             return;
           }
+        }else if (!this.form.clientManager ||
+          !this.form.invoiceAmount ||
+          !this.form.invoiceAccount ||
+          !this.form.unitName ||
+          !this.form.unitNumber ||
+          !this.form.invoiceContent ||
+          !this.form.business ||
+          !this.form.billingNumber ||
+          !this.form.pushAddress
+        ) {
+            this.msgError("必填项不能为空！");
+            return;
         }
         if (this.form.invoiceAmount) {
           this.form.invoiceAmount = parseFloat(this.form.invoiceAmount).toFixed(2);
@@ -847,7 +887,6 @@
             })
         }
       },
-
       submitForm2() {
         if (!this.flow.flowTypeId) {
           this.msgError('请选择流程');
@@ -855,9 +894,10 @@
         }
         approveFlow(this.flow).then(res => {
           this.open1 = false;
-          this.flow = {};
           this.getList();
-          this.msgSuccess('流程发起成功！')
+          this.msgSuccess('流程发起成功！');
+          this.$router.push({path:`/fund/management/info/${this.flow.invoiceId}`});
+          this.flow = {};
         })
       },
 
@@ -867,7 +907,6 @@
           return;
         }
         this.form2.accountMoney = parseFloat(this.form2.accountMoney).toFixed(2)
-        console.log(this.form2);
         updateInfo(this.form2).then(res => {
           this.form2 = {};
           this.open2 = false;
@@ -877,16 +916,18 @@
       },
       //是否作废
       handleTovoid(row){
-        console.log(row);
         cancellation(row.id,row.isCancellation).then(res=>{
-          if(row.isCancellation){
-            this.msgSuccess('已作废')
-            this.getList();
-          }else{
-            this.msgSuccess('已启用')
-            this.getList();
+          if(!res){
+            if(row.isCancellation){
+              this.msgSuccess('已作废')
+              this.getList();
+            }else{
+              this.msgSuccess('已启用')
+              this.getList();
+            }
           }
-
+        }).catch(err=>{
+          this.getList();
         })
       },
       /** 删除按钮操作 */
@@ -911,7 +952,7 @@
       /** 导出按钮操作 */
       handleExport() {
         const queryParams = this.queryParams;
-        this.$confirm("是否确认导出所有流程角色列表?", "导出表格", {
+        this.$confirm("是否确认导出发票预开列表?", "导出表格", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning",

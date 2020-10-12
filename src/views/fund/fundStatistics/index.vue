@@ -11,9 +11,9 @@
         </el-select>
       </el-form-item>
       <el-form-item label="办理业务" prop="busType">
-        <el-select v-model="queryParams.busType" style="width:200px" filterable placeholder="请选择">
-          <el-option label="--全部--" value="undefined"></el-option>
-          <el-option v-for="(item,index) in busTypeOptions" :label="item" :value="item"></el-option>
+        <el-select v-model="queryParams.busType" style="width:200px" filterable  placeholder="请选择">
+          <el-option label="--全部--" :value="undefined"></el-option>
+          <el-option v-for="(item,index) in busTypeOptions" :label="item.label" :value="item.value"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="集团信息" prop="groupName">
@@ -54,7 +54,7 @@
         />
       </el-form-item>
       <el-form-item>
-        <el-checkbox v-model="queryParams.thisBalance">不显示本期余额为零</el-checkbox>
+        <el-checkbox v-model="queryParams.isBalanceZero">不显示本期余额为零</el-checkbox>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="getList">查询</el-button>
@@ -91,6 +91,13 @@
       <el-table-column prop="totalInvoiceAmount" align="center" width="150px" label="积累开票金额(元)"></el-table-column>
       <el-table-column prop="totalEnterAmount" align="center" width="150px" label="积累入账金额(元)"></el-table-column>
     </el-table>
+    <pagination
+      v-show="total>0"
+      :total="total"
+      :page.sync="queryParams.pageNum"
+      :limit.sync="queryParams.pageSize"
+      @pagination="getList"
+    />
   </div>
 </template>
 
@@ -98,6 +105,7 @@
   import Treeselect from "@riophae/vue-treeselect";
   import "@riophae/vue-treeselect/dist/vue-treeselect.css";
   import {getListData} from '@/api/fund/fundStaticstics'
+  import {getBusiness} from '@/api/fund/fundSelect/info'
   import {getCompany} from "@/api/fund/management/index";
   import {exportData} from "../../../utils/export";
   import {getToken} from '@/utils/auth'
@@ -125,20 +133,37 @@
       this.queryParams.startTime = undefined || this.getCurrentMonthFirst();
       this.queryParams.endTime = undefined || this.getCurrentMonthLast()
       this.getUnitId();
+      this.handleGetBusiness()
       // this.getList();
     },
     methods: {
+      handleGetBusiness() {
+        getBusiness().then(res => {
+          this.busTypeOptions = res;
+        })
+      },
       //获取部门列表
       getUnitId() {
         getCompany().then(res => {
           this.queryParams.dptId = res.checked[0];
           this.deptOptions = res.list;
+          this.getList();
         });
       },
       //表格数据列表
       getList() {
         this.loading = true;
-        getListData(this.queryParams).then(res => {
+        let data=JSON.parse(JSON.stringify(this.queryParams));
+        if(!data.startTime||!data.endTime){
+          this.$message.warning('请选择开始时间或结束时间');
+          return;
+        }
+        if(data.isBalanceZero){
+          data.isBalanceZero=1;
+        }else{
+          data.isBalanceZero=0;
+        }
+        getListData(data).then(res => {
           this.total = res.count;
           this.tableData = res.list;
           this.loading = false;
@@ -160,6 +185,7 @@
         }
         return dates.getFullYear() + '-' + months + '-' + days;
       },
+
       //获取本月最后一天
       getCurrentMonthLast() {
         let date = new Date(),
@@ -197,7 +223,7 @@
             let data =JSON.parse(JSON.stringify(this.queryParams));
             delete data.pageSize;
             delete data.pageNum;
-            exportData(getToken(),data, '/fund/stat/export', '酬金月份')
+            exportData(getToken(),data, '/fund/stat/export', '客户资金统计')
           })
       }
     },
