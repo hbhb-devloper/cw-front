@@ -228,7 +228,7 @@
             size="mini"
             type="text"
             :disabled="scope.row.state==20||parseInt(scope.row.state)==31"
-            icon="el-icon-delete"
+            icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
           >修改
           </el-button>
@@ -248,8 +248,6 @@
           <el-button :class="scope.row.isCancellation?'red':''" size="mini" type="text" :disabled="scope.row.state!=31" @click="handleEdits(scope.row)">编辑</el-button>
         </template>
       </el-table-column>
-
-
 
       <el-table-column label="是否作废" prop="isCancellation" align="center">
         <template slot-scope="scope">
@@ -380,7 +378,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="推送地址" prop="pushAddress" :required="true">
+          <el-form-item label="推送地址" :required="true">
             <el-input v-model="form.pushAddress" placeholder="请输入推送地址"/>
           </el-form-item>
         </el-col>
