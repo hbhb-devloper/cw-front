@@ -228,7 +228,7 @@
             size="mini"
             type="text"
             :disabled="scope.row.state==20||parseInt(scope.row.state)==31"
-            icon="el-icon-delete"
+            icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
           >修改
           </el-button>
