@@ -249,6 +249,7 @@
         </template>
       </el-table-column>
 
+
       <el-table-column label="是否作废" prop="isCancellation" align="center">
         <template slot-scope="scope">
           <el-switch
