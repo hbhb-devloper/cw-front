@@ -216,11 +216,12 @@
 
       <el-table-column prop="itemName" align="center" label="发起流程">
         <template slot-scope="scope">
-          <el-button :class="scope.row.isCancellation?'red':''" size="mini" type="text" :disabled="scope.row.state==20||scope.row.state==31"
+          <el-button :class="scope.row.isCancellation?'red':''" size="mini" type="text" :disabled="scope.row.state==20||scope.row.state==31||scope.row.state==30"
                      @click="examined(scope.row)">发起审批
           </el-button>
         </template>
       </el-table-column>
+
 
       <el-table-column prop="itemName" align="center" width="150" label="操作">
         <template slot-scope="scope">
