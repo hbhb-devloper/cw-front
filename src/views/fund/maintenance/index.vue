@@ -52,7 +52,11 @@
       <el-table-column label="序号" prop="id" align="center"/>
       <el-table-column label="单位名称" prop="unitName" align="center"/>
       <el-table-column label="单位编号" prop="unitCode" align="center"/>
-      <el-table-column label="是否启用(1为是,0为否)" prop="state" align="center"/>
+      <el-table-column label="是否启用" prop="state" align="center">
+        <template slot-scope="props">
+          {{props.row.state|filterState}}
+        </template>
+      </el-table-column>
       <el-table-column label="期初金额" prop="initialAmount" align="center"/>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
@@ -114,6 +118,15 @@
   import axios from "axios";
 
   export default {
+    filters:{
+      filterState(e){
+        if(e){
+          return '是'
+        }else{
+          return '否'
+        }
+      }
+    },
     data() {
       return {
         tableData: [],
@@ -187,13 +200,13 @@
       },
       handleOpen(row){
         this.open=true;
-        let rows=JSON.parse(JSON.stringify(row));
-        this.queryParams1={
-          unitCode:rows.unitCode,
-          unitName:rows.unitName,
-          state:rows.state?true:false,
-          id:rows.id
-        }
+        this.queryParams1=JSON.parse(JSON.stringify(row));
+        // this.queryParams1={
+        //   unitCode:rows.unitCode,
+        //   unitName:rows.unitName,
+        //   state:rows.state?true:false,
+        //   id:rows.id
+        // }
       },
       // 取消按钮
       cancel() {
