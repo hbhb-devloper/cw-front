@@ -221,9 +221,6 @@
           </el-button>
         </template>
       </el-table-column>
-
-
-
       <el-table-column prop="itemName" align="center" width="150" label="操作">
         <template slot-scope="scope">
           <el-button :class="scope.row.isCancellation?'red':''"
@@ -250,7 +247,6 @@
           <el-button :class="scope.row.isCancellation?'red':''" size="mini" type="text" :disabled="scope.row.state!=31" @click="handleEdits(scope.row)">编辑</el-button>
         </template>
       </el-table-column>
-
 
 
       <el-table-column label="是否作废" prop="isCancellation" align="center">
@@ -328,10 +324,10 @@
               clearable
               size="medium"
               style="width: 100%"
-              :disabled="invoiceDisabel"
+              :disabled="form.business==10||form.business==20"
               @change="handleInvoiceContent"
             >
-              <el-option :value="undefined" label="--请选择业务内容--"></el-option>
+              <el-option value="undefined" label="--请选择业务内容--"></el-option>
               <el-option
                 v-for="dict in InvoiceContentList"
                 :label="dict.label"
@@ -340,6 +336,8 @@
             </el-select>
           </el-form-item>
         </el-col>
+
+
         <el-col :span="12">
           <el-form-item label="办理业务内容" :required="true">
             <el-select
