@@ -324,7 +324,7 @@
               clearable
               size="medium"
               style="width: 100%"
-              :disabled="invoiceDisabel"
+              :disabled="form.business==10||form.business==20"
               @change="handleInvoiceContent"
             >
               <el-option value="undefined" label="--请选择业务内容--"></el-option>
