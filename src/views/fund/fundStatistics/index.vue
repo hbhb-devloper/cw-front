@@ -221,6 +221,11 @@
         })
           .then(() => {
             let data =JSON.parse(JSON.stringify(this.queryParams));
+            if(data.isBalanceZero){
+              data.isBalanceZero=1;
+            }else{
+              data.isBalanceZero=0;
+            }
             delete data.pageSize;
             delete data.pageNum;
             exportData(getToken(),data, '/fund/stat/export', '客户资金统计')
