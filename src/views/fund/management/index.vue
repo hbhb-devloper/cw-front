@@ -59,6 +59,7 @@
           style="width: 240px"
         />
       </el-form-item>
+
       <el-form-item>
         <el-checkbox v-model="queryParams.isCancellation">是否作废</el-checkbox>
       </el-form-item>
