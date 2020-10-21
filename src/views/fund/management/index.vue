@@ -221,8 +221,6 @@
           </el-button>
         </template>
       </el-table-column>
-
-
       <el-table-column prop="itemName" align="center" width="150" label="操作">
         <template slot-scope="scope">
           <el-button :class="scope.row.isCancellation?'red':''"
