@@ -520,7 +520,6 @@
     cancellation,
     getCompany
   } from "@/api/fund/management/index";
-  import {getFlowList} from '@/api/fund/management/info'
   import {getLaunchType} from '@/api/budget/report/report'
   import {listUnit} from "@/api/system/unit";
   import Treeselect from "@riophae/vue-treeselect";
