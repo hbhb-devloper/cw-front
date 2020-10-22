@@ -446,10 +446,6 @@
     <!-- 发起审批 -->
     <el-dialog :title="title" :visible.sync="open1" width="450px">
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <!--        <el-form-item label="名称" prop="flowName">-->
-        <!--          <el-input v-model="form.flowName" placeholder="请输入名称"/>-->
-        <!--        </el-form-item>-->
-
         <el-form-item label="选择流程" prop="flowName">
           <el-select v-model="flow.flowTypeId" placeholder="请选择流程" clearable size="medium">
             <el-option
