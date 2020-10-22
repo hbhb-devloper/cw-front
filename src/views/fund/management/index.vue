@@ -469,22 +469,6 @@
 
     <el-dialog :title="'编辑到账'" :visible.sync="open2" width="480px">
       <el-form ref="form2" :model="form2" label-width="120px">
-<!--        <el-form-item label="发票版本号" :required="true">-->
-<!--          <el-input v-model="form2.versions" placeholder="请输入发票版本号"/>-->
-<!--        </el-form-item>-->
-<!--        <el-form-item label="发票编号" :required="true">-->
-<!--          <el-input v-model="form2.invoiceNumber" placeholder="请输入发票编号"/>-->
-<!--        </el-form-item>-->
-<!--        <el-form-item label="出票时间" :required="true">-->
-<!--          <el-date-picker-->
-<!--            v-model="form2.invoiceCreateTime"-->
-<!--            type="date"-->
-<!--            style="width: 100%"-->
-<!--            format="yyyy-MM-dd"-->
-<!--            value-format="yyyy-MM-dd"-->
-<!--            placeholder="选择日期">-->
-<!--          </el-date-picker>-->
-<!--        </el-form-item>-->
         <el-form-item label="到账金额" :required="true">
           <el-input v-model="form2.accountMoney" type="number" min="0" placeholder="请输入到账金额"/>
         </el-form-item>
