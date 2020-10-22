@@ -214,10 +214,13 @@
         </template>
       </el-table-column>
 
-      <el-table-column prop="itemName" align="center" label="发起流程">
+      <el-table-column width="130" prop="itemName" align="center" label="发起流程">
         <template slot-scope="scope">
-          <el-button :class="scope.row.isCancellation?'red':''" size="mini" type="text" :disabled="scope.row.state==20||scope.row.state==31||scope.row.state==30"
+          <el-button v-if="scope.row.state!=30" :class="scope.row.isCancellation?'red':''" size="mini" type="text" :disabled="scope.row.state==20||scope.row.state==31"
                      @click="examined(scope.row)">发起审批
+          </el-button>
+          <el-button v-else :class="scope.row.isCancellation?'red':''" size="mini" type="text" :disabled="scope.row.state==20||scope.row.state==31"
+                     @click="examined(scope.row)">重新发起审批
           </el-button>
         </template>
       </el-table-column>
