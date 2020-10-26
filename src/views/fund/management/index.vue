@@ -737,10 +737,6 @@
         })
       },
       handleEdits(row) {
-        if(row.accountMoney){
-          this.msgError('已编辑过到账金额及到账时间')
-          return;
-        }
         if(row.isCancellation){
           this.$message.warning('该发票已作废');
           return;
