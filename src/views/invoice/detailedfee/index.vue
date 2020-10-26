@@ -22,7 +22,7 @@
     </el-form>
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
-        <el-button type="warning" icon="el-icon-download" size="mini" v-hasPermi="['budget:split:export']" @click="handleExport">导出</el-button>
+        <el-button type="primary" icon="el-icon-download" size="mini" v-hasPermi="['budget:split:export']" @click="handleExport">导出</el-button>
       </el-col>
       <el-col :span="1.5">
       <el-upload
@@ -66,7 +66,7 @@
   import Treeselect from "@riophae/vue-treeselect";
   import "@riophae/vue-treeselect/dist/vue-treeselect.css";
   import {resourceTreeByUN} from "@/api/system/unit";
-  import {fundSelectExprot} from '@/utils/export.js'
+  import {exportData} from '@/utils/export.js'
   import {getToken} from '@/utils/auth'
    import {getLists} from '@/api/invoice/detailedfee/index'
    import axios from 'axios'
@@ -122,7 +122,7 @@
       //导出
       handleExport() {
         this.$confirm(
-          '是否导出数据？',
+          '是否导出酬金明细数据？',
           "提示", {
             confirmButtonText: "确定",
             cancelButtonText: "取消",
@@ -131,7 +131,7 @@
         ).then(res => {
           let data = JSON.parse(JSON.stringify(this.queryParams));
           data.pageSize = data.pageNum = undefined;
-          fundSelectExprot(getToken(), data, '/invoice/detailed/export', '酬金计提明细');
+          exportData(getToken(), data, '/invoice/detailed/export', '酬金计提明细');
         });
       },
       //导入
