@@ -2,27 +2,27 @@
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true">
       <el-row>
-        <el-form-item label="未全额回款合同历时" prop="flowTypeName">
+        <el-form-item label="未全额回款合同历时" prop="contractDuration">
           <el-input
-            v-model="queryParams.flowTypeName"
+            v-model="queryParams.contractDuration"
             placeholder="请输入未全额回款合同历时"
             clearable
             size="small"
             style="width: 240px"
           />
         </el-form-item>
-        <el-form-item label="合同编号" prop="flowTypeName">
+        <el-form-item label="合同编号" prop="contractNum">
           <el-input
-            v-model="queryParams.flowTypeName"
+            v-model="queryParams.contractNum"
             placeholder="请输入合同编号"
             clearable
             size="small"
             style="width: 240px"
           />
         </el-form-item>
-        <el-form-item label="项目编号" prop="flowTypeName">
+        <el-form-item label="项目编号" prop="projectNum">
           <el-input
-            v-model="queryParams.flowTypeName"
+            v-model="queryParams.projectNum"
             placeholder="请输入项目编号"
             clearable
             size="small"
@@ -30,63 +30,116 @@
           />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-          <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+          <el-button
+            type="primary"
+            icon="el-icon-search"
+            size="mini"
+            @click="handleQuery"
+            >搜索</el-button
+          >
+          <el-button icon="el-icon-refresh" size="mini" @click="resetQuery"
+            >重置</el-button
+          >
         </el-form-item>
       </el-row>
     </el-form>
 
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
-        <el-button type="warning" icon="el-icon-download" size="mini" @click="handleExport">导出</el-button>
+        <el-button
+          type="warning"
+          icon="el-icon-download"
+          size="mini"
+          @click="handleExport"
+          >导出</el-button
+        >
       </el-col>
     </el-row>
 
-    <el-table v-loading="loading" :data="typeList" @selection-change="handleSelectionChange">
-      <!-- <el-table-column type="selection" width="55" align="center" /> -->
-      <el-table-column label="项目编号" prop="id" align="center" />
-       <el-table-column label="区市" prop="flowTypeName" width="150" align="center" />
-      <el-table-column label="施工单位" prop="flowTypeName" width="150" align="center" />
-      <el-table-column label="工程单位" prop="flowTypeName" width="150" align="center" />
-      <el-table-column label="对方单位" prop="flowTypeName" width="150" align="center" />
-      <el-table-column label="合同编号" prop="flowTypeName" width="150" align="center" />
-      <el-table-column label="预付款到账金额（元）" prop="flowTypeName" width="150" align="center" />
-      <el-table-column label="是否已经收款" prop="flowTypeName" width="150" align="center" />
-      <el-table-column label="决算款到账金额（元）（注：决算款不包含预算款）" prop="flowTypeName" width="150" align="center" />
-      <el-table-column label="未全款回款合同历时" prop="flowTypeName" width="150" align="center" />
-      <el-table-column label="操作" align="center" width="150" class-name="small-padding fixed-width">
+    <el-table
+      v-loading="loading"
+      :data="typeList"
+      @selection-change="handleSelectionChange"
+    >
+      <el-table-column
+        label="项目编号"
+        prop="projectNum"
+        width="150"
+        align="center"
+      />
+      <el-table-column
+        label="区市"
+        prop="unitName"
+        width="150"
+        align="center"
+      />
+      <el-table-column
+        label="施工单位"
+        prop="constructionUnit"
+        width="150"
+        align="center"
+      />
+      <!-- <el-table-column label="工程单位" prop="flowTypeName" width="150" align="center" /> -->
+      <el-table-column
+        label="对方单位"
+        prop="oppositeUnit"
+        width="150"
+        align="center"
+      />
+      <el-table-column
+        label="合同编号"
+        prop="contractNum"
+        width="150"
+        align="center"
+      />
+      <el-table-column
+        label="预付款到账金额（元）"
+        prop="anticipatePayment"
+        width="150"
+        align="center"
+      />
+      <el-table-column
+        label="是否已经收款"
+        prop="isReceived"
+        width="150"
+        align="center"
+      />
+      <el-table-column
+        label="决算款到账金额（元）（注：决算款不包含预算款）"
+        prop="finalPayment"
+        width="150"
+        align="center"
+      />
+      <el-table-column
+        label="未全款回款合同历时"
+        prop="contractDuration"
+        width="150"
+        align="center"
+      />
+      <el-table-column
+        label="操作"
+        align="center"
+        width="150"
+        class-name="small-padding fixed-width"
+      >
         <template slot-scope="scope">
-           <el-button
+          <el-button
             size="mini"
             type="text"
             icon="el-icon-upload2"
             @click="handleDelete(scope.row)"
-          >上传附件</el-button>
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-delete"
-            @click="handleDelete(scope.row)"
-          >删除</el-button>
+            >上传附件</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
-
-    <pagination
-      v-show="total>0"
-      :total="total"
-      :page.sync="queryParams.pageNum"
-      :limit.sync="queryParams.pageSize"
-      @pagination="getList"
-    />
-
-    
   </div>
 </template>
 
 <script>
-import { listType, addType, updateType, delFlowType } from "@/api/flow/type";
-
+import { listWarn } from "@/api/relocation/warning/prompt.js";
+import { exportData } from "@/utils/export";
+import { getToken } from "@/utils/auth";
 export default {
   name: "Flowtype",
   data() {
@@ -111,8 +164,6 @@ export default {
       dateRange: [],
       // 查询参数
       queryParams: {
-        pageNum: 1,
-        pageSize: 10,
         flowTypeName: undefined,
       },
       // 表单参数
@@ -139,9 +190,9 @@ export default {
     /** 查询角色列表 */
     getList() {
       this.loading = true;
-      listType(this.queryParams).then((response) => {
-        this.typeList = response.list;
-        this.total = response.count;
+      listWarn(this.queryParams).then((response) => {
+        this.typeList = response;
+        // this.total = response.total;
         this.loading = false;
       });
     },
@@ -162,7 +213,6 @@ export default {
     },
     /** 搜索按钮操作 */
     handleQuery() {
-      this.queryParams.pageNum = 1;
       this.getList();
     },
     /** 重置按钮操作 */
@@ -223,7 +273,27 @@ export default {
         }
       });
     },
-
+    /** 导出按钮操作 */
+    handleExport() {
+      const queryParams = this.queryParams;
+      this.$confirm("是否确认导出提示信息的数据项?", "导出表格", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(function () {
+          return exportData(
+            getToken(),
+            queryParams,
+            "/relocation/warn/export",
+            "提示信息"
+          );
+        })
+        .then((response) => {
+          this.download(response.msg);
+        })
+        .catch(function () {});
+    },
     /** 删除按钮操作 */
     handleDelete(row) {
       const typeIds = row.id;
