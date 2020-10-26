@@ -716,10 +716,6 @@
         })
       },
       handleEdits(row) {
-        if(row.accountMoney){
-          this.msgError('已编辑过到账金额及到账时间')
-          return;
-        }
         if(row.isCancellation){
           this.$message.warning('该发票已作废');
           return;
@@ -754,6 +750,7 @@
           this.form.files = [];
         });
       },
+
       /** 修改按钮操作 */
       handleUpdate(row) {
         if(row.isCancellation){
