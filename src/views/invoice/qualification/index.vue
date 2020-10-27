@@ -62,7 +62,7 @@
         <el-button  type="primary" icon="el-icon-plus" size="mini" @click="handleImport">导入</el-button>
 <!--        <el-button  type="success" icon="el-icon-edit" size="mini" @click="handleExport">修改</el-button>-->
 <!--        <el-button  type="danger" icon="el-icon-delete" size="mini" @click="handleExport">删除</el-button>-->
-        <el-button  type="warning" icon="el-icon-download" size="mini" @click="handleExport">导出</el-button>
+        <!-- <el-button  type="warning" icon="el-icon-download" size="mini" @click="handleExport">导出</el-button> -->
       </el-col>
     </el-row>
     <el-table :data="tableData" v-loading="loading">

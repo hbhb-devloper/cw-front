@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-10-26 10:25:07
  * @LastEditors: CYZ
- * @LastEditTime: 2020-10-26 16:09:26
+ * @LastEditTime: 2020-10-27 10:31:31
 -->
 <template>
   <div class="containers">
@@ -54,27 +54,6 @@
     </el-row>
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
-        <el-button
-          type="primary"
-          icon="el-icon-plus"
-          size="mini"
-          @click="handleExport"
-          >添加</el-button
-        >
-        <el-button
-          type="success"
-          icon="el-icon-edit"
-          size="mini"
-          @click="handleExport"
-          >修改</el-button
-        >
-        <el-button
-          type="danger"
-          icon="el-icon-delete"
-          size="mini"
-          @click="handleExport"
-          >删除</el-button
-        >
         <el-button
           type="warning"
           icon="el-icon-download"
