@@ -1,8 +1,8 @@
 <template>
   <div class="containers">
     <el-form :model="queryParams" ref="queryForm" label-width="70px" :inline="true">
-      <el-form-item label="部门" prop="dptId">
-        <treeselect v-model="queryParams.dptId" style="width:200px" :options="deptOptions" placeholder="请选择部门" />
+      <el-form-item label="县市" prop="unitId">
+        <treeselect v-model="queryParams.unitId" style="width:200px" :options="deptOptions" placeholder="请选择县市" />
       </el-form-item>
       <el-form-item label="代销商编号" prop="agentNum" label-width="100px">
         <el-input placeholder="请输入代销商编号" v-model="queryParams.agentNum" size="small" style="width:200px" />
