@@ -1,6 +1,6 @@
 <template>
   <div class="containers">
-    <!--    顶部搜索-->
+    <!--顶部搜索-->
     <section class="search-box">
       <el-row :span="24">
         <el-form :inline="true" label-width="100px">
@@ -290,54 +290,38 @@
         </el-form>
       </el-dialog>
       <el-dialog title="申报详情" :visible.sync="open2" width="900px">
-        <el-row :span="24" class="info-row">
-          <el-col :span="12" class="diaBorder">
-            <el-col :span="7" class="info-title">序号</el-col
-            ><el-col :span="12">{{ info.lineNumber }}</el-col>
-          </el-col>
-          <el-col :span="12" class="diaBorder">
-            <el-col :span="8" class="info-title">编号</el-col
-            ><el-col :span="12">{{ info.projectNum }}</el-col>
-          </el-col>
-        </el-row>
-        <el-row :span="24" class="info-row">
-          <el-col :span="12" class="diaBorder">
-            <el-col :span="7" class="info-title">名称</el-col
-            ><el-col :span="12">{{ info.projectName }}</el-col>
-          </el-col>
-          <el-col :span="12" class="diaBorder">
-            <el-col :span="8" class="info-title">单位</el-col
-            ><el-col :span="12">{{ info.unitName }}</el-col>
-          </el-col>
-        </el-row>
-        <el-row :span="24" class="info-row">
-          <el-col :span="12" class="diaBorder">
-            <el-col :span="7" class="info-title">项目类型</el-col
-            ><el-col :span="12">{{ info.budgetName }}</el-col>
-          </el-col>
-          <el-col :span="12" class="diaBorder">
-            <el-col :span="8" class="info-title">不含税金额(万元)</el-col
-            ><el-col :span="12">￥{{ info.cost }}</el-col>
-          </el-col>
-        </el-row>
-        <el-row :span="24" class="info-row">
-          <el-col :span="12" class="diaBorder">
-            <el-col :span="7" class="info-title">税率</el-col
-            ><el-col :span="12">{{ info.vatRate | filterVat }}</el-col>
-          </el-col>
-          <el-col :span="12" class="diaBorder">
-            <el-col :span="8" class="info-title">价税合计</el-col
-            ><el-col :span="12">{{ info.taxIncludeAmount }}</el-col>
-          </el-col>
-        </el-row>
-        <el-row :span="24" class="info-row">
-          <el-col :span="12" class="diaBorder">
-            <el-col :span="7" class="info-title">申报人</el-col
-            ><el-col :span="12">{{ info.createBy }}</el-col>
-          </el-col>
-          <el-col :span="12" class="diaBorder">
-          </el-col>
-        </el-row>
+        <el-col :span="12" class="diaBorder">
+          <el-col :span="8" class="info-title">编号</el-col
+          ><el-col :span="12">{{ info.projectNum }}</el-col>
+        </el-col>
+        <el-col :span="12" class="diaBorder">
+          <el-col :span="7" class="info-title">名称</el-col
+          ><el-col :span="12">{{ info.projectName }}</el-col>
+        </el-col>
+        <el-col :span="12" class="diaBorder">
+          <el-col :span="8" class="info-title">单位</el-col
+          ><el-col :span="12">{{ info.unitName }}</el-col>
+        </el-col>
+        <el-col :span="12" class="diaBorder">
+          <el-col :span="7" class="info-title">项目类型</el-col
+          ><el-col :span="12">{{ info.budgetName }}</el-col>
+        </el-col>
+        <el-col :span="12" class="diaBorder">
+          <el-col :span="8" class="info-title">不含税金额(万元)</el-col
+          ><el-col :span="12">￥{{ info.cost }}</el-col>
+        </el-col>
+        <el-col :span="12" class="diaBorder">
+          <el-col :span="7" class="info-title">税率</el-col
+          ><el-col :span="12">{{ info.vatRate | filterVat }}</el-col>
+        </el-col>
+        <el-col :span="12" class="diaBorder">
+          <el-col :span="8" class="info-title">价税合计</el-col
+          ><el-col :span="12">{{ info.taxIncludeAmount }}</el-col>
+        </el-col>
+        <el-col :span="12" class="diaBorder">
+          <el-col :span="7" class="info-title">申报人</el-col
+          ><el-col :span="12">{{ info.createBy }}</el-col>
+        </el-col>
         <el-row class="diaBorder">
           <el-col class="info-title">附件</el-col>
           <el-col>
@@ -369,12 +353,12 @@
             </el-table>
           </el-col>
         </el-row>
-        <el-button
-          style="margin: 30px 0 0 90%"
-          size="mini"
-          @click="open2 = false"
-          >关闭</el-button
-        >
+        <span slot="footer" class="dialog-footer">
+          <el-button type="primary" @click="exportWord()"
+            >导出Word</el-button
+          >
+          <el-button @click="open2 = false">关闭</el-button>
+        </span>
       </el-dialog>
     </section>
   </div>
@@ -394,7 +378,7 @@ import { getVatRate } from "@/api/budget/report/report.js";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 import { getToken } from "@/utils/auth";
-import { exportData } from "@/utils/export.js";
+import { exportData ,exportWord} from "@/utils/export.js";
 import axios from "axios";
 
 export default {
@@ -432,6 +416,7 @@ export default {
       formState: false,
       info: {},
       dowFile: process.env.FILE_DOWNLOAD_PATH,
+      infoDetail:undefined
     };
   },
   created() {
@@ -517,6 +502,23 @@ export default {
         ).toFixed(6);
       }
     },
+    exportWord(){
+      let queryForm=this.infoDetail
+      // queryForm.id = this.infoId
+      console.log('queryForm',queryForm);
+      this.$confirm(`是否确认导出${this.info.projectName}的数据?`, "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      }).then(() => {
+        exportWord(
+          getToken(),
+          queryForm,
+          "/budget/agile/info/export",
+          `${this.info.projectName}`
+        );
+      });
+    },
     //导出
     handleExport() {
       let queryForm = JSON.parse(JSON.stringify(this.obj));
@@ -537,6 +539,7 @@ export default {
     },
     //详情
     handleInfo(row) {
+      this.infoDetail=row
       getInfoDate(row.id).then((res) => {
         console.log(res);
         this.Filetable = res.files;
@@ -668,6 +671,6 @@ export default {
   // border-radius: 10px;
 }
 .el-col-12 {
-    height: 47px;
+  height: 47px;
 }
 </style>
