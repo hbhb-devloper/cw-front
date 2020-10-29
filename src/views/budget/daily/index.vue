@@ -503,9 +503,9 @@ export default {
       }
     },
     exportWord(){
-      let queryForm=this.infoDetail
+      // let queryForm=this.infoDetail
       // queryForm.id = this.infoId
-      console.log('queryForm',queryForm);
+      // console.log('queryForm',queryForm);
       this.$confirm(`是否确认导出${this.info.projectName}的数据?`, "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -513,7 +513,7 @@ export default {
       }).then(() => {
         exportWord(
           getToken(),
-          queryForm,
+          this.info,
           "/budget/agile/info/export",
           `${this.info.projectName}`
         );
