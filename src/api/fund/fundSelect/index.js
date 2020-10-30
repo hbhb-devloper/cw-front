@@ -15,3 +15,12 @@ export function getHistroyList(params) {
     params
   })
 }
+
+export function getFlowState() {
+  return request({
+    url:'/dict/fund/invoice-status',
+    method:'get'
+  })
+}
+
+

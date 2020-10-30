@@ -47,9 +47,9 @@
         <el-form-item label="导入时间(账期)" prop="importDate">
           <el-date-picker
             v-model="queryParams.importDate"
-            type="date"
-            format="yyyy-MM-dd"
-            value-format="yyyy-MM-dd"
+            type="month"
+            format="yyyy-MM"
+            value-format="yyyy-MM"
             class="search-input"
             placeholder="选择日期">
           </el-date-picker>
@@ -72,13 +72,13 @@
     <section class="table-box">
       <el-row :gutter="10">
         <el-col :span="1.5">
-          <el-button type="primary" size="mini" @click="handleAdd">支付明细</el-button>
+          <el-button type="primary" size="mini" @click="handleExportExcel(0)">支付明细</el-button>
         </el-col>
         <el-col :span="1.5">
-          <el-button type="warning" size="mini" @click="handleRemunerationExport">酬金月份导出</el-button>
+          <el-button type="warning" size="mini" @click="handleExportExcel(1)">酬金月份导出</el-button>
         </el-col>
         <el-col :span="1.5">
-          <el-button type="warning" size="mini" @click="handleExport">查验结果导出</el-button>
+          <el-button type="warning" size="mini" @click="handleExportExcel(2)">查验结果导出</el-button>
         </el-col>
       </el-row>
       <el-table v-loading="loading" :data="tableData"  height="500">
@@ -111,9 +111,9 @@
 
 <script>
   import {getTaxtype,getList} from '@/api/invoice/grant_table/index'
-  import {listUnit} from "@/api/system/unit";
   import {exportData} from "@/utils/export"
   import {getToken} from '@/utils/auth'
+  import {getCompany} from '@/api/budget/report/report'
 
   import Treeselect from "@riophae/vue-treeselect";
   import "@riophae/vue-treeselect/dist/vue-treeselect.css";
@@ -129,27 +129,33 @@
         },
         loading: false,
         tableData: [],
-        total: undefined,
+        total: 1,
         unitList:[],
         typeOptions:[],
       }
     },
     mounted() {
-      this.getLists();
       this.getListUnit();
     },
     methods: {
       getLists(){
         this.loading=true;
-        getList(this.queryParams).then(res=>{
+        let data=JSON.parse(JSON.stringify(this.queryParams));
+        if(data.channelMonth){
+          data.channelMonth=data.channelMonth.split('-').join("");
+          console.log( data.channelMonth)
+        }
+        getList(data).then(res=>{
           this.total=res.count;
           this.tableData=res.list;
           this.loading=false;
         })
       },
       getListUnit(){
-        listUnit().then(res=>{
-          this.unitList=res;
+        getCompany().then(res=>{
+          this.queryParams.unitId=res.checked[0];
+          this.unitList=res.list;
+          this.getLists();
         })
         getTaxtype().then(res=>{
           this.typeOptions=res;
@@ -157,21 +163,32 @@
       },
       resetQuery(){
         this.queryParams={
+          unitId:this.queryParams.unitId,
           pageNum:1,
           pageSize:20
         }
         this.getLists();
       },
-      handleRemunerationExport(){
-        this.$confirm("是否确认导出酬金月份数据?", "数据导出", {
+      handleExportExcel(type){
+        let url=undefined,fileName=undefined;
+        if(type==0){
+          url='/invoice/remuneration/export/subsidy';
+          fileName='支付明细'
+        }else if(type==1){
+          url='/invoice/remuneration/export/month';
+          fileName='酬金月份'
+        }else if(type==2){
+          url='/invoice/remuneration/export/check';
+          fileName='查验结果'
+        }
+        this.$confirm(`是否确认导出${fileName}数据?`, "数据导出", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning",
+        }).then(()=>{
+          exportData(getToken(),this.queryParams,url,fileName)
         })
-          .then(()=>{
-            exportData(getToken(),this.queryParams,'/invoice/remuneration/export/month','酬金月份')
-          })
-      }
+      },
     }
   }
 </script>

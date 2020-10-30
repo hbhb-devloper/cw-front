@@ -1,21 +1,8 @@
 <template>
   <div class="app-container">
     <div class="uploadList">
-      <div style="color:blue;">发票单位信息导入模板下载</div>
+      <div style="color:blue;cursor: pointer;" @click="handleDow">发票单位信息导入模板下载</div>
       <div style="color:red;">注意：导入单位模块后，请认真查看返回信息，若没有提示导入成功，则需要重新编辑模板导入</div>
-      <!--      <el-upload-->
-      <!--        class="upload-demo"-->
-      <!--        action="https://jsonplaceholder.typicode.com/posts/"-->
-      <!--        :on-preview="handlePreview"-->
-      <!--        :on-remove="handleRemove"-->
-      <!--        :before-remove="beforeRemove"-->
-      <!--        multiple-->
-      <!--        :limit="3"-->
-      <!--        :on-exceed="handleExceed"-->
-      <!--        :file-list="fileList"-->
-      <!--      >-->
-      <!--        <el-button size="small" type="primary">点击上传</el-button>-->
-      <!--      </el-upload>-->
       <el-upload
         class="upload-demo"
         :show-file-list="false"
@@ -65,7 +52,11 @@
       <el-table-column label="序号" prop="id" align="center"/>
       <el-table-column label="单位名称" prop="unitName" align="center"/>
       <el-table-column label="单位编号" prop="unitCode" align="center"/>
-      <el-table-column label="是否启用(1为是,0为否)" prop="state" align="center"/>
+      <el-table-column label="是否启用" prop="state" align="center">
+        <template slot-scope="props">
+          {{props.row.state|filterState}}
+        </template>
+      </el-table-column>
       <el-table-column label="期初金额" prop="initialAmount" align="center"/>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
@@ -127,6 +118,15 @@
   import axios from "axios";
 
   export default {
+    filters:{
+      filterState(e){
+        if(e){
+          return '是'
+        }else{
+          return '否'
+        }
+      }
+    },
     data() {
       return {
         tableData: [],
@@ -177,10 +177,16 @@
           }
         }).then(res => {
           this.tableData=[];
-          for(let item in res.data.data){
-            this.tableData.push({date:res.data.data[item]});
+
+          if(!res.data.data&&res.data.status==1000){
+            this.msgSuccess('数据导入成功');
+            this.getList();
+          }else{
+            for(let item in res.data.data){
+              this.tableData.push({date:res.data.data[item]});
+            }
+            this.msgError('数据导入失败，请查看错误信息重新导入');
           }
-          this.$message.success('附件上传成功！');
         })
       },
       //获取列表
@@ -194,13 +200,13 @@
       },
       handleOpen(row){
         this.open=true;
-        let rows=JSON.parse(JSON.stringify(row));
-        this.queryParams1={
-          unitCode:rows.unitCode,
-          unitName:rows.unitName,
-          state:rows.state?true:false,
-          id:rows.id
-        }
+        this.queryParams1=JSON.parse(JSON.stringify(row));
+        // this.queryParams1={
+        //   unitCode:rows.unitCode,
+        //   unitName:rows.unitName,
+        //   state:rows.state?true:false,
+        //   id:rows.id
+        // }
       },
       // 取消按钮
       cancel() {
@@ -208,6 +214,10 @@
         this.open = false;
         this.reset();
       },
+      handleDow(){
+        exportData(getToken(),{}, '/fund/export', '发票信息导入模板')
+      },
+
       // 表单重置
       reset() {
         this.form = {
@@ -225,7 +235,10 @@
       },
       /** 重置按钮操作 */
       resetQuery() {
-        this.resetForm("queryForm");
+        this.queryParams={
+          pageNum: 1,
+          pageSize: 10,
+        }
         this.handleQuery();
       },
       // 多选框选中数据
@@ -268,8 +281,13 @@
   .uploadList {
     width: 100%;
     padding: 15px;
+    background:#fff;
     border: 1px solid #0d8efd;
     border-radius: 15px;
     margin-bottom: 15px;
   }
 </style>
+
+
+
+

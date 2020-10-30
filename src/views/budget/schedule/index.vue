@@ -190,7 +190,7 @@ import { updateBudget } from "@/api/budget/decompose/decompose";
 import { getProgressList, getProjectList } from "@/api/budget/schedule";
 import { getToken } from "@/utils/auth";
 import { exportData } from "@/utils/export";
-import { GetInfo } from "@/api/budget/report/report";
+import { GetInfo , GetProjectInfo} from "@/api/budget/report/report";
 
 export default {
   components: { Treeselect },
@@ -237,7 +237,9 @@ export default {
   },
   methods: {
     gotodetail(row) {
-      GetInfo(row.id).then((res) => {
+      GetProjectInfo(row.projectNum).then((res) => {
+      // GetInfo(row.id).then((res) => {
+        res.vatRate=String(Number(res.vatRate)*100) 
         this.innerVisible = true;
         this.obj2 = res;
       });

@@ -6,8 +6,8 @@
       </el-form-item>
       <el-form-item label="款项类型" prop="amountType">
         <el-select v-model="queryParams.amountType" style="width:200px" placeholder="请选择">
-          <el-option label="现金" value="现金"></el-option>
-          <el-option label="支票" value="支票"></el-option>
+          <el-option label="现金" value="1"></el-option>
+          <el-option label="支票" value="2"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="集团信息" prop="groupName">
@@ -21,15 +21,15 @@
       <el-form-item label="办理业务" prop="busType">
         <el-select v-model="queryParams.busType" style="width:200px" filterable  placeholder="请选择">
           <el-option label="--全部--" value="undefined"></el-option>
-          <el-option v-for="(item,index) in busTypeOptions" :label="item" :value="item"></el-option>
+          <el-option v-for="(item,index) in busTypeOptions" :label="item.label" :value="item.value"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="资金流向" prop="fundFlows">
         <el-select v-model="queryParams.fundFlows" style="width:200px" filterable  placeholder="请选择">
           <el-option label="--全部--" value="undefined"></el-option>
-          <el-option label="收款" value="收款"></el-option>
-          <el-option label="使用" value="使用"></el-option>
-          <el-option label="退款" value="退款"></el-option>
+          <el-option label="使用" value="1"></el-option>
+          <el-option label="收款" value="2"></el-option>
+          <el-option label="退款" value="3"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="编号" prop="fcCode">
@@ -61,15 +61,15 @@
       </el-form-item>
       <el-form-item label="流程状态" prop="state">
         <el-select v-model="queryParams.state" style="width:200px" filterable  placeholder="请选择">
-          <el-option label="审批未发起" value="0"></el-option>
-          <el-option label="正在审批" value="1"></el-option>
-          <el-option label="审批未通过" value="2"></el-option>
-          <el-option label="审批通过" value="3"></el-option>
+          <el-option v-for="item in flowState" :label="item.label" :value="item.value"></el-option>
+<!--          <el-option label="正在审批" value="1"></el-option>-->
+<!--          <el-option label="审批未通过" value="2"></el-option>-->
+<!--          <el-option label="审批通过" value="3"></el-option>-->
         </el-select>
       </el-form-item>
       <el-form-item label="年份" prop="year">
         <el-date-picker
-          v-model="queryParams.year"
+          v-model="queryParams.fundYear"
           type="year"
           style="width:200px"
           placeholder="选择年份"
@@ -109,13 +109,7 @@
       <el-table-column prop="userName" align="center" label="录入人"></el-table-column>
       <el-table-column prop="peopleDown" align="center" label="落地人"></el-table-column>
       <el-table-column prop="peopleDownTime" align="center" width="120px" label="落地时间"></el-table-column>
-      <el-table-column prop="state" align="center" label="流程状态">
-        <template slot-scope="scope">
-          <span style="color:#409EFF;" v-if="scope.row.state==0">审批未发起</span>
-          <span style="color:#409EFF;" v-if="scope.row.state==1">正在审批</span>
-          <span style="color:#409EFF;" v-if="scope.row.state==2">审批未通过</span>
-          <span style="color:#409EFF;" v-if="scope.row.state==3">审批通过</span>
-        </template>
+      <el-table-column prop="state" width="120px" align="center" label="流程状态">
       </el-table-column>
       <el-table-column prop="itemName" align="center" label="发起流程">
         <template slot-scope="scope">
@@ -123,17 +117,7 @@
           </router-link>
         </template>
       </el-table-column>
-      <el-table-column prop="itemName" align="center" label="删除">
-        <template slot-scope="scope">
-          <el-button
-            size="mini"
-            type="text"
-            :disabled="scope.row.state==1||scope.row.state==3"
-            icon="el-icon-delete">删除
-          </el-button>
-        </template>
-      </el-table-column>
-      <el-table-column prop="document" align="center" label="是否含附件"></el-table-column>
+      <el-table-column prop="document" align="center" width="120" label="是否含附件"></el-table-column>
     </el-table>
     <pagination
       v-show="total>0"
@@ -146,10 +130,11 @@
 </template>
 
 <script>
+  import {getHistroyList,getUnitList,getFlowState} from '@/api/fund/fundSelect'
+  import {getBusiness} from '@/api/fund/fundSelect/info'
   import Treeselect from "@riophae/vue-treeselect";
   import "@riophae/vue-treeselect/dist/vue-treeselect.css";
   import { resourceTreeByUN } from "@/api/system/unit";
-  import {getHistroyList,getUnitList} from '@/api/fund/fundSelect'
   import {fundSelectExprot} from '@/utils/export.js'
   import {getToken} from '@/utils/auth'
   export default {
@@ -172,7 +157,7 @@
           pageNum:1
         },//条件搜索表单
         deptOptions:[],//单位下拉
-        busTypeOptions:['一次性收入','集团统付','可变资金划账','购卡','现金充值','预缴(除统付外)','开户','终端捆绑','退款','其它','欠费缴纳','集团预付(预开发票)'],//业务下拉类
+        busTypeOptions:[],//业务下拉类
         tableData:[
           {
             id:8,
@@ -195,6 +180,7 @@
           }
         ],//表格数据
         loading:true,//表格加载动画
+        flowState:[],
       }
     },
     components:{
@@ -203,6 +189,8 @@
     created() {
       this.getUnitId();
       this.getList();
+      this.handleGetBusiness();
+      this.getFlowStates();
     },
     methods:{
       //获取部门列表
@@ -221,6 +209,16 @@
           this.loading=false;
         }).catch(err=>{
           this.loading=false;
+        })
+      },
+      getFlowStates(){
+        getFlowState().then(res=>{
+          this.flowState=res;
+        })
+      },
+      handleGetBusiness() {
+        getBusiness().then(res => {
+          this.busTypeOptions = res;
         })
       },
       //充置搜索

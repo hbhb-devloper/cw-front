@@ -95,7 +95,7 @@
       <el-dialog :title="title" :visible.sync="open1">
         <el-form :inline="true" label-width="80px">
           <el-row :span="12">
-            <el-form-item label="税率选择">
+            <el-form-item label="税率选择" required>
               <el-select v-model="tax" placeholder="请选择" style="width: 100%">
                 <el-option
                   v-for="item in taxrate"
@@ -118,6 +118,7 @@
                 <el-button type="primary">导入</el-button>
               </el-upload>
             </el-form-item>
+
           </el-row>
         </el-form>
         <el-table :data="tableData1" v-if="importType==0">
@@ -129,13 +130,14 @@
   </div>
 </template>
 
+
 <script>
     import axios from "axios";
     import {getToken} from '@/utils/auth'
     import {getTaxtype,getList,DeleteSerialNumber} from '@/api/invoice/grant_table/index'
+    import {getCompany} from '@/api/budget/report/report'
     import Treeselect from "@riophae/vue-treeselect";
     import "@riophae/vue-treeselect/dist/vue-treeselect.css";
-    import {listUnit} from "@/api/system/unit";
     import {exportData} from "../../../utils/export";
 
     export default {
@@ -163,7 +165,7 @@
         }
       },
       mounted() {
-        this.getLists();
+        // this.getLists();
         this.getListUnit();
       },
       methods:{
@@ -176,8 +178,8 @@
           })
         },
         getListUnit(){
-          listUnit().then(res=>{
-            this.unitList=res;
+          getCompany().then(res=>{
+            this.unitList=res.list;
           })
           getTaxtype().then(res=>{
             this.typeOptions=res;
@@ -185,6 +187,7 @@
         },
         handleOpen(type){
           this.importType=type;
+          this.tax=undefined;
           if(type==0){
             this.ActionUrl=process.env.VUE_APP_BASE_API+'/invoice/remuneration/import/reward';
             this.title='酬金发放表导入';
@@ -204,7 +207,7 @@
             pageNum:1,
             pageSize:20
           }
-          this.getLists();
+          this.tableData=[];
         },
         imageUpload(param){
           const _file = param.file;
@@ -227,13 +230,12 @@
             }
           }).then(res => {
            if(res.data.status==1000){
-             this.$message.success('附件上传成功！');
+             this.$message.success('导入成功！');
              if(this.importType==0){
                this.tableData1=[];
                for(let item in res.data.data){
                  this.tableData1.push({date:res.data.data[item]});
                }
-               this.getLists();
              }
            }else{
              this.msgError(res.data.message);
@@ -288,8 +290,9 @@
     display: flex;
     flex-direction: row;
     border:1px solid #0d8efd;
+
     ul{
-      width: 15%;
+      width: 20%;
       text-align: center;
       margin:0 20px;
       li{

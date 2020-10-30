@@ -88,3 +88,25 @@ export function approveFlow(data) {
     data
   })
 }
+
+export function cancellation(id,state){
+  return request({
+    url:`/fund/advance/cancellation/${id}?cancellation=${state}`,
+    method:'put'
+  })
+}
+
+export function updateInfo(data) {
+  return request({
+    url:'/fund/advance/update-info',
+    method:'put',
+    data
+  })
+}
+//查询单位
+export function getCompany(){
+  return request({
+    url:'/unit/tree-select',
+    method:'get',
+  })
+}

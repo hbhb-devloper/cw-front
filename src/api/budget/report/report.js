@@ -64,6 +64,14 @@ export function GetInfo(id){
   })
 }
 
+//查询详情
+export function GetProjectInfo(id){
+  return request({
+    url:`/budget/progress/project/${id}`,
+    method:'get'
+  })
+}
+
 //修改提交
 export function upData(data) {
   return request({
