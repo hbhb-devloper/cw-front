@@ -1,56 +1,160 @@
+<!--
+ * @Descripttion: 
+ * @version: 
+ * @Author: CYZ
+ * @Date: 2020-10-10 14:45:48
+ * @LastEditors: CYZ
+ * @LastEditTime: 2020-10-14 14:48:30
+-->
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true">
       <el-row>
-        <el-form-item label="县区" prop="flowTypeName">
-          <el-input
-            v-model="queryParams.flowTypeName"
-            placeholder="请输入县区"
-            clearable
-            size="small"
-            style="width: 240px"
-            @keyup.enter.native="handleQuery"
+        <el-form-item label="县区" prop="unitId">
+          <treeselect
+            v-model="queryParams.unitId"
+            :options="deptOptions"
+            placeholder="请选择县区"
           />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-          <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+          <el-button
+            type="primary"
+            icon="el-icon-search"
+            size="mini"
+            @click="handleQuery"
+            >搜索</el-button
+          >
+          <el-button icon="el-icon-refresh" size="mini" @click="resetQuery"
+            >重置</el-button
+          >
         </el-form-item>
       </el-row>
     </el-form>
 
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
-        <el-button type="warning" icon="el-icon-download" size="mini" @click="handleExport">导出</el-button>
+        <el-button
+          type="warning"
+          icon="el-icon-download"
+          size="mini"
+          @click="handleExport"
+          >导出</el-button
+        >
       </el-col>
     </el-row>
 
-    <el-table v-loading="loading" :data="typeList" @selection-change="handleSelectionChange">
+    <el-table
+      v-loading="loading"
+      :data="typeList"
+      @selection-change="handleSelectionChange"
+    >
       <!-- <el-table-column type="selection" width="55" align="center" /> -->
-      <el-table-column label="地区" prop="id" align="center" />
-      <el-table-column label="合同签订请款" prop="flowTypeName" align="center">
-        <el-table-column label="有赔迁改项目数量（个）" prop="flowTypeName" width="150" align="center" />
-        <el-table-column label="已签订赔补协议项目数" prop="flowTypeName" width="150" align="center" />
-        <el-table-column label="未签订赔补协议项目数" prop="flowTypeName" width="150" align="center" />
-        <el-table-column label="赔补合同签订率（按项目个数计）" prop="flowTypeName" width="150" align="center" />
-        <el-table-column label="签订赔补协议金额（万元）" prop="flowTypeName" width="150" align="center" />
-        <el-table-column label="未签订赔补现已项目成本金额（万元）" prop="flowTypeName" width="150" align="center" />
+      <el-table-column label="地区" prop="unitName" align="center" />
+      <el-table-column label="合同签订请款" align="center">
+        <el-table-column
+          label="有赔迁改项目数量（个）"
+          prop="compensationAmount"
+          width="150"
+          align="center"
+        />
+        <el-table-column
+          label="签订赔补协议数量（个）"
+          prop="contractAmount"
+          width="150"
+          align="center"
+        />
+        <el-table-column
+          label="已签订赔补协议项目数"
+          prop="contractNumAmount"
+          width="150"
+          align="center"
+        />
+        <el-table-column
+          label="未签订赔补协议项目数"
+          prop="notContractNumAmount"
+          width="150"
+          align="center"
+        />
+        <el-table-column
+          label="赔补合同签订率（按项目个数计）"
+          prop="compensationRatio"
+          width="150"
+          align="center"
+        />
+        <el-table-column
+          label="签订赔补协议金额（万元）"
+          prop="contractAccount"
+          width="150"
+          align="center"
+        />
+        <el-table-column
+          label="未签订赔补现已项目成本金额（万元）"
+          prop="notContractAccount"
+          width="150"
+          align="center"
+        />
       </el-table-column>
-      <el-table-column label="合同履行情况" prop="flowTypeName" width="150" align="center">
-        <el-table-column label="赔补款累计到账金额（万元）" prop="flowTypeName" width="150" align="center" />
-        <el-table-column label="有赔迁改项目累计成本金额（万元）" prop="flowTypeName" width="150" align="center" />
-        <el-table-column label="回款成本收支比" prop="flowTypeName" width="150" align="center" />
-        <el-table-column label="预付款未收金（万元）" prop="flowTypeName" width="150" align="center" />
-        <el-table-column label="尾款未收金（万元）" prop="flowTypeName" width="150" align="center" />
-        <el-table-column label="未全额回款合同1年内（个）" prop="flowTypeName" width="150" align="center" />
-        <el-table-column label="未全额回款合同1-3年（个）" prop="flowTypeName" width="150" align="center" />
-        <el-table-column label="未全额回款合同3年以上（个）" prop="flowTypeName" width="150" align="center" />
-        <el-table-column label="当年赔补开票（万元）" prop="flowTypeName" width="150" align="center" />
+      <el-table-column label="合同履行情况" width="150" align="center">
+        <el-table-column
+          label="赔补款累计到账金额（万元）"
+          prop="compensationTotal"
+          width="150"
+          align="center"
+        />
+        <el-table-column
+          label="有赔迁改项目累计成本金额（万元）"
+          prop="costTotal"
+          width="150"
+          align="center"
+        />
+        <el-table-column
+          label="回款成本收支比"
+          prop="costRation"
+          width="150"
+          align="center"
+        />
+        <el-table-column
+          label="预付款未收金（万元）"
+          prop="budgetNotAccount"
+          width="150"
+          align="center"
+        />
+        <el-table-column
+          label="尾款未收金（万元）"
+          prop="finalNotPayment"
+          width="150"
+          align="center"
+        />
+        <el-table-column
+          label="未全额回款合同1年内（个）"
+          prop="oneNotCostAmount"
+          width="150"
+          align="center"
+        />
+        <el-table-column
+          label="未全额回款合同1-3年（个）"
+          prop="twoNotCostAmount"
+          width="150"
+          align="center"
+        />
+        <el-table-column
+          label="未全额回款合同3年以上（个）"
+          prop="threeNotCostAmount"
+          width="150"
+          align="center"
+        />
+        <el-table-column
+          label="当年赔补开票（万元）"
+          prop="thisYearInvoiceAccount"
+          width="150"
+          align="center"
+        />
       </el-table-column>
     </el-table>
 
     <pagination
-      v-show="total>0"
+      v-show="total > 0"
       :total="total"
       :page.sync="queryParams.pageNum"
       :limit.sync="queryParams.pageSize"
@@ -62,14 +166,26 @@
       <el-form ref="form" :model="form" :rules="rules" label-width="140px">
         <el-row>
           <el-col :span="12">
-            <el-form-item v-if="form.userId == undefined" label="地区" prop="userName">
+            <el-form-item
+              v-if="form.userId == undefined"
+              label="地区"
+              prop="userName"
+            >
               <el-input v-model="form.userName" placeholder="请输入地区" />
             </el-form-item>
           </el-col>
           <el-col :span="12"></el-col>
           <el-col :span="12">
-            <el-form-item v-if="form.userId == undefined" label="县市" prop="CheckPassword">
-              <el-input v-model="form.CheckPassword" placeholder="请输入县市" type="password" />
+            <el-form-item
+              v-if="form.userId == undefined"
+              label="县市"
+              prop="CheckPassword"
+            >
+              <el-input
+                v-model="form.CheckPassword"
+                placeholder="请输入县市"
+                type="password"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -84,12 +200,20 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="发票点" prop="nickName">
-              <el-date-picker v-model="form.data" type="date" placeholder="选择发票点"></el-date-picker>
+              <el-date-picker
+                v-model="form.data"
+                type="date"
+                placeholder="选择发票点"
+              ></el-date-picker>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="业务类型" prop="nickName">
-              <el-date-picker v-model="form.data" type="date" placeholder="选择业务类型"></el-date-picker>
+              <el-date-picker
+                v-model="form.data"
+                type="date"
+                placeholder="选择业务类型"
+              ></el-date-picker>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -138,8 +262,14 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="备注格式：合同号；区县；款项性质；项目信息" prop="nickName">
-              <el-input v-model="form.nickName" placeholder="请输入备注格式：合同号；区县；款项性质；项目信息" />
+            <el-form-item
+              label="备注格式：合同号；区县；款项性质；项目信息"
+              prop="nickName"
+            >
+              <el-input
+                v-model="form.nickName"
+                placeholder="请输入备注格式：合同号；区县；款项性质；项目信息"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -159,7 +289,10 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="是否为自定义菜单开票" prop="nickName">
-              <el-input v-model="form.nickName" placeholder="请输入是否为自定义菜单开票" />
+              <el-input
+                v-model="form.nickName"
+                placeholder="请输入是否为自定义菜单开票"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -178,10 +311,15 @@
 </template>
 
 <script>
-import { listType, addType, updateType, delFlowType } from "@/api/flow/type";
-
+import { listStatement } from "@/api/relocation/form/business.js";
+import Treeselect from "@riophae/vue-treeselect";
+import "@riophae/vue-treeselect/dist/vue-treeselect.css";
+import { resourceTreeByUN } from "@/api/system/unit";
+import { exportData } from "@/utils/export";
+import { getToken } from "@/utils/auth";
 export default {
   name: "Flowtype",
+  components: { Treeselect },
   data() {
     return {
       // 遮罩层
@@ -223,18 +361,30 @@ export default {
           { required: true, message: "显示顺序不能为空", trigger: "blur" },
         ],
       },
+      morenUnit: undefined,
+      deptOptions: [],
     };
   },
   created() {
-    this.getList();
+    // this.getList();
+    this.getTreeselect();
   },
   methods: {
+    getTreeselect() {
+      let that = this;
+      resourceTreeByUN().then((response) => {
+        that.deptOptions = response.list;
+        that.morenUnit = response.checked[0];
+        that.queryParams.unitId = that.morenUnit;
+        that.getList();
+      });
+    },
     /** 查询角色列表 */
     getList() {
       this.loading = true;
-      listType(this.queryParams).then((response) => {
+      listStatement(this.queryParams).then((response) => {
         this.typeList = response.list;
-        this.total = response.count;
+        this.total = response.total;
         this.loading = false;
       });
     },
@@ -316,7 +466,27 @@ export default {
         }
       });
     },
-
+    /** 导出按钮操作 */
+    handleExport() {
+      const queryParams = this.queryParams;
+      this.$confirm("是否确认导出业务统计的数据项?", "导出表格", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(function () {
+          return exportData(
+            getToken(),
+            queryParams,
+            "/relocation/statement",
+            "业务统计"
+          );
+        })
+        .then((response) => {
+          this.download(response.msg);
+        })
+        .catch(function () {});
+    },
     /** 删除按钮操作 */
     handleDelete(row) {
       const typeIds = row.id;
@@ -360,5 +530,8 @@ body .el-table /deep/ th.gutter {
 
 body .el-table /deep/ colgroup.gutter {
   display: table-cell !important;
+}
+.el-form-item--medium /deep/ .el-form-item__content {
+  width: 230px;
 }
 </style>
