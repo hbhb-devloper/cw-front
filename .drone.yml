@@ -17,9 +17,6 @@ steps:
   # 打包
   - name: build
     image: node:10-alpine
-    volumes:
-      - name: node_local_repo
-        path: /wwwroot
     commands:
       - node -v
       - yarn -v
