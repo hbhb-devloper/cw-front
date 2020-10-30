@@ -74,6 +74,15 @@
           >
         </el-upload>
       </el-col>
+      <el-col :span="1.5">
+        <el-button
+          type="success"
+          icon="el-icon-download"
+          size="mini"
+          @click="handleDownload"
+          >下载导入模板</el-button
+        >
+      </el-col>
     </el-row>
     <el-table :data="tableData" v-loading="loading">
       <el-table-column
@@ -250,6 +259,22 @@ export default {
           data,
           "/invoice/detailed/export",
           "酬金计提明细"
+        );
+      });
+    },
+    //下载导入模板
+    handleDownload(){
+      this.$confirm("是否下载酬金明细导入模板？", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      }).then((res) => {
+        let data = {}
+        exportData(
+          getToken(),
+          data,
+          "/invoice/detailed/export/template",
+          "酬金计提明细导入模板"
         );
       });
     },

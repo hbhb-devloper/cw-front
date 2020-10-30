@@ -70,6 +70,13 @@
         @click="handleExport"
         >导出</el-button
       >
+        <el-button
+          type="success"
+          icon="el-icon-download"
+          size="mini"
+          @click="handleDownload"
+          >下载导入模板</el-button
+        >
       <span style="position: absolute; right: 0"
         >发票库表导入时间：{{ updateTime }}</span
       >
@@ -317,6 +324,22 @@ export default {
           this.msgError("数据导入失败");
         }
         this.open = false;
+      });
+    },
+    //下载导入模板
+    handleDownload(){
+      this.$confirm("是否下载往来账模板？", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      }).then((res) => {
+        let data = {}
+        exportData(
+          getToken(),
+          data,
+          "/invoice/account/run/export/template",
+          "往来账导入模板"
+        );
       });
     },
     //导出

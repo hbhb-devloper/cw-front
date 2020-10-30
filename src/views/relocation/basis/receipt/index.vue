@@ -498,7 +498,7 @@ export default {
             getToken(),
             queryParams,
             "/relocation/receipt/export",
-            "收款管理"
+            "收据管理"
           );
         })
         .then((response) => {

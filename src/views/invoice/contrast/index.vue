@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-10-26 10:25:07
  * @LastEditors: CYZ
- * @LastEditTime: 2020-10-27 10:31:31
+ * @LastEditTime: 2020-10-30 15:11:23
 -->
 <template>
   <div class="containers">
@@ -171,6 +171,7 @@ export default {
       }, //条件搜索表单
       tableData: [], //表格数据
       loading: true, //表格加载动画
+      deptOptions:[],
     };
   },
   components: {
