@@ -4,15 +4,15 @@ name: default
 
 steps:
   # 使用缓存
-  - name: restore-cache
-    image: drillster/drone-volume-cache
-    settings:
-      restore: true
-      mount:
-        - ./node_modules
-    volumes:
-      - name: node_cache
-        path: /cache
+#  - name: restore-cache
+#    image: drillster/drone-volume-cache
+#    settings:
+#      restore: true
+#      mount:
+#        - ./node_modules
+#    volumes:
+#      - name: node_cache
+#        path: /cache
 
   # 打包
   - name: build
@@ -22,19 +22,19 @@ steps:
       - yarn -v
       - yarn config set registry http://registry.npm.taobao.org/
       - yarn config set sass_binary_site https://npm.taobao.org/mirrors/node-sass
-      - yarn install -force node-sass
+#      - yarn install -force node-sass
       - yarn run build:${DRONE_BRANCH}
 
   # 更新缓存
-  - name: rebuild-cache
-    image: drillster/drone-volume-cache
-    settings:
-      rebuild: true
-      mount:
-        - ./node_modules
-    volumes:
-      - name: node_cache
-        path: /cache
+#  - name: rebuild-cache
+#    image: drillster/drone-volume-cache
+#    settings:
+#      rebuild: true
+#      mount:
+#        - ./node_modules
+#    volumes:
+#      - name: node_cache
+#        path: /cache
 
   # 部署
   - name: deploy
