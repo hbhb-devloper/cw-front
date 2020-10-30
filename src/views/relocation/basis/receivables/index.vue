@@ -305,11 +305,6 @@
         <el-form-item label="本次收款金额" prop="amount">
           <el-input v-model="form.amount" placeholder="请输入类型名称" />
         </el-form-item>
-<<<<<<< HEAD
-
-        <el-form-item label="显示顺序" prop="sortNum">
-          <el-input-number v-model="form.sortNum" controls-position="right" :min="0" :max="9999" />
-=======
         <el-form-item label="收款月份" prop="payMonth">
           <el-date-picker
             v-model="form.payMonth"
@@ -319,7 +314,6 @@
             value-format="yyyy-MM"
           >
           </el-date-picker>
->>>>>>> relocation
         </el-form-item>
         <!-- <el-form-item label="收款人" prop="payee">
           <el-input v-model="form.payee" placeholder="请输入类型名称" />
