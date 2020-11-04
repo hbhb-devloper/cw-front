@@ -14,7 +14,8 @@
           <el-date-picker
             v-model="queryParams.importDate"
             type="month"
-            class="search-input"format="yyyy-MM"
+            class="search-input"
+            format="yyyy-MM"
             value-format="yyyy-MM"
             placeholder="选择酬账期">
           </el-date-picker>
@@ -23,7 +24,8 @@
           <el-date-picker
             v-model="queryParams.invoiceDate"
             type="date"
-            class="search-input"format="yyyy-MM-dd"
+            class="search-input"
+            format="yyyy-MM-dd"
             value-format="yyyy-MM-dd"
             placeholder="选择酬开票日期">
           </el-date-picker>
@@ -151,7 +153,7 @@
         this.loading=true;
         getList(this.queryParams).then(res=>{
           console.log(res);
-          this.total=res.count;
+          this.total=res.total;
           this.tableData=res.list;
           this.loading=false;
         })
