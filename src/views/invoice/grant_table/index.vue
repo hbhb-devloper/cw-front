@@ -56,6 +56,7 @@
                 v-for="dict in typeOptions"
                 :label="dict.label"
                 :value="dict.value"
+                :key="dict.label"
               />
             </el-select>
           </el-form-item>
@@ -100,7 +101,9 @@
                 <el-option
                   v-for="item in taxrate"
                   :label="item.label"
-                  :value="item.value">
+                  :value="item.value"
+                  :key="item.label"
+                  >
                 </el-option>
               </el-select>
             </el-form-item>
@@ -317,4 +320,5 @@
   .cancel{
     margin:30px 0 0 0;
   }
+ 
 </style>

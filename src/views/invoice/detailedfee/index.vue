@@ -263,13 +263,13 @@ export default {
       });
     },
     //下载导入模板
-    handleDownload(){
+    handleDownload() {
       this.$confirm("是否下载酬金明细导入模板？", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
       }).then((res) => {
-        let data = {}
+        let data = {};
         exportData(
           getToken(),
           data,
@@ -334,4 +334,5 @@ export default {
 /deep/ .el-table__row--level-0 {
   background: #f5f7fa;
 }
+
 </style>
