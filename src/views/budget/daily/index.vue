@@ -136,7 +136,7 @@
         ></el-table-column>
         <el-table-column
           prop="cost"
-          label="不含税金额(元)"
+          label="不含税金额(万元)"
           align="center"
         ></el-table-column>
         <el-table-column prop="vatRate" label="税率" align="center">
@@ -146,7 +146,7 @@
         </el-table-column>
         <el-table-column
           prop="taxIncludeAmount"
-          label="价税合计"
+          label="价税合计(万元)"
           align="center"
         ></el-table-column>
         <el-table-column
