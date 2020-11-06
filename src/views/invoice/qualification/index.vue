@@ -165,7 +165,7 @@
       :limit.sync="queryParams.pageSize"
       @pagination="getList"
     />
-    <el-dialog :visible.sync="open" width="400px">
+    <el-dialog title="导入" :visible.sync="open" width="400px">
       <el-upload
         class="upload-demo"
         :show-file-list="false"
@@ -187,7 +187,7 @@ import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 import { resourceTreeByUN } from "@/api/system/unit";
 import { GetList } from "@/api/invoice/qualification/index";
-import { fundSelectExprot,exportData } from "@/utils/export.js";
+import { fundSelectExprot, exportData } from "@/utils/export.js";
 import { getToken } from "@/utils/auth";
 import axios from "axios";
 export default {
@@ -244,6 +244,12 @@ export default {
       const _file = param.file;
       let params = new FormData();
       params.append("file", _file);
+      const loading = this.$loading({
+        lock: true,
+        text: "正在导入表格",
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.7)",
+      });
       axios({
         url: this.ActionUrl,
         method: "post",
@@ -252,24 +258,29 @@ export default {
           "Content-Type": "multipart/form-data",
           Authorization: getToken(),
         },
-      }).then((res) => {
-        if (res.data.status == 1000) {
-          this.$message.success("数据导入成功");
-          this.getList();
-        } else {
-          this.msgError("数据导入失败");
-        }
-        this.open = false;
-      });
+      })
+        .then((res) => {
+          loading.close();
+          if (res.data.status == 1000) {
+            this.$message.success("数据导入成功");
+            this.getList();
+          } else {
+            this.msgError("数据导入失败");
+          }
+          this.open = false;
+        })
+        .catch((err) => {
+          loading.close();
+        });
     },
-     //下载导入模板
-    handleDownload(){
+    //下载导入模板
+    handleDownload() {
       this.$confirm("是否下载渠道纳税人资质库导入模板？", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
       }).then((res) => {
-        let data = {}
+        let data = {};
         exportData(
           getToken(),
           data,

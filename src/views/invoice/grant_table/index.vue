@@ -221,6 +221,12 @@
             params.append('taxRate', this.tax);
           }
           params.append('file', _file);
+           const loading = this.$loading({
+        lock: true,
+        text: "正在导入表格",
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.7)",
+      });
           axios({
             url: this.ActionUrl,
             method: 'post',
@@ -230,6 +236,7 @@
               'Authorization': getToken()
             }
           }).then(res => {
+          loading.close();
            if(res.data.status==1000){
              this.$message.success('导入成功！');
              if(this.importType==0){
@@ -242,6 +249,7 @@
              this.msgError(res.data.message);
            }
           }).catch(err=>{
+          loading.close();
             this.msgError(err);
           })
         },

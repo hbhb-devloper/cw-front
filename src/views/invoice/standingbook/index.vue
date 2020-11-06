@@ -60,7 +60,14 @@
         <!-- <el-button type="warning" icon="el-icon-download" size="mini" v-hasPermi="['budget:split:export']">导出</el-button> -->
       </el-col>
       <el-col :span="1.5">
-        <el-upload
+        <el-button
+          type="warning"
+          icon="el-icon-download"
+          size="mini"
+          @click="handleImport"
+          >导入</el-button
+        >
+        <!-- <el-upload
           class="upload-demo"
           :show-file-list="false"
           multiple
@@ -71,7 +78,7 @@
           <el-button type="warning" icon="el-icon-download" size="mini"
             >导入</el-button
           >
-        </el-upload>
+        </el-upload> -->
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -210,6 +217,20 @@
       :limit.sync="queryParams.pageSize"
       @pagination="getList"
     />
+    <el-dialog title="导入" :visible.sync="open" width="400px">
+      <el-upload
+        class="upload-demo"
+        :show-file-list="false"
+        :accept="'.xls,.xlsx'"
+        multiple
+        action="#"
+        :http-request="imageUpload"
+      >
+        <el-button size="small" type="primary" class="uploadImgBtn"
+          >导入数据</el-button
+        >
+      </el-upload>
+    </el-dialog>
   </div>
 </template>
 
@@ -225,6 +246,7 @@ export default {
   name: "index",
   data() {
     return {
+      open:false,
       total: 0,
       queryParams: {
         unitId: undefined, //部门
@@ -299,12 +321,21 @@ export default {
         );
       });
     },
+     handleImport() {
+      this.open = true;
+    },
     //导入
     imageUpload(param) {
       const _file = param.file;
       let params = new FormData();
 
       params.append("file", _file);
+       const loading = this.$loading({
+        lock: true,
+        text: "正在导入表格",
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.7)",
+      });
       axios({
         url: process.env.VUE_APP_BASE_API + "/invoice/focus/import",
         method: "post",
@@ -315,14 +346,17 @@ export default {
         },
       })
         .then((res) => {
+          loading.close();
           if (res.data.status == 1000) {
             this.$message.success("导入成功！");
             this.getList();
           } else {
             this.msgError(res.data.message);
           }
+          this.open = false;
         })
         .catch((err) => {
+          loading.close();
           this.msgError(err);
         });
     },

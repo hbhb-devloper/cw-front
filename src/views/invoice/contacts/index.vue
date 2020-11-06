@@ -70,13 +70,13 @@
         @click="handleExport"
         >导出</el-button
       >
-        <el-button
-          type="success"
-          icon="el-icon-download"
-          size="mini"
-          @click="handleDownload"
-          >下载导入模板</el-button
-        >
+      <el-button
+        type="success"
+        icon="el-icon-download"
+        size="mini"
+        @click="handleDownload"
+        >下载导入模板</el-button
+      >
       <span style="position: absolute; right: 0"
         >发票库表导入时间：{{ updateTime }}</span
       >
@@ -208,7 +208,7 @@
       :limit.sync="queryParams.pageSize"
       @pagination="getList"
     />
-    <el-dialog :visible.sync="open" width="400px">
+    <el-dialog title="导入" :visible.sync="open" width="400px">
       <el-upload
         class="upload-demo"
         :show-file-list="false"
@@ -307,6 +307,12 @@ export default {
       const _file = param.file;
       let params = new FormData();
       params.append("file", _file);
+      const loading = this.$loading({
+        lock: true,
+        text: "正在导入表格",
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.7)",
+      });
       axios({
         url: this.ActionUrl,
         method: "post",
@@ -315,25 +321,30 @@ export default {
           "Content-Type": "multipart/form-data",
           Authorization: getToken(),
         },
-      }).then((res) => {
-        if (res.data.status == 1000) {
-          this.$message.success("数据导入成功");
-          this.getList();
-          this.getUpdateTimes();
-        } else {
-          this.msgError("数据导入失败");
-        }
-        this.open = false;
-      });
+      })
+        .then((res) => {
+          loading.close();
+          if (res.data.status == 1000) {
+            this.$message.success("数据导入成功");
+            this.getList();
+            this.getUpdateTimes();
+          } else {
+            this.msgError("数据导入失败");
+          }
+          this.open = false;
+        })
+        .catch((err) => {
+          loading.close();
+        });
     },
     //下载导入模板
-    handleDownload(){
+    handleDownload() {
       this.$confirm("是否下载往来账模板？", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
       }).then((res) => {
-        let data = {}
+        let data = {};
         exportData(
           getToken(),
           data,
