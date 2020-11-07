@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-10-26 10:25:07
  * @LastEditors: CYZ
- * @LastEditTime: 2020-11-07 09:43:14
+ * @LastEditTime: 2020-11-07 13:53:13
 -->
 <template>
   <div class="containers">
@@ -14,9 +14,9 @@
       label-width="110px"
       :inline="true"
     >
-      <el-form-item label="部门" prop="dptId">
+      <el-form-item label="部门" prop="unitId">
         <treeselect
-          v-model="queryParams.dptId"
+          v-model="queryParams.unitId"
           style="width: 200px"
           :options="deptOptions"
           placeholder="请选择部门"
@@ -25,7 +25,7 @@
       <el-form-item label="渠道编号">
         <el-input
           placeholder="请输入渠道编号"
-          v-model="queryParams.groupName"
+          v-model="queryParams.channelNum"
           size="small"
           style="width: 200px"
         />
@@ -33,7 +33,7 @@
       <el-form-item label="付款名称">
         <el-input
           placeholder="请输入付款名称"
-          v-model="queryParams.groupName"
+          v-model="queryParams.payName"
           size="small"
           style="width: 200px"
         />
@@ -184,7 +184,7 @@ export default {
     //获取部门列表
     getUnitId() {
       resourceTreeByUN().then((res) => {
-        this.queryParams.dptId = res.checked[0];
+        this.queryParams.unitId = res.checked[0];
         this.deptOptions = res.list;
         this.getList();
       });
