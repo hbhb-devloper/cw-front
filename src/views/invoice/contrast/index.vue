@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-10-26 10:25:07
  * @LastEditors: CYZ
- * @LastEditTime: 2020-10-30 15:11:23
+ * @LastEditTime: 2020-11-07 09:43:14
 -->
 <template>
   <div class="containers">
@@ -194,7 +194,7 @@ export default {
       this.loading = true;
       getContrastList(this.queryParams)
         .then((res) => {
-          this.total = res.count;
+          this.total = res.total;
           this.tableData = res.list;
           this.loading = false;
         })
