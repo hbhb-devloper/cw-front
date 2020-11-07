@@ -40,7 +40,6 @@
           type="success"
           icon="el-icon-edit"
           size="mini"
-          :disabled="single"
           @click="handleUpdate"
           v-hasPermi="['system:user:edit']"
           >修改</el-button
@@ -48,36 +47,12 @@
       </el-col>
       <el-col :span="1.5">
         <el-button
-          type="danger"
-          icon="el-icon-delete"
-          size="mini"
-          :disabled="multiple"
-          @click="handleDelete"
-          v-hasPermi="['system:user:remove']"
-          v-if="false"
-          >删除</el-button
-        >
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="info"
-          icon="el-icon-upload2"
-          size="mini"
-          @click="handleImport"
-          v-hasPermi="['system:user:import']"
-          v-if="false"
-          >导入</el-button
-        >
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
           type="warning"
           icon="el-icon-download"
           size="mini"
-          @click="handleExport"
+          @click="SetVisible = true"
           v-hasPermi="['system:user:export']"
-          v-if="false"
-          >导出</el-button
+          >相关设定</el-button
         >
       </el-col>
     </el-row>
@@ -93,63 +68,134 @@
             ref="tree"
             default-expand-all
             @node-click="handleNodeClick"
+            draggable
           />
         </div>
       </el-col>
       <!--用户数据-->
       <el-col :span="14" :xs="24">
-        <el-form label-width="100px" width="500px" :model="form">
-          <el-form-item label="管理员姓名：">
+        <el-form label-width="120px" width="500px" :model="form">
+          <el-form-item label="类别名称：">
             <el-input
               v-model="form.administrator"
               :disabled="Isdisable"
             ></el-input>
           </el-form-item>
-          <el-form-item label="联系方式：">
+          <el-form-item label="类别代码：">
             <el-input v-model="form.phone" :disabled="Isdisable"></el-input>
           </el-form-item>
-          <el-form-item label="管理员邮箱：">
+          <el-form-item label="物料审核人：">
             <el-input v-model="form.email" :disabled="Isdisable"></el-input>
           </el-form-item>
+          <el-form-item label="计量单位：">
+            <el-input v-model="form.email" :disabled="Isdisable"></el-input>
+          </el-form-item>
+          <el-form-item label="尺寸：">
+            <el-input v-model="form.email" :disabled="Isdisable"></el-input>
+          </el-form-item>
+          <el-form-item label="纸张：">
+            <el-input v-model="form.email" :disabled="Isdisable"></el-input>
+          </el-form-item>
+          <el-form-item label="联次：">
+            <el-input v-model="form.email" :disabled="Isdisable"></el-input>
+          </el-form-item>
+          <el-form-item label="是否加盖杭州分公司合同章：">
+            <el-input v-model="form.email" :disabled="Isdisable"></el-input>
+          </el-form-item>
+          <el-form-item label="是否有编号：">
+            <el-input v-model="form.email" :disabled="Isdisable"></el-input>
+          </el-form-item>
+          <el-form-item label="版面关联人：">
+            <el-input v-model="form.email" :disabled="Isdisable"></el-input>
+          </el-form-item>
+          <el-form-item label="是否使用：">
+            <el-input v-model="form.email" :disabled="Isdisable"></el-input>
+          </el-form-item>
+          <el-form-item label="编辑时间：">
+            <el-input v-model="form.email" :disabled="Isdisable"></el-input>
+          </el-form-item>
+          <el-form-item label="备注：">
+            <el-input v-model="form.email" :disabled="Isdisable"></el-input>
+          </el-form-item>
+          <el-form-item label="上传照片：">
+            <el-upload
+              action="https://jsonplaceholder.typicode.com/posts/"
+              list-type="picture-card"
+              :on-preview="handlePictureCardPreview"
+              :on-remove="handleRemove"
+            >
+              <i class="el-icon-plus"></i>
+            </el-upload>
+            <el-dialog :visible.sync="dialogVisible">
+              <img width="100%" :src="dialogImageUrl" alt="" />
+            </el-dialog>
+            <!-- <el-input v-model="form.email" :disabled="Isdisable"></el-input> -->
+          </el-form-item>
         </el-form>
+        <div  style="padding-left:50px">
+                <el-button type="danger" size="mini" @click="Isdisable =!Isdisable">编辑</el-button>
+                <el-button type="primary" size="mini" :disabled="Isdisable" @click="submit">保存</el-button>
+              </div>
       </el-col>
     </el-row>
+    <el-dialog title="相关设定" :visible.sync="SetVisible" width="600px">
+      <el-form label-width="160px"  :model="form">
+        <el-form-item
+          :label="item.title"
+          v-for="(item, index) in applicationList"
+          :key="index"
+        >
+          <el-date-picker
+            v-model="value1"
+            type="datetime"
+            placeholder="选择日期时间"
+          >
+          </el-date-picker>
+          <el-button
+            type="danger"
+            icon="el-icon-delete"
+            size="mini"
+            @click="DelLine(item.id)"
+            >删除</el-button
+          >
+        </el-form-item>
+      </el-form>
+      <el-button type="success" class="addline" @click="addLine">添加行数</el-button>
+      <el-form label-width="160px" width="500px" :model="form">
+        <el-form-item label="添加页面提示内容">
+          <el-input type="textarea" v-model="form.desc"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="submitFileForm">确 定</el-button>
+        <el-button @click="upload.open = false">取 消</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import {
-  listUser,
-  getUser,
-  delUser,
-  adduser,
-  UserList,
-  updateUser,
-  resetUserPwd,
-  changeUserStatus,
-} from "@/api/system/user";
-import { getToken } from "@/utils/auth";
-import { treeselect, DeptList } from "@/api/system/dept";
+import { DeptList } from "@/api/system/dept";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
-import { listRole } from "@/api/system/role";
-import {
-  resourceTree,
-  roleMenuTreeselect,
-  listMenu,
-} from "@/api/system/resource";
-import {
-  resourceTreeByUN,
-  listUnit,
-  UNroleMenuTreeselect,
-} from "@/api/system/unit";
-import { Encrypt } from "@/utils/AESCrypt";
 
 export default {
   name: "User",
   components: { Treeselect },
   data() {
     return {
+      value1: undefined,
+      defaultProps: {
+        children: "children",
+        label: "label",
+      },
+      //截止日期列表
+      applicationList: [],
+      dialogImageUrl: "",
+      //查看大图弹窗
+      dialogVisible: false,
+      //相关设定弹窗
+      SetVisible: false,
       Isdisable: true,
       form: {},
       // 部门树选项
@@ -205,15 +251,75 @@ export default {
     this.getTreeselect();
   },
   methods: {
+    // 筛选节点
+    filterNode(value, data) {
+      if (!value) return true;
+      return data.label.indexOf(value) !== -1;
+    },
+    // 节点单击事件
+    handleNodeClick(data) {
+      this.queryParams.unitId = data.id;
+      this.getList();
+    },
+    /** 新增按钮操作 */
+    handleAdd() {
+      this.reset();
+      this.getTreeselect();
+      DeptList().then((response) => {
+        this.postOptions = response.data;
+        // this.roleOptions = response.roles;
+        this.open = true;
+        this.title = "添加用户";
+        this.form.pwd = this.initPassword;
+      });
+    },
+    /** 修改按钮操作 */
+    handleUpdate(row) {
+      this.reset();
+      this.getTreeselect();
+      const userId = row.id || this.ids;
+
+      getUser(userId).then((response) => {
+        this.form = response;
+        this.checkedRsRoleIds = this.form.checkedRsRoleIds;
+        this.checkedUnRoleIds = this.form.checkedUnRoleIds;
+        // this.postOptions = response.posts;
+        // this.roleOptions = response.roles;
+        // this.form.postIds = response.postIds;
+        // this.form.roleIds = response.roleIds;
+        this.open = true;
+        this.title = "修改用户";
+        this.form.pwd = "";
+      });
+    },
+    // 添加行
+    addLine() {
+      console.log("this.applicationList.length", this.applicationList.length);
+      var list = {
+        title: `第${this.applicationList.length + 1}次申请截止时间`,
+      };
+      this.applicationList.push(list);
+    },
     /** 查询部门下拉树结构 */
     getTreeselect() {
       DeptList().then((response) => {
         this.deptOptions = response;
       });
     },
+    handleRemove(file, fileList) {
+      console.log(file, fileList);
+    },
+    handlePictureCardPreview(file) {
+      this.dialogImageUrl = file.url;
+      this.dialogVisible = true;
+    },
   },
 };
 </script>
 
 <style scoped>
+.addline {
+  margin-left: 25px;
+  margin-bottom: 20px;
+}
 </style>
