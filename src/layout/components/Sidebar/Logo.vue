@@ -26,7 +26,8 @@ export default {
   },
   data() {
     return {
-      title: '杭州移动财务管理系统',
+      // 杭州移动
+      title: '财务管理系统',
       logo: logoImg
     }
   }
