@@ -4,7 +4,7 @@
       <span>提示：</span><span>{{updateTime}}</span>
     </section>
     <section class="import-box">
-      <span class="title-blue">增值税发票信息导入模板</span><br/>
+      <!-- <span class="title-blue">增值税发票信息导入模板</span><br/> -->
       <div class="title-red">注意：导入单位模块后，请认真查看返回信息，若没有提示导入成功，则需要重新编辑模板导入。</div>
       <div class="title-import">新增导入</div>
       <div class="import">
