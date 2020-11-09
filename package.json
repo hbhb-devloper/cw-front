@@ -1,7 +1,7 @@
 {
     "name": "cw",
     "version": "2.3.0",
-    "description": "杭州移动财务管理系统",
+    "description": "财务管理系统",
     "author": "hbhb",
     "license": "MIT",
     "scripts": {

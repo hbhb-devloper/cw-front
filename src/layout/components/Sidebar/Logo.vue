@@ -1,3 +1,11 @@
+<!--
+ * @Descripttion: 
+ * @version: 
+ * @Author: CYZ
+ * @Date: 2020-11-09 15:41:50
+ * @LastEditors: CYZ
+ * @LastEditTime: 2020-11-09 16:02:53
+-->
 <template>
   <div class="sidebar-logo-container" :class="{'collapse':collapse}">
     <transition name="sidebarLogoFade">
@@ -26,7 +34,8 @@ export default {
   },
   data() {
     return {
-      title: '杭州移动财务管理系统',
+      // 杭州移动
+      title: '财务管理系统',
       logo: logoImg
     }
   }
