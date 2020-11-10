@@ -55,7 +55,7 @@
           type="primary"
           icon="el-icon-download"
           size="mini"
-          v-hasPermi="['budget:split:export']"
+          v-hasPermi="['invoice:ledger:detailedfee:export']"
           @click="handleExport"
           >导出</el-button
         >
@@ -65,7 +65,7 @@
           type="warning"
           icon="el-icon-download"
           size="mini"
-          v-hasPermi="['budget:split:import']"
+          v-hasPermi="['invoice:ledger:detailedfee:import']"
           @click="handleImport"
           >导入</el-button
         >
@@ -76,6 +76,7 @@
           type="success"
           icon="el-icon-download"
           size="mini"
+          v-hasPermi="['invoice:ledger:detailedfee:import']"
           @click="handleDownload"
           >下载导入模板</el-button
         >
