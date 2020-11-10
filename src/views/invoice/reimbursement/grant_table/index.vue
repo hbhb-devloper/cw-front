@@ -194,6 +194,7 @@
             this.title='酬金发放表导入';
             getTaxtype().then(res=>{
               this.taxrate=res;
+              this.tableData1=[]
               this.open1=true;
             });
           }else if(type==1){
