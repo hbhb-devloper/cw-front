@@ -476,7 +476,7 @@
   import { exportData ,BatchExport} from '@/utils/export'
   import { getToken } from '@/utils/auth'
   import { dateTimes } from '@/utils/date.js'
-  import {param} from "../../../utils";
+  import {param} from "@/utils";
 
   export default {
     data() {

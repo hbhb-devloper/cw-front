@@ -139,7 +139,7 @@
     import {getCompany} from '@/api/budget/report/report'
     import Treeselect from "@riophae/vue-treeselect";
     import "@riophae/vue-treeselect/dist/vue-treeselect.css";
-    import {exportData} from "../../../utils/export";
+    import {exportData} from "@/utils/export";
 
     export default {
       components:{
