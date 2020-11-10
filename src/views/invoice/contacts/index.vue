@@ -78,7 +78,7 @@
         >下载导入模板</el-button
       >
       <span style="position: absolute; right: 0"
-        >发票库表导入时间：{{ updateTime }}</span
+        >往来账导入时间：{{ updateTime }}</span
       >
     </el-row>
     <el-table :data="tableData" v-loading="loading">
@@ -257,11 +257,11 @@ export default {
   created() {
     this.getUnitId();
     this.getList();
-    this.getUpdateTimes();
+    
   },
   methods: {
-    getUpdateTimes() {
-      getUpdateTime().then((res) => {
+    getUpdateTimes(queryParams) {
+      getUpdateTime(queryParams).then((res) => {
         this.updateTime = res;
       });
     },
@@ -279,6 +279,7 @@ export default {
         this.queryParams.beginTime = this.itime[0];
         this.queryParams.endTime = this.itime[1];
       }
+      this.getUpdateTimes(this.queryParams);
       GetList(this.queryParams)
         .then((res) => {
           console.log(res);
