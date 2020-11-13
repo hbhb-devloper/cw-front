@@ -9,7 +9,7 @@
       <!--      <el-form-item label="分公司" prop="dptId">-->
       <!--        <treeselect v-model="queryParams.dptId" style="width:200px" :options="deptOptions" placeholder="请选择部门"/>-->
       <!--      </el-form-item>-->
-      <el-form-item label="渠道编号">
+      <el-form-item label="渠道编号"  prop="channelNum">
         <el-input
           placeholder="请输入渠道编号"
           v-model="queryParams.channelNum"
@@ -17,7 +17,7 @@
           style="width: 200px"
         />
       </el-form-item>
-      <el-form-item label="发票销售方名称">
+      <el-form-item label="发票销售方名称" prop="sellerName">
         <el-input
           placeholder="请输入发票销售方名称"
           v-model="queryParams.sellerName"
@@ -25,7 +25,7 @@
           style="width: 200px"
         />
       </el-form-item>
-      <el-form-item label="发票销售纳税人识别号">
+      <el-form-item label="发票销售纳税人识别号" prop="sellerTaxpayerCode">
         <el-input
           placeholder="请输入发票销售纳税人识别号"
           v-model="queryParams.sellerTaxpayerCode"
@@ -33,7 +33,7 @@
           style="width: 200px"
         />
       </el-form-item>
-      <el-form-item label="营业执照名称">
+      <el-form-item label="营业执照名称" prop="businessLicense">
         <el-input
           placeholder="请输入营业执照名称"
           v-model="queryParams.businessLicense"
@@ -41,7 +41,7 @@
           style="width: 200px"
         />
       </el-form-item>
-      <el-form-item label="营业执照纳税人识别号">
+      <el-form-item label="营业执照纳税人识别号" prop="businessTaxpayerCode">
         <el-input
           placeholder="请输入营业执照纳税人识别号"
           v-model="queryParams.businessTaxpayerCode"
@@ -49,7 +49,7 @@
           style="width: 200px"
         />
       </el-form-item>
-      <el-form-item label="纳税人资质">
+      <el-form-item label="纳税人资质" prop="taxpayerCredentials">
         <el-input
           placeholder="请输入纳税人资质"
           v-model="queryParams.taxpayerCredentials"
@@ -62,7 +62,7 @@
           type="primary"
           icon="el-icon-search"
           size="mini"
-          @click="getList"
+          @click="handleQuery"
           >查询</el-button
         >
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery"
@@ -203,6 +203,7 @@ export default {
       loading: true, //表格加载动画
       open: false,
       ActionUrl: process.env.VUE_APP_BASE_API + "/invoice/taxpayer/import",
+      morenUnit:undefined
     };
   },
   components: {
@@ -217,6 +218,7 @@ export default {
     getUnitId() {
       resourceTreeByUN().then((res) => {
         this.queryParams.dptId = res.checked[0];
+        this.morenUnit= res.checked[0];
         this.deptOptions = res.list;
       });
     },
@@ -233,10 +235,18 @@ export default {
           this.loading = false;
         });
     },
-    //充置搜索
-    resetQuery() {
-      this.queryParams = {};
+     /** 搜索按钮操作 */
+    handleQuery() {
+       this.queryParams.pageNum = 1;
+      this.getList();
     },
+    /** 重置按钮操作 */
+    resetQuery() {
+      this.resetForm("queryForm");
+      this.queryParams.unitId = this.morenUnit;
+      this.handleQuery();
+    },
+   
     handleImport() {
       this.open = true;
     },

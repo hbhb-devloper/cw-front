@@ -6,7 +6,7 @@
       label-width="110px"
       :inline="true"
     >
-      <el-form-item label="部门" prop="dptId">
+      <el-form-item label="部门" prop="unitId">
         <treeselect
           v-model="queryParams.unitId"
           style="width: 200px"
@@ -14,7 +14,7 @@
           placeholder="请选择部门"
         />
       </el-form-item>
-      <el-form-item label="渠道名称">
+      <el-form-item label="渠道名称" prop="channelName">
         <el-input
           placeholder="请输入渠道名称"
           v-model="queryParams.channelName"
@@ -22,7 +22,7 @@
           style="width: 200px"
         />
       </el-form-item>
-      <el-form-item label="渠道编号">
+      <el-form-item label="渠道编号" prop="channelNum">
         <el-input
           placeholder="请输入渠道编号"
           v-model="queryParams.channelNum"
@@ -48,7 +48,7 @@
         type="primary"
         icon="el-icon-search"
         size="mini"
-        @click="getList"
+        @click="handleQuery"
         >查询</el-button
       >
       <el-button icon="el-icon-refresh" size="mini" @click="resetQuery"
@@ -239,7 +239,7 @@ export default {
     return {
       total: 0,
       queryParams: {
-        pageSize: 20,
+        pageSize: 10,
         pageNum: 1,
       }, //条件搜索表单
       tableData: [], //表格数据
@@ -249,6 +249,7 @@ export default {
       updateTime: undefined,
       open: false,
       ActionUrl: process.env.VUE_APP_BASE_API + "/invoice/account/run/import",
+      morenUnit:undefined
     };
   },
   components: {
@@ -269,6 +270,7 @@ export default {
     getUnitId() {
       resourceTreeByUN().then((res) => {
         this.queryParams.unitId = res.checked[0];
+        this.morenUnit= res.checked[0];
         this.deptOptions = res.list;
       });
     },
@@ -291,15 +293,18 @@ export default {
           this.loading = false;
         });
     },
-    //充置搜索
-    resetQuery() {
-      this.queryParams = {
-        unitId: this.queryParams.unitId,
-        pageSize: 20,
-        pageNum: 1,
-      };
+    /** 搜索按钮操作 */
+    handleQuery() {
+      this.queryParams.pageNum = 1;
       this.itime = [];
       this.getList();
+    },
+    //充置搜索
+    resetQuery() {
+      
+      this.resetForm("queryForm");
+      this.queryParams.unitId = this.morenUnit;
+      this.handleQuery();
     },
     handleImport() {
       this.open = true;

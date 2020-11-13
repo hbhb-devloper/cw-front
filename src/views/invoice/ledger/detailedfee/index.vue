@@ -41,7 +41,7 @@
           type="primary"
           icon="el-icon-search"
           size="mini"
-          @click="getList"
+          @click="handleQuery"
           >查询</el-button
         >
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery"
@@ -223,6 +223,7 @@ export default {
       deptOptions: [], //单位下拉
       tableData: [], //表格数据
       loading: false, //表格加载动画
+      morenUnit:undefined
     };
   },
   components: {
@@ -237,6 +238,7 @@ export default {
     getUnitId() {
       resourceTreeByUN().then((res) => {
         this.queryParams.unitId = res.checked[0];
+        this.morenUnit= res.checked[0];
         this.deptOptions = res.list;
       });
     },
@@ -254,9 +256,16 @@ export default {
           this.loading = false;
         });
     },
-    //充置搜索
+    /** 搜索按钮操作 */
+    handleQuery() {
+      this.queryParams.pageNum = 1;
+      this.getList();
+    },
+    /** 重置按钮操作 */
     resetQuery() {
-      this.queryParams = {};
+      this.resetForm("queryForm");
+      this.queryParams.unitId = this.morenUnit;
+      this.handleQuery();
     },
     //导出
     handleExport() {

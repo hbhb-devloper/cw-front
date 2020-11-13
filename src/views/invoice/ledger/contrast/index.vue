@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-10-26 10:25:07
  * @LastEditors: CYZ
- * @LastEditTime: 2020-11-07 13:53:13
+ * @LastEditTime: 2020-11-13 14:41:53
 -->
 <template>
   <div class="containers">
@@ -22,7 +22,7 @@
           placeholder="请选择部门"
         />
       </el-form-item>
-      <el-form-item label="渠道编号">
+      <el-form-item label="渠道编号" prop="channelNum">
         <el-input
           placeholder="请输入渠道编号"
           v-model="queryParams.channelNum"
@@ -30,7 +30,7 @@
           style="width: 200px"
         />
       </el-form-item>
-      <el-form-item label="付款名称">
+      <el-form-item label="付款名称" prop="payName">
         <el-input
           placeholder="请输入付款名称"
           v-model="queryParams.payName"
@@ -45,7 +45,7 @@
         type="primary"
         icon="el-icon-search"
         size="mini"
-        @click="getList"
+        @click="handleQuery"
         >查询</el-button
       >
       <el-button icon="el-icon-refresh" size="mini" @click="resetQuery"
@@ -172,6 +172,7 @@ export default {
       tableData: [], //表格数据
       loading: true, //表格加载动画
       deptOptions:[],
+      morenUnit:undefined
     };
   },
   components: {
@@ -185,6 +186,7 @@ export default {
     getUnitId() {
       resourceTreeByUN().then((res) => {
         this.queryParams.unitId = res.checked[0];
+        this.morenUnit= res.checked[0]
         this.deptOptions = res.list;
         this.getList();
       });
@@ -202,10 +204,18 @@ export default {
           this.loading = false;
         });
     },
-    //充置搜索
-    resetQuery() {
-      this.queryParams = {};
+      /** 搜索按钮操作 */
+    handleQuery() {
+      this.queryParams.pageNum = 1;
+      this.getList();
     },
+    /** 重置按钮操作 */
+    resetQuery() {
+      this.resetForm("queryForm");
+      this.queryParams.unitId = this.morenUnit;
+      this.handleQuery();
+    },
+   
     //导出
     handleExport() {
       this.$confirm("是否导出对比表数据？", "提示", {
