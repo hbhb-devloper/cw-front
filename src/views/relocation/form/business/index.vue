@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-10-10 14:45:48
  * @LastEditors: CYZ
- * @LastEditTime: 2020-10-14 14:48:30
+ * @LastEditTime: 2020-11-12 09:33:19
 -->
 <template>
   <div class="app-container">
@@ -316,6 +316,7 @@ import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 import { resourceTreeByUN } from "@/api/system/unit";
 import { exportData } from "@/utils/export";
+import { prefix } from "@/api/relocation/relocation";
 import { getToken } from "@/utils/auth";
 export default {
   name: "Flowtype",
@@ -478,7 +479,7 @@ export default {
           return exportData(
             getToken(),
             queryParams,
-            "/relocation/statement",
+            `${prefix}/statement/export`,
             "业务统计"
           );
         })

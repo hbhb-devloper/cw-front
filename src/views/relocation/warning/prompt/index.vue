@@ -138,6 +138,8 @@
 
 <script>
 import { listWarn } from "@/api/relocation/warning/prompt.js";
+import { prefix } from '@/api/relocation/relocation'
+
 import { exportData } from "@/utils/export";
 import { getToken } from "@/utils/auth";
 export default {
@@ -285,7 +287,7 @@ export default {
           return exportData(
             getToken(),
             queryParams,
-            "/relocation/warn/export",
+            `${prefix}/warn/export`,
             "提示信息"
           );
         })

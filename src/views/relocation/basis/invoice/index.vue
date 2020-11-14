@@ -467,6 +467,7 @@ import { resourceTreeByUN } from "@/api/system/unit";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 import { getToken } from "@/utils/auth";
+import {prefix} from '@/api/relocation/relocation'
 import { exportData } from "@/utils/export";
 export default {
   name: "Flowtype",
@@ -569,7 +570,7 @@ export default {
       deptOptions: [],
       morenUnit: undefined,
       centerDialogVisible: false,
-      ActionUrl: process.env.VUE_APP_BASE_API + "/reinvoice/import", // 上传的图片服务器地址
+      ActionUrl: process.env.VUE_APP_BASE_API + `${prefix}/invoice/import`, // 上传的图片服务器地址
       fileList: [],
       headers: {
         Authorization: getToken(),
@@ -591,7 +592,7 @@ export default {
   },
   methods: {
     downTemplate() {
-      exportData(getToken(), "", "/reinvoice/exportTemplate", "发票管理");
+      exportData(getToken(), "", `${prefix}/invoice/exportTemplate`, "发票管理");
     },
     handleupload() {
       const loading = this.$loading({
@@ -638,7 +639,7 @@ export default {
       this.loading = true;
       listInvoice(this.queryParams).then((response) => {
         this.typeList = response.list;
-        this.total = response.total;
+        this.total = response.totalRow;
         this.loading = false;
       });
     },
@@ -762,7 +763,7 @@ export default {
           return exportData(
             getToken(),
             queryParams,
-            "/reinvoice/export",
+            `${prefix}/invoice/export`,
             "发票管理"
           );
         })

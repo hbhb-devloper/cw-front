@@ -698,6 +698,7 @@ import {
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 import { getToken } from "@/utils/auth";
+import {prefix} from '@/api/relocation/relocation'
 export default {
   name: "Flowtype",
   components: { Treeselect },
@@ -857,7 +858,7 @@ export default {
       morenUnit: undefined,
       deptOptions: [],
       centerDialogVisible: false,
-      ActionUrl: process.env.VUE_APP_BASE_API + "/relocation/project/import", // 上传的图片服务器地址
+      ActionUrl: process.env.VUE_APP_BASE_API + `${prefix}/project/import`, // 上传的图片服务器地址
       fileList: [],
       headers: {
         Authorization: getToken(),
@@ -866,7 +867,7 @@ export default {
   },
   created() {
     // this.getList();
-    compensationSate().then((response) => {
+    this.getDicts("relocation/compensation_sate").then((response) => {
       this.compensationOptions = response;
       this.getTreeselect();
     });
@@ -931,7 +932,7 @@ export default {
         });
         console.log("res", response);
         this.typeList = response.list;
-        this.total = response.count;
+        this.total = response.totalRow;
         this.loading = false;
       });
     },

@@ -4,16 +4,16 @@
  * @Author: CYZ
  * @Date: 2020-09-23 14:42:03
  * @LastEditors: CYZ
- * @LastEditTime: 2020-10-13 11:15:05
+ * @LastEditTime: 2020-11-11 15:15:56
  */
 
-import request from '@/utils/request'
-
+import request from '@/utils/request1'
+import {prefix} from '../relocation'
 
 // 查询迁改发票列表
 export function listInvoice(query) {
     return request({
-        url: '/reinvoice/list',
+        url: `${prefix}/invoice/list`,
         method: 'get',
         params: query
     })
@@ -21,7 +21,7 @@ export function listInvoice(query) {
 // 查询迁改发票详情
 export function getInvoice(id) {
     return request({
-        url: '/reinvoice/'+id,
+        url: `${prefix}/invoice/${id}`,
         method: 'get',
     })
 }
@@ -29,7 +29,7 @@ export function getInvoice(id) {
 // 迁改管理发票模板导出
 export function exportTemplate() {
     return request({
-        url: '/reinvoice/exportTemplate',
+        url: `${prefix}/invoice/exportTemplate`,
         method: 'post',
     })
 }
@@ -37,7 +37,7 @@ export function exportTemplate() {
 // 新增迁改发票
 export function addInvoice(data) {
     return request({
-        url: '/reinvoice/add',
+        url: `${prefix}/invoice/add`,
         method: 'post',
         data: data
     })
@@ -46,7 +46,7 @@ export function addInvoice(data) {
 // 修改迁改发票
 export function updateInvoice(data) {
     return request({
-        url: '/reinvoice',
+        url: `${prefix}/invoice`,
         method: 'put',
         data: data
     })
@@ -55,7 +55,7 @@ export function updateInvoice(data) {
 // 删除迁改发票
 export function delarr(InvoiceId) {
     return request({
-        url: '/reinvoice/' + InvoiceId,
+        url: `${prefix}/invoice/${InvoiceId}` ,
         method: 'delete',
     })
 }

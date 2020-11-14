@@ -4,10 +4,11 @@
  * @Author: CYZ
  * @Date: 2020-09-23 14:42:03
  * @LastEditors: CYZ
- * @LastEditTime: 2020-10-12 15:45:02
+ * @LastEditTime: 2020-11-14 10:24:59
  */
 
-import request from '@/utils/request'
+import request from '@/utils/request1'
+import {prefix} from '../relocation'
 
 
 
@@ -35,7 +36,7 @@ export function listRefinance(query) {
         );
       }
     return request({
-        url: '/refinance/list',
+        url: `${prefix}/refinance/list`,
         method: 'get',
         params: queryParams
     })

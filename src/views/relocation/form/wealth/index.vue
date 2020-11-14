@@ -611,6 +611,8 @@ import { exportData } from "@/utils/export";
 import { getToken } from "@/utils/auth";
 import { listRefinance } from "@/api/relocation/form/wealth.js";
 import Treeselect from "@riophae/vue-treeselect";
+import {prefix} from '@/api/relocation/relocation'
+
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 export default {
   name: "Flowtype",
@@ -673,7 +675,7 @@ export default {
       console.log("this.queryParams", this.queryParams);
       listRefinance(this.queryParams).then((response) => {
         this.typeList = response.list;
-        this.total = response.total;
+        this.total = response.totalRow;
         this.loading = false;
       });
     },
@@ -767,7 +769,7 @@ export default {
           return exportData(
             getToken(),
             queryParams,
-            "/refinance/export",
+            `${prefix}/refinance/export`,
             "涉财统计"
           );
         })

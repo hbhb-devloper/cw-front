@@ -7,7 +7,7 @@
           <el-button size="mini" v-if="parseInt(state)" :disabled="info.state==10"  @click="handleGetHistory">查看历史</el-button>
         </div>
          <div style="position: absolute;right:10%;top:-50px;" >
-          <el-button size="mini"  v-if="parseInt(state)" :disabled="info.state==10"  @click="GotoHistory">查看版本</el-button>
+          <el-button size="mini" :disabled="!historyAble"  v-if="parseInt(state)"  @click="GotoHistory">查看版本</el-button>
         </div>
       </div>
       <div style="width: 100%;text-align: center;font-weight: 900;" v-if="parseInt(state)"><span v-if="program[0]">{{program[0].projectFlowName}}</span></div>
@@ -543,7 +543,8 @@
     SubmitApprove,
     deleteApprove,
     getHistory,
-    getDeleteApprove
+    getDeleteApprove,
+    getApproveState
   } from '@/api/budget/report/info.js'
   import {getList} from '@/api/flow/opinion.js'
   import { dateTimes } from '@/utils/date.js'
@@ -589,6 +590,7 @@
         budgetId:undefined,//类型id
         opinion:[],//意见下拉
         historyLoading:true,
+        historyAble:true
       }
     },
     filters:{
@@ -616,10 +618,14 @@
         this.$store.dispatch('PROJECTID',this.$route.query.id);
         this.handleLoad(this.$route.query.id);
       }
+
     },
     methods: {
       handleLoad(id) {
-
+        getApproveState(id).then(res=>{
+          console.log('getApproveState',res);
+          this.historyAble=res
+        })
         //详情
         this.projectId=id;
         GetInfo(id).then(res => {

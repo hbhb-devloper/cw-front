@@ -341,6 +341,8 @@ import { getToken } from "@/utils/auth";
 import { resourceTreeByUN } from "@/api/system/unit";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
+import {prefix} from '@/api/relocation/relocation'
+
 export default {
   name: "Flowtype",
   components: { Treeselect },
@@ -395,7 +397,7 @@ export default {
         { dictValue: 1, dictLabel: "正常" },
         { dictValue: 0, dictLabel: "停用" },
       ],
-      ActionUrl: process.env.VUE_APP_BASE_API + "/income/import", // 上传的图片服务器地址
+      ActionUrl: process.env.VUE_APP_BASE_API + `${prefix}/income/import`, // 上传的图片服务器地址
       fileList: [],
       headers: {
         Authorization: getToken(),
@@ -488,7 +490,7 @@ export default {
       this.loading = true;
       listIncome(this.queryParams).then((response) => {
         this.typeList = response.list;
-        this.total = response.total;
+        this.total = response.totalRow;
         this.loading = false;
       });
     },
@@ -533,7 +535,7 @@ export default {
           return exportData(
             getToken(),
             queryParams,
-            "/income/export",
+            `${prefix}/income/export`,
             "收款管理"
           );
         })
