@@ -6,10 +6,13 @@
         <div style="position: absolute;right:20%;top:-50px;" >
           <el-button size="mini" v-if="parseInt(state)" :disabled="info.state==10"  @click="handleGetHistory">查看历史</el-button>
         </div>
+         <div style="position: absolute;right:10%;top:-50px;" >
+          <el-button size="mini" :disabled="!historyAble"  v-if="parseInt(state)"  @click="GotoHistory">查看版本</el-button>
+        </div>
       </div>
       <div style="width: 100%;text-align: center;font-weight: 900;" v-if="parseInt(state)"><span v-if="program[0]">{{program[0].projectFlowName}}</span></div>
       <div class="program" v-if="program">
-        <div v-for="(item,index) in program" class="programList">
+        <div v-for="(item,index) in program" :key=index class="programList">
           <i class="el-icon-close" v-if="item.isDelete" @click="handleDeleteApprove(item)"></i>
           <div class="programList-div">
             <span style="max-width: 160px;line-height: 19px;">
@@ -21,14 +24,16 @@
               <el-option
                 v-for="items in item.approverSelect"
                 :value="items.userId"
-                :label="items.nickName">
+                :label="items.nickName"
+                :key="items.userId">
               </el-option>
             </el-select>
             <el-select  v-else placeholder="请选择" v-model="item.nickName" style="width:120px;" :disabled="item.approver.readOnly">
               <el-option
                 v-for="items in item.approverSelect"
                 :value="items.userId"
-                :label="items.nickName">
+                :label="items.nickName"
+                :key="items.userId">
               </el-option>
             </el-select>
           </div>
@@ -53,7 +58,7 @@
               default-first-option
               placeholder="请输入审批意见">
               <el-option
-                v-for="(items,indexs) in opinion"
+                v-for="items in opinion"
                 :key="items.id"
                 :label="items.suggestion"
                 :value="items.suggestion">
@@ -276,7 +281,7 @@
                   <el-form-item label="科目：" :required="true">
                     <el-select placeholder="请选择" v-model="form.budgetId" disabled @change="handleType"
                                style="width: 200px">
-                      <el-option v-for="item in projectItem" :value="item.id" :label="item.label"></el-option>
+                      <el-option v-for="item in projectItem" :key="item.id" :value="item.id" :label="item.label"></el-option>
                     </el-select>
                   </el-form-item>
                   <el-form-item label="单价(万元)：">
@@ -409,7 +414,7 @@
           </el-form-item>
           <el-form-item label="科目：" :required="true">
             <el-select placeholder="请选择" v-model="form2.budgetId" disabled @change="handleType" style="width: 200px">
-              <el-option v-for="item in projectItem" :value="item.id" :label="item.label"></el-option>
+              <el-option v-for="item in projectItem" :key="item.id" :value="item.id" :label="item.label"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="单价(万元)：">
@@ -538,7 +543,8 @@
     SubmitApprove,
     deleteApprove,
     getHistory,
-    getDeleteApprove
+    getDeleteApprove,
+    getApproveState
   } from '@/api/budget/report/info.js'
   import {getList} from '@/api/flow/opinion.js'
   import { dateTimes } from '@/utils/date.js'
@@ -584,6 +590,7 @@
         budgetId:undefined,//类型id
         opinion:[],//意见下拉
         historyLoading:true,
+        historyAble:true
       }
     },
     filters:{
@@ -604,16 +611,21 @@
       ...mapGetters(['projectIds']),
     },
     mounted() {
+
       if(parseInt(this.state)){
         this.handleLoad(this.$route.params.id)
       }else if(this.state==undefined){
         this.$store.dispatch('PROJECTID',this.$route.query.id);
         this.handleLoad(this.$route.query.id);
       }
+
     },
     methods: {
       handleLoad(id) {
-
+        getApproveState(id).then(res=>{
+          console.log('getApproveState',res);
+          this.historyAble=res
+        })
         //详情
         this.projectId=id;
         GetInfo(id).then(res => {
@@ -897,6 +909,10 @@
         }).then(() => {
           exportWord(getToken(), exportData, `/budget/project/info/export`,this.info.projectName);
         });
+      },
+      GotoHistory(){
+        console.log('this.projectId',this.projectId);
+        this.$router.push(`/budget/infohistory/${this.projectId}`);
       }
     }
   }
