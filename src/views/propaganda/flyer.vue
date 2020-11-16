@@ -57,30 +57,39 @@
         >
       </el-form-item>
     </el-form>
-    <el-row  >
+    <el-row>
       <el-col
         :span="5"
         v-for="(o, index) in 6"
         :key="index"
-        style="margin-bottom:10px;"
+        style="margin-bottom: 10px"
         :offset="1"
       >
         <el-card :body-style="{ padding: '0px' }">
           <img
             src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png"
             class="image"
+            @click="showPic"
           />
           <div style="padding: 14px">
             <div>移动铅笔套盒（含笔盒）</div>
             <div>计量单位：套</div>
             <div class="bottom clearfix">
-              申请数量：<el-input v-model="input" type="number" style="width:100px"></el-input>
+              申请数量：<el-input
+                v-model="input"
+                type="number"
+                style="width: 100px"
+              ></el-input>
               <el-button type="text" class="button">√</el-button>
             </div>
           </div>
         </el-card>
       </el-col>
     </el-row>
+    <el-dialog :visible.sync="dialogVisible">
+      <img width="100%" :src="dialogImageUrl" alt="" />
+    </el-dialog>
+    
   </div>
 </template>
 
@@ -89,7 +98,9 @@ export default {
   name: "Role",
   data() {
     return {
-      input:0,
+      dialogImageUrl:'',
+      dialogVisible: false,
+      input: 0,
       currentDate: new Date(),
       // 状态数据字典
       statusOptions: [
@@ -108,6 +119,10 @@ export default {
     // this.getMenuTreeselect();
   },
   methods: {
+    showPic(){
+this.dialogImageUrl = "https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png";
+        this.dialogVisible = true;
+    },
     /** 查询角色列表 */
     getList() {
       this.loading = true;
@@ -133,41 +148,41 @@ export default {
 </script>
 <style scoped>
 .time {
-    font-size: 13px;
-    color: #999;
-  }
-  
-  .bottom {
-    line-height: 36px;
-    display: flex;
-    flex-direction: row;
-    position: relative;
-  }
+  font-size: 13px;
+  color: #999;
+}
 
-  .button {
-    padding: 0;
-    float: right;
-    margin-left: 10px;
-  }
+.bottom {
+  line-height: 36px;
+  display: flex;
+  flex-direction: row;
+  position: relative;
+}
 
-  .image {
-    width: 100%;
-    display: block;
-  }
+.button {
+  padding: 0;
+  float: right;
+  margin-left: 10px;
+}
 
-  .clearfix:before,
-  .clearfix:after {
-      display: table;
-      content: "";
-  }
-  
-  .clearfix:after {
-      clear: both
-  }
-  .flyerList{
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: space-around;
-  }
+.image {
+  width: 100%;
+  display: block;
+}
+
+.clearfix:before,
+.clearfix:after {
+  display: table;
+  content: "";
+}
+
+.clearfix:after {
+  clear: both;
+}
+.flyerList {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
 </style>
