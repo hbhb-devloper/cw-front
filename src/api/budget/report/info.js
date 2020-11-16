@@ -104,3 +104,10 @@ export function getDeleteApprove(id) {
     method:'get'
   })
 }
+//获取可删除的节点id
+export function getApproveState(id) {
+  return request({
+    url:`/budget/approved/state/${id}`,
+    method:'get'
+  })
+}
