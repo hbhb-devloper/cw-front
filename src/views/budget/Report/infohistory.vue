@@ -1,13 +1,16 @@
 <template>
   <div class="containers">
-    <el-button
-      icon="el-icon-back"
-      type="primary"
-      size="mini"
-      style="margin-bottom: 20px"
-      @click="handleBack"
-      >返回</el-button
-    >
+    <div class="top">
+      <el-button
+        icon="el-icon-back"
+        type="primary"
+        size="mini"
+        style="margin-bottom: 20px"
+        @click="handleBack"
+        >返回当前</el-button
+      >
+      <div class="title">发起调整前版本</div>
+    </div>
     <div class="program-box" v-if="parseInt(id) || info.state != 10">
       <!-- <div style="width: 100%;position: relative;">
         <div style="position: absolute;right:20%;top:-50px;" >
@@ -33,7 +36,7 @@
               <i class="el-icon-error" v-if="item.operation.value == 0"></i>
               {{ item.approverRole }}：
             </span>
-            
+
             <el-select
               placeholder="请选择"
               v-model="item.roleUserId"
@@ -81,7 +84,6 @@
               style="width: 180px"
               placeholder="请输入审批意见"
             ></el-input>
-            
           </div>
           <div style="height: 32px">
             <div v-if="item.operation.value != 2">
@@ -485,7 +487,6 @@
             </div>
           </div>
         </el-tab-pane>
-        
       </el-tabs>
     </div>
     <!--  分类预算修改    -->
@@ -1197,5 +1198,21 @@ export default {
 
 .column-no-padding {
   padding: 0;
+}
+.top {
+  width: 100%;
+  position: relative;
+}
+.title {
+  position: absolute;
+  margin: 0 auto;
+  left: 0;
+  right: 0;
+  font-weight: 500;
+  font-size: 29px;
+  color: red;
+  top: 0;
+  width: 500px;
+  text-align: center;
 }
 </style>
