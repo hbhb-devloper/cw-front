@@ -35,7 +35,7 @@ service.interceptors.response.use(
     // if (code === 1000) {
     if (code === '00000') {
       return res.data
-    } else if (code === 401) {
+    } else if (code === 'A0002' ||code === 'A0204') {
       MessageBox.confirm(
         '登录状态已过期，您可以继续留在该页面，或者重新登录',
         '系统提示', {
@@ -48,7 +48,7 @@ service.interceptors.response.use(
           location.reload() // 为了重新实例化vue-router对象 避免bug
         })
       })
-    } else if (code === 500) {
+    } else if (code === '10001') {
       Notification({
         message: message,
         type: 'error'
