@@ -1,4 +1,4 @@
-import { login, logout, getInfo } from '@/api/login'
+import { login, logout, getInfo, check } from '@/api/login'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import Layout from '@/layout/index'
 // import { filterAsyncRouter  } from '@/utils/Routerfilter'
@@ -38,11 +38,16 @@ const user = {
         // 登录
         Login({ commit }, userInfo) {
             return new Promise((resolve, reject) => {
-                login(userInfo).then(res => {
-                    setToken(res)
-                    commit('SET_TOKEN', res)
-                    resolve()
-                }).catch(error => {
+                check(userInfo).then(res => {
+                    login(userInfo).then(res => {
+                        setToken('Bearer ' + res.accessToken)
+                        commit('SET_TOKEN', 'Bearer ' + res.accessToken)
+                        resolve()
+                    }).catch(error => {
+                        reject(error)
+                    })
+                }
+                ).catch(error => {
                     reject(error)
                 })
             })
@@ -52,19 +57,18 @@ const user = {
         GetInfo({ commit, state }) {
             return new Promise((resolve, reject) => {
                 getInfo(state.token).then(res => {
-                    commit('SET_NAME', res.userInfo.userName)
-                    commit('SET_AVATAR', res.userInfo.avatar)
-                    commit('SET_NICKNEM', res.userInfo.nickName)
-                    commit('SET_PERMISSIONS', res.permissions)
-                    let namefilter = ['角色库', '角色分配', '工作台','流程类型','流程列表']
-                    const sideRouters = filterAsyncRouter(res.sideRouters)
-                    let k = []
-                    // const sideRouters1 = filterAsyncRouter1(asyncRouter, namefilter)
-                    // console.log('sideRouters1', sideRouters1);
-                    // const sideRouters = filterAsyncRouter(sideRouters1)
-                    const navRouters = filterAsyncRouter(res.navRouters)
+                    commit('SET_NAME', res.userName)
+                    // commit('SET_AVATAR', res.userInfo.avatar)
+                    commit('SET_NICKNEM', res.nickName)
+                    commit('SET_PERMISSIONS', res.perms)
+                    let namefilter = ['角色库', '角色分配', '工作台', '流程类型', '流程列表']
+                    // const sideRouters = filterAsyncRouter(res.sideRouters)
+                    const sideRouters1 = filterAsyncRouter1(asyncRouter, namefilter)
+                    console.log('sideRouters1', sideRouters1);
+                    const sideRouters = filterAsyncRouter(sideRouters1)
+                    // const navRouters = filterAsyncRouter(res.navRouters)
                     commit('SET_SIDEROUTERS', sideRouters)
-                    commit('SET_NAVROUTERS', navRouters)
+                    // commit('SET_NAVROUTERS', navRouters)
                     resolve(sideRouters)
                 }).catch(error => {
                     reject(error)
@@ -130,7 +134,7 @@ function getarr(b, a) {
         if (obj.children.length) {
             k.push(obj)
         }
-        
+
         return k
     }, [])
 }
@@ -181,9 +185,9 @@ function filterAsyncRouter(asyncRouterMap) {
             }
         }
         if (route.children != null && route.children && route.children.length) {
-                route.children = filterAsyncRouter(route.children)
+            route.children = filterAsyncRouter(route.children)
         }
-        if (route.children ) {
+        if (route.children) {
             if (route.children.length == 0) {
                 route.hidden = true
             }

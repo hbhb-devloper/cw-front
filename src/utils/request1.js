@@ -1,10 +1,10 @@
 import axios from 'axios'
-import {Notification, MessageBox, Message} from 'element-ui'
+import { Notification, MessageBox, Message } from 'element-ui'
 import store from '@/store'
-import {getToken} from '@/utils/auth'
+import { getToken } from '@/utils/auth'
 import errorCode from '@/utils/errorCode'
-import {tansParams} from "@/utils/ruoyi";
-import {console} from "vuedraggable/src/util/helper";
+import { tansParams } from "@/utils/ruoyi";
+import { console } from "vuedraggable/src/util/helper";
 
 axios.defaults.headers['Content-Type'] = 'application/json;charset=utf-8'
 // 创建axios实例
@@ -29,18 +29,20 @@ service.interceptors.request.use(config => {
 service.interceptors.response.use(
   response => {
     const res = response.data;
-    const code = res.status;
+    // const code = res.status;
+    const code = res.code;
     const message = errorCode[code] || res.message || errorCode['default']
-    if (code === 1000) {
+    // if (code === 1000) {
+    if (code === '00000') {
       return res.data
     } else if (code === 401) {
       MessageBox.confirm(
         '登录状态已过期，您可以继续留在该页面，或者重新登录',
         '系统提示', {
-          confirmButtonText: '重新登录',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }
+        confirmButtonText: '重新登录',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }
       ).then(() => {
         store.dispatch('LogOut').then(() => {
           location.reload() // 为了重新实例化vue-router对象 避免bug
