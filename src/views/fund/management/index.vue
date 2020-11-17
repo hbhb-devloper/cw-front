@@ -32,6 +32,7 @@
             v-for="dict in typeList"
             :label="dict.label"
             :value="dict.value"
+            :key="dict.value"
           />
         </el-select>
       </el-form-item>
@@ -46,6 +47,7 @@
           <el-option
             v-for="dict in StateOptions"
             :label="dict.label"
+            :key="dict.value"
             :value="dict.value"
           />
         </el-select>
@@ -335,6 +337,7 @@
                 v-for="dict in InvoiceContentList"
                 :label="dict.label"
                 :value="dict.value"
+                :key="dict.value"
               />
             </el-select>
           </el-form-item>
@@ -354,6 +357,7 @@
                 v-for="dict in formTypeList"
                 :label="dict.label"
                 :value="dict.value"
+                :key="dict.value"
                 :disabled="dict.disabled"
               />
             </el-select>
@@ -432,7 +436,7 @@
               <el-button size="small" type="primary" class="uploadImgBtn">添加</el-button>
             </el-upload>
             <div class="file-box">
-              <div v-for="(item,index) in fileList"><i class="el-icon-folder"></i><span class="fileName">{{item.fileName}}</span><span
+              <div v-for="(item,index) in fileList" :key="index"><i class="el-icon-folder"></i><span class="fileName">{{item.fileName}}</span><span
                 @click="beforeRemove(item)" class="el-icon-circle-close"></span></div>
             </div>
           </el-form-item>
@@ -647,6 +651,9 @@
       },
       /** 搜索按钮操作 */
       handleQuery() {
+        if (!this.queryParams.isCancellation) {
+          this.queryParams.isCancellation=undefined
+        }
         this.queryParams.pageNum = 1;
         this.getList();
       },
