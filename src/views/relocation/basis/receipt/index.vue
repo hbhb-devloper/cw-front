@@ -319,7 +319,7 @@ import {
   delarr,
 } from "@/api/relocation/basis/receipt.js";
 import { getToken } from "@/utils/auth";
-import { exportData } from "@/utils/export";
+import { exportData1 } from "@/utils/export";
 import { resourceTreeByUN } from "@/api/system/unit";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
@@ -394,7 +394,7 @@ export default {
         remake: [{ required: true, message: "备注不能为空", trigger: "blur" }],
       },
       centerDialogVisible: false,
-      ActionUrl: process.env.VUE_APP_BASE_API + "/relocation/receipt/import", // 上传的图片服务器地址
+      ActionUrl: process.env.VUE_APP_GATEWAY_API + "/relocation/receipt/import", // 上传的图片服务器地址
       fileList: [],
       headers: {
         Authorization: getToken(),
@@ -494,7 +494,7 @@ export default {
         type: "warning",
       })
         .then(function () {
-          return exportData(
+          return exportData1(
             getToken(),
             queryParams,
             "/relocation/receipt/export",

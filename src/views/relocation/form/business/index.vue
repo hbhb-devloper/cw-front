@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-10-10 14:45:48
  * @LastEditors: CYZ
- * @LastEditTime: 2020-11-12 09:33:19
+ * @LastEditTime: 2020-11-17 11:38:36
 -->
 <template>
   <div class="app-container">
@@ -315,7 +315,7 @@ import { listStatement } from "@/api/relocation/form/business.js";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 import { resourceTreeByUN } from "@/api/system/unit";
-import { exportData } from "@/utils/export";
+import { exportData1 } from "@/utils/export";
 import { prefix } from "@/api/relocation/relocation";
 import { getToken } from "@/utils/auth";
 export default {
@@ -476,7 +476,7 @@ export default {
         type: "warning",
       })
         .then(function () {
-          return exportData(
+          return exportData1(
             getToken(),
             queryParams,
             `${prefix}/statement/export`,

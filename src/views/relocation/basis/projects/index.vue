@@ -858,7 +858,7 @@ export default {
       morenUnit: undefined,
       deptOptions: [],
       centerDialogVisible: false,
-      ActionUrl: process.env.VUE_APP_BASE_API + `${prefix}/project/import`, // 上传的图片服务器地址
+      ActionUrl: process.env.VUE_APP_GATEWAY_API + `${prefix}/project/import`, // 上传的图片服务器地址
       fileList: [],
       headers: {
         Authorization: getToken(),

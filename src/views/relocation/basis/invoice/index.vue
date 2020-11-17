@@ -468,7 +468,7 @@ import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 import { getToken } from "@/utils/auth";
 import {prefix} from '@/api/relocation/relocation'
-import { exportData } from "@/utils/export";
+import { exportData1 } from "@/utils/export";
 export default {
   name: "Flowtype",
   components: { Treeselect },
@@ -570,7 +570,7 @@ export default {
       deptOptions: [],
       morenUnit: undefined,
       centerDialogVisible: false,
-      ActionUrl: process.env.VUE_APP_BASE_API + `${prefix}/invoice/import`, // 上传的图片服务器地址
+      ActionUrl: process.env.VUE_APP_GATEWAY_API + `${prefix}/invoice/import`, // 上传的图片服务器地址
       fileList: [],
       headers: {
         Authorization: getToken(),
@@ -592,7 +592,7 @@ export default {
   },
   methods: {
     downTemplate() {
-      exportData(getToken(), "", `${prefix}/invoice/exportTemplate`, "发票管理");
+      exportData1(getToken(), "", `${prefix}/invoice/exportTemplate`, "发票管理");
     },
     handleupload() {
       const loading = this.$loading({
@@ -760,7 +760,7 @@ export default {
         type: "warning",
       })
         .then(function () {
-          return exportData(
+          return exportData1(
             getToken(),
             queryParams,
             `${prefix}/invoice/export`,

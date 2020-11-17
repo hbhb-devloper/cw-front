@@ -1,2 +1,1 @@
-// export const prefix='/system/default'
-export const prefix='/system'
+export const prefix='/system'+process.env.VUE_APP_profile_URL

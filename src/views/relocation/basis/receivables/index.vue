@@ -336,7 +336,7 @@ import {
   listIncomeDetail,
   addIncome,
 } from "@/api/relocation/basis/receivables.js";
-import { exportData } from "@/utils/export";
+import { exportData1 } from "@/utils/export";
 import { getToken } from "@/utils/auth";
 import { resourceTreeByUN } from "@/api/system/unit";
 import Treeselect from "@riophae/vue-treeselect";
@@ -397,7 +397,7 @@ export default {
         { dictValue: 1, dictLabel: "正常" },
         { dictValue: 0, dictLabel: "停用" },
       ],
-      ActionUrl: process.env.VUE_APP_BASE_API + `${prefix}/income/import`, // 上传的图片服务器地址
+      ActionUrl: process.env.VUE_APP_GATEWAY_API + `${prefix}/income/import`, // 上传的图片服务器地址
       fileList: [],
       headers: {
         Authorization: getToken(),
@@ -532,7 +532,7 @@ export default {
         type: "warning",
       })
         .then(function () {
-          return exportData(
+          return exportData1(
             getToken(),
             queryParams,
             `${prefix}/income/export`,

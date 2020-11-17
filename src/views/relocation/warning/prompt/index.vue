@@ -140,7 +140,7 @@
 import { listWarn } from "@/api/relocation/warning/prompt.js";
 import { prefix } from '@/api/relocation/relocation'
 
-import { exportData } from "@/utils/export";
+import { exportData1 } from "@/utils/export";
 import { getToken } from "@/utils/auth";
 export default {
   name: "Flowtype",
@@ -284,7 +284,7 @@ export default {
         type: "warning",
       })
         .then(function () {
-          return exportData(
+          return exportData1(
             getToken(),
             queryParams,
             `${prefix}/warn/export`,
