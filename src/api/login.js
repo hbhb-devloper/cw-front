@@ -1,4 +1,5 @@
 import request from '@/utils/request1'
+import request1 from '@/utils/request'
 import {Encrypt} from '@/utils/AESCrypt'
 const client_id = 'client-app'
 const client_secret = '123456'
@@ -53,8 +54,8 @@ export function login(data) {
 
 // 获取用户详细信息
 export function getInfo() {
-    return request({
-        url: '/auth/oauth/user',
+    return request1({
+        url: '/getInfo',
         method: 'get'
     })
 }

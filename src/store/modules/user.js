@@ -57,15 +57,15 @@ const user = {
         GetInfo({ commit, state }) {
             return new Promise((resolve, reject) => {
                 getInfo(state.token).then(res => {
-                    commit('SET_NAME', res.userName)
-                    // commit('SET_AVATAR', res.userInfo.avatar)
-                    commit('SET_NICKNEM', res.nickName)
-                    commit('SET_PERMISSIONS', res.perms)
+                    commit('SET_NAME', res.userInfo.userName)
+                    commit('SET_AVATAR', res.userInfo.avatar)
+                    commit('SET_NICKNEM', res.userInfo.nickName)
+                    commit('SET_PERMISSIONS', res.permissions)
                     let namefilter = ['角色库', '角色分配', '工作台', '流程类型', '流程列表']
-                    // const sideRouters = filterAsyncRouter(res.sideRouters)
-                    const sideRouters1 = filterAsyncRouter1(asyncRouter, namefilter)
-                    console.log('sideRouters1', sideRouters1);
-                    const sideRouters = filterAsyncRouter(sideRouters1)
+                    const sideRouters = filterAsyncRouter(res.sideRouters)
+                    // const sideRouters1 = filterAsyncRouter1(asyncRouter, namefilter)
+                    // console.log('sideRouters1', sideRouters1);
+                    // const sideRouters = filterAsyncRouter(sideRouters1)
                     // const navRouters = filterAsyncRouter(res.navRouters)
                     commit('SET_SIDEROUTERS', sideRouters)
                     // commit('SET_NAVROUTERS', navRouters)
