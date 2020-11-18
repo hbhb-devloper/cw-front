@@ -430,6 +430,7 @@
             <el-form-item label="施工费（预算：元）" prop="constructionBudget">
               <el-input
                 v-model="form.constructionBudget"
+                type="number"
                 placeholder="请输入施工费"
               />
             </el-form-item>
@@ -438,6 +439,7 @@
             <el-form-item label="甲供材料费（预算：元）" prop="materialBudget">
               <el-input
                 v-model="form.materialBudget"
+                type="number"
                 placeholder="请输入甲供材料费"
               />
             </el-form-item>
@@ -449,6 +451,7 @@
             >
               <el-input
                 v-model="form.constructionCost"
+                type="number"
                 placeholder="请输入施工费"
               />
             </el-form-item>
@@ -460,6 +463,7 @@
             >
               <el-input
                 v-model="form.materialCost"
+                type="number"
                 placeholder="请输入甲供材料费"
               />
             </el-form-item>
@@ -471,6 +475,7 @@
             >
               <el-input
                 v-model="form.constructionAuditCost"
+                type="number"
                 placeholder="请输入施工费审定金额"
               />
             </el-form-item>
@@ -482,7 +487,7 @@
                 placeholder="请选择主动迁改或者被动"
                 clearable
                 size="small"
-                style="width:220px"
+                style="width: 220px"
               >
                 <el-option
                   v-for="dict in InitiativeOptions"
@@ -532,13 +537,12 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="有无赔补" prop="hasCompensation">
-              
               <el-select
                 v-model="form.hasCompensation"
                 placeholder="赔补状态"
                 clearable
                 size="small"
-                style="width:220px"
+                style="width: 220px"
               >
                 <el-option
                   v-for="dict in compensateOptions"
@@ -547,7 +551,6 @@
                   :value="dict.dictValue"
                 />
               </el-select>
-              
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -578,6 +581,7 @@
             <el-form-item label="赔补金额（元）" prop="compensationAmount">
               <el-input
                 v-model="form.compensationAmount"
+                type="number"
                 placeholder="请输入赔补金额"
               />
             </el-form-item>
@@ -586,6 +590,7 @@
             <el-form-item label="预付款到账金额（元）" prop="anticipatePayment">
               <el-input
                 v-model="form.anticipatePayment"
+                type="number"
                 placeholder="请输入预付款到账金额"
               />
             </el-form-item>
@@ -594,6 +599,7 @@
             <el-form-item label="预付款应付金额（元）" prop="anticipatePayable">
               <el-input
                 v-model="form.anticipatePayable"
+                type="number"
                 placeholder="请输入预付款应付金额"
               />
             </el-form-item>
@@ -605,6 +611,7 @@
             >
               <el-input
                 v-model="form.finalPayment"
+                type="number"
                 placeholder="请输入决算款到账金额"
               />
             </el-form-item>
@@ -616,7 +623,7 @@
                 placeholder="赔补状态"
                 clearable
                 size="small"
-                style="width:220px"
+                style="width: 220px"
               >
                 <el-option
                   v-for="dict in compensationOptions"
@@ -653,7 +660,9 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="年份" prop="projectYear">
-              <el-input v-model="form.projectYear" placeholder="请输入年份" />
+              <el-date-picker v-model="form.projectYear" value-format="yyyy" type="year" placeholder="选择年">
+              </el-date-picker>
+              <!-- <el-input v-model="form.projectYear" placeholder="请输入年份" /> -->
             </el-form-item>
           </el-col>
         </el-row>
@@ -698,19 +707,18 @@ import {
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 import { getToken } from "@/utils/auth";
-import {prefix} from '@/api/relocation/relocation'
+import { prefix } from "@/api/relocation/relocation";
 export default {
   name: "Flowtype",
   components: { Treeselect },
   data() {
     var validatePass = (rule, value, callback) => {
-        if (this.form.hasCompensation === '0') {
-          callback(new Error('请输入被动无赔类型'));
-        } 
-        callback()
-      };
+      if (this.form.hasCompensation === "0") {
+        callback(new Error("请输入被动无赔类型"));
+      }
+      callback();
+    };
     return {
-      
       // 遮罩层
       loading: true,
       // 选中数组
@@ -735,7 +743,7 @@ export default {
         pageSize: 10,
       },
       // 赔补状态
-      compensationOptions:[],
+      compensationOptions: [],
       // 表单参数
       form: {},
       defaultProps: {
@@ -806,9 +814,7 @@ export default {
         hasCompensation: [
           { required: true, message: "请选择有无赔补", trigger: "blur" },
         ],
-        compensationType: [
-          {validator: validatePass, trigger: "blur" },
-        ],
+        compensationType: [{ validator: validatePass, trigger: "blur" }],
         contractNum: [
           { required: true, message: "请输入合同编号", trigger: "blur" },
         ],
@@ -842,8 +848,8 @@ export default {
       },
       // 状态数据字典
       statusOptions: [
-        { dictValue: '1', dictLabel: "正常" },
-        { dictValue: '0', dictLabel: "停用" },
+        { dictValue: "1", dictLabel: "正常" },
+        { dictValue: "0", dictLabel: "停用" },
       ],
       // 有无赔补
       compensateOptions: [
@@ -920,7 +926,7 @@ export default {
       listProject(this.queryParams).then((response) => {
         response.list.map((item) => {
           if (item.hasCompensation) {
-            item.hasCompensationName= "有"
+            item.hasCompensationName = "有";
           } else {
             item.hasCompensationName = "无";
           }
@@ -991,9 +997,9 @@ export default {
 
     /** 提交按钮 */
     submitForm: function () {
-      console.log('123');
+      console.log("123");
       this.$refs["form"].validate((valid) => {
-        console.log('valid',valid);
+        console.log("valid", valid);
         if (valid) {
           if (this.form.id != undefined) {
             updateProject(this.form)
