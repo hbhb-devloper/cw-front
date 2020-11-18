@@ -42,7 +42,7 @@
         </div>
       </div>
     </el-col>
-    <el-col style="flex: 1" class="card-panel-col">
+    <!-- <el-col style="flex: 1" class="card-panel-col">
       <div class="card-panel" @click="handleSetLineChartData(workList[2].module, workList[2].moduleName)">
         <div class="card-panel-icon-wrapper icon-money">
           <svg-icon icon-class="money" class-name="card-panel-icon" />
@@ -57,7 +57,7 @@
           />
         </div>
       </div>
-    </el-col>
+    </el-col> -->
     <!-- <el-col style="flex:1" class="card-panel-col">
       <div class="card-panel" @click="handleSetLineChartData('shoppings')">
         <div class="card-panel-icon-wrapper icon-shopping">
