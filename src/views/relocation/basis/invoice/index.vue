@@ -102,10 +102,10 @@
                        prop="invoiceNumber"
                        width="150"
                        align="center" />
-      <el-table-column label="开票点"
+      <!-- <el-table-column label="开票点"
                        prop="invoiceSite"
                        width="150"
-                       align="center" />
+                       align="center" /> -->
       <el-table-column label="业务类型"
                        prop="businessType"
                        width="150"

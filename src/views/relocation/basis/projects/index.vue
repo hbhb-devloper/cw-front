@@ -744,6 +744,7 @@ export default {
     // this.getList();
     this.getDicts("relocation/compensation_sate").then((response) => {
       this.compensationOptions = response;
+      console.log('1111', response)
       this.getTreeselect();
     });
   },
@@ -862,6 +863,12 @@ export default {
       this.reset();
       const typeId = row.id || this.ids;
       //   getRole(typeId).then(response => {
+      console.log(row);
+      this.compensationOptions.map(item => {
+        if (item.label == row.compensationSate) {
+          row.compensationSate = item.value
+        }
+      })
       this.form = row;
       this.open = true;
       this.title = "修改迁改项目管理信息";
@@ -874,6 +881,7 @@ export default {
       this.$refs["form"].validate((valid) => {
         console.log("valid", valid);
         if (valid) {
+          console.log("哈哈哈", this.form);
           if (this.form.id != undefined) {
             updateProject(this.form)
               .then((response) => {
