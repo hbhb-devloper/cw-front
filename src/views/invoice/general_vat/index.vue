@@ -28,6 +28,7 @@
                 type="date"
                 name="invoiceDate"
                 style="width: 240px"
+                value-format="yyyy-MM-dd"
                 placeholder="选择日期"
               >
               </el-date-picker>
