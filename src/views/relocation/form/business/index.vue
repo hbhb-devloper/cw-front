@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-10-10 14:45:48
  * @LastEditors: CYZ
- * @LastEditTime: 2020-11-17 11:38:36
+ * @LastEditTime: 2020-11-18 17:52:14
 -->
 <template>
   <div class="app-container">
@@ -334,7 +334,7 @@ export default {
       // 查询参数
       queryParams: {
         pageNum: 1,
-        pageSize: 10,
+        pageSize: 50,
         flowTypeName: undefined,
       },
       // 表单参数
