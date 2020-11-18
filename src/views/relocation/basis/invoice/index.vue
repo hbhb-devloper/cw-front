@@ -1,279 +1,236 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" :inline="true">
+    <el-form :model="queryParams"
+             ref="queryForm"
+             :inline="true">
       <el-row>
-        <el-form-item label="金额范围" prop="amountFrom">
-          <el-input
-            v-model="queryParams.amountFrom"
-            placeholder="请输入金额范围"
-            clearable
-            size="small"
-            @keyup.enter.native="handleQuery"
-          />
+        <el-form-item label="金额范围"
+                      prop="amountFrom">
+          <el-input v-model="queryParams.amountFrom"
+                    placeholder="请输入金额范围"
+                    clearable
+                    size="small"
+                    @keyup.enter.native="handleQuery" />
         </el-form-item>
-        <el-form-item label="至" prop="amountTo" label-width="25px">
-          <el-input
-            v-model="queryParams.amountTo"
-            placeholder="请输入金额范围"
-            clearable
-            size="small"
-            @keyup.enter.native="handleQuery"
-          />
+        <el-form-item label="至"
+                      prop="amountTo"
+                      label-width="25px">
+          <el-input v-model="queryParams.amountTo"
+                    placeholder="请输入金额范围"
+                    clearable
+                    size="small"
+                    @keyup.enter.native="handleQuery" />
         </el-form-item>
-        <el-form-item label="开票时间" prop="invoiceTimeFrom">
-          <el-date-picker
-            v-model="queryParams.invoiceTimeFrom"
-            type="date"
-            placeholder="选择开票时间"
-          ></el-date-picker>
+        <el-form-item label="开票时间"
+                      prop="invoiceTimeFrom">
+          <el-date-picker v-model="queryParams.invoiceTimeFrom"
+                          type="date"
+                          placeholder="选择开票时间"></el-date-picker>
         </el-form-item>
-        <el-form-item label="至" prop="invoiceTimeTo" label-width="25px">
-          <el-date-picker
-            v-model="queryParams.invoiceTimeTo"
-            type="date"
-            placeholder="选择开票时间"
-          ></el-date-picker>
+        <el-form-item label="至"
+                      prop="invoiceTimeTo"
+                      label-width="25px">
+          <el-date-picker v-model="queryParams.invoiceTimeTo"
+                          type="date"
+                          placeholder="选择开票时间"></el-date-picker>
         </el-form-item>
 
-        <el-form-item label="县市" prop="unitId">
-          <treeselect
-            v-model="queryParams.unitId"
-            :options="deptOptions"
-            placeholder="请选择县市"
-          />
+        <el-form-item label="县市"
+                      prop="unitId">
+          <treeselect v-model="queryParams.unitId"
+                      :options="deptOptions"
+                      placeholder="请选择县市" />
         </el-form-item>
 
         <el-form-item>
-          <el-button
-            type="primary"
-            icon="el-icon-search"
-            size="mini"
-            @click="handleQuery"
-            >搜索</el-button
-          >
-          <el-button icon="el-icon-refresh" size="mini" @click="resetQuery"
-            >重置</el-button
-          >
+          <el-button type="primary"
+                     icon="el-icon-search"
+                     size="mini"
+                     @click="handleQuery">搜索</el-button>
+          <el-button icon="el-icon-refresh"
+                     size="mini"
+                     @click="resetQuery">重置</el-button>
         </el-form-item>
       </el-row>
     </el-form>
 
-    <el-row :gutter="10" class="mb8">
+    <el-row :gutter="10"
+            class="mb8">
       <el-col :span="1.5">
-        <el-button
-          type="primary"
-          icon="el-icon-plus"
-          size="mini"
-          @click="handleAdd"
-          >新增</el-button
-        >
+        <el-button type="primary"
+                   icon="el-icon-plus"
+                   size="mini"
+                   @click="handleAdd">新增</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button
-          type="success"
-          icon="el-icon-download"
-          size="mini"
-          @click="centerDialogVisible = true"
-          >导入</el-button
-        >
+        <el-button type="success"
+                   icon="el-icon-download"
+                   size="mini"
+                   @click="centerDialogVisible = true">导入</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button
-          type="warning"
-          icon="el-icon-download"
-          size="mini"
-          @click="handleExport"
-          >导出</el-button
-        >
+        <el-button type="warning"
+                   icon="el-icon-download"
+                   size="mini"
+                   @click="handleExport">导出</el-button>
       </el-col>
     </el-row>
 
-    <el-table v-loading="loading" :data="typeList">
+    <el-table v-loading="loading"
+              :data="typeList">
       <!-- <el-table-column type="selection" width="55" align="center" /> -->
       <!-- <el-table-column label="序号" prop="id" align="center" /> -->
-      <el-table-column label="序号" type="index" align="center" width="50">
+      <el-table-column label="序号"
+                       type="index"
+                       align="center"
+                       width="50">
       </el-table-column>
       <!-- <el-table-column label="类型名称" prop="flowTypeName" width="150" align="center" /> -->
-      <el-table-column
-        label="地区"
-        prop="district"
-        width="150"
-        align="center"
-      />
-      <el-table-column label="县市" prop="unit" width="150" align="center" />
-      <el-table-column
-        label="发票代码"
-        prop="invoiceCode"
-        width="150"
-        align="center"
-      />
-      <el-table-column
-        label="发票号码"
-        prop="invoiceNumber"
-        width="150"
-        align="center"
-      />
-      <el-table-column
-        label="开票点"
-        prop="invoiceSite"
-        width="150"
-        align="center"
-      />
-      <el-table-column
-        label="业务类型"
-        prop="businessType"
-        width="150"
-        align="center"
-      />
-      <el-table-column
-        label="发票类型"
-        prop="invoiceType"
-        width="150"
-        align="center"
-      />
-      <el-table-column
-        label="购方税号"
-        prop="buyerTax"
-        width="150"
-        align="center"
-      />
-      <el-table-column
-        label="购方名称"
-        prop="buyerName"
-        width="150"
-        align="center"
-      />
-      <el-table-column
-        label="开票项目"
-        prop="invoiceProject"
-        width="150"
-        align="center"
-      />
-      <el-table-column
-        label="开票日期"
-        prop="invoiceTime"
-        width="170"
-        align="center"
-      />
-      <el-table-column label="金额" prop="amount" width="150" align="center" />
-      <el-table-column label="税率" prop="taxRate" width="150" align="center" />
-      <el-table-column
-        label="税额"
-        prop="taxAmount"
-        width="150"
-        align="center"
-      />
-      <el-table-column
-        label="价税合计"
-        prop="taxIncludeAmount"
-        width="150"
-        align="center"
-      />
-      <el-table-column
-        label="备注格式：合同号；区县；款项性质；项目信息"
-        prop="remake"
-        width="350"
-        align="center"
-      />
-      <el-table-column
-        label="申请人"
-        prop="applicant"
-        width="150"
-        align="center"
-      />
-      <el-table-column
-        label="开票人"
-        prop="issuer"
-        width="150"
-        align="center"
-      />
-      <el-table-column
-        label="票据状态"
-        prop="state"
-        width="150"
-        align="center"
-      />
-      <el-table-column
-        label="是否为自定义菜单开票"
-        prop="isImport"
-        width="150"
-        align="center"
-      />
-      <el-table-column
-        label="客户经理"
-        prop="manager"
-        width="150"
-        align="center"
-      />
-      <el-table-column
-        label="描述"
-        prop="describe"
-        width="150"
-        align="center"
-      />
-      <el-table-column
-        label="操作"
-        align="center"
-        width="200"
-        class-name="small-padding fixed-width"
-      >
+      <el-table-column label="地区"
+                       prop="district"
+                       width="150"
+                       align="center" />
+      <el-table-column label="县市"
+                       prop="unit"
+                       width="150"
+                       align="center" />
+      <el-table-column label="发票代码"
+                       prop="invoiceCode"
+                       width="150"
+                       align="center" />
+      <el-table-column label="发票号码"
+                       prop="invoiceNumber"
+                       width="150"
+                       align="center" />
+      <el-table-column label="开票点"
+                       prop="invoiceSite"
+                       width="150"
+                       align="center" />
+      <el-table-column label="业务类型"
+                       prop="businessType"
+                       width="150"
+                       align="center" />
+      <el-table-column label="发票类型"
+                       prop="invoiceType"
+                       width="150"
+                       align="center" />
+      <el-table-column label="购方税号"
+                       prop="buyerTax"
+                       width="150"
+                       align="center" />
+      <el-table-column label="购方名称"
+                       prop="buyerName"
+                       width="150"
+                       align="center" />
+      <el-table-column label="开票项目"
+                       prop="invoiceProject"
+                       width="150"
+                       align="center" />
+      <el-table-column label="开票日期"
+                       prop="invoiceTime"
+                       width="170"
+                       align="center" />
+      <el-table-column label="金额"
+                       prop="amount"
+                       width="150"
+                       align="center" />
+      <el-table-column label="税率"
+                       prop="taxRate"
+                       width="150"
+                       align="center" />
+      <el-table-column label="税额"
+                       prop="taxAmount"
+                       width="150"
+                       align="center" />
+      <el-table-column label="价税合计"
+                       prop="taxIncludeAmount"
+                       width="150"
+                       align="center" />
+      <el-table-column label="备注格式：合同号；区县；款项性质；项目信息"
+                       prop="remake"
+                       width="350"
+                       align="center" />
+      <el-table-column label="申请人"
+                       prop="applicant"
+                       width="150"
+                       align="center" />
+      <el-table-column label="开票人"
+                       prop="issuer"
+                       width="150"
+                       align="center" />
+      <el-table-column label="票据状态"
+                       prop="state"
+                       width="150"
+                       align="center" />
+      <el-table-column label="是否为自定义菜单开票"
+                       prop="isImport"
+                       width="150"
+                       align="center" />
+      <el-table-column label="客户经理"
+                       prop="manager"
+                       width="150"
+                       align="center" />
+      <el-table-column label="描述"
+                       prop="describe"
+                       width="150"
+                       align="center" />
+      <el-table-column label="操作"
+                       align="center"
+                       width="200"
+                       class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-edit"
-            @click="handleUpdate(scope.row)"
-            >修改</el-button
-          >
+          <el-button size="mini"
+                     type="text"
+                     icon="el-icon-edit"
+                     @click="handleUpdate(scope.row)">修改</el-button>
         </template>
       </el-table-column>
     </el-table>
 
-    <pagination
-      v-show="total > 0"
-      :total="total"
-      :page.sync="queryParams.pageNum"
-      :limit.sync="queryParams.pageSize"
-      @pagination="getList"
-    />
+    <pagination v-show="total > 0"
+                :total="total"
+                :page.sync="queryParams.pageNum"
+                :limit.sync="queryParams.pageSize"
+                @pagination="getList" />
 
     <!-- 添加或修改角色配置对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="1000px">
-      <el-form ref="form" :model="form" :rules="rules" label-width="140px">
+    <el-dialog :title="title"
+               :visible.sync="open"
+               width="1000px">
+      <el-form ref="form"
+               :model="form"
+               :rules="rules"
+               label-width="140px">
         <el-row>
           <el-col :span="12">
-            <el-form-item label="地区" prop="district">
-              <treeselect
-                v-model="form.district"
-                :options="deptOptions"
-                placeholder="请选择地区"
-              />
+            <el-form-item label="地区"
+                          prop="district">
+              <treeselect v-model="form.district"
+                          :options="deptOptions"
+                          placeholder="请选择地区" />
             </el-form-item>
           </el-col>
           <!-- <el-col :span="12"></el-col> -->
           <el-col :span="12">
-            <el-form-item label="县市" prop="unitId">
-              <treeselect
-                v-model="form.unitId"
-                :options="deptOptions"
-                placeholder="请选择县市"
-              />
+            <el-form-item label="县市"
+                          prop="unitId">
+              <treeselect v-model="form.unitId"
+                          :options="deptOptions"
+                          placeholder="请选择县市" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="发票代码" prop="invoiceCode">
-              <el-input
-                v-model="form.invoiceCode"
-                placeholder="请输入发票代码"
-              />
+            <el-form-item label="发票代码"
+                          prop="invoiceCode">
+              <el-input v-model="form.invoiceCode"
+                        placeholder="请输入发票代码" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="发票号码" prop="invoiceNumber">
-              <el-input
-                v-model="form.invoiceNumber"
-                placeholder="请输入发票号码"
-              />
+            <el-form-item label="发票号码"
+                          prop="invoiceNumber">
+              <el-input v-model="form.invoiceNumber"
+                        placeholder="请输入发票号码" />
             </el-form-item>
           </el-col>
           <!-- <el-col :span="12">
@@ -282,173 +239,185 @@
             </el-form-item>
           </el-col> -->
           <el-col :span="12">
-            <el-form-item label="业务类型" prop="businessType">
-              <el-input
-                v-model="form.businessType"
-                placeholder="选择业务类型"
-              ></el-input>
+            <el-form-item label="业务类型"
+                          prop="businessType">
+              <el-input v-model="form.businessType"
+                        placeholder="选择业务类型"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="发票类型" prop="invoiceType">
-              <el-select
-                v-model="form.invoiceType"
-                placeholder="请选择发票类型"
-                clearable
-                style="width: 220px"
-              >
-                <el-option :key="0" label="增值税专用发票" :value="0" />
-                <el-option :key="1" label="增值税普通发票" :value="1" />
+            <el-form-item label="发票类型"
+                          prop="invoiceType">
+              <el-select v-model="form.invoiceType"
+                         placeholder="请选择发票类型"
+                         clearable
+                         style="width: 220px">
+                <el-option :key="0"
+                           label="增值税专用发票"
+                           :value="0" />
+                <el-option :key="1"
+                           label="增值税普通发票"
+                           :value="1" />
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="购方税号" prop="buyerTax">
-              <el-input v-model="form.buyerTax" placeholder="请输入购方税号" />
+            <el-form-item label="购方税号"
+                          prop="buyerTax">
+              <el-input v-model="form.buyerTax"
+                        placeholder="请输入购方税号" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="购方名称" prop="buyerName">
-              <el-input v-model="form.buyerName" placeholder="请输入购方名称" />
+            <el-form-item label="购方名称"
+                          prop="buyerName">
+              <el-input v-model="form.buyerName"
+                        placeholder="请输入购方名称" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="开票项目" prop="invoiceProject">
-              <el-input
-                v-model="form.invoiceProject"
-                placeholder="请输入开票项目"
-              />
+            <el-form-item label="开票项目"
+                          prop="invoiceProject">
+              <el-input v-model="form.invoiceProject"
+                        placeholder="请输入开票项目" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="开票日期" prop="invoiceTime">
-              <el-date-picker
-                v-model="form.invoiceTime"
-                type="date"
-                placeholder="请输入开票日期"
-                value-format="yyyy-mm-dd"
-              ></el-date-picker>
+            <el-form-item label="开票日期"
+                          prop="invoiceTime">
+              <el-date-picker v-model="form.invoiceTime"
+                              type="date"
+                              placeholder="请输入开票日期"
+                              value-format="yyyy-MM-dd"></el-date-picker>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="金额" prop="amount">
-              <el-input
-                v-model="form.amount"
-                type="number"
-                placeholder="请输入金额"
-              />
+            <el-form-item label="金额"
+                          prop="amount">
+              <el-input v-model="form.amount"
+                        type="number"
+                        placeholder="请输入金额" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="税率" prop="taxRate">
-              <el-input
-                v-model="form.taxRate"
-                type="number"
-                placeholder="请输入税率"
-              />
+            <el-form-item label="税率"
+                          prop="taxRate">
+              <el-input v-model="form.taxRate"
+                        type="number"
+                        placeholder="请输入税率" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="税额" prop="taxAmount">
-              <el-input
-                v-model="form.taxAmount"
-                disabled
-                placeholder="请输入税额"
-              />
+            <el-form-item label="税额"
+                          prop="taxAmount">
+              <el-input v-model="form.taxAmount"
+                        disabled
+                        placeholder="请输入税额" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="价税合计" prop="taxIncludeAmount">
-              <el-input
-                v-model="form.taxIncludeAmount"
-                disabled
-                placeholder="请输入价税合计"
-              />
+            <el-form-item label="价税合计"
+                          prop="taxIncludeAmount">
+              <el-input v-model="form.taxIncludeAmount"
+                        disabled
+                        placeholder="请输入价税合计" />
             </el-form-item>
           </el-col>
 
           <el-col :span="12">
-            <el-form-item label="申请人" prop="applicant">
-              <el-input v-model="form.applicant" placeholder="请输入申请人" />
+            <el-form-item label="申请人"
+                          prop="applicant">
+              <el-input v-model="form.applicant"
+                        placeholder="请输入申请人" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="开票人" prop="issuer">
-              <el-input v-model="form.issuer" placeholder="请输入开票人" />
+            <el-form-item label="开票人"
+                          prop="issuer">
+              <el-input v-model="form.issuer"
+                        placeholder="请输入开票人" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="票据状态" prop="state">
-              <el-select
-                v-model="form.state"
-                placeholder="请选择票据状态"
-                clearable
-                style="width: 220px"
-              >
-                <el-option :key="1" label="蓝字" :value="1" />
-                <el-option :key="0" label="红字" :value="0" />
+            <el-form-item label="票据状态"
+                          prop="state">
+              <el-select v-model="form.state"
+                         placeholder="请选择票据状态"
+                         clearable
+                         style="width: 220px">
+                <el-option :key="1"
+                           label="蓝字"
+                           :value="1" />
+                <el-option :key="0"
+                           label="红字"
+                           :value="0" />
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="是否为自定义菜单开票" prop="isImport">
-              <el-select
-                v-model="form.isImport"
-                placeholder="请选择是否为自定义菜单开票"
-                clearable
-                style="width: 220px"
-              >
-                <el-option :key="1" label="是" :value="1" />
-                <el-option :key="0" label="否" :value="0" />
+            <el-form-item label="是否为自定义菜单开票"
+                          prop="isImport">
+              <el-select v-model="form.isImport"
+                         placeholder="请选择是否为自定义菜单开票"
+                         clearable
+                         style="width: 220px">
+                <el-option :key="1"
+                           label="是"
+                           :value="1" />
+                <el-option :key="0"
+                           label="否"
+                           :value="0" />
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item
-              label="备注格式：合同号；区县；款项性质；项目信息"
-              prop="remake"
-            >
-              <el-input
-                v-model="form.remake"
-                placeholder="请输入备注格式：合同号；区县；款项性质；项目信息"
-              />
+            <el-form-item label="备注格式：合同号；区县；款项性质；项目信息"
+                          prop="remake">
+              <el-input v-model="form.remake"
+                        placeholder="请输入备注格式：合同号；区县；款项性质；项目信息" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="描述" prop="describe">
-              <el-input v-model="form.describe" placeholder="请输入描述" />
+            <el-form-item label="描述"
+                          prop="describe">
+              <el-input v-model="form.describe"
+                        placeholder="请输入描述" />
             </el-form-item>
           </el-col>
         </el-row>
       </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
+      <div slot="footer"
+           class="dialog-footer">
+        <el-button type="primary"
+                   @click="submitForm">确 定</el-button>
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
 
-    <el-dialog title="导入" :visible.sync="centerDialogVisible" width="500px">
+    <el-dialog title="导入"
+               :visible.sync="centerDialogVisible"
+               width="500px">
       <div style="margin-bottom: 10px">
-        <el-button type="primary" @click="downTemplate">
+        <el-button type="primary"
+                   @click="downTemplate">
           <i class="el-icon-download"></i>下载导入模板
         </el-button>
       </div>
-      <el-upload
-        class="upload-demo"
-        :headers="headers"
-        :on-preview="handlePreview"
-        :on-remove="handleRemove"
-        :before-remove="beforeRemove"
-        :on-success="handleSuccess"
-        :on-progress="handleupload"
-        :on-error="handleFail"
-        multiple
-        :limit="1"
-        :on-exceed="handleExceed"
-        :action="ActionUrl"
-        :file-list="fileList"
-      >
-        <el-button size="small" type="primary">点击上传</el-button>
+      <el-upload class="upload-demo"
+                 :headers="headers"
+                 :on-preview="handlePreview"
+                 :on-remove="handleRemove"
+                 :before-remove="beforeRemove"
+                 :on-success="handleSuccess"
+                 :on-progress="handleupload"
+                 :on-error="handleFail"
+                 multiple
+                 :limit="1"
+                 :on-exceed="handleExceed"
+                 :action="ActionUrl"
+                 :file-list="fileList">
+        <el-button size="small"
+                   type="primary">点击上传</el-button>
       </el-upload>
     </el-dialog>
   </div>
@@ -467,12 +436,12 @@ import { resourceTreeByUN } from "@/api/system/unit";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 import { getToken } from "@/utils/auth";
-import {prefix} from '@/api/relocation/relocation'
+import { prefix } from '@/api/relocation/relocation'
 import { exportData1 } from "@/utils/export";
 export default {
   name: "Flowtype",
   components: { Treeselect },
-  data() {
+  data () {
     return {
       // 遮罩层
       loading: true,
@@ -586,15 +555,15 @@ export default {
       deep: true,
     },
   },
-  created() {
+  created () {
     // this.getList();
     this.getTreeselect();
   },
   methods: {
-    downTemplate() {
+    downTemplate () {
       exportData1(getToken(), "", `${prefix}/invoice/exportTemplate`, "发票管理");
     },
-    handleupload() {
+    handleupload () {
       const loading = this.$loading({
         lock: true,
         text: "正在导入表格",
@@ -603,20 +572,19 @@ export default {
       });
       this.loadingoption = loading;
     },
-    handleFail() {
+    handleFail () {
       this.loadingoption.close();
       this.$message.error("上传失败");
     },
-    handleRemove(file, fileList) {},
-    handlePreview(file) {},
-    handleExceed(files, fileList) {
+    handleRemove (file, fileList) { },
+    handlePreview (file) { },
+    handleExceed (files, fileList) {
       this.$message.warning(
-        `当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${
-          files.length + fileList.length
+        `当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length
         } 个文件`
       );
     },
-    handleSuccess(res) {
+    handleSuccess (res) {
       this.fileList = [];
       this.loadingoption.close();
       this.centerDialogVisible = false;
@@ -631,11 +599,11 @@ export default {
         this.getList();
       }
     },
-    beforeRemove(file, fileList) {
+    beforeRemove (file, fileList) {
       return this.$confirm(`确定移除 ${file.name}？`);
     },
     /** 查询角色列表 */
-    getList() {
+    getList () {
       this.loading = true;
       listInvoice(this.queryParams).then((response) => {
         this.typeList = response.list;
@@ -643,7 +611,7 @@ export default {
         this.loading = false;
       });
     },
-    getTreeselect() {
+    getTreeselect () {
       let that = this;
       resourceTreeByUN().then((response) => {
         that.deptOptions = response.list;
@@ -653,12 +621,12 @@ export default {
       });
     },
     // 取消按钮
-    cancel() {
+    cancel () {
       this.open = false;
       this.reset();
     },
     // 表单重置
-    reset() {
+    reset () {
       this.form = {
         id: undefined,
         businessType: "财务开票",
@@ -670,25 +638,26 @@ export default {
       this.resetForm("form");
     },
     /** 搜索按钮操作 */
-    handleQuery() {
+    handleQuery () {
       this.queryParams.pageNum = 1;
       this.getList();
     },
     /** 重置按钮操作 */
-    resetQuery() {
+    resetQuery () {
       this.queryParams.data = [];
       this.resetForm("queryForm");
       this.handleQuery();
+      this.queryParams.unitId = this.morenUnit;
     },
     /** 新增按钮操作 */
-    handleAdd() {
+    handleAdd () {
       this.reset();
       // this.getMenuTreeselect();
       this.open = true;
       this.title = "添加发票";
     },
     /** 修改按钮操作 */
-    handleUpdate(row) {
+    handleUpdate (row) {
       this.reset();
       const InvoiceId = row.id || this.ids;
       getInvoice(InvoiceId).then((response) => {
@@ -702,8 +671,8 @@ export default {
     submitForm: function () {
       this.$refs["form"].validate((valid) => {
         if (valid) {
-          this.form.remake=this.form.remake.replace(/\;/g,'；')
-          console.log('this.form.remake',this.form.remake);
+          this.form.remake = this.form.remake.replace(/\;/g, '；')
+          console.log('this.form.remake', this.form.remake);
           if (this.form.id != undefined) {
             updateInvoice(this.form)
               .then((response) => {
@@ -730,7 +699,7 @@ export default {
     },
 
     /** 删除按钮操作 */
-    handleDelete(row) {
+    handleDelete (row) {
       const typeIds = row.id;
       this.$confirm(
         '是否确认删除流程类型名称为"' + row.flowTypeName + '"的数据项?',
@@ -748,10 +717,10 @@ export default {
           this.getList();
           this.msgSuccess("删除成功");
         })
-        .catch(function () {});
+        .catch(function () { });
     },
     /** 导出按钮操作 */
-    handleExport() {
+    handleExport () {
       const queryParams = this.queryParams;
 
       this.$confirm("是否确认导出发票管理的数据项?", "导出表格", {
@@ -770,7 +739,7 @@ export default {
         .then((response) => {
           this.download(response.msg);
         })
-        .catch(function () {});
+        .catch(function () { });
     },
   },
 };

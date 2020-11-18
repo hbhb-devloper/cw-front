@@ -1,329 +1,304 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" :inline="true">
+    <el-form :model="queryParams"
+             ref="queryForm"
+             :inline="true">
       <el-row>
-        <el-form-item label="起始时间" prop="startTimeFrom">
-          <el-date-picker
-            v-model="queryParams.startTimeFrom"
-            type="date"
-            placeholder="选择起始时间"
-          ></el-date-picker>
+        <el-form-item label="起始时间"
+                      prop="startTimeFrom">
+          <el-date-picker v-model="queryParams.startTimeFrom"
+                          type="date"
+                          placeholder="选择起始时间"></el-date-picker>
         </el-form-item>
-        <el-form-item label="至" prop="startTimeTo" label-width="25px">
-          <el-date-picker
-            v-model="queryParams.startTimeTo"
-            type="date"
-            placeholder="选择结束时间"
-          ></el-date-picker>
+        <el-form-item label="至"
+                      prop="startTimeTo"
+                      label-width="25px">
+          <el-date-picker v-model="queryParams.startTimeTo"
+                          type="date"
+                          placeholder="选择结束时间"></el-date-picker>
         </el-form-item>
-        <el-form-item label="合同截止时间" prop="contractDeadlineFrom">
-          <el-date-picker
-            v-model="queryParams.contractDeadlineFrom"
-            type="date"
-            placeholder="选择起始时间"
-          ></el-date-picker>
+        <el-form-item label="合同截止时间"
+                      prop="contractDeadlineFrom">
+          <el-date-picker v-model="queryParams.contractDeadlineFrom"
+                          type="date"
+                          placeholder="选择起始时间"></el-date-picker>
         </el-form-item>
-        <el-form-item label="至" prop="contractDeadlineTo" label-width="25px">
-          <el-date-picker
-            v-model="queryParams.contractDeadlineTo"
-            type="date"
-            placeholder="选择结束时间"
-          ></el-date-picker>
+        <el-form-item label="至"
+                      prop="contractDeadlineTo"
+                      label-width="25px">
+          <el-date-picker v-model="queryParams.contractDeadlineTo"
+                          type="date"
+                          placeholder="选择结束时间"></el-date-picker>
         </el-form-item>
-        <el-form-item label="合同编号" prop="contractNum">
-          <el-input
-            v-model="queryParams.contractNum"
-            placeholder="请输入合同编号"
-            clearable
-            size="small"
-            @keyup.enter.native="handleQuery"
-          />
+        <el-form-item label="合同编号"
+                      prop="contractNum">
+          <el-input v-model="queryParams.contractNum"
+                    placeholder="请输入合同编号"
+                    clearable
+                    size="small"
+                    @keyup.enter.native="handleQuery" />
         </el-form-item>
-        <el-form-item label="经办单位" prop="unitId">
-          <treeselect
-            v-model="queryParams.unitId"
-            :options="deptOptions"
-            placeholder="请选择经办单位"
-          />
+        <el-form-item label="经办单位"
+                      prop="unitId">
+          <treeselect v-model="queryParams.unitId"
+                      :options="deptOptions"
+                      placeholder="请选择经办单位" />
         </el-form-item>
-        <el-form-item label="合同名称" prop="contractName">
-          <el-input
-            v-model="queryParams.contractName"
-            placeholder="请输入合同名称"
-            clearable
-            size="small"
-            style="width: 240px"
-            @keyup.enter.native="handleQuery"
-          />
+        <el-form-item label="合同名称"
+                      prop="contractName">
+          <el-input v-model="queryParams.contractName"
+                    placeholder="请输入合同名称"
+                    clearable
+                    size="small"
+                    style="width: 240px"
+                    @keyup.enter.native="handleQuery" />
         </el-form-item>
 
         <el-form-item>
-          <el-button
-            type="primary"
-            icon="el-icon-search"
-            size="mini"
-            @click="handleQuery"
-            >搜索</el-button
-          >
-          <el-button icon="el-icon-refresh" size="mini" @click="resetQuery"
-            >重置</el-button
-          >
+          <el-button type="primary"
+                     icon="el-icon-search"
+                     size="mini"
+                     @click="handleQuery">搜索</el-button>
+          <el-button icon="el-icon-refresh"
+                     size="mini"
+                     @click="resetQuery">重置</el-button>
         </el-form-item>
       </el-row>
     </el-form>
 
-    <el-row :gutter="10" class="mb8">
+    <el-row :gutter="10"
+            class="mb8">
       <el-col :span="1.5">
-        <el-button
-          type="success"
-          icon="el-icon-download"
-          size="mini"
-          @click="centerDialogVisible = true"
-          >导入</el-button
-        >
+        <el-button type="success"
+                   icon="el-icon-download"
+                   size="mini"
+                   @click="centerDialogVisible = true">导入</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button
-          type="warning"
-          icon="el-icon-download"
-          size="mini"
-          @click="handleExport"
-          >导出</el-button
-        >
+        <el-button type="warning"
+                   icon="el-icon-download"
+                   size="mini"
+                   @click="handleExport">导出</el-button>
       </el-col>
     </el-row>
 
-    <el-table v-loading="loading" :data="typeList">
+    <el-table v-loading="loading"
+              :data="typeList">
       <!-- <el-table-column type="selection" width="55" align="center" /> -->
       <!-- <el-table-column label="序号" prop="id" width="120" align="center" /> -->
-      <el-table-column label="序号" type="index" align="center" width="50">
+      <el-table-column label="序号"
+                       type="index"
+                       align="center"
+                       width="50">
       </el-table-column>
-      <el-table-column
-        label="类别"
-        prop="category"
-        width="150"
-        align="center"
-      />
-      <el-table-column
-        label="经办单位"
-        prop="unit"
-        width="150"
-        align="center"
-      />
-      <el-table-column
-        label="供应商"
-        prop="supplier"
-        width="150"
-        align="center"
-      />
-      <el-table-column
-        label="合同编号"
-        prop="contractNum"
-        width="150"
-        align="center"
-      />
-      <el-table-column
-        label="合同名称"
-        prop="contractName"
-        width="150"
-        align="center"
-      />
-      <el-table-column
-        label="发票号码"
-        prop="invoiceNum"
-        width="150"
-        align="center"
-      />
-      <el-table-column
-        label="起始时间"
-        prop="startTime"
-        width="150"
-        align="center"
-      />
-      <el-table-column
-        label="合同截止时间"
-        prop="contractDeadline"
-        width="150"
-        align="center"
-      />
-      <el-table-column
-        label="合同金额"
-        prop="contractAmount"
-        width="150"
-        align="center"
-      />
-      <el-table-column
-        label="开票日期"
-        prop="invoiceTime"
-        width="150"
-        align="center"
-      />
-      <el-table-column
-        label="发票类型"
-        prop="invoiceType"
-        width="150"
-        align="center"
-      />
-      <el-table-column label="价款" prop="amount" width="150" align="center" />
-      <el-table-column label="税额" prop="tax" width="150" align="center" />
-      <el-table-column
-        label="价税合计"
-        prop="taxIncludeAmount"
-        width="150"
-        align="center"
-      />
-      <el-table-column
-        label="工程名"
-        prop="constructionName"
-        width="150"
-        align="center"
-      />
-      <el-table-column
-        label="收款情况"
-        prop="isReceived"
-        width="150"
-        align="center"
-      />
-      <el-table-column label="账龄" prop="aging" width="150" align="center" />
-      <el-table-column
-        label="应收"
-        prop="receivable"
-        width="150"
-        align="center"
-      />
-      <el-table-column label="已收" prop="received" width="150" align="center">
+      <el-table-column label="类别"
+                       prop="category"
+                       width="150"
+                       align="center" />
+      <el-table-column label="经办单位"
+                       prop="unit"
+                       width="150"
+                       align="center" />
+      <el-table-column label="供应商"
+                       prop="supplier"
+                       width="150"
+                       align="center" />
+      <el-table-column label="合同编号"
+                       prop="contractNum"
+                       width="150"
+                       align="center" />
+      <el-table-column label="合同名称"
+                       prop="contractName"
+                       width="150"
+                       align="center" />
+      <el-table-column label="发票号码"
+                       prop="invoiceNum"
+                       width="150"
+                       align="center" />
+      <el-table-column label="起始时间"
+                       prop="startTime"
+                       width="150"
+                       align="center" />
+      <el-table-column label="合同截止时间"
+                       prop="contractDeadline"
+                       width="150"
+                       align="center" />
+      <el-table-column label="合同金额"
+                       prop="contractAmount"
+                       width="150"
+                       align="center" />
+      <el-table-column label="开票日期"
+                       prop="invoiceTime"
+                       width="150"
+                       align="center" />
+      <el-table-column label="发票类型"
+                       prop="invoiceType"
+                       width="150"
+                       align="center" />
+      <el-table-column label="价款"
+                       prop="amount"
+                       width="150"
+                       align="center" />
+      <el-table-column label="税额"
+                       prop="tax"
+                       width="150"
+                       align="center" />
+      <el-table-column label="价税合计"
+                       prop="taxIncludeAmount"
+                       width="150"
+                       align="center" />
+      <el-table-column label="工程名"
+                       prop="constructionName"
+                       width="150"
+                       align="center" />
+      <el-table-column label="收款情况"
+                       prop="isReceived"
+                       width="150"
+                       align="center" />
+      <el-table-column label="账龄"
+                       prop="aging"
+                       width="150"
+                       align="center" />
+      <el-table-column label="应收"
+                       prop="receivable"
+                       width="150"
+                       align="center" />
+      <el-table-column label="已收"
+                       prop="received"
+                       width="150"
+                       align="center">
         <template slot-scope="scope">
-          <el-button size="mini" type="text" @click="Showproject(scope.row, 0)"
-            >{{ scope.row.received }}
+          <el-button size="mini"
+                     type="text"
+                     @click="Showproject(scope.row, 0)">{{ scope.row.received }}
           </el-button>
         </template>
       </el-table-column>
-      <el-table-column
-        label="未收"
-        prop="unreceived"
-        width="150"
-        align="center"
-      />
-      <el-table-column
-        label="款项类型"
-        prop="paymentType"
-        width="150"
-        align="center"
-      />
-      <el-table-column
-        label="当月收款金额"
-        prop="monthAmount"
-        width="150"
-        align="center"
-      >
+      <el-table-column label="未收"
+                       prop="unreceived"
+                       width="150"
+                       align="center" />
+      <el-table-column label="款项类型"
+                       prop="paymentType"
+                       width="150"
+                       align="center" />
+      <el-table-column label="当月收款金额"
+                       prop="monthAmount"
+                       width="150"
+                       align="center">
         <template slot-scope="scope">
-          <el-button size="mini" type="text" @click="Showproject(scope.row, 1)"
-            >{{ scope.row.monthAmount }}
+          <el-button size="mini"
+                     type="text"
+                     @click="Showproject(scope.row, 1)">{{ scope.row.monthAmount }}
           </el-button>
         </template>
       </el-table-column>
 
-      <el-table-column
-        label="操作"
-        align="center"
-        width="150"
-        class-name="small-padding fixed-width"
-      >
+      <el-table-column label="操作"
+                       align="center"
+                       width="150"
+                       class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-edit"
-            @click="handleAdd(scope.row)"
-            >添加</el-button
-          >
+          <el-button size="mini"
+                     type="text"
+                     icon="el-icon-edit"
+                     @click="handleAdd(scope.row)">添加</el-button>
         </template>
       </el-table-column>
     </el-table>
 
-    <pagination
-      v-show="total > 0"
-      :total="total"
-      :page.sync="queryParams.pageNum"
-      :limit.sync="queryParams.pageSize"
-      @pagination="getList"
-    />
-    <el-dialog title="导入" :visible.sync="centerDialogVisible" width="500px">
+    <pagination v-show="total > 0"
+                :total="total"
+                :page.sync="queryParams.pageNum"
+                :limit.sync="queryParams.pageSize"
+                @pagination="getList" />
+    <el-dialog title="导入"
+               :visible.sync="centerDialogVisible"
+               width="500px">
       <!-- <div style="margin-bottom: 10px">
         <el-button type="primary" @click="downTemplate">
           <i class="el-icon-download"></i>下载导入模板
         </el-button>
       </div> -->
-      <el-upload
-        class="upload-demo"
-        :headers="headers"
-        :on-preview="handlePreview"
-        :on-remove="handleRemove"
-        :before-remove="beforeRemove"
-        :on-success="handleSuccess"
-        :on-progress="handleupload"
-        :on-error="handleFail"
-        multiple
-        :limit="1"
-        :on-exceed="handleExceed"
-        :action="ActionUrl"
-        :file-list="fileList"
-      >
-        <el-button size="small" type="primary">点击上传</el-button>
+      <el-upload class="upload-demo"
+                 :headers="headers"
+                 :on-preview="handlePreview"
+                 :on-remove="handleRemove"
+                 :before-remove="beforeRemove"
+                 :on-success="handleSuccess"
+                 :on-progress="handleupload"
+                 :on-error="handleFail"
+                 multiple
+                 :limit="1"
+                 :on-exceed="handleExceed"
+                 :action="ActionUrl"
+                 :file-list="fileList">
+        <el-button size="small"
+                   type="primary">点击上传</el-button>
       </el-upload>
     </el-dialog>
-    <el-dialog :title="title" :visible.sync="open" width="600px">
-      <el-table v-loading="loading1" :data="IncomeDetailList">
-        <el-table-column
-          label="本次收款金额"
-          prop="amount"
-          align="center"
-          width="150"
-        >
+    <el-dialog :title="title"
+               :visible.sync="open"
+               width="600px">
+      <el-table v-loading="loading1"
+                :data="IncomeDetailList">
+        <el-table-column label="本次收款金额"
+                         prop="amount"
+                         align="center"
+                         width="150">
         </el-table-column>
-        <el-table-column
-          label="收款月份"
-          prop="payMonth"
-          align="payMonth"
-          width="150"
-        >
+        <el-table-column label="收款月份"
+                         prop="payMonth"
+                         align="payMonth"
+                         width="150">
         </el-table-column>
-        <el-table-column label="收款人" prop="payee" align="payee" width="150">
+        <el-table-column label="收款人"
+                         prop="payee"
+                         align="payee"
+                         width="150">
         </el-table-column>
-        <el-table-column
-          label="收款单号"
-          prop="receiptNum"
-          align="receiptNum"
-          width="150"
-        >
+        <el-table-column label="收款单号"
+                         prop="receiptNum"
+                         align="receiptNum"
+                         width="150">
         </el-table-column>
       </el-table>
     </el-dialog>
     <!-- 添加或修改角色配置对话框 -->
-    <el-dialog :title="title" :visible.sync="open1" width="500px">
-      <el-form ref="form" :model="form" :rules="rules" label-width="120px">
-        <el-form-item label="本次收款金额" prop="amount">
-          <el-input v-model="form.amount" placeholder="请输入类型名称" />
+    <el-dialog :title="title"
+               :visible.sync="open1"
+               width="500px">
+      <el-form ref="form"
+               :model="form"
+               :rules="rules"
+               label-width="120px">
+        <el-form-item label="本次收款金额"
+                      prop="amount">
+          <el-input v-model="form.amount"
+                    placeholder="请输入类型名称" />
         </el-form-item>
-        <el-form-item label="收款月份" prop="payMonth">
-          <el-date-picker
-            v-model="form.payMonth"
-            type="date"
-            placeholder="选择日期"
-            format="yyyy 年 MM 月"
-            value-format="yyyy-MM"
-          >
+        <el-form-item label="收款月份"
+                      prop="payMonth">
+          <el-date-picker v-model="form.payMonth"
+                          type="date"
+                          placeholder="选择日期"
+                          format="yyyy 年 MM 月"
+                          value-format="yyyy-MM">
           </el-date-picker>
         </el-form-item>
         <!-- <el-form-item label="收款人" prop="payee">
           <el-input v-model="form.payee" placeholder="请输入类型名称" />
         </el-form-item> -->
-        <el-form-item label="收款单号" prop="receiptNum">
-          <el-input v-model="form.receiptNum" placeholder="请输入类型名称" />
+        <el-form-item label="收款单号"
+                      prop="receiptNum">
+          <el-input v-model="form.receiptNum"
+                    placeholder="请输入类型名称" />
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
+      <div slot="footer"
+           class="dialog-footer">
+        <el-button type="primary"
+                   @click="submitForm">确 定</el-button>
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
@@ -341,14 +316,14 @@ import { getToken } from "@/utils/auth";
 import { resourceTreeByUN } from "@/api/system/unit";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
-import {prefix} from '@/api/relocation/relocation'
+import { prefix } from '@/api/relocation/relocation'
 
 export default {
   name: "Flowtype",
   components: { Treeselect },
-  data() {
+  data () {
     return {
-      morenUnit:undefined,
+      morenUnit: undefined,
       deptOptions: [],
       // 遮罩层
       loading: true,
@@ -405,12 +380,12 @@ export default {
       IncomeDetailList: [],
     };
   },
-  created() {
+  created () {
     // this.getList();
     this.getTreeselect();
   },
   methods: {
-    Showproject(row, isNeed) {
+    Showproject (row, isNeed) {
       this.open = true;
       this.loading1 = true;
       listIncomeDetail(row.id, isNeed).then((res) => {
@@ -418,7 +393,7 @@ export default {
         this.IncomeDetailList = res;
       });
     },
-    handleAdd(row) {
+    handleAdd (row) {
       this.reset();
       this.form.incomeId = row.id;
       this.title = "添加收款";
@@ -436,7 +411,7 @@ export default {
           this.msgError(err.message);
         });
     },
-    getTreeselect() {
+    getTreeselect () {
       let that = this;
       resourceTreeByUN().then((response) => {
         that.deptOptions = response.list;
@@ -445,7 +420,7 @@ export default {
         that.getList();
       });
     },
-    handleupload() {
+    handleupload () {
       const loading = this.$loading({
         lock: true,
         text: "正在导入表格",
@@ -454,20 +429,19 @@ export default {
       });
       this.loadingoption = loading;
     },
-    handleFail() {
+    handleFail () {
       this.loadingoption.close();
       this.$message.error("上传失败");
     },
-    handleRemove(file, fileList) {},
-    handlePreview(file) {},
-    handleExceed(files, fileList) {
+    handleRemove (file, fileList) { },
+    handlePreview (file) { },
+    handleExceed (files, fileList) {
       this.$message.warning(
-        `当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${
-          files.length + fileList.length
+        `当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length
         } 个文件`
       );
     },
-    handleSuccess(res) {
+    handleSuccess (res) {
       this.fileList = [];
       this.loadingoption.close();
       this.centerDialogVisible = false;
@@ -482,11 +456,11 @@ export default {
         this.getList();
       }
     },
-    beforeRemove(file, fileList) {
+    beforeRemove (file, fileList) {
       return this.$confirm(`确定移除 ${file.name}？`);
     },
     /** 查询角色列表 */
-    getList() {
+    getList () {
       this.loading = true;
       listIncome(this.queryParams).then((response) => {
         this.typeList = response.list;
@@ -495,13 +469,13 @@ export default {
       });
     },
     // 取消按钮
-    cancel() {
+    cancel () {
       this.open = false;
       this.open1 = false;
       this.reset();
     },
     // 表单重置
-    reset() {
+    reset () {
       this.form = {
         id: undefined,
         amount: undefined,
@@ -512,18 +486,19 @@ export default {
       this.resetForm("form");
     },
     /** 搜索按钮操作 */
-    handleQuery() {
+    handleQuery () {
       this.queryParams.pageNum = 1;
       this.getList();
     },
     /** 重置按钮操作 */
-    resetQuery() {
+    resetQuery () {
       this.dateRange = [];
       this.resetForm("queryForm");
       this.handleQuery();
+      this.queryParams.unitId = this.morenUnit;
     },
     /** 导出按钮操作 */
-    handleExport() {
+    handleExport () {
       const queryParams = this.queryParams;
 
       this.$confirm("是否确认导出收款管理的数据项?", "导出表格", {
@@ -542,7 +517,7 @@ export default {
         .then((response) => {
           this.download(response.msg);
         })
-        .catch(function () {});
+        .catch(function () { });
     },
   },
 };
