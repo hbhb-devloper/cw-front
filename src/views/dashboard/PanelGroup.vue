@@ -43,15 +43,15 @@
       </div>
     </el-col>
     <!-- <el-col style="flex: 1" class="card-panel-col">
-      <div class="card-panel" @click="handleSetLineChartData('purchases')">
+      <div class="card-panel" @click="handleSetLineChartData(workList[2].module, workList[2].moduleName)">
         <div class="card-panel-icon-wrapper icon-money">
           <svg-icon icon-class="money" class-name="card-panel-icon" />
         </div>
         <div class="card-panel-description">
-          <div class="card-panel-text">金额</div>
+          <div class="card-panel-text">{{ workList[2].moduleName }}</div>
           <count-to
             :start-val="0"
-            :end-val="9280"
+            :end-val="workList[2].count"
             :duration="3200"
             class="card-panel-num"
           />

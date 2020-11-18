@@ -1,3 +1,11 @@
+<!--
+ * @Descripttion: 
+ * @version: 
+ * @Author: CYZ
+ * @Date: 2020-09-15 10:49:45
+ * @LastEditors: CYZ
+ * @LastEditTime: 2020-10-10 16:44:26
+-->
 <template>
   <section class="app-main">
     <transition name="fade-transform" mode="out-in">
@@ -28,7 +36,7 @@ export default {
   min-height: calc(100vh - 50px);
   width: 100%;
   position: relative;
-  top:130px;
+  top:100px;
   overflow-x: hidden;
 }
 .app-main::-webkit-scrollbar {

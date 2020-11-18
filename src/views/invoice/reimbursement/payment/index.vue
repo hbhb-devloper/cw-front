@@ -60,6 +60,7 @@
               v-for="dict in typeOptions"
               :label="dict.label"
               :value="dict.value"
+              :key="dict.label"
             />
           </el-select>
         </el-form-item>
@@ -204,4 +205,5 @@
       }
     }
   }
+
 </style>
