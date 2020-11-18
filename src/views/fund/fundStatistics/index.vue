@@ -1,214 +1,167 @@
 <template>
   <div class="containers">
-    <el-form
-      :model="queryParams"
-      ref="queryForm"
-      label-width="70px"
-      :inline="true"
-    >
-      <el-form-item label="部门" prop="dptId">
-        <treeselect
-          v-model="queryParams.dptId"
-          style="width: 200px"
-          :options="deptOptions"
-          placeholder="请选择部门"
-        />
+    <el-form :model="queryParams"
+             ref="queryForm"
+             label-width="70px"
+             :inline="true">
+      <el-form-item label="部门"
+                    prop="dptId">
+        <treeselect v-model="queryParams.dptId"
+                    style="width: 200px"
+                    :options="deptOptions"
+                    placeholder="请选择部门" />
       </el-form-item>
-      <el-form-item label="款项类型" prop="amountType">
-        <el-select
-          v-model="queryParams.amountType"
-          style="width: 200px"
-          placeholder="请选择"
-        >
-          <el-option label="现金" value="1"></el-option>
-          <el-option label="支票" value="2"></el-option>
+      <el-form-item label="款项类型"
+                    prop="amountType">
+        <el-select v-model="queryParams.amountType"
+                   style="width: 200px"
+                   placeholder="请选择">
+          <el-option label="现金"
+                     value="1"></el-option>
+          <el-option label="支票"
+                     value="2"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="办理业务" prop="busType">
-        <el-select
-          v-model="queryParams.busType"
-          style="width: 200px"
-          filterable
-          placeholder="请选择"
-        >
-          <el-option label="--全部--" :value="undefined"></el-option>
-          <el-option
-            v-for="item in busTypeOptions"
-            :label="item.label"
-            :key="item.value"
-            :value="item.value"
-          ></el-option>
+      <el-form-item label="办理业务"
+                    prop="busType">
+        <el-select v-model="queryParams.busType"
+                   style="width: 200px"
+                   filterable
+                   placeholder="请选择">
+          <el-option label="--全部--"
+                     :value="undefined"></el-option>
+          <el-option v-for="item in busTypeOptions"
+                     :label="item.label"
+                     :key="item.value"
+                     :value="item.value"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="集团信息" prop="groupName">
-        <el-input
-          placeholder="请输入集团信息"
-          v-model="queryParams.groupName"
-          size="small"
-          style="width: 200px"
-        />
+      <el-form-item label="集团信息"
+                    prop="groupName">
+        <el-input placeholder="请输入集团信息"
+                  v-model="queryParams.groupName"
+                  size="small"
+                  style="width: 200px" />
       </el-form-item>
-      <el-form-item label="开始时间" prop="startTime">
-        <el-date-picker
-          v-model="queryParams.startTime"
-          type="date"
-          placeholder="选择时间"
-          style="width: 200px"
-          format="yyyy-MM-dd"
-          value-format="yyyy-MM-dd"
-        ></el-date-picker>
+      <el-form-item label="开始时间"
+                    prop="startTime">
+        <el-date-picker v-model="queryParams.startTime"
+                        type="date"
+                        placeholder="选择时间"
+                        style="width: 200px"
+                        format="yyyy-MM-dd"
+                        value-format="yyyy-MM-dd"></el-date-picker>
       </el-form-item>
-      <el-form-item label="结束时间" prop="endTime">
-        <el-date-picker
-          v-model="queryParams.endTime"
-          type="date"
-          placeholder="选择时间"
-          style="width: 200px"
-          format="yyyy-MM-dd"
-          value-format="yyyy-MM-dd"
-        ></el-date-picker>
+      <el-form-item label="结束时间"
+                    prop="endTime">
+        <el-date-picker v-model="queryParams.endTime"
+                        type="date"
+                        placeholder="选择时间"
+                        style="width: 200px"
+                        format="yyyy-MM-dd"
+                        value-format="yyyy-MM-dd"></el-date-picker>
       </el-form-item>
 
-      <el-form-item label="录入人" prop="userName">
-        <el-input
-          placeholder="请输入录入人"
-          v-model="queryParams.userName"
-          size="small"
-          style="width: 200px"
-        />
+      <el-form-item label="录入人"
+                    prop="userName">
+        <el-input placeholder="请输入录入人"
+                  v-model="queryParams.userName"
+                  size="small"
+                  style="width: 200px" />
       </el-form-item>
       <el-form-item prop="isBalanceZero">
-        <el-checkbox v-model="queryParams.isBalanceZero"
-          >不显示本期余额为零</el-checkbox
-        >
+        <el-checkbox v-model="queryParams.isBalanceZero">不显示本期余额为零</el-checkbox>
       </el-form-item>
       <el-form-item>
-        <el-button
-          type="primary"
-          icon="el-icon-search"
-          size="mini"
-          @click="handleQuery"
-          >查询</el-button
-        >
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery"
-          >重置</el-button
-        >
+        <el-button type="primary"
+                   icon="el-icon-search"
+                   size="mini"
+                   @click="handleQuery">查询</el-button>
+        <el-button icon="el-icon-refresh"
+                   size="mini"
+                   @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
-    <el-row :gutter="10" class="mb8">
+    <el-row :gutter="10"
+            class="mb8">
       <el-col :span="1.5">
-        <el-button
-          type="warning"
-          icon="el-icon-download"
-          size="mini"
-          @click="handleExport"
-          v-hasPermi="['budget:split:export']"
-          >导出
+        <el-button type="warning"
+                   icon="el-icon-download"
+                   size="mini"
+                   @click="handleExport"
+                   v-hasPermi="['budget:split:export']">导出
         </el-button>
       </el-col>
     </el-row>
-    <el-table :data="tableData" v-loading="loading">
-      <el-table-column
-        align="center"
-        type="index"
-        label="序号"
-      ></el-table-column>
-      <el-table-column
-        prop="periodTime"
-        width="200px"
-        align="center"
-        label="期间"
-      ></el-table-column>
-      <el-table-column
-        prop="dptName"
-        align="center"
-        label="部门"
-      ></el-table-column>
-      <el-table-column
-        prop="groupName"
-        width="200px"
-        align="center"
-        label="集团信息"
-      ></el-table-column>
-      <el-table-column
-        prop="createMan"
-        align="center"
-        label="录入人"
-      ></el-table-column>
-      <el-table-column
-        prop="beginAmount"
-        align="center"
-        width="150px"
-        label="期初余额(元)"
-      ></el-table-column>
-      <el-table-column
-        prop="addAmount"
-        align="center"
-        width="150px"
-        label="本期增加(元)"
-      ></el-table-column>
-      <el-table-column
-        prop="verifyAmount"
-        align="center"
-        width="150px"
-        label="核销收款(元)"
-      ></el-table-column>
-      <el-table-column
-        prop="reduceAmount"
-        align="center"
-        width="150px"
-        label="本期减少(元)"
-      ></el-table-column>
-      <el-table-column
-        prop="collectionFrozen"
-        align="center"
-        width="150px"
-        label="本期收款冻结(元)"
-      ></el-table-column>
-      <el-table-column
-        prop="useFrozen"
-        align="center"
-        width="150px"
-        label="本期使用冻结(元)"
-      ></el-table-column>
-      <el-table-column
-        prop="refundFrozen"
-        align="center"
-        width="150px"
-        label="本期退款冻结(元)"
-      ></el-table-column>
-      <el-table-column
-        prop="refund"
-        align="center"
-        width="150px"
-        label="本期退款(元)"
-      ></el-table-column>
-      <el-table-column
-        prop="balance"
-        align="center"
-        width="150px"
-        label="本期余额(元)"
-      ></el-table-column>
-      <el-table-column
-        prop="totalInvoiceAmount"
-        align="center"
-        width="150px"
-        label="积累开票金额(元)"
-      ></el-table-column>
-      <el-table-column
-        prop="totalEnterAmount"
-        align="center"
-        width="150px"
-        label="积累入账金额(元)"
-      ></el-table-column>
+    <el-table :data="tableData"
+              v-loading="loading">
+      <el-table-column align="center"
+                       type="index"
+                       label="序号"></el-table-column>
+      <el-table-column prop="periodTime"
+                       width="200px"
+                       align="center"
+                       label="期间"></el-table-column>
+      <el-table-column prop="dptName"
+                       align="center"
+                       label="部门"></el-table-column>
+      <el-table-column prop="groupName"
+                       width="200px"
+                       align="center"
+                       label="集团信息"></el-table-column>
+      <el-table-column prop="createMan"
+                       align="center"
+                       label="录入人"></el-table-column>
+      <el-table-column prop="beginAmount"
+                       align="center"
+                       width="150px"
+                       label="期初余额(元)"></el-table-column>
+      <el-table-column prop="addAmount"
+                       align="center"
+                       width="150px"
+                       label="本期增加(元)"></el-table-column>
+      <el-table-column prop="verifyAmount"
+                       align="center"
+                       width="150px"
+                       label="核销收款(元)"></el-table-column>
+      <el-table-column prop="reduceAmount"
+                       align="center"
+                       width="150px"
+                       label="本期减少(元)"></el-table-column>
+      <el-table-column prop="collectionFrozen"
+                       align="center"
+                       width="150px"
+                       label="本期收款冻结(元)"></el-table-column>
+      <el-table-column prop="useFrozen"
+                       align="center"
+                       width="150px"
+                       label="本期使用冻结(元)"></el-table-column>
+      <el-table-column prop="refundFrozen"
+                       align="center"
+                       width="150px"
+                       label="本期退款冻结(元)"></el-table-column>
+      <el-table-column prop="refund"
+                       align="center"
+                       width="150px"
+                       label="本期退款(元)"></el-table-column>
+      <el-table-column prop="balance"
+                       align="center"
+                       width="150px"
+                       label="本期余额(元)"></el-table-column>
+      <el-table-column prop="totalInvoiceAmount"
+                       align="center"
+                       width="150px"
+                       label="积累开票金额(元)"></el-table-column>
+      <el-table-column prop="totalEnterAmount"
+                       align="center"
+                       width="150px"
+                       label="积累入账金额(元)"></el-table-column>
     </el-table>
-    <pagination
-      v-show="total > 0"
-      :total="total"
-      :page.sync="queryParams.pageNum"
-      :limit.sync="queryParams.pageSize"
-      @pagination="getList"
-    />
+    <pagination v-show="total > 0"
+                :total="total"
+                :page.sync="queryParams.pageNum"
+                :limit.sync="queryParams.pageSize"
+                @pagination="getList" />
   </div>
 </template>
 
@@ -222,12 +175,13 @@ import { exportData } from "../../../utils/export";
 import { getToken } from "@/utils/auth";
 
 export default {
-  data() {
+  data () {
     return {
       total: 0,
       queryParams: {
         startTime: undefined,
         endTime: undefined,
+        isBalanceZero: undefined,
         pageSize: 10,
         pageNum: 1,
       }, //条件搜索表单
@@ -254,7 +208,7 @@ export default {
   components: {
     Treeselect,
   },
-  created() {
+  created () {
     this.queryParams.startTime = undefined || this.getCurrentMonthFirst();
     this.queryParams.endTime = undefined || this.getCurrentMonthLast();
     this.getUnitId();
@@ -262,13 +216,13 @@ export default {
     // this.getList();
   },
   methods: {
-    handleGetBusiness() {
+    handleGetBusiness () {
       getBusiness().then((res) => {
         this.busTypeOptions = res;
       });
     },
     //获取部门列表
-    getUnitId() {
+    getUnitId () {
       getCompany().then((res) => {
         this.queryParams.dptId = res.checked[0];
         this.morenUnit = res.checked[0];
@@ -277,7 +231,7 @@ export default {
       });
     },
     //表格数据列表
-    getList() {
+    getList () {
       this.loading = true;
       let data = JSON.parse(JSON.stringify(this.queryParams));
       if (!data.startTime || !data.endTime) {
@@ -300,7 +254,7 @@ export default {
         });
     },
     //获取本月第一天
-    getCurrentMonthFirst() {
+    getCurrentMonthFirst () {
       let dates = new Date();
       dates.setDate(1);
       let months = parseInt(dates.getMonth() + 1);
@@ -315,7 +269,7 @@ export default {
     },
 
     //获取本月最后一天
-    getCurrentMonthLast() {
+    getCurrentMonthLast () {
       let date = new Date(),
         currentMonth = date.getMonth(),
         nextMonth = ++currentMonth,
@@ -333,21 +287,22 @@ export default {
       return date.getFullYear() + "-" + month + "-" + day;
     },
     /** 搜索按钮操作 */
-    handleQuery() {
+    handleQuery () {
       this.queryParams.pageNum = 1;
       this.queryParams.dptId = this.morenUnit;
 
       this.getList();
     },
     /** 重置按钮操作 */
-    resetQuery() {
+    resetQuery () {
       this.resetForm("queryForm");
       this.queryParams.startTime = this.getCurrentMonthFirst();
       this.queryParams.endTime = this.getCurrentMonthLast();
+      this.queryParams.isBalanceZero = false
       this.handleQuery();
     },
 
-    handleExport() {
+    handleExport () {
       this.$confirm("是否确认导出客户资金统计数据?", "数据导出", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
