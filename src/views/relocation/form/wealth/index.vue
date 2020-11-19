@@ -3,8 +3,9 @@
     <el-form :model="queryParams"
              ref="queryForm"
              :inline="true">
+
       <el-row>
-        <el-col :span="7">
+        <el-col :span="8">
           <el-form-item label="区县"
                         prop="unitId">
             <treeselect v-model="queryParams.unitId"
@@ -23,7 +24,7 @@
             </el-date-picker>
           </el-form-item>
         </el-col>
-        <el-col :span="7">
+        <el-col :span="8">
           <el-form-item label="项目类型"
                         prop="projectType">
             <el-input v-model="queryParams.projectType"
@@ -32,7 +33,13 @@
                       @keyup.enter.native="handleQuery" />
           </el-form-item>
         </el-col>
-        <el-col :span="7">
+      </el-row>
+
+      <!-- <el-row>
+        </el-row> -->
+
+      <el-row>
+        <el-col :span="8">
           <el-form-item label="项目名称"
                         prop="projectName">
             <el-input v-model="queryParams.projectName"
@@ -52,7 +59,7 @@
             </el-date-picker>
           </el-form-item>
         </el-col>
-        <el-col :span="7">
+        <el-col :span="8">
           <el-form-item label="立项时间"
                         prop="projectTime">
             <el-date-picker v-model="queryParams.projectTime"
@@ -63,7 +70,10 @@
             </el-date-picker>
           </el-form-item>
         </el-col>
-        <el-col :span="7">
+      </el-row>
+
+      <el-row>
+        <el-col :span="8">
           <el-form-item label="合同编号"
                         prop="contractNum">
             <el-input v-model="queryParams.contractNum"
@@ -88,7 +98,7 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="7">
+        <el-col :span="8">
           <el-form-item>
             <el-button type="primary"
                        icon="el-icon-search"
@@ -100,6 +110,7 @@
           </el-form-item>
         </el-col>
       </el-row>
+
     </el-form>
 
     <el-row :gutter="10"

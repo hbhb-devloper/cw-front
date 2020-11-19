@@ -8,6 +8,7 @@
             placeholder="请输入金额范围"
             clearable
             size="small"
+            type="number"
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
@@ -17,6 +18,7 @@
             placeholder="请输入金额范围"
             clearable
             size="small"
+            type="number"
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
@@ -623,7 +625,7 @@ export default {
       this.fileList = [];
       this.loadingoption.close();
       this.centerDialogVisible = false;
-      if (res.code == '00000') {
+      if (res.code == "00000") {
         this.$message.success("导入成功");
         this.getList();
       } else {
