@@ -774,8 +774,8 @@ export default {
       this.fileList = [];
       this.loadingoption.close();
       this.centerDialogVisible = false;
-      if (res.status == 1000) {
-        this.$message.success("文件上传成功");
+      if (res.code == '00000') {
+        this.$message.success("导入上传成功");
         this.getList();
       } else {
         this.$message({

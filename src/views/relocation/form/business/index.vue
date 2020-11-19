@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-10-10 14:45:48
  * @LastEditors: CYZ
- * @LastEditTime: 2020-11-18 17:52:14
+ * @LastEditTime: 2020-11-19 17:55:50
 -->
 <template>
   <div class="app-container">
@@ -93,11 +93,11 @@
                          prop="costRation"
                          width="150"
                          align="center" />
-        <el-table-column label="预付款未收金（万元）"
+        <el-table-column label="预付款未收金额（万元）"
                          prop="budgetNotAccount"
                          width="150"
                          align="center" />
-        <el-table-column label="尾款未收金（万元）"
+        <el-table-column label="尾款未收金额（万元）"
                          prop="finalNotPayment"
                          width="150"
                          align="center" />
