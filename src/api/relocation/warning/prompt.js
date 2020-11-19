@@ -28,3 +28,11 @@ export function WarnAdd(data) {
         data: data
     })
 }
+// 查询迁改基础信息列表
+export function treeListWarn(query) {
+    return request({
+        url: `${prefix}/warn/tree-list`,
+        method: 'get',
+        params: query
+    })
+}
