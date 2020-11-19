@@ -47,7 +47,7 @@
       <el-table-column label="地区"
                        prop="unitName"
                        align="center" />
-      <el-table-column label="合同签订请款"
+      <el-table-column label="合同签订款金额"
                        align="center">
         <el-table-column label="有赔迁改项目数量（个）"
                          prop="compensationAmount"

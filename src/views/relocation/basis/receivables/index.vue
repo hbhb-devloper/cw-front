@@ -275,7 +275,8 @@
         <el-form-item label="本次收款金额"
                       prop="amount">
           <el-input v-model="form.amount"
-                    placeholder="请输入类型名称" />
+                    placeholder="请输入"
+                    type="number" />
         </el-form-item>
         <el-form-item label="收款月份"
                       prop="payMonth">
@@ -292,7 +293,7 @@
         <el-form-item label="收款单号"
                       prop="receiptNum">
           <el-input v-model="form.receiptNum"
-                    placeholder="请输入类型名称" />
+                    placeholder="请输入" />
         </el-form-item>
       </el-form>
       <div slot="footer"
