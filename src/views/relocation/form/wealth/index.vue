@@ -4,112 +4,94 @@
              ref="queryForm"
              :inline="true">
 
-      <el-row>
-        <el-col :span="8">
-          <el-form-item label="区县"
-                        prop="unitId">
-            <treeselect v-model="queryParams.unitId"
-                        :options="deptOptions"
-                        placeholder="请选择区域" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="年份"
-                        prop="year">
-            <el-date-picker v-model="queryParams.year"
-                            type="year"
-                            placeholder="选择年份"
-                            value-format="yyyy"
-                            style="width: 230px">
-            </el-date-picker>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="项目类型"
-                        prop="projectType">
-            <el-input v-model="queryParams.projectType"
-                      placeholder="请输入项目类型"
-                      clearable
-                      @keyup.enter.native="handleQuery" />
-          </el-form-item>
-        </el-col>
-      </el-row>
+      <el-form-item label="区县"
+                    prop="unitId">
+        <treeselect v-model="queryParams.unitId"
+                    :options="deptOptions"
+                    placeholder="请选择区域" />
+      </el-form-item>
+
+      <el-form-item label="年份"
+                    prop="year">
+        <el-date-picker v-model="queryParams.year"
+                        type="year"
+                        placeholder="选择年份"
+                        value-format="yyyy"
+                        style="width: 230px">
+        </el-date-picker>
+      </el-form-item>
+
+      <el-form-item label="项目类型"
+                    prop="projectType">
+        <el-input v-model="queryParams.projectType"
+                  placeholder="请输入项目类型"
+                  clearable
+                  @keyup.enter.native="handleQuery" />
+      </el-form-item>
 
       <!-- <el-row>
         </el-row> -->
 
-      <el-row>
-        <el-col :span="8">
-          <el-form-item label="项目名称"
-                        prop="projectName">
-            <el-input v-model="queryParams.projectName"
-                      placeholder="请输入项目名称"
-                      clearable
-                      @keyup.enter.native="handleQuery" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="项目割接或完成时间"
-                        prop="planEndTime">
-            <el-date-picker v-model="queryParams.planEndTime"
-                            type="date"
-                            placeholder="选择项目割接或完成时间"
-                            style="width: 230px"
-                            value-format="yyyy-MM-dd">
-            </el-date-picker>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="立项时间"
-                        prop="projectTime">
-            <el-date-picker v-model="queryParams.projectTime"
-                            type="date"
-                            placeholder="选择立项时间"
-                            style="width: 230px"
-                            value-format="yyyy-MM-dd">
-            </el-date-picker>
-          </el-form-item>
-        </el-col>
-      </el-row>
+      <el-form-item label="项目名称"
+                    prop="projectName">
+        <el-input v-model="queryParams.projectName"
+                  placeholder="请输入项目名称"
+                  clearable
+                  @keyup.enter.native="handleQuery" />
+      </el-form-item>
 
-      <el-row>
-        <el-col :span="8">
-          <el-form-item label="合同编号"
-                        prop="contractNum">
-            <el-input v-model="queryParams.contractNum"
-                      placeholder="请输入合同编号"
-                      clearable
-                      @keyup.enter.native="handleQuery" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="预付款是否完全到账"
-                        prop="receiptStatus">
-            <el-select v-model="queryParams.receiptStatus"
-                       placeholder="请选择预付款是否完全到账"
-                       clearable
-                       style="width: 230px">
-              <el-option key="1"
-                         label="是"
-                         value="1" />
-              <el-option key="0"
-                         label="否"
-                         value="0" />
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item>
-            <el-button type="primary"
-                       icon="el-icon-search"
-                       @click="handleQuery"
-                       size="mini">搜索</el-button>
-            <el-button icon="el-icon-refresh"
-                       @click="resetQuery"
-                       size="mini">重置</el-button>
-          </el-form-item>
-        </el-col>
-      </el-row>
+      <el-form-item label="项目割接或完成时间"
+                    prop="planEndTime">
+        <el-date-picker v-model="queryParams.planEndTime"
+                        type="date"
+                        placeholder="选择项目割接或完成时间"
+                        style="width: 230px"
+                        value-format="yyyy-MM-dd">
+        </el-date-picker>
+      </el-form-item>
+
+      <el-form-item label="立项时间"
+                    prop="projectTime">
+        <el-date-picker v-model="queryParams.projectTime"
+                        type="date"
+                        placeholder="选择立项时间"
+                        style="width: 230px"
+                        value-format="yyyy-MM-dd">
+        </el-date-picker>
+      </el-form-item>
+
+      <el-form-item label="合同编号"
+                    prop="contractNum">
+        <el-input v-model="queryParams.contractNum"
+                  placeholder="请输入合同编号"
+                  clearable
+                  @keyup.enter.native="handleQuery" />
+      </el-form-item>
+
+      <el-form-item label="预付款是否完全到账"
+                    prop="receiptStatus">
+        <el-select v-model="queryParams.receiptStatus"
+                   placeholder="请选择预付款是否完全到账"
+                   clearable
+                   style="width: 230px">
+          <el-option key="1"
+                     label="是"
+                     value="1" />
+          <el-option key="0"
+                     label="否"
+                     value="0" />
+        </el-select>
+      </el-form-item>
+
+      <el-form-item>
+        <el-button type="primary"
+                   icon="el-icon-search"
+                   @click="handleQuery"
+                   size="mini">搜索</el-button>
+        <el-button icon="el-icon-refresh"
+                   @click="resetQuery"
+                   size="mini">重置</el-button>
+      </el-form-item>
 
     </el-form>
 
