@@ -33,6 +33,6 @@ export function warnfile (data) {
   return request({
     url: `${prefix}/warn/file`,
     method: 'get',
-    data: data
+    params: data
   })
 }

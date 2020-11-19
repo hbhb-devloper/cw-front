@@ -102,6 +102,9 @@
                      type="text"
                      icon="el-icon-upload2"
                      @click="handleImportant(scope.row)">上传附件</el-button>
+          <el-button size="mini"
+                     type="text"
+                     @click="handleDownload(scope.row)">下载附件</el-button>
 
         </template>
       </el-table-column>
@@ -197,14 +200,57 @@ export default {
     this.getList();
   },
   methods: {
+
+    handleDownload (row) {
+      let obj = {
+        warnId: row.id
+      }
+      warnfile(obj).then(res => {
+        this.$confirm("是否下载" + res.fileName + "？", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning",
+        }).then((res) => {
+          let link = document.createElement("a");
+          link.style.display = 'none';
+          link.href = res.filepath;
+          link.download = res.fileName;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        });
+      }).catch(err => {
+
+      })
+
+    },
+
     viewattachment (row) {
       this.viewattachmentshow = true
-      warnfile(row.unitId).then(res => {
+
+      let obj = {
+        warnId: row.id
+      }
+      warnfile(obj).then(res => {
         console.log(res);
+        if (/.(pdf|PDF)$/.test(res)) {
+          window.open(res.filepath);
+        } else if (/.(zip|ZIP)$/.test(res)) {
+          this.$message({
+            showClose: true,
+            message: "该文件格式无法预览",
+            type: "error",
+          });
+        } else {
+          window.open(
+            "https://view.officeapps.live.com/op/view.aspx?src=" +
+            res.filepath
+          );
+        }
       }).catch(err => {
         console.log(err);
       })
-      console.log(row);
+
     },
     handleupload () {
       const loading = this.$loading({
