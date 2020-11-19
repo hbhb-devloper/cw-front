@@ -10,6 +10,7 @@
                     placeholder="请输入金额范围"
                     clearable
                     size="small"
+                    type="number"
                     @keyup.enter.native="handleQuery" />
         </el-form-item>
         <el-form-item label="至"
@@ -19,6 +20,7 @@
                     placeholder="请输入金额范围"
                     clearable
                     size="small"
+                    type="number"
                     @keyup.enter.native="handleQuery" />
         </el-form-item>
 
