@@ -1,564 +1,700 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams"
-             ref="queryForm"
-             :inline="true">
+    <el-form :model="queryParams" ref="queryForm" :inline="true">
       <el-row>
-        <el-form-item label="合同编号"
-                      prop="contractNum">
-          <el-input v-model="queryParams.contractNum"
-                    placeholder="请输入合同编号"
-                    clearable
-                    size="small"
-                    style="width: 240px"
-                    @keyup.enter.native="handleQuery" />
+        <el-form-item label="合同编号" prop="contractNum">
+          <el-input
+            v-model="queryParams.contractNum"
+            placeholder="请输入合同编号"
+            clearable
+            size="small"
+            style="width: 240px"
+            @keyup.enter.native="handleQuery"
+          />
         </el-form-item>
 
-        <el-form-item label="区域"
-                      prop="unitId">
-          <treeselect v-model="queryParams.unitId"
-                      :options="deptOptions"
-                      placeholder="请选择区域" />
+        <el-form-item label="区域" prop="unitId">
+          <treeselect
+            v-model="queryParams.unitId"
+            :options="deptOptions"
+            placeholder="请选择区域"
+          />
         </el-form-item>
-        <el-form-item label="迁改项目编号"
-                      prop="projectNum">
-          <el-input v-model="queryParams.projectNum"
-                    placeholder="请输入迁改项目编号"
-                    clearable
-                    size="small"
-                    style="width: 240px"
-                    @keyup.enter.native="handleQuery" />
+        <el-form-item label="迁改项目编号" prop="projectNum">
+          <el-input
+            v-model="queryParams.projectNum"
+            placeholder="请输入迁改项目编号"
+            clearable
+            size="small"
+            style="width: 240px"
+            @keyup.enter.native="handleQuery"
+          />
         </el-form-item>
-        <el-form-item label="赔补状态"
-                      prop="compensationSate">
-          <el-select v-model="queryParams.compensationSate"
-                     placeholder="赔补状态"
-                     clearable
-                     size="small"
-                     style="width: 240px">
-            <el-option v-for="dict in compensationOptions"
-                       :key="dict.value"
-                       :label="dict.label"
-                       :value="dict.value" />
+        <el-form-item label="赔补状态" prop="compensationSate">
+          <el-select
+            v-model="queryParams.compensationSate"
+            placeholder="赔补状态"
+            clearable
+            size="small"
+            style="width: 240px"
+          >
+            <el-option
+              v-for="dict in compensationOptions"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            />
           </el-select>
         </el-form-item>
-        <el-form-item label="未全额回款合同历时"
-                      prop="contractDuration">
-          <el-input v-model="queryParams.contractDuration"
-                    placeholder="请输入未全额回款合同历时"
-                    clearable
-                    size="small"
-                    style="width: 240px"
-                    @keyup.enter.native="handleQuery" />
+        <el-form-item label="未全额回款合同历时" prop="contractDuration">
+          <el-input
+            v-model="queryParams.contractDuration"
+            placeholder="请输入未全额回款合同历时"
+            clearable
+            size="small"
+            style="width: 240px"
+            @keyup.enter.native="handleQuery"
+          />
         </el-form-item>
-        <el-form-item label="工程名称"
-                      prop="projectName">
-          <el-input v-model="queryParams.projectName"
-                    placeholder="请输入工程名称"
-                    clearable
-                    size="small"
-                    style="width: 240px"
-                    @keyup.enter.native="handleQuery" />
+        <el-form-item label="工程名称" prop="projectName">
+          <el-input
+            v-model="queryParams.projectName"
+            placeholder="请输入工程名称"
+            clearable
+            size="small"
+            style="width: 240px"
+            @keyup.enter.native="handleQuery"
+          />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary"
-                     icon="el-icon-search"
-                     size="mini"
-                     @click="handleQuery">搜索</el-button>
-          <el-button icon="el-icon-refresh"
-                     size="mini"
-                     @click="resetQuery">重置</el-button>
+          <el-button
+            type="primary"
+            icon="el-icon-search"
+            size="mini"
+            @click="handleQuery"
+            >搜索</el-button
+          >
+          <el-button icon="el-icon-refresh" size="mini" @click="resetQuery"
+            >重置</el-button
+          >
         </el-form-item>
       </el-row>
     </el-form>
 
-    <el-row :gutter="10"
-            class="mb8">
+    <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
-        <el-button type="success"
-                   icon="el-icon-download"
-                   size="mini"
-                   @click="centerDialogVisible = true">导入</el-button>
+        <el-button
+          type="success"
+          icon="el-icon-download"
+          size="mini"
+          @click="centerDialogVisible = true"
+          >导入</el-button
+        >
       </el-col>
     </el-row>
 
-    <el-table v-loading="loading"
-              :data="typeList">
+    <el-table v-loading="loading" :data="typeList">
       <!-- <el-table-column type="selection" width="55" align="center" /> -->
-      <el-table-column label="区域"
-                       prop="unitName"
-                       width="120"
-                       align="center" />
-      <el-table-column label="工程名称"
-                       prop="projectName"
-                       width="120"
-                       align="center" />
-      <el-table-column label="迁改项目编号"
-                       prop="projectNum"
-                       width="150"
-                       align="center" />
-      <el-table-column label="EOMS迁移修缮管理流程工单号"
-                       prop="eomsRepairNum"
-                       width="150"
-                       align="center" />
-      <el-table-column label="EOMS光缆割接流程工单号"
-                       prop="eomsCutNum"
-                       width="150"
-                       align="center" />
-      <el-table-column label="计划施工时间"
-                       prop="planStartTime"
-                       width="150"
-                       align="center" />
-      <el-table-column label="计划完成时间"
-                       prop="planEndTime"
-                       width="150"
-                       align="center" />
-      <el-table-column label="实际完工时间"
-                       prop="actualEndTime"
-                       width="150"
-                       align="center" />
-      <el-table-column label="施工单位"
-                       prop="constructionUnit"
-                       width="150"
-                       align="center" />
+      <el-table-column
+        label="区域"
+        prop="unitName"
+        width="120"
+        align="center"
+      />
+      <el-table-column
+        label="工程名称"
+        prop="projectName"
+        width="120"
+        align="center"
+      />
+      <el-table-column
+        label="迁改项目编号"
+        prop="projectNum"
+        width="150"
+        align="center"
+      />
+      <el-table-column
+        label="EOMS迁移修缮管理流程工单号"
+        prop="eomsRepairNum"
+        width="150"
+        align="center"
+      />
+      <el-table-column
+        label="EOMS光缆割接流程工单号"
+        prop="eomsCutNum"
+        width="150"
+        align="center"
+      />
+      <el-table-column
+        label="计划施工时间"
+        prop="planStartTime"
+        width="150"
+        align="center"
+      />
+      <el-table-column
+        label="计划完成时间"
+        prop="planEndTime"
+        width="150"
+        align="center"
+      />
+      <el-table-column
+        label="实际完工时间"
+        prop="actualEndTime"
+        width="150"
+        align="center"
+      />
+      <el-table-column
+        label="施工单位"
+        prop="constructionUnit"
+        width="150"
+        align="center"
+      />
       <!-- <el-table-column label="工程单位" prop="flowTypeName" width="150" align="center" /> -->
-      <el-table-column label="迁改涉及网络层级（省干、汇聚、接入、驻地网）"
-                       prop="networkHierarchy"
-                       width="150"
-                       align="center" />
+      <el-table-column
+        label="迁改涉及网络层级（省干、汇聚、接入、驻地网）"
+        prop="networkHierarchy"
+        width="150"
+        align="center"
+      />
       <!-- <el-table-column label="是否农网" prop="flowTypeName" width="150" align="center" /> -->
-      <el-table-column label="施工费（预算：元）"
-                       prop="constructionBudget"
-                       width="150"
-                       align="center" />
-      <el-table-column label="甲供材料费（预算：元）"
-                       prop="materialBudget"
-                       width="150"
-                       align="center" />
-      <el-table-column label="施工费（送审结算：元）"
-                       prop="constructionCost"
-                       width="150"
-                       align="center" />
-      <el-table-column label="甲供材料费（送审结算：元）"
-                       prop="materialCost"
-                       width="150"
-                       align="center" />
-      <el-table-column label="施工费审定金额（审计后：元）"
-                       prop="constructionAuditCost"
-                       width="150"
-                       align="center" />
-      <el-table-column label="主动迁改或者被动"
-                       prop="isInitiative"
-                       width="150"
-                       align="center" />
-      <el-table-column label="性质归类"
-                       prop="projectType"
-                       width="150"
-                       align="center" />
-      <el-table-column label="迁改原因"
-                       prop="cause"
-                       width="350"
-                       align="center" />
-      <el-table-column label="对方单位"
-                       prop="oppositeUnit"
-                       width="250"
-                       align="center" />
-      <el-table-column label="对方联系人"
-                       prop="oppositeContacts"
-                       width="150"
-                       align="center" />
-      <el-table-column label="对方联系电话"
-                       prop="oppositeContactsNum"
-                       width="150"
-                       align="center" />
-      <el-table-column label="有无赔补"
-                       prop="hasCompensationName"
-                       width="150"
-                       align="center" />
-      <el-table-column label="被动无赔类型"
-                       prop="compensationType"
-                       width="150"
-                       align="center" />
-      <el-table-column label="合同编号"
-                       prop="contractNum"
-                       width="150"
-                       align="center" />
-      <el-table-column label="赔补合同名"
-                       prop="contractName"
-                       width="150"
-                       align="center" />
-      <el-table-column label="赔补金额（元）"
-                       prop="compensationAmount"
-                       width="150"
-                       align="center" />
-      <el-table-column label="预付款应付金额"
-                       prop="anticipatePayable"
-                       width="150"
-                       align="center" />
-      <el-table-column label="预付款到账金额（元）"
-                       prop="anticipatePayment"
-                       width="150"
-                       align="center" />
-      <el-table-column label="决算款到账金额（元）"
-                       prop="finalPayment"
-                       width="150"
-                       align="center" />
-      <el-table-column label="赔补状态"
-                       prop="compensationSate"
-                       width="150"
-                       align="center" />
-      <el-table-column label="未全额回款合同历时"
-                       prop="contractDuration"
-                       width="150"
-                       align="center" />
-      <el-table-column label="赔补特殊情况备注"
-                       prop="compensationRemake"
-                       width="150"
-                       align="center" />
-      <el-table-column label="月报"
-                       prop="projectMonth"
-                       width="150"
-                       align="center" />
-      <el-table-column label="年份"
-                       prop="projectYear"
-                       width="150"
-                       align="center" />
-      <el-table-column label="合同类型"
-                       prop="contractType"
-                       width="150"
-                       align="center" />
-      <el-table-column label="操作"
-                       align="center"
-                       width="200"
-                       class-name="small-padding fixed-width">
+      <el-table-column
+        label="施工费（预算：元）"
+        prop="constructionBudget"
+        width="150"
+        align="center"
+      />
+      <el-table-column
+        label="甲供材料费（预算：元）"
+        prop="materialBudget"
+        width="150"
+        align="center"
+      />
+      <el-table-column
+        label="施工费（送审结算：元）"
+        prop="constructionCost"
+        width="150"
+        align="center"
+      />
+      <el-table-column
+        label="甲供材料费（送审结算：元）"
+        prop="materialCost"
+        width="150"
+        align="center"
+      />
+      <el-table-column
+        label="施工费审定金额（审计后：元）"
+        prop="constructionAuditCost"
+        width="150"
+        align="center"
+      />
+      <el-table-column
+        label="主动迁改或者被动"
+        prop="isInitiative"
+        width="150"
+        align="center"
+      />
+      <el-table-column
+        label="性质归类"
+        prop="projectType"
+        width="150"
+        align="center"
+      />
+      <el-table-column
+        label="迁改原因"
+        prop="cause"
+        width="350"
+        align="center"
+      />
+      <el-table-column
+        label="对方单位"
+        prop="oppositeUnit"
+        width="250"
+        align="center"
+      />
+      <el-table-column
+        label="对方联系人"
+        prop="oppositeContacts"
+        width="150"
+        align="center"
+      />
+      <el-table-column
+        label="对方联系电话"
+        prop="oppositeContactsNum"
+        width="150"
+        align="center"
+      />
+      <el-table-column
+        label="有无赔补"
+        prop="hasCompensationName"
+        width="150"
+        align="center"
+      />
+      <el-table-column
+        label="被动无赔类型"
+        prop="compensationType"
+        width="150"
+        align="center"
+      />
+      <el-table-column
+        label="合同编号"
+        prop="contractNum"
+        width="150"
+        align="center"
+      />
+      <el-table-column
+        label="赔补合同名"
+        prop="contractName"
+        width="150"
+        align="center"
+      />
+      <el-table-column
+        label="赔补金额（元）"
+        prop="compensationAmount"
+        width="150"
+        align="center"
+      />
+      <el-table-column
+        label="预付款应付金额"
+        prop="anticipatePayable"
+        width="150"
+        align="center"
+      />
+      <el-table-column
+        label="预付款到账金额（元）"
+        prop="anticipatePayment"
+        width="150"
+        align="center"
+      />
+      <el-table-column
+        label="决算款到账金额（元）"
+        prop="finalPayment"
+        width="150"
+        align="center"
+      />
+      <el-table-column
+        label="赔补状态"
+        prop="compensationSate"
+        width="150"
+        align="center"
+      />
+      <el-table-column
+        label="未全额回款合同历时"
+        prop="contractDuration"
+        width="150"
+        align="center"
+      />
+      <el-table-column
+        label="赔补特殊情况备注"
+        prop="compensationRemake"
+        width="150"
+        align="center"
+      />
+      <el-table-column
+        label="月报"
+        prop="projectMonth"
+        width="150"
+        align="center"
+      />
+      <el-table-column
+        label="年份"
+        prop="projectYear"
+        width="150"
+        align="center"
+      />
+      <el-table-column
+        label="合同类型"
+        prop="contractType"
+        width="150"
+        align="center"
+      />
+      <el-table-column
+        label="操作"
+        align="center"
+        width="200"
+        class-name="small-padding fixed-width"
+      >
         <template slot-scope="scope">
-          <el-button size="mini"
-                     type="text"
-                     icon="el-icon-edit"
-                     @click="handleUpdate(scope.row)">修改</el-button>
-          <el-button size="mini"
-                     type="text"
-                     icon="el-icon-delete"
-                     @click="handleDelete(scope.row)">删除</el-button>
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-edit"
+            @click="handleUpdate(scope.row)"
+            >修改</el-button
+          >
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-delete"
+            @click="handleDelete(scope.row)"
+            >删除</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
 
-    <pagination v-show="total > 0"
-                :total="total"
-                :page.sync="queryParams.pageNum"
-                :limit.sync="queryParams.pageSize"
-                @pagination="getList" />
+    <pagination
+      v-show="total > 0"
+      :total="total"
+      :page.sync="queryParams.pageNum"
+      :limit.sync="queryParams.pageSize"
+      @pagination="getList"
+    />
 
     <!-- 添加或修改角色配置对话框 -->
-    <el-dialog :title="title"
-               :visible.sync="open"
-               width="1000px">
-      <el-form ref="form"
-               :model="form"
-               :rules="rules"
-               label-width="140px">
+    <el-dialog :title="title" :visible.sync="open" width="1000px">
+      <el-form ref="form" :model="form" :rules="rules" label-width="140px">
         <el-row>
           <el-col :span="12">
-            <el-form-item label="区域"
-                          prop="unitId">
-              <treeselect v-model="form.unitId"
-                          :options="deptOptions"
-                          placeholder="请选择区域" />
+            <el-form-item label="区域" prop="unitId">
+              <treeselect
+                v-model="form.unitId"
+                :options="deptOptions"
+                placeholder="请选择区域"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="12"></el-col>
           <el-col :span="12">
-            <el-form-item label="迁改项目编号"
-                          prop="projectNum">
-              <el-input v-model="form.projectNum"
-                        placeholder="请输入迁改项目编号" />
+            <el-form-item label="迁改项目编号" prop="projectNum">
+              <el-input
+                v-model="form.projectNum"
+                placeholder="请输入迁改项目编号"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="工程名称"
-                          prop="projectName">
-              <el-input v-model="form.projectName"
-                        placeholder="请输入工程名称" />
+            <el-form-item label="工程名称" prop="projectName">
+              <el-input
+                v-model="form.projectName"
+                placeholder="请输入工程名称"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="EOMS迁移修缮管理流程工单号"
-                          prop="eomsRepairNum">
-              <el-input v-model="form.eomsRepairNum"
-                        placeholder="请输入EOMS迁移修缮管理流程工单号" />
+            <el-form-item
+              label="EOMS迁移修缮管理流程工单号"
+              prop="eomsRepairNum"
+            >
+              <el-input
+                v-model="form.eomsRepairNum"
+                placeholder="请输入EOMS迁移修缮管理流程工单号"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="EOMS光缆割接流程工单号"
-                          prop="eomsCutNum">
-              <el-input v-model="form.eomsCutNum"
-                        placeholder="请输入EOMS光缆割接流程工单号" />
+            <el-form-item label="EOMS光缆割接流程工单号" prop="eomsCutNum">
+              <el-input
+                v-model="form.eomsCutNum"
+                placeholder="请输入EOMS光缆割接流程工单号"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="计划施工时间"
-                          prop="planStartTime">
-              <el-date-picker v-model="form.planStartTime"
-                              type="date"
-                              placeholder="选择计划施工时间"></el-date-picker>
+            <el-form-item label="计划施工时间" prop="planStartTime">
+              <el-date-picker
+                v-model="form.planStartTime"
+                type="date"
+                placeholder="选择计划施工时间"
+              ></el-date-picker>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="计划完成时间"
-                          prop="planEndTime">
-              <el-date-picker v-model="form.planEndTime"
-                              type="date"
-                              placeholder="选择计划完成时间"></el-date-picker>
+            <el-form-item label="计划完成时间" prop="planEndTime">
+              <el-date-picker
+                v-model="form.planEndTime"
+                type="date"
+                placeholder="选择计划完成时间"
+              ></el-date-picker>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="施工单位"
-                          prop="constructionUnit">
-              <el-input v-model="form.constructionUnit"
-                        placeholder="请输入施工单位" />
+            <el-form-item label="施工单位" prop="constructionUnit">
+              <el-input
+                v-model="form.constructionUnit"
+                placeholder="请输入施工单位"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="迁改涉及网络层级（省干、汇聚、接入、驻地网）"
-                          prop="networkHierarchy">
-              <el-input v-model="form.networkHierarchy"
-                        placeholder="请输入迁改涉及网络层级" />
+            <el-form-item
+              label="迁改涉及网络层级（省干、汇聚、接入、驻地网）"
+              prop="networkHierarchy"
+            >
+              <el-input
+                v-model="form.networkHierarchy"
+                placeholder="请输入迁改涉及网络层级"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="施工费（预算：元）"
-                          prop="constructionBudget">
-              <el-input v-model="form.constructionBudget"
-                        type="number"
-                        placeholder="请输入施工费" />
+            <el-form-item label="施工费（预算：元）" prop="constructionBudget">
+              <el-input
+                v-model="form.constructionBudget"
+                type="number"
+                placeholder="请输入施工费"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="甲供材料费（预算：元）"
-                          prop="materialBudget">
-              <el-input v-model="form.materialBudget"
-                        type="number"
-                        placeholder="请输入甲供材料费" />
+            <el-form-item label="甲供材料费（预算：元）" prop="materialBudget">
+              <el-input
+                v-model="form.materialBudget"
+                type="number"
+                placeholder="请输入甲供材料费"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="施工费（送审结算：元）"
-                          prop="constructionCost">
-              <el-input v-model="form.constructionCost"
-                        type="number"
-                        placeholder="请输入施工费" />
+            <el-form-item
+              label="施工费（送审结算：元）"
+              prop="constructionCost"
+            >
+              <el-input
+                v-model="form.constructionCost"
+                type="number"
+                placeholder="请输入施工费"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="甲供材料费（送审结算：元）"
-                          prop="materialCost">
-              <el-input v-model="form.materialCost"
-                        type="number"
-                        placeholder="请输入甲供材料费" />
+            <el-form-item
+              label="甲供材料费（送审结算：元）"
+              prop="materialCost"
+            >
+              <el-input
+                v-model="form.materialCost"
+                type="number"
+                placeholder="请输入甲供材料费"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="施工费审定金额（审计后：元）"
-                          prop="constructionAuditCost">
-              <el-input v-model="form.constructionAuditCost"
-                        type="number"
-                        placeholder="请输入施工费审定金额" />
+            <el-form-item
+              label="施工费审定金额（审计后：元）"
+              prop="constructionAuditCost"
+            >
+              <el-input
+                v-model="form.constructionAuditCost"
+                type="number"
+                placeholder="请输入施工费审定金额"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="主动迁改或者被动"
-                          prop="isInitiative">
-              <el-select v-model="form.isInitiative"
-                         placeholder="请选择主动迁改或者被动"
-                         clearable
-                         size="small"
-                         style="width: 220px">
-                <el-option v-for="dict in InitiativeOptions"
-                           :key="dict.dictValue"
-                           :label="dict.dictLabel"
-                           :value="dict.dictValue" />
+            <el-form-item label="主动迁改或者被动" prop="isInitiative">
+              <el-select
+                v-model="form.isInitiative"
+                placeholder="请选择主动迁改或者被动"
+                clearable
+                size="small"
+                style="width: 220px"
+              >
+                <el-option
+                  v-for="dict in InitiativeOptions"
+                  :key="dict.dictValue"
+                  :label="dict.dictLabel"
+                  :value="dict.dictValue"
+                />
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="性质归类"
-                          prop="projectType">
-              <el-input v-model="form.projectType"
-                        placeholder="请输入性质归类" />
+            <el-form-item label="性质归类" prop="projectType">
+              <el-input
+                v-model="form.projectType"
+                placeholder="请输入性质归类"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="迁改原因"
-                          prop="cause">
-              <el-input v-model="form.cause"
-                        placeholder="请输入迁改原因" />
+            <el-form-item label="迁改原因" prop="cause">
+              <el-input v-model="form.cause" placeholder="请输入迁改原因" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="对方单位"
-                          prop="oppositeUnit">
-              <el-input v-model="form.oppositeUnit"
-                        placeholder="请输入对方单位" />
+            <el-form-item label="对方单位" prop="oppositeUnit">
+              <el-input
+                v-model="form.oppositeUnit"
+                placeholder="请输入对方单位"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="对方联系人"
-                          prop="oppositeContacts">
-              <el-input v-model="form.oppositeContacts"
-                        placeholder="请输入对方联系人" />
+            <el-form-item label="对方联系人" prop="oppositeContacts">
+              <el-input
+                v-model="form.oppositeContacts"
+                placeholder="请输入对方联系人"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="对方联系电话"
-                          prop="oppositeContactsNum">
-              <el-input v-model="form.oppositeContactsNum"
-                        placeholder="请输入对方联系电话" />
+            <el-form-item label="对方联系电话" prop="oppositeContactsNum">
+              <el-input
+                v-model="form.oppositeContactsNum"
+                placeholder="请输入对方联系电话"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="有无赔补"
-                          prop="hasCompensation">
-              <el-select v-model="form.hasCompensation"
-                         placeholder="赔补状态"
-                         clearable
-                         size="small"
-                         style="width: 220px">
-                <el-option v-for="dict in compensateOptions"
-                           :key="dict.dictValue"
-                           :label="dict.dictLabel"
-                           :value="dict.dictValue" />
+            <el-form-item label="有无赔补" prop="hasCompensation">
+              <el-select
+                v-model="form.hasCompensation"
+                placeholder="赔补状态"
+                clearable
+                size="small"
+                style="width: 220px"
+              >
+                <el-option
+                  v-for="dict in compensateOptions"
+                  :key="dict.dictValue"
+                  :label="dict.dictLabel"
+                  :value="dict.dictValue"
+                />
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="被动无赔类型"
-                          prop="compensationType">
-              <el-input v-model="form.compensationType"
-                        placeholder="请输入被动无赔类型" />
+            <el-form-item label="被动无赔类型" prop="compensationType">
+              <el-input
+                v-model="form.compensationType"
+                placeholder="请输入被动无赔类型"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="合同编号"
-                          prop="contractNum">
-              <el-input v-model="form.contractNum"
-                        placeholder="请输入合同编号" />
+            <el-form-item label="合同编号" prop="contractNum">
+              <el-input
+                v-model="form.contractNum"
+                placeholder="请输入合同编号"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="赔补合同名"
-                          prop="contractName">
-              <el-input v-model="form.contractName"
-                        placeholder="请输入赔补合同名" />
+            <el-form-item label="赔补合同名" prop="contractName">
+              <el-input
+                v-model="form.contractName"
+                placeholder="请输入赔补合同名"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="赔补金额（元）"
-                          prop="compensationAmount">
-              <el-input v-model="form.compensationAmount"
-                        type="number"
-                        placeholder="请输入赔补金额" />
+            <el-form-item label="赔补金额（元）" prop="compensationAmount">
+              <el-input
+                v-model="form.compensationAmount"
+                type="number"
+                placeholder="请输入赔补金额"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="预付款到账金额（元）"
-                          prop="anticipatePayment">
-              <el-input v-model="form.anticipatePayment"
-                        type="number"
-                        placeholder="请输入预付款到账金额" />
+            <el-form-item label="预付款到账金额（元）" prop="anticipatePayment">
+              <el-input
+                v-model="form.anticipatePayment"
+                type="number"
+                placeholder="请输入预付款到账金额"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="预付款应付金额（元）"
-                          prop="anticipatePayable">
-              <el-input v-model="form.anticipatePayable"
-                        type="number"
-                        placeholder="请输入预付款应付金额" />
+            <el-form-item label="预付款应付金额（元）" prop="anticipatePayable">
+              <el-input
+                v-model="form.anticipatePayable"
+                type="number"
+                placeholder="请输入预付款应付金额"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="决算款到账金额（元）（注：决算款不包含预算款）"
-                          prop="finalPayment">
-              <el-input v-model="form.finalPayment"
-                        type="number"
-                        placeholder="请输入决算款到账金额" />
+            <el-form-item
+              label="决算款到账金额（元）（注：决算款不包含预算款）"
+              prop="finalPayment"
+            >
+              <el-input
+                v-model="form.finalPayment"
+                type="number"
+                placeholder="请输入决算款到账金额"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="赔补状态"
-                          prop="compensationSate">
-              <el-select v-model="form.compensationSate"
-                         placeholder="赔补状态"
-                         clearable
-                         size="small"
-                         style="width: 220px">
-                <el-option v-for="dict in compensationOptions"
-                           :key="dict.value"
-                           :label="dict.label"
-                           :value="dict.value" />
+            <el-form-item label="赔补状态" prop="compensationSate">
+              <el-select
+                v-model="form.compensationSate"
+                placeholder="赔补状态"
+                clearable
+                size="small"
+                style="width: 220px"
+              >
+                <el-option
+                  v-for="dict in compensationOptions"
+                  :key="dict.value"
+                  :label="dict.label"
+                  :value="dict.value"
+                />
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="未全款回款合同合同签订时长（年）"
-                          prop="contractDuration">
-              <el-input v-model="form.contractDuration"
-                        placeholder="请输入未全款回款合同合同签订时长" />
+            <el-form-item
+              label="未全款回款合同合同签订时长（年）"
+              prop="contractDuration"
+            >
+              <el-input
+                v-model="form.contractDuration"
+                placeholder="请输入未全款回款合同合同签订时长"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="赔补特殊情况备注"
-                          prop="compensationRemake">
-              <el-input v-model="form.compensationRemake"
-                        placeholder="请输入赔补特殊情况备注" />
+            <el-form-item label="赔补特殊情况备注" prop="compensationRemake">
+              <el-input
+                v-model="form.compensationRemake"
+                placeholder="请输入赔补特殊情况备注"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="月报"
-                          prop="projectMonth">
-              <el-input v-model="form.projectMonth"
-                        placeholder="请输入月报" />
+            <el-form-item label="月报" prop="projectMonth">
+              <el-input v-model="form.projectMonth" placeholder="请输入月报" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="年份"
-                          prop="projectYear">
-              <el-date-picker v-model="form.projectYear"
-                              value-format="yyyy"
-                              type="year"
-                              placeholder="选择年">
+            <el-form-item label="年份" prop="projectYear">
+              <el-date-picker
+                v-model="form.projectYear"
+                value-format="yyyy"
+                type="year"
+                placeholder="选择年"
+              >
               </el-date-picker>
               <!-- <el-input v-model="form.projectYear" placeholder="请输入年份" /> -->
             </el-form-item>
           </el-col>
         </el-row>
       </el-form>
-      <div slot="footer"
-           class="dialog-footer">
-        <el-button type="primary"
-                   @click="submitForm">确 定</el-button>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="submitForm">确 定</el-button>
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
 
-    <el-dialog title="导入"
-               :visible.sync="centerDialogVisible"
-               width="500px">
-      <el-upload class="upload-demo"
-                 :headers="headers"
-                 :on-preview="handlePreview"
-                 :on-remove="handleRemove"
-                 :before-remove="beforeRemove"
-                 :on-success="handleSuccess"
-                 :on-progress="handleupload"
-                 :on-error="handleFail"
-                 multiple
-                 :limit="1"
-                 :on-exceed="handleExceed"
-                 :action="ActionUrl"
-                 :file-list="fileList">
-        <el-button size="small"
-                   type="primary">点击上传</el-button>
+    <el-dialog title="导入" :visible.sync="centerDialogVisible" width="500px">
+      <el-upload
+        class="upload-demo"
+        :headers="headers"
+        :on-preview="handlePreview"
+        :on-remove="handleRemove"
+        :before-remove="beforeRemove"
+        :on-success="handleSuccess"
+        :on-progress="handleupload"
+        :on-error="handleFail"
+        multiple
+        :limit="1"
+        :on-exceed="handleExceed"
+        :action="ActionUrl"
+        :file-list="fileList"
+      >
+        <el-button size="small" type="primary">点击上传</el-button>
       </el-upload>
     </el-dialog>
   </div>
@@ -580,7 +716,7 @@ import { prefix } from "@/api/relocation/relocation";
 export default {
   name: "Flowtype",
   components: { Treeselect },
-  data () {
+  data() {
     var validatePass = (rule, value, callback) => {
       if (this.form.hasCompensation === "0") {
         callback(new Error("请输入被动无赔类型"));
@@ -738,9 +874,13 @@ export default {
       headers: {
         Authorization: getToken(),
       },
+      query: {
+        pageNum: 1,
+        pageSize: 10,
+      },
     };
   },
-  created () {
+  created() {
     // this.getList();
     this.getDicts("relocation/compensation_sate").then((response) => {
       this.compensationOptions = response;
@@ -749,7 +889,7 @@ export default {
     });
   },
   methods: {
-    handleupload () {
+    handleupload() {
       const loading = this.$loading({
         lock: true,
         text: "正在导入表格",
@@ -758,23 +898,24 @@ export default {
       });
       this.loadingoption = loading;
     },
-    handleFail () {
+    handleFail() {
       this.loadingoption.close();
       this.$message.error("上传失败");
     },
-    handleRemove (file, fileList) { },
-    handlePreview (file) { },
-    handleExceed (files, fileList) {
+    handleRemove(file, fileList) {},
+    handlePreview(file) {},
+    handleExceed(files, fileList) {
       this.$message.warning(
-        `当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length
+        `当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${
+          files.length + fileList.length
         } 个文件`
       );
     },
-    handleSuccess (res) {
+    handleSuccess(res) {
       this.fileList = [];
       this.loadingoption.close();
       this.centerDialogVisible = false;
-      if (res.code == '00000') {
+      if (res.code == "00000") {
         this.$message.success("导入上传成功");
         this.getList();
       } else {
@@ -785,14 +926,14 @@ export default {
         this.getList();
       }
     },
-    beforeRemove (file, fileList) {
+    beforeRemove(file, fileList) {
       return this.$confirm(`确定移除 ${file.name}？`);
     },
     /** 查询角色列表 */
-    getList () {
+    getList() {
       this.loading = true;
       let that = this;
-      listProject(this.queryParams).then((response) => {
+      listProject(this.query).then((response) => {
         response.list.map((item) => {
           if (item.hasCompensation) {
             item.hasCompensationName = "有";
@@ -805,13 +946,12 @@ export default {
             }
           });
         });
-        console.log("res", response);
         this.typeList = response.list;
         this.total = response.totalRow;
         this.loading = false;
       });
     },
-    getTreeselect () {
+    getTreeselect() {
       let that = this;
       resourceTreeByUN().then((response) => {
         console.log(response);
@@ -822,12 +962,12 @@ export default {
       });
     },
     // 取消按钮
-    cancel () {
+    cancel() {
       this.open = false;
       this.reset();
     },
     // 表单重置
-    reset () {
+    reset() {
       this.form = {
         id: undefined,
         flowTypeName: undefined,
@@ -837,38 +977,56 @@ export default {
       this.resetForm("form");
     },
     /** 搜索按钮操作 */
-    handleQuery () {
+    handleQuery() {
       this.queryParams.pageNum = 1;
+      function deepClone(obj) {
+        let result = typeof obj.splice === "function" ? [] : {};
+        if (obj && typeof obj === "object") {
+          for (let key in obj) {
+            if (obj[key] && typeof obj[key] === "object") {
+              result[key] = deepClone(obj[key]); //如果对象的属性值为object的时候，递归调用deepClone,即在吧某个值对象复制一份到新的对象的对应值中。
+            } else {
+              result[key] = obj[key]; //如果对象的属性值不为object的时候，直接复制参数对象的每一个键值到新的对象对应的键值对中。
+            }
+          }
+          return result;
+        }
+        return obj;
+      }
+
+      this.query = deepClone(this.queryParams);
+      if (this.query.contractNum) {
+        this.query.contractNum = encodeURI(this.query.contractNum);
+      }
       this.getList();
     },
     /** 重置按钮操作 */
-    resetQuery () {
+    resetQuery() {
       // this.getTreeselect()
       this.dateRange = [];
 
       this.resetForm("queryForm");
       this.handleQuery();
       this.queryParams.unitId = this.morenUnit;
-
     },
     /** 新增按钮操作 */
-    handleAdd () {
+    handleAdd() {
       this.reset();
       // this.getMenuTreeselect();
       this.open = true;
       this.title = "添加迁改项目管理信息";
     },
     /** 修改按钮操作 */
-    handleUpdate (row) {
+    handleUpdate(row) {
       this.reset();
       const typeId = row.id || this.ids;
       //   getRole(typeId).then(response => {
       console.log(row);
-      this.compensationOptions.map(item => {
+      this.compensationOptions.map((item) => {
         if (item.label == row.compensationSate) {
-          row.compensationSate = item.value
+          row.compensationSate = item.value;
         }
-      })
+      });
       this.form = row;
       this.open = true;
       this.title = "修改迁改项目管理信息";
@@ -881,7 +1039,6 @@ export default {
       this.$refs["form"].validate((valid) => {
         console.log("valid", valid);
         if (valid) {
-
           if (this.form.id != undefined) {
             updateProject(this.form)
               .then((response) => {
@@ -908,7 +1065,7 @@ export default {
     },
 
     /** 删除按钮操作 */
-    handleDelete (row) {
+    handleDelete(row) {
       const typeIds = row.id;
       this.$confirm(
         '是否确认删除工程名称为"' + row.projectName + '"的数据项?',
@@ -926,7 +1083,7 @@ export default {
           this.getList();
           this.msgSuccess("删除成功");
         })
-        .catch(function () { });
+        .catch(function () {});
     },
   },
 };
