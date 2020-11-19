@@ -204,7 +204,7 @@
                        width="150"
                        align="center" />
       <el-table-column label="赔补状态"
-                       prop="compensationSateName"
+                       prop="compensationSate"
                        width="150"
                        align="center" />
       <el-table-column label="未全额回款合同历时"
@@ -744,7 +744,7 @@ export default {
     // this.getList();
     this.getDicts("relocation/compensation_sate").then((response) => {
       this.compensationOptions = response;
-      console.log('1111', response)
+
       this.getTreeselect();
     });
   },
@@ -881,7 +881,7 @@ export default {
       this.$refs["form"].validate((valid) => {
         console.log("valid", valid);
         if (valid) {
-          console.log("哈哈哈", this.form);
+
           if (this.form.id != undefined) {
             updateProject(this.form)
               .then((response) => {
