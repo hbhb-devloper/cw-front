@@ -26,6 +26,7 @@
           v-model="queryParams.value1"
           type="datetime"
           placeholder="选择日期时间"
+          size="small"
           style="width: 200px"
         >
         </el-date-picker>
@@ -33,7 +34,7 @@
           v-model="queryParams.state"
           placeholder="请选择归属部门"
           clearable
-          size="medium"
+          size="small"
           style="width: 200px"
         >
           <el-option
