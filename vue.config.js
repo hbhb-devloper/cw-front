@@ -5,8 +5,8 @@ const defaultSettings = require('./src/settings.js')
 function resolve(dir) {
     return path.join(__dirname, dir)
 }
-
-const name = defaultSettings.title || '杭州移动财务管理系统' // 标题
+// 杭州移动
+const name = defaultSettings.title || '财务管理系统' // 标题
 
 const port = process.env.port || process.env.npm_config_port || 80 // 端口
 

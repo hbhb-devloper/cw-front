@@ -119,26 +119,97 @@
       <el-table-column
         label="操作"
         align="center"
-        width="150"
         class-name="small-padding fixed-width"
+        width="200"
       >
         <template slot-scope="scope">
+          <el-button size="mini" type="text" @click="openview(scope.row)" icon="el-icon-folder"
+            >查看附件</el-button
+          >
           <el-button
             size="mini"
             type="text"
             icon="el-icon-upload2"
-            @click="handleDelete(scope.row)"
+            @click="handleImportant(scope.row)"
             >上传附件</el-button
           >
         </template>
       </el-table-column>
     </el-table>
+
+    <el-dialog
+      title="上传附件"
+      :visible.sync="centerDialogVisible"
+      width="500px"
+    >
+      <el-upload
+        class="upload-demo"
+        :headers="headers"
+        :on-preview="handlePreview"
+        :on-remove="handleRemove"
+        :before-remove="beforeRemove"
+        :on-success="handleSuccess"
+        :on-progress="handleupload"
+        :on-error="handleFail"
+        multiple
+        :data="importantData"
+        :limit="1"
+        :on-exceed="handleExceed"
+        :action="ActionUrl"
+        :file-list="fileList"
+      >
+        <el-button size="small" type="primary">点击上传</el-button>
+      </el-upload>
+    </el-dialog>
+    <el-dialog
+      title="查看附件"
+      :visible.sync="viewattachmentshow"
+      width="500px"
+    >
+      <el-table :data="upFileList">
+        <el-table-column
+          label="文件名称"
+          prop="fileName"
+          width="150"
+          align="center"
+        />
+
+        <el-table-column
+          label="操作"
+          align="center"
+          width=""
+          class-name="small-padding fixed-width"
+        >
+          <template slot-scope="scope">
+            <el-button
+              size="mini"
+              type="text"
+              @click="viewattachment(scope.row)"
+              >查看附件</el-button
+            >
+
+            <el-button
+              size="mini"
+              type="text"
+              @click="handleDownload(scope.row)"
+              >下载附件</el-button
+            >
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { listWarn } from "@/api/relocation/warning/prompt.js";
-import { exportData } from "@/utils/export";
+import {
+  listWarn,
+  WarnAdd,
+  warnfile,
+} from "@/api/relocation/warning/prompt.js";
+import { prefix } from "@/api/relocation/relocation";
+
+import { exportData1 } from "@/utils/export";
 import { getToken } from "@/utils/auth";
 export default {
   name: "Flowtype",
@@ -181,12 +252,119 @@ export default {
           { required: true, message: "显示顺序不能为空", trigger: "blur" },
         ],
       },
+      viewattachmentshow: false,
+      centerDialogVisible: false,
+      ActionUrl: process.env.VUE_APP_GATEWAY_API + `${prefix}/warn/upload`, // 上传的图片服务器地址
+      fileList: [],
+      headers: {
+        Authorization: getToken(),
+      },
+      importantData: {},
+      upFileList: [],
     };
   },
   created() {
     this.getList();
   },
   methods: {
+    handleDownload(row) {
+      this.$confirm("是否下载" + row.fileName + "？", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      }).then(() => {
+        let link = document.createElement("a");
+        link.style.display = "none";
+        link.href = row.filepath;
+        link.download = row.fileName;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      });
+    },
+    openview(row) {
+      this.viewattachmentshow = true;
+      let obj = {
+        warnId: row.id,
+      };
+      warnfile(obj)
+        .then((res) => {
+          this.upFileList = res;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+
+    viewattachment(row) {
+      let obj = {
+        warnId: row.id,
+      };
+
+      if (/.(pdf|PDF)$/.test(row)) {
+        window.open(row.filepath);
+      } else if (/.(zip|ZIP)$/.test(row)) {
+        this.$message({
+          showClose: true,
+          message: "该文件格式无法预览",
+          type: "error",
+        });
+      } else {
+        window.open(
+          "https://view.officeapps.live.com/op/view.aspx?src=" + row.filepath
+        );
+      }
+    },
+    handleupload() {
+      const loading = this.$loading({
+        lock: true,
+        text: "正在上传附件",
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.7)",
+      });
+      this.loadingoption = loading;
+    },
+    handleFail() {
+      this.loadingoption.close();
+      this.$message.error("上传失败");
+    },
+    handleRemove(file, fileList) {},
+    handlePreview(file) {},
+    handleExceed(files, fileList) {
+      this.$message.warning(
+        `当前限制选择 1 个文件，本次选择了 ${files.length} 个文件，共选择了 ${
+          files.length + fileList.length
+        } 个文件`
+      );
+    },
+    handleSuccess(res) {
+      if (res.code == "00000") {
+        let data = {
+          warnId: this.importantData.warnId,
+          fileId: res.data.id,
+        };
+        WarnAdd(data).then((response) => {
+          this.fileList = [];
+          this.loadingoption.close();
+          this.centerDialogVisible = false;
+          this.$message.success("文件上传成功");
+          this.getList();
+        });
+      } else {
+        this.$message({
+          message: res.message,
+          type: "error",
+        });
+        this.getList();
+      }
+    },
+    beforeRemove(file, fileList) {
+      return this.$confirm(`确定移除 ${file.name}？`);
+    },
+    handleImportant(row) {
+      this.importantData.warnId = row.id;
+      this.centerDialogVisible = true;
+    },
     /** 查询角色列表 */
     getList() {
       this.loading = true;
@@ -282,10 +460,10 @@ export default {
         type: "warning",
       })
         .then(function () {
-          return exportData(
+          return exportData1(
             getToken(),
             queryParams,
-            "/relocation/warn/export",
+            `${prefix}/warn/export`,
             "提示信息"
           );
         })

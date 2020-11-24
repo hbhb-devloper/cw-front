@@ -8,6 +8,7 @@
             placeholder="请输入金额范围"
             clearable
             size="small"
+            type="number"
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
@@ -17,6 +18,7 @@
             placeholder="请输入金额范围"
             clearable
             size="small"
+            type="number"
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
@@ -113,12 +115,10 @@
         width="150"
         align="center"
       />
-      <el-table-column
-        label="开票点"
-        prop="invoiceSite"
-        width="150"
-        align="center"
-      />
+      <!-- <el-table-column label="开票点"
+                       prop="invoiceSite"
+                       width="150"
+                       align="center" /> -->
       <el-table-column
         label="业务类型"
         prop="businessType"
@@ -326,7 +326,7 @@
                 v-model="form.invoiceTime"
                 type="date"
                 placeholder="请输入开票日期"
-                value-format="yyyy-mm-dd"
+                value-format="yyyy-MM-dd"
               ></el-date-picker>
             </el-form-item>
           </el-col>
@@ -467,7 +467,8 @@ import { resourceTreeByUN } from "@/api/system/unit";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 import { getToken } from "@/utils/auth";
-import { exportData } from "@/utils/export";
+import { prefix } from "@/api/relocation/relocation";
+import { exportData1 } from "@/utils/export";
 export default {
   name: "Flowtype",
   components: { Treeselect },
@@ -569,7 +570,7 @@ export default {
       deptOptions: [],
       morenUnit: undefined,
       centerDialogVisible: false,
-      ActionUrl: process.env.VUE_APP_BASE_API + "/reinvoice/import", // 上传的图片服务器地址
+      ActionUrl: process.env.VUE_APP_GATEWAY_API + `${prefix}/invoice/import`, // 上传的图片服务器地址
       fileList: [],
       headers: {
         Authorization: getToken(),
@@ -591,7 +592,12 @@ export default {
   },
   methods: {
     downTemplate() {
-      exportData(getToken(), "", "/reinvoice/exportTemplate", "发票管理");
+      exportData1(
+        getToken(),
+        "",
+        `${prefix}/invoice/exportTemplate`,
+        "发票管理"
+      );
     },
     handleupload() {
       const loading = this.$loading({
@@ -619,8 +625,8 @@ export default {
       this.fileList = [];
       this.loadingoption.close();
       this.centerDialogVisible = false;
-      if (res.status == 1000) {
-        this.$message.success("文件上传成功");
+      if (res.code == "00000") {
+        this.$message.success("导入成功");
         this.getList();
       } else {
         this.$message({
@@ -638,7 +644,7 @@ export default {
       this.loading = true;
       listInvoice(this.queryParams).then((response) => {
         this.typeList = response.list;
-        this.total = response.total;
+        this.total = response.totalRow;
         this.loading = false;
       });
     },
@@ -678,6 +684,7 @@ export default {
       this.queryParams.data = [];
       this.resetForm("queryForm");
       this.handleQuery();
+      this.queryParams.unitId = this.morenUnit;
     },
     /** 新增按钮操作 */
     handleAdd() {
@@ -701,8 +708,8 @@ export default {
     submitForm: function () {
       this.$refs["form"].validate((valid) => {
         if (valid) {
-          this.form.remake=this.form.remake.replace(/\;/g,'；')
-          console.log('this.form.remake',this.form.remake);
+          this.form.remake = this.form.remake.replace(/\;/g, "；");
+          console.log("this.form.remake", this.form.remake);
           if (this.form.id != undefined) {
             updateInvoice(this.form)
               .then((response) => {
@@ -759,10 +766,10 @@ export default {
         type: "warning",
       })
         .then(function () {
-          return exportData(
+          return exportData1(
             getToken(),
             queryParams,
-            "/reinvoice/export",
+            `${prefix}/invoice/export`,
             "发票管理"
           );
         })

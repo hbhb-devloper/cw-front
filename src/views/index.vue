@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-07-20 18:22:09
  * @LastEditors: CYZ
- * @LastEditTime: 2020-10-10 14:43:55
+ * @LastEditTime: 2020-11-19 20:34:46
 -->
 <template>
   <div class="dashboard-editor-container">
@@ -194,10 +194,86 @@
         </el-table>
       </el-card>
     </el-dialog>
+
+    <!-- 预警待办事项弹出框 -->
+    <el-dialog :title="moduleTitle" :visible.sync="open2" width="1200px">
+      <el-card class="box-card">
+        <el-table
+          :data="warnList"
+          v-loading="loading"
+          style="width: 100%; font-size: 13px"
+          height="400"
+          @row-click="gotoWarn"
+        >
+          <el-table-column
+            label="项目编号"
+            prop="projectNum"
+            width="150"
+            align="center"
+          />
+          <el-table-column
+            label="区市"
+            prop="unitName"
+            width="150"
+            align="center"
+          />
+          <el-table-column
+            label="施工单位"
+            prop="constructionUnit"
+            width="150"
+            align="center"
+          />
+          <!-- <el-table-column label="工程单位" prop="flowTypeName" width="150" align="center" /> -->
+          <el-table-column
+            label="对方单位"
+            prop="oppositeUnit"
+            width="150"
+            align="center"
+          />
+          <el-table-column
+            label="合同编号"
+            prop="contractNum"
+            width="150"
+            align="center"
+          />
+          <el-table-column
+            label="预付款到账金额（元）"
+            prop="anticipatePayment"
+            width="150"
+            align="center"
+          />
+          <el-table-column
+            label="是否已经收款"
+            prop="isReceived"
+            width="150"
+            align="center"
+          />
+          <el-table-column
+            label="决算款到账金额（元）（注：决算款不包含预算款）"
+            prop="finalPayment"
+            width="150"
+            align="center"
+          />
+          <el-table-column
+            label="未全款回款合同历时"
+            prop="contractDuration"
+            width="150"
+            align="center"
+          />
+        </el-table>
+         <pagination
+        v-show="total1 > 0"
+        :total="total1"
+        :page.sync="queryParams1.pageNum"
+        :limit.sync="queryParams1.pageSize"
+        @pagination="getWarnList"
+      />
+      </el-card>
+    </el-dialog>
     <!-- 更多待办事项对话框 -->
     <el-dialog title="待办事宜" :visible.sync="open" width="1100px">
       <el-form :model="queryParams" ref="queryForm" :inline="true">
-        <el-form-item label="编码查询" prop="projectNum" v-if="module1==100">
+        <el-form-item label="编码查询" prop="projectNum" v-if="module1 == 100">
           <el-input
             v-model="queryParams.projectNum"
             placeholder="请输入编码"
@@ -206,7 +282,7 @@
             style="width: 240px"
           />
         </el-form-item>
-        <el-form-item label="单位编号" prop="unitNum" v-if="module1==101">
+        <el-form-item label="单位编号" prop="unitNum" v-if="module1 == 101">
           <el-input
             v-model="queryParams.unitNum"
             placeholder="请输入单位编号"
@@ -266,8 +342,8 @@
               >{{ scope.row.content }}</router-link
             > -->
             <div style="color: #409eff" @click="gotoDetail1(scope.row)">
-                {{ scope.row.content }}
-              </div>
+              {{ scope.row.content }}
+            </div>
           </template>
         </el-table-column>
         <el-table-column
@@ -346,6 +422,8 @@
 </template>
 
 <script>
+import { treeListWarn } from "@/api/relocation/warning/prompt.js";
+
 import Stomp from "stompjs";
 import { getToken } from "@/utils/auth";
 import {
@@ -356,7 +434,7 @@ import {
   getWorkList,
   getWorkDetailList,
   updateFund,
-  getFundList
+  getFundList,
 } from "@/api/workbench/workbench";
 import PanelGroup from "./dashboard/PanelGroup";
 
@@ -368,7 +446,7 @@ export default {
   computed: {},
   data() {
     return {
-      module1:undefined,
+      module1: undefined,
       centerDialogVisible: false,
       ActionUrl: process.env.VUE_APP_BASE_API + "/file/system", // 上传的图片服务器地址
       headers: {
@@ -378,10 +456,12 @@ export default {
       uploadData: {},
       NoticetableData: [],
       // client: Stomp.client("ws://mq.yeexun.com.cn:15674/ws"),
-      total: 1,
+      total: 0,
+      total1:0,
       moduleTitle: "",
       open: false,
       open1: false,
+      open2: false,
       loading1: false,
       loading2: false,
       loading: false,
@@ -396,8 +476,14 @@ export default {
         firstNum: undefined,
         twoNum: undefined,
       },
+       queryParams1: {
+        pageNum: 1,
+        pageSize: 10,
+        
+      },
       tableData: [],
       noticelists: [],
+      warnList: [],
     };
   },
   //定义私用局部过滤器。只能在当前 vue 对象中使用
@@ -417,6 +503,10 @@ export default {
     // this.connect();
   },
   methods: {
+    gotoWarn() {
+      console.log('clickRow');
+      this.$router.push(`relocation/warning/prompt`);
+    },
     gotoDetail(row) {
       let that = this;
       if (this.module1 == 100) {
@@ -438,12 +528,24 @@ export default {
         this.workList = response;
       });
     },
-    selectModule(module1,moduleName) {
+    selectModule(module1, moduleName) {
       this.module1 = module1;
       this.moduleTitle = moduleName;
-      this.open1 = true;
-
-      this.getWorkDetailList(module1);
+      if (moduleName == "迁改预警") {
+        this.open2 = true;
+        this.getWarnList(module1);
+      } else {
+        this.open1 = true;
+        this.getWorkDetailList(module1);
+      }
+    },
+    getWarnList() {
+      this.loading = true;
+      treeListWarn(this.queryParams1).then((response) => {
+        this.warnList = response.list;
+        this.total1 = response.totalRow;
+        this.loading = false;
+      });
     },
     getWorkDetailList(module1) {
       let that = this;
@@ -572,7 +674,7 @@ export default {
     /** 搜索按钮操作 */
     handleQuery() {
       this.queryParams.pageNum = 1;
-       if (this.module1 == 100) {
+      if (this.module1 == 100) {
         this.getList1();
       } else if (this.module1 == 101) {
         this.getList2();

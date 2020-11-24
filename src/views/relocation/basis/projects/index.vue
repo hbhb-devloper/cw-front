@@ -273,7 +273,7 @@
       />
       <el-table-column
         label="赔补状态"
-        prop="compensationSateName"
+        prop="compensationSate"
         width="150"
         align="center"
       />
@@ -312,6 +312,7 @@
         align="center"
         width="200"
         class-name="small-padding fixed-width"
+        fixed="right"
       >
         <template slot-scope="scope">
           <el-button
@@ -430,6 +431,7 @@
             <el-form-item label="施工费（预算：元）" prop="constructionBudget">
               <el-input
                 v-model="form.constructionBudget"
+                type="number"
                 placeholder="请输入施工费"
               />
             </el-form-item>
@@ -438,6 +440,7 @@
             <el-form-item label="甲供材料费（预算：元）" prop="materialBudget">
               <el-input
                 v-model="form.materialBudget"
+                type="number"
                 placeholder="请输入甲供材料费"
               />
             </el-form-item>
@@ -449,6 +452,7 @@
             >
               <el-input
                 v-model="form.constructionCost"
+                type="number"
                 placeholder="请输入施工费"
               />
             </el-form-item>
@@ -460,6 +464,7 @@
             >
               <el-input
                 v-model="form.materialCost"
+                type="number"
                 placeholder="请输入甲供材料费"
               />
             </el-form-item>
@@ -471,6 +476,7 @@
             >
               <el-input
                 v-model="form.constructionAuditCost"
+                type="number"
                 placeholder="请输入施工费审定金额"
               />
             </el-form-item>
@@ -482,7 +488,7 @@
                 placeholder="请选择主动迁改或者被动"
                 clearable
                 size="small"
-                style="width:220px"
+                style="width: 220px"
               >
                 <el-option
                   v-for="dict in InitiativeOptions"
@@ -532,13 +538,12 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="有无赔补" prop="hasCompensation">
-              
               <el-select
                 v-model="form.hasCompensation"
                 placeholder="赔补状态"
                 clearable
                 size="small"
-                style="width:220px"
+                style="width: 220px"
               >
                 <el-option
                   v-for="dict in compensateOptions"
@@ -547,7 +552,6 @@
                   :value="dict.dictValue"
                 />
               </el-select>
-              
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -578,6 +582,7 @@
             <el-form-item label="赔补金额（元）" prop="compensationAmount">
               <el-input
                 v-model="form.compensationAmount"
+                type="number"
                 placeholder="请输入赔补金额"
               />
             </el-form-item>
@@ -586,6 +591,7 @@
             <el-form-item label="预付款到账金额（元）" prop="anticipatePayment">
               <el-input
                 v-model="form.anticipatePayment"
+                type="number"
                 placeholder="请输入预付款到账金额"
               />
             </el-form-item>
@@ -594,6 +600,7 @@
             <el-form-item label="预付款应付金额（元）" prop="anticipatePayable">
               <el-input
                 v-model="form.anticipatePayable"
+                type="number"
                 placeholder="请输入预付款应付金额"
               />
             </el-form-item>
@@ -605,6 +612,7 @@
             >
               <el-input
                 v-model="form.finalPayment"
+                type="number"
                 placeholder="请输入决算款到账金额"
               />
             </el-form-item>
@@ -616,7 +624,7 @@
                 placeholder="赔补状态"
                 clearable
                 size="small"
-                style="width:220px"
+                style="width: 220px"
               >
                 <el-option
                   v-for="dict in compensationOptions"
@@ -653,7 +661,14 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="年份" prop="projectYear">
-              <el-input v-model="form.projectYear" placeholder="请输入年份" />
+              <el-date-picker
+                v-model="form.projectYear"
+                value-format="yyyy"
+                type="year"
+                placeholder="选择年"
+              >
+              </el-date-picker>
+              <!-- <el-input v-model="form.projectYear" placeholder="请输入年份" /> -->
             </el-form-item>
           </el-col>
         </el-row>
@@ -698,18 +713,18 @@ import {
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 import { getToken } from "@/utils/auth";
+import { prefix } from "@/api/relocation/relocation";
 export default {
   name: "Flowtype",
   components: { Treeselect },
   data() {
     var validatePass = (rule, value, callback) => {
-        if (this.form.hasCompensation === '0') {
-          callback(new Error('请输入被动无赔类型'));
-        } 
-        callback()
-      };
+      if (this.form.hasCompensation === "0") {
+        callback(new Error("请输入被动无赔类型"));
+      }
+      callback();
+    };
     return {
-      
       // 遮罩层
       loading: true,
       // 选中数组
@@ -734,7 +749,7 @@ export default {
         pageSize: 10,
       },
       // 赔补状态
-      compensationOptions:[],
+      compensationOptions: [],
       // 表单参数
       form: {},
       defaultProps: {
@@ -805,9 +820,7 @@ export default {
         hasCompensation: [
           { required: true, message: "请选择有无赔补", trigger: "blur" },
         ],
-        compensationType: [
-          {validator: validatePass, trigger: "blur" },
-        ],
+        compensationType: [{ validator: validatePass, trigger: "blur" }],
         contractNum: [
           { required: true, message: "请输入合同编号", trigger: "blur" },
         ],
@@ -841,8 +854,8 @@ export default {
       },
       // 状态数据字典
       statusOptions: [
-        { dictValue: '1', dictLabel: "正常" },
-        { dictValue: '0', dictLabel: "停用" },
+        { dictValue: "1", dictLabel: "正常" },
+        { dictValue: "0", dictLabel: "停用" },
       ],
       // 有无赔补
       compensateOptions: [
@@ -857,7 +870,7 @@ export default {
       morenUnit: undefined,
       deptOptions: [],
       centerDialogVisible: false,
-      ActionUrl: process.env.VUE_APP_BASE_API + "/relocation/project/import", // 上传的图片服务器地址
+      ActionUrl: process.env.VUE_APP_GATEWAY_API + `${prefix}/project/import`, // 上传的图片服务器地址
       fileList: [],
       headers: {
         Authorization: getToken(),
@@ -866,8 +879,9 @@ export default {
   },
   created() {
     // this.getList();
-    compensationSate().then((response) => {
+    this.getDicts("relocation/compensation_sate").then((response) => {
       this.compensationOptions = response;
+
       this.getTreeselect();
     });
   },
@@ -898,8 +912,8 @@ export default {
       this.fileList = [];
       this.loadingoption.close();
       this.centerDialogVisible = false;
-      if (res.status == 1000) {
-        this.$message.success("文件上传成功");
+      if (res.code == "00000") {
+        this.$message.success("导入上传成功");
         this.getList();
       } else {
         this.$message({
@@ -919,7 +933,7 @@ export default {
       listProject(this.queryParams).then((response) => {
         response.list.map((item) => {
           if (item.hasCompensation) {
-            item.hasCompensationName= "有"
+            item.hasCompensationName = "有";
           } else {
             item.hasCompensationName = "无";
           }
@@ -929,15 +943,15 @@ export default {
             }
           });
         });
-        console.log("res", response);
         this.typeList = response.list;
-        this.total = response.count;
+        this.total = response.totalRow;
         this.loading = false;
       });
     },
     getTreeselect() {
       let that = this;
       resourceTreeByUN().then((response) => {
+        console.log(response);
         that.deptOptions = response.list;
         that.morenUnit = response.checked[0];
         that.queryParams.unitId = that.morenUnit;
@@ -962,13 +976,17 @@ export default {
     /** 搜索按钮操作 */
     handleQuery() {
       this.queryParams.pageNum = 1;
+
       this.getList();
     },
     /** 重置按钮操作 */
     resetQuery() {
+      // this.getTreeselect()
       this.dateRange = [];
+
       this.resetForm("queryForm");
       this.handleQuery();
+      this.queryParams.unitId = this.morenUnit;
     },
     /** 新增按钮操作 */
     handleAdd() {
@@ -982,6 +1000,12 @@ export default {
       this.reset();
       const typeId = row.id || this.ids;
       //   getRole(typeId).then(response => {
+      console.log(row);
+      this.compensationOptions.map((item) => {
+        if (item.label == row.compensationSate) {
+          row.compensationSate = item.value;
+        }
+      });
       this.form = row;
       this.open = true;
       this.title = "修改迁改项目管理信息";
@@ -990,9 +1014,9 @@ export default {
 
     /** 提交按钮 */
     submitForm: function () {
-      console.log('123');
+      console.log("123");
       this.$refs["form"].validate((valid) => {
-        console.log('valid',valid);
+        console.log("valid", valid);
         if (valid) {
           if (this.form.id != undefined) {
             updateProject(this.form)
@@ -1043,7 +1067,7 @@ export default {
   },
 };
 </script>
-<style scoped>
+<style lang="scss" scoped>
 .el-dialog .el-form-item--medium /deep/ .el-form-item__label {
   line-height: 20px;
   font-size: 12px;
@@ -1065,5 +1089,15 @@ export default {
 }
 .el-col-12 {
   height: 59px;
+}
+.el-table /deep/ th.gutter {
+  display: table-cell !important;
+}
+
+.el-table /deep/ colgroup.gutter {
+  display: table-cell !important;
+}
+.el-table /deep/ .is-hidden {
+  display: table-cell !important;
 }
 </style>

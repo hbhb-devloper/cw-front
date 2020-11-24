@@ -4,17 +4,18 @@
  * @Author: CYZ
  * @Date: 2020-09-23 14:42:03
  * @LastEditors: CYZ
- * @LastEditTime: 2020-10-10 15:13:58
+ * @LastEditTime: 2020-11-11 17:53:32
  */
 
-import request from '@/utils/request'
+import request from '@/utils/request1'
+import {prefix} from '../relocation'
 
 
 
 // 查询迁改基础信息列表
 export function listReceipt(query) {
     return request({
-        url: '/relocation/receipt/list',
+        url: `${prefix}/receipt/list`,
         method: 'get',
         params: query
     })
@@ -22,7 +23,7 @@ export function listReceipt(query) {
 // 删除迁改基础信息
 export function delarr(ReceiptId) {
     return request({
-        url: '/relocation/receipt/delete/' + ReceiptId,
+        url: `${prefix}/receipt/${ReceiptId}` ,
         method: 'delete',
     })
 }
@@ -30,7 +31,7 @@ export function delarr(ReceiptId) {
 // 新增迁改基础信息
 export function addReceipt(data) {
     return request({
-        url: '/relocation/receipt/add',
+        url: `${prefix}/receipt`,
         method: 'post',
         data: data
     })
@@ -39,7 +40,7 @@ export function addReceipt(data) {
 // 修改迁改基础信息
 export function updateReceipt(data) {
     return request({
-        url: '/relocation/receipt/update',
+        url: `${prefix}/receipt`,
         method: 'put',
         data: data
     })

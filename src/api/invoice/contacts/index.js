@@ -7,10 +7,11 @@ export function GetList(params){
     params
   })
 }
-export function getUpdateTime(){
+export function getUpdateTime(params){
   return request({
     url:'/invoice/account/run/time',
     method:'get',
+    params
   })
 }
 
