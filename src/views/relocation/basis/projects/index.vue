@@ -312,6 +312,7 @@
         align="center"
         width="200"
         class-name="small-padding fixed-width"
+        fixed="right"
       >
         <template slot-scope="scope">
           <el-button
@@ -874,7 +875,6 @@ export default {
       headers: {
         Authorization: getToken(),
       },
-      
     };
   },
   created() {
@@ -976,7 +976,7 @@ export default {
     /** 搜索按钮操作 */
     handleQuery() {
       this.queryParams.pageNum = 1;
-     
+
       this.getList();
     },
     /** 重置按钮操作 */
@@ -1067,7 +1067,7 @@ export default {
   },
 };
 </script>
-<style scoped>
+<style lang="scss" scoped>
 .el-dialog .el-form-item--medium /deep/ .el-form-item__label {
   line-height: 20px;
   font-size: 12px;
@@ -1089,5 +1089,15 @@ export default {
 }
 .el-col-12 {
   height: 59px;
+}
+.el-table /deep/ th.gutter {
+  display: table-cell !important;
+}
+
+.el-table /deep/ colgroup.gutter {
+  display: table-cell !important;
+}
+.el-table /deep/ .is-hidden {
+  display: table-cell !important;
 }
 </style>
