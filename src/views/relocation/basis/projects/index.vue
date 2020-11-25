@@ -106,7 +106,13 @@
         prop="projectName"
         width="120"
         align="center"
-      />
+      >
+        <template slot-scope="scope">
+          <div style="color: #409eff; cursor: pointer;" @click="gotoDetail(scope.row)">
+            {{ scope.row.projectName }}
+          </div>
+        </template>
+      </el-table-column>
       <el-table-column
         label="迁改项目编号"
         prop="projectNum"
@@ -348,6 +354,7 @@
           <el-col :span="12">
             <el-form-item label="区域" prop="unitId">
               <treeselect
+                :disabled="inputAble"
                 v-model="form.unitId"
                 :options="deptOptions"
                 placeholder="请选择区域"
@@ -358,6 +365,7 @@
           <el-col :span="12">
             <el-form-item label="迁改项目编号" prop="projectNum">
               <el-input
+                :disabled="inputAble"
                 v-model="form.projectNum"
                 placeholder="请输入迁改项目编号"
               />
@@ -366,6 +374,7 @@
           <el-col :span="12">
             <el-form-item label="工程名称" prop="projectName">
               <el-input
+                :disabled="inputAble"
                 v-model="form.projectName"
                 placeholder="请输入工程名称"
               />
@@ -377,6 +386,7 @@
               prop="eomsRepairNum"
             >
               <el-input
+                :disabled="inputAble"
                 v-model="form.eomsRepairNum"
                 placeholder="请输入EOMS迁移修缮管理流程工单号"
               />
@@ -385,6 +395,7 @@
           <el-col :span="12">
             <el-form-item label="EOMS光缆割接流程工单号" prop="eomsCutNum">
               <el-input
+                :disabled="inputAble"
                 v-model="form.eomsCutNum"
                 placeholder="请输入EOMS光缆割接流程工单号"
               />
@@ -393,6 +404,7 @@
           <el-col :span="12">
             <el-form-item label="计划施工时间" prop="planStartTime">
               <el-date-picker
+                :disabled="inputAble"
                 v-model="form.planStartTime"
                 type="date"
                 placeholder="选择计划施工时间"
@@ -402,6 +414,7 @@
           <el-col :span="12">
             <el-form-item label="计划完成时间" prop="planEndTime">
               <el-date-picker
+                :disabled="inputAble"
                 v-model="form.planEndTime"
                 type="date"
                 placeholder="选择计划完成时间"
@@ -411,6 +424,7 @@
           <el-col :span="12">
             <el-form-item label="施工单位" prop="constructionUnit">
               <el-input
+                :disabled="inputAble"
                 v-model="form.constructionUnit"
                 placeholder="请输入施工单位"
               />
@@ -422,6 +436,7 @@
               prop="networkHierarchy"
             >
               <el-input
+                :disabled="inputAble"
                 v-model="form.networkHierarchy"
                 placeholder="请输入迁改涉及网络层级"
               />
@@ -430,6 +445,7 @@
           <el-col :span="12">
             <el-form-item label="施工费（预算：元）" prop="constructionBudget">
               <el-input
+                :disabled="inputAble"
                 v-model="form.constructionBudget"
                 type="number"
                 placeholder="请输入施工费"
@@ -439,6 +455,7 @@
           <el-col :span="12">
             <el-form-item label="甲供材料费（预算：元）" prop="materialBudget">
               <el-input
+                :disabled="inputAble"
                 v-model="form.materialBudget"
                 type="number"
                 placeholder="请输入甲供材料费"
@@ -451,6 +468,7 @@
               prop="constructionCost"
             >
               <el-input
+                :disabled="inputAble"
                 v-model="form.constructionCost"
                 type="number"
                 placeholder="请输入施工费"
@@ -463,6 +481,7 @@
               prop="materialCost"
             >
               <el-input
+                :disabled="inputAble"
                 v-model="form.materialCost"
                 type="number"
                 placeholder="请输入甲供材料费"
@@ -475,6 +494,7 @@
               prop="constructionAuditCost"
             >
               <el-input
+                :disabled="inputAble"
                 v-model="form.constructionAuditCost"
                 type="number"
                 placeholder="请输入施工费审定金额"
@@ -484,6 +504,7 @@
           <el-col :span="12">
             <el-form-item label="主动迁改或者被动" prop="isInitiative">
               <el-select
+                :disabled="inputAble"
                 v-model="form.isInitiative"
                 placeholder="请选择主动迁改或者被动"
                 clearable
@@ -502,6 +523,7 @@
           <el-col :span="12">
             <el-form-item label="性质归类" prop="projectType">
               <el-input
+                :disabled="inputAble"
                 v-model="form.projectType"
                 placeholder="请输入性质归类"
               />
@@ -509,13 +531,18 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="迁改原因" prop="cause">
-              <el-input v-model="form.cause" placeholder="请输入迁改原因" />
+              <el-input
+                :disabled="inputAble"
+                v-model="form.cause"
+                placeholder="请输入迁改原因"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="对方单位" prop="oppositeUnit">
               <el-input
                 v-model="form.oppositeUnit"
+                :disabled="inputAble"
                 placeholder="请输入对方单位"
               />
             </el-form-item>
@@ -523,6 +550,7 @@
           <el-col :span="12">
             <el-form-item label="对方联系人" prop="oppositeContacts">
               <el-input
+                :disabled="inputAble"
                 v-model="form.oppositeContacts"
                 placeholder="请输入对方联系人"
               />
@@ -531,6 +559,7 @@
           <el-col :span="12">
             <el-form-item label="对方联系电话" prop="oppositeContactsNum">
               <el-input
+                :disabled="inputAble"
                 v-model="form.oppositeContactsNum"
                 placeholder="请输入对方联系电话"
               />
@@ -539,6 +568,7 @@
           <el-col :span="12">
             <el-form-item label="有无赔补" prop="hasCompensation">
               <el-select
+                :disabled="inputAble"
                 v-model="form.hasCompensation"
                 placeholder="赔补状态"
                 clearable
@@ -557,6 +587,7 @@
           <el-col :span="12">
             <el-form-item label="被动无赔类型" prop="compensationType">
               <el-input
+                :disabled="inputAble"
                 v-model="form.compensationType"
                 placeholder="请输入被动无赔类型"
               />
@@ -565,6 +596,7 @@
           <el-col :span="12">
             <el-form-item label="合同编号" prop="contractNum">
               <el-input
+                :disabled="inputAble"
                 v-model="form.contractNum"
                 placeholder="请输入合同编号"
               />
@@ -573,6 +605,7 @@
           <el-col :span="12">
             <el-form-item label="赔补合同名" prop="contractName">
               <el-input
+                :disabled="inputAble"
                 v-model="form.contractName"
                 placeholder="请输入赔补合同名"
               />
@@ -581,6 +614,7 @@
           <el-col :span="12">
             <el-form-item label="赔补金额（元）" prop="compensationAmount">
               <el-input
+                :disabled="inputAble"
                 v-model="form.compensationAmount"
                 type="number"
                 placeholder="请输入赔补金额"
@@ -590,6 +624,7 @@
           <el-col :span="12">
             <el-form-item label="预付款到账金额（元）" prop="anticipatePayment">
               <el-input
+                :disabled="inputAble"
                 v-model="form.anticipatePayment"
                 type="number"
                 placeholder="请输入预付款到账金额"
@@ -599,6 +634,7 @@
           <el-col :span="12">
             <el-form-item label="预付款应付金额（元）" prop="anticipatePayable">
               <el-input
+                :disabled="inputAble"
                 v-model="form.anticipatePayable"
                 type="number"
                 placeholder="请输入预付款应付金额"
@@ -611,6 +647,7 @@
               prop="finalPayment"
             >
               <el-input
+                :disabled="inputAble"
                 v-model="form.finalPayment"
                 type="number"
                 placeholder="请输入决算款到账金额"
@@ -620,6 +657,7 @@
           <el-col :span="12">
             <el-form-item label="赔补状态" prop="compensationSate">
               <el-select
+                :disabled="inputAble"
                 v-model="form.compensationSate"
                 placeholder="赔补状态"
                 clearable
@@ -641,6 +679,7 @@
               prop="contractDuration"
             >
               <el-input
+                :disabled="inputAble"
                 v-model="form.contractDuration"
                 placeholder="请输入未全款回款合同合同签订时长"
               />
@@ -649,6 +688,7 @@
           <el-col :span="12">
             <el-form-item label="赔补特殊情况备注" prop="compensationRemake">
               <el-input
+                :disabled="inputAble"
                 v-model="form.compensationRemake"
                 placeholder="请输入赔补特殊情况备注"
               />
@@ -656,12 +696,17 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="月报" prop="projectMonth">
-              <el-input v-model="form.projectMonth" placeholder="请输入月报" />
+              <el-input
+                :disabled="inputAble"
+                v-model="form.projectMonth"
+                placeholder="请输入月报"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="年份" prop="projectYear">
               <el-date-picker
+                :disabled="inputAble"
                 v-model="form.projectYear"
                 value-format="yyyy"
                 type="year"
@@ -680,6 +725,12 @@
     </el-dialog>
 
     <el-dialog title="导入" :visible.sync="centerDialogVisible" width="500px">
+       <div style="margin-bottom: 10px">
+        <el-button type="primary" @click="downTemplate">
+          <i class="el-icon-download"></i>下载导入模板
+        </el-button>
+      </div>
+
       <el-upload
         class="upload-demo"
         :headers="headers"
@@ -709,10 +760,12 @@ import {
   updateProject,
   delarr,
   compensationSate,
+  ProjectDetail,
 } from "@/api/relocation/basis/projects.js";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 import { getToken } from "@/utils/auth";
+import { exportData1 } from "@/utils/export";
 import { prefix } from "@/api/relocation/relocation";
 export default {
   name: "Flowtype",
@@ -875,6 +928,7 @@ export default {
       headers: {
         Authorization: getToken(),
       },
+      inputAble: false,
     };
   },
   created() {
@@ -886,6 +940,14 @@ export default {
     });
   },
   methods: {
+    downTemplate() {
+      exportData1(
+        getToken(),
+        "",
+        `${prefix}/project/export`,
+        "迁改基本信息"
+      );
+    },
     handleupload() {
       const loading = this.$loading({
         lock: true,
@@ -995,9 +1057,27 @@ export default {
       this.open = true;
       this.title = "添加迁改项目管理信息";
     },
+    // 查看详情操作
+    gotoDetail(row) {
+      this.reset();
+      const typeId = row.id || this.ids;
+      this.inputAble = true;
+      ProjectDetail(typeId).then((response) => {
+        console.log('ProjectDetail',response);
+        // this.compensationOptions.map((item) => {
+        //   if (item.label == response.compensationSate) {
+        //     row.compensationSate = item.value;
+        //   }
+        // });
+        this.form = response;
+        this.open = true;
+        this.title = "迁改项目管理信息详情";
+      });
+    },
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
+      this.inputAble = false;
       const typeId = row.id || this.ids;
       //   getRole(typeId).then(response => {
       console.log(row);
@@ -1089,6 +1169,7 @@ export default {
 }
 .el-col-12 {
   height: 59px;
+  
 }
 .el-table /deep/ th.gutter {
   display: table-cell !important;
