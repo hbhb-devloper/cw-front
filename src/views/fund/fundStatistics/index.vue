@@ -228,7 +228,7 @@ export default {
       queryParams: {
         startTime: undefined,
         endTime: undefined,
-        isBalanceZero: undefined,
+        isBalanceZero: false,
         pageSize: 10,
         pageNum: 1,
       }, //条件搜索表单
