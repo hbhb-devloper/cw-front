@@ -80,7 +80,7 @@
                 style="width: 240px"
               />
             </el-form-item>
-            <el-form-item label="导入时间：">
+            <el-form-item label="导入时间：" prop="itime">
               <el-date-picker
                 v-model="obj2.itime"
                 type="daterange"

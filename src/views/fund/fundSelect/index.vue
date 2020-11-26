@@ -232,7 +232,7 @@
       <el-table-column prop="itemName" align="center" label="发起流程">
         <template slot-scope="scope">
           <router-link
-            style="color: #409EFF"
+            style="color: #409eff"
             :to="'/fund/select/info/' + scope.row.id"
             >查看流程
           </router-link>
@@ -291,7 +291,7 @@ export default {
       tableData: [], //表格数据
       loading: true, //表格加载动画
       flowState: [],
-      morenUnit:undefined,
+      morenUnit: undefined,
     };
   },
   components: {
@@ -338,12 +338,13 @@ export default {
     /** 搜索按钮操作 */
     handleQuery() {
       this.queryParams.pageNum = 1;
-      this.queryParams.dptId =this.morenUnit
       this.getList();
     },
     /** 重置按钮操作 */
     resetQuery() {
       this.resetForm("queryForm");
+      this.queryParams.dptId = this.morenUnit;
+
       this.handleQuery();
     },
 
