@@ -50,12 +50,14 @@
         />
       </el-form-item>
       <el-form-item label="纳税人资质" prop="taxpayerCredentials">
-        <el-input
-          placeholder="请输入纳税人资质"
-          v-model="queryParams.taxpayerCredentials"
-          size="small"
-          style="width: 200px"
-        />
+         <el-select v-model="queryParams.taxpayerCredentials" placeholder="请选择">
+          <el-option
+            v-for="item in TaxpayerDict"
+            :value="item.value"
+            :label="item.label"
+            :key="item.value"
+          ></el-option>
+        </el-select>
       </el-form-item>
       <el-form-item>
         <el-button
@@ -186,7 +188,7 @@
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 import { resourceTreeByUN } from "@/api/system/unit";
-import { GetList } from "@/api/invoice/qualification/index";
+import { GetList , GetTaxpayerDict} from "@/api/invoice/qualification/index";
 import { fundSelectExprot, exportData } from "@/utils/export.js";
 import { getToken } from "@/utils/auth";
 import axios from "axios";
@@ -203,7 +205,8 @@ export default {
       loading: true, //表格加载动画
       open: false,
       ActionUrl: process.env.VUE_APP_BASE_API + "/invoice/taxpayer/import",
-      morenUnit:undefined
+      morenUnit:undefined,
+      TaxpayerDict:[]
     };
   },
   components: {
@@ -212,8 +215,20 @@ export default {
   created() {
     // this.getUnitId();
     this.getList();
+    this.getDict()
   },
   methods: {
+    getDict(){
+      GetTaxpayerDict().then(res=>{
+        console.log('GetTaxpayerDict',res);
+        res.map(item=>{
+          if (item.value==1) {
+            item.label='无'
+          }
+        })
+        this.TaxpayerDict=res
+      })
+    },
     //获取部门列表
     getUnitId() {
       resourceTreeByUN().then((res) => {
