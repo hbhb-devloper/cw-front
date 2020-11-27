@@ -1,20 +1,41 @@
+import request1 from '@/utils/request1'
 import request from '@/utils/request'
 import {Encrypt} from '@/utils/AESCrypt'
+
+const grant_type = 'password'
 const client_id = 'zhcw'
 const client_secret = '123456'
-const grant_type = 'password'
-const scope = 'server'
 
-// 登录方法
-// export function login(username, password, code, uuid) {
-//   return request({
-//     url: '/auth/oauth/token',
-//     method: 'post',
-//     params: { username, password, code, uuid, client_id, client_secret, grant_type, scope }
-//   })
+// 新-获取验证码
+export function getCodeImg() {
+    return request1({
+        url: '/auth/captcha',
+        method: 'get'
+    })
+}
+
+// 旧-获取验证码
+// export function getCodeImg() {
+//     return request({
+//         url: '/captcha',
+//         method: 'get'
+//     })
 // }
 
-// 登录方法
+// 验证码校验
+export function check(data) {
+    let info ={
+        captcha:data.captcha,
+        captchaKey:data.captchaKey
+    }
+  return request1({
+    url: '/auth/captcha/check',
+    method: 'get',
+    params: info
+  })
+}
+
+// 新-登录方法
 export function login(data) {
     function deepClone(obj) {
         let result = typeof obj.splice === "function" ? [] : {};
@@ -38,63 +59,14 @@ export function login(data) {
     userInfo.client_secret  =client_secret
     userInfo.captcha  =undefined
     userInfo.captchaKey  =undefined
-    userInfo.rememberMe  =undefined
-    return request({
-        url: '/login',
+    return request1({
+        url: '/auth/oauth/token',
         method: 'post',
-        data: userInfo
+        params: userInfo
     })
 }
 
-
-// 获取用户详细信息
-export function getInfo() {
-    return request({
-        url: '/getInfo',
-        method: 'get'
-    })
-}
-
-// 退出方法
-export function logout() {
-    return request({
-        url: '/logout',
-        method: 'get'
-    })
-}
-
-// 获取验证码
-export function getCodeImg() {
-    return request({
-        url: '/captcha',
-        method: 'get'
-    })
-}
-
-
-
-// import request from '@/utils/request1'
-// import request1 from '@/utils/request'
-// import {Encrypt} from '@/utils/AESCrypt'
-// const client_id = 'client-app'
-// const client_secret = '123456'
-// const grant_type = 'password'
-// const scope = 'server'
-
-// // 登录方法
-// export function check(data) {
-//     let info ={
-//         captcha:data.captcha,
-//         captchaKey:data.captchaKey
-//     }
-//   return request({
-//     url: '/auth/captcha/check',
-//     method: 'get',
-//     params: info
-//   })
-// }
-
-// // 登录方法
+// 旧-登录方法
 // export function login(data) {
 //     function deepClone(obj) {
 //         let result = typeof obj.splice === "function" ? [] : {};
@@ -112,41 +84,34 @@ export function getCodeImg() {
 //         return obj;
 //     }
 //     let userInfo=deepClone(data)
-//     // userInfo.password=Encrypt(userInfo.password)
-//     userInfo.grant_type =grant_type
-//     userInfo.client_id =client_id
-//     userInfo.client_secret  =client_secret
-//     userInfo.captcha  =undefined
-//     userInfo.captchaKey  =undefined
-//     userInfo.rememberMe  =undefined
+//     userInfo.password=Encrypt(userInfo.password)
 //     return request({
-//         url: '/auth/oauth/token',
+//         url: '/login',
 //         method: 'post',
-//         params: userInfo
+//         data: userInfo
 //     })
 // }
 
+// 获取用户详细信息
+export function getInfo() {
+    return request({
+        url: '/getInfo',
+        method: 'get'
+    })
+}
 
-// // 获取用户详细信息
-// export function getInfo() {
-//     return request1({
-//         url: '/getInfo',
-//         method: 'get'
-//     })
-// }
+// 新-退出方法
+export function logout() {
+    return request1({
+        url: '/auth/oauth/logout',
+        method: 'DELETE'
+    })
+}
 
-// // 退出方法
+// 旧-退出方法
 // export function logout() {
 //     return request({
-//         url: '/auth/oauth/logout',
-//         method: 'DELETE'
-//     })
-// }
-
-// // 获取验证码
-// export function getCodeImg() {
-//     return request({
-//         url: '/auth/captcha',
+//         url: '/logout',
 //         method: 'get'
 //     })
 // }
