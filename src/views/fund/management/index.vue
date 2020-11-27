@@ -32,6 +32,7 @@
             v-for="dict in typeList"
             :label="dict.label"
             :value="dict.value"
+            :key="dict.value"
           />
         </el-select>
       </el-form-item>
@@ -47,6 +48,7 @@
             v-for="dict in StateOptions"
             :label="dict.label"
             :value="dict.value"
+            :key="dict.value"
           />
         </el-select>
       </el-form-item>
@@ -59,8 +61,21 @@
           style="width: 240px"
         />
       </el-form-item>
-      <el-form-item>
-        <el-checkbox v-model="queryParams.isCancellation">是否作废</el-checkbox>
+      <el-form-item label="是否作废" prop="isCancellation">
+        <el-select
+          v-model="queryParams.isCancellation"
+          placeholder="请选择是否作废"
+          clearable
+          size="medium"
+          style="width: 100%"
+        >
+          <el-option
+            v-for="dict in CancellationOptions"
+            :label="dict.label"
+            :value="dict.value"
+            :key="dict.value"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="单位编号" prop="unitNumber">
         <el-input
@@ -334,6 +349,7 @@
                 v-for="dict in InvoiceContentList"
                 :label="dict.label"
                 :value="dict.value"
+                :key="dict.value"
               />
             </el-select>
           </el-form-item>
@@ -573,6 +589,18 @@
         typeList: [],
         formTypeList: [],
         typeState: [],
+        CancellationOptions:[{
+          label:'全部',
+          value:''
+        },
+        {
+          label:'作废',
+          value:true
+        },{
+          label:'不作废',
+          value:false
+        }]
+        
       };
     },
     computed: {
