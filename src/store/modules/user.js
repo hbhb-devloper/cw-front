@@ -38,11 +38,16 @@ const user = {
         // 登录
         Login({ commit }, userInfo) {
             return new Promise((resolve, reject) => {
-                login(userInfo).then(res => {
-                    setToken(res)
-                    commit('SET_TOKEN', res)
-                    resolve()
-                }).catch(error => {
+                check(userInfo).then(res => {
+                    login(userInfo).then(res => {
+                        setToken('Bearer ' + res.access_token)
+                        commit('SET_TOKEN', 'Bearer ' + res.access_token)
+                        resolve()
+                    }).catch(error => {
+                        reject(error)
+                    })
+                }
+                ).catch(error => {
                     reject(error)
                 })
             })

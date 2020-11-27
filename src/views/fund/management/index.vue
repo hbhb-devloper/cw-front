@@ -20,30 +20,36 @@
                   type="number"
                   style="width: 240px" />
       </el-form-item>
-      <el-form-item label="业务内容"
-                    prop="business">
-        <el-select v-model="queryParams.business"
-                   placeholder="请选择业务内容"
-                   clearable
-                   size="medium"
-                   style="width: 240px">
-          <el-option v-for="dict in typeList"
-                     :label="dict.label"
-                     :value="dict.value"
-                     :key="dict.value" />
+      <el-form-item label="业务内容" prop="business">
+        <el-select
+          v-model="queryParams.business"
+          placeholder="请选择业务内容"
+          clearable
+          size="medium"
+          style="width: 240px"
+        >
+          <el-option
+            v-for="dict in typeList"
+            :label="dict.label"
+            :value="dict.value"
+            :key="dict.value"
+          />
         </el-select>
       </el-form-item>
-      <el-form-item label="流程状态"
-                    prop="state">
-        <el-select v-model="queryParams.state"
-                   placeholder="请选择流程状态"
-                   clearable
-                   size="medium"
-                   style="width: 100%">
-          <el-option v-for="dict in StateOptions"
-                     :label="dict.label"
-                     :key="dict.value"
-                     :value="dict.value" />
+      <el-form-item label="流程状态" prop="state">
+        <el-select
+          v-model="queryParams.state"
+          placeholder="请选择流程状态"
+          clearable
+          size="medium"
+          style="width: 100%"
+        >
+          <el-option
+            v-for="dict in StateOptions"
+            :label="dict.label"
+            :value="dict.value"
+            :key="dict.value"
+          />
         </el-select>
       </el-form-item>
       <el-form-item label="客户经理"
@@ -54,9 +60,21 @@
                   size="small"
                   style="width: 240px" />
       </el-form-item>
-
-      <el-form-item prop="isCancellation">
-        <el-checkbox v-model="queryParams.isCancellation">是否作废</el-checkbox>
+      <el-form-item label="是否作废" prop="isCancellation">
+        <el-select
+          v-model="queryParams.isCancellation"
+          placeholder="请选择是否作废"
+          clearable
+          size="medium"
+          style="width: 100%"
+        >
+          <el-option
+            v-for="dict in CancellationOptions"
+            :label="dict.label"
+            :value="dict.value"
+            :key="dict.value"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="单位编号"
                     prop="unitNumber">
@@ -418,21 +436,23 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="开票内容"
-                        :required="true">
-            <el-select v-model="form.invoiceContent"
-                       placeholder="请选择开票内容"
-                       clearable
-                       size="medium"
-                       style="width: 100%"
-                       :disabled="form.business==10||form.business==20"
-                       @change="handleInvoiceContent">
-              <el-option value="undefined"
-                         label="--请选择业务内容--"></el-option>
-              <el-option v-for="dict in InvoiceContentList"
-                         :label="dict.label"
-                         :value="dict.value"
-                         :key="dict.value" />
+          <el-form-item label="开票内容" :required="true">
+            <el-select
+              v-model="form.invoiceContent"
+              placeholder="请选择开票内容"
+              clearable
+              size="medium"
+              style="width: 100%"
+              :disabled="form.business==10||form.business==20"
+              @change="handleInvoiceContent"
+            >
+              <el-option value="undefined" label="--请选择业务内容--"></el-option>
+              <el-option
+                v-for="dict in InvoiceContentList"
+                :label="dict.label"
+                :value="dict.value"
+                :key="dict.value"
+              />
             </el-select>
           </el-form-item>
         </el-col>
@@ -627,64 +647,65 @@
 </template>
 
 <script>
-import {
-  getListTable,
-  getBusiness,
-  getUnitList,
-  getContentList,
-  getStatusList,
-  addDate,
-  upaDate,
-  getInfo,
-  fileDelete,
-  DeleteDate,
-  approveFlow,
-  updateInfo,
-  cancellation,
-  getCompany
-} from "@/api/fund/management/index";
-import { getLaunchType } from '@/api/budget/report/report'
-import Treeselect from "@riophae/vue-treeselect";
-import "@riophae/vue-treeselect/dist/vue-treeselect.css";
-import { exportData } from "@/utils/export";
-import { getToken } from "@/utils/auth";
-import ElFormItem from "../../../components/customize/ElFormItem/index";
-import { mapGetters } from 'vuex'
-import axios from "axios";
+  import {
+    getListTable,
+    getBusiness,
+    getUnitList,
+    getContentList,
+    getStatusList,
+    addDate,
+    upaDate,
+    getInfo,
+    fileDelete,
+    DeleteDate,
+    approveFlow,
+    updateInfo,
+    cancellation,
+    getCompany
+  } from "@/api/fund/management/index";
+  import {getLaunchType} from '@/api/budget/report/report'
+  import {listUnit} from "@/api/system/unit";
+  import Treeselect from "@riophae/vue-treeselect";
+  import "@riophae/vue-treeselect/dist/vue-treeselect.css";
+  import {exportData} from "@/utils/export";
+  import {getToken} from "@/utils/auth";
+  import ElFormItem from "../../../components/customize/ElFormItem/index";
+  import {mapGetters} from 'vuex'
+  import axios from "axios";
 
-export default {
-  name: "Flowtype",
-  components: { ElFormItem, Treeselect },
-  data () {
-    return {
-      ActionUrl: process.env.VUE_APP_BASE_API + '/file/invoice',
-      fileList: [],
-      // 遮罩层
-      loading: true,
-      // 非多个禁用
-      multiple: true,
-      // 总条数
-      total: 0,
-      // 角色表格数据
-      tableData: [],
-      // 弹出层标题
-      title: "",
-      // 是否显示弹出层
-      open: false,
-      open1: false,
-      open2: false,
-      // 是否显示弹出层（数据权限）
-      openDataScope: false,
-      // 日期范围
-      dateRange: [],
-      // 部门列表
-      deptOptions: [],
-      // 查询参数
-      queryParams: {
-        pageNum: 1,
-        pageSize: 20,
-        isCancellation: false,
-      },
+  export default {
+    name: "Flowtype",
+    components: {ElFormItem, Treeselect},
+    data() {
+      return {
+        ActionUrl: process.env.VUE_APP_BASE_API + '/file/invoice',
+        fileList: [],
+        // 遮罩层
+        loading: true,
+        // 非多个禁用
+        multiple: true,
+        // 总条数
+        total: 0,
+        // 角色表格数据
+        tableData: [],
+        // 弹出层标题
+        title: "",
+        // 是否显示弹出层
+        open: false,
+        open1: false,
+        open2: false,
+        // 是否显示弹出层（数据权限）
+        openDataScope: false,
+        // 日期范围
+        dateRange: [],
+        // 部门列表
+        deptOptions: [],
+        // 查询参数
+        queryParams: {
+          pageNum: 1,
+          pageSize: 20,
+        },
+        
       // 表单参数
       form: {},
       form2: {},

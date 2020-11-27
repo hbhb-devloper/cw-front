@@ -10,6 +10,7 @@
                     placeholder="请输入金额范围"
                     clearable
                     size="small"
+                    type="number"
                     @keyup.enter.native="handleQuery" />
         </el-form-item>
         <el-form-item label="至"
@@ -19,6 +20,7 @@
                     placeholder="请输入金额范围"
                     clearable
                     size="small"
+                    type="number"
                     @keyup.enter.native="handleQuery" />
         </el-form-item>
 
@@ -209,14 +211,16 @@
             <el-form-item label="赔补金额"
                           prop="compensationAmount">
               <el-input v-model="form.compensationAmount"
-                        placeholder="请输入赔补金额" />
+                        placeholder="请输入赔补金额"
+                        type="number" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="已到账金额"
                           prop="paymentAmount">
               <el-input v-model="form.paymentAmount"
-                        placeholder="请输入已到账金额" />
+                        placeholder="请输入已到账金额"
+                        type="number" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -244,7 +248,8 @@
             <el-form-item label="本年开收据（元）"
                           prop="receiptAmount">
               <el-input v-model="form.receiptAmount"
-                        placeholder="请输入本年开收据（元）" />
+                        placeholder="请输入本年开收据（元）"
+                        type="number" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -411,8 +416,8 @@ export default {
       this.fileList = [];
       this.loadingoption.close();
       this.centerDialogVisible = false;
-      if (res.status == 1000) {
-        this.$message.success("文件上传成功");
+      if (res.code == '00000') {
+        this.$message.success("导入成功");
         this.getList();
       } else {
         this.$message({

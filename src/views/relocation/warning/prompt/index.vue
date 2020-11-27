@@ -119,10 +119,13 @@
       <el-table-column
         label="操作"
         align="center"
-        width="150"
         class-name="small-padding fixed-width"
+        width="200"
       >
         <template slot-scope="scope">
+          <el-button size="mini" type="text" @click="openview(scope.row)" icon="el-icon-folder"
+            >查看附件</el-button
+          >
           <el-button
             size="mini"
             type="text"
@@ -158,11 +161,52 @@
         <el-button size="small" type="primary">点击上传</el-button>
       </el-upload>
     </el-dialog>
+    <el-dialog
+      title="查看附件"
+      :visible.sync="viewattachmentshow"
+      width="500px"
+    >
+      <el-table :data="upFileList">
+        <el-table-column
+          label="文件名称"
+          prop="fileName"
+          width="150"
+          align="center"
+        />
+
+        <el-table-column
+          label="操作"
+          align="center"
+          width=""
+          class-name="small-padding fixed-width"
+        >
+          <template slot-scope="scope">
+            <el-button
+              size="mini"
+              type="text"
+              @click="viewattachment(scope.row)"
+              >查看附件</el-button
+            >
+
+            <el-button
+              size="mini"
+              type="text"
+              @click="handleDownload(scope.row)"
+              >下载附件</el-button
+            >
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { listWarn,WarnAdd  } from "@/api/relocation/warning/prompt.js";
+import {
+  listWarn,
+  WarnAdd,
+  warnfile,
+} from "@/api/relocation/warning/prompt.js";
 import { prefix } from "@/api/relocation/relocation";
 
 import { exportData1 } from "@/utils/export";
@@ -208,6 +252,7 @@ export default {
           { required: true, message: "显示顺序不能为空", trigger: "blur" },
         ],
       },
+      viewattachmentshow: false,
       centerDialogVisible: false,
       ActionUrl: process.env.VUE_APP_GATEWAY_API + `${prefix}/warn/upload`, // 上传的图片服务器地址
       fileList: [],
@@ -215,12 +260,61 @@ export default {
         Authorization: getToken(),
       },
       importantData: {},
+      upFileList: [],
     };
   },
   created() {
     this.getList();
   },
   methods: {
+    handleDownload(row) {
+      this.$confirm("是否下载" + row.fileName + "？", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      }).then(() => {
+        let link = document.createElement("a");
+        link.style.display = "none";
+        link.href = row.filepath;
+        link.download = row.fileName;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      });
+    },
+    openview(row) {
+      this.viewattachmentshow = true;
+      let obj = {
+        warnId: row.id,
+      };
+      warnfile(obj)
+        .then((res) => {
+          this.upFileList = res;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+
+    viewattachment(row) {
+      let obj = {
+        warnId: row.id,
+      };
+
+      if (/.(pdf|PDF)$/.test(row)) {
+        window.open(row.filepath);
+      } else if (/.(zip|ZIP)$/.test(row)) {
+        this.$message({
+          showClose: true,
+          message: "该文件格式无法预览",
+          type: "error",
+        });
+      } else {
+        window.open(
+          "https://view.officeapps.live.com/op/view.aspx?src=" + row.filepath
+        );
+      }
+    },
     handleupload() {
       const loading = this.$loading({
         lock: true,
@@ -268,7 +362,6 @@ export default {
       return this.$confirm(`确定移除 ${file.name}？`);
     },
     handleImportant(row) {
-      console.log(row);
       this.importantData.warnId = row.id;
       this.centerDialogVisible = true;
     },

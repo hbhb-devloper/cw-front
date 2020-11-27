@@ -35,8 +35,7 @@
           <el-input v-model="queryParams.contractNum"
                     placeholder="请输入合同编号"
                     clearable
-                    size="small"
-                    @keyup.enter.native="handleQuery" />
+                    @keyup.enter.native="getList" />
         </el-form-item>
         <el-form-item label="经办单位"
                       prop="unitId">
@@ -49,16 +48,15 @@
           <el-input v-model="queryParams.contractName"
                     placeholder="请输入合同名称"
                     clearable
-                    size="small"
                     style="width: 240px"
-                    @keyup.enter.native="handleQuery" />
+                    @keyup.enter.native="getList" />
         </el-form-item>
 
         <el-form-item>
           <el-button type="primary"
                      icon="el-icon-search"
                      size="mini"
-                     @click="handleQuery">搜索</el-button>
+                     @click="getList">搜索</el-button>
           <el-button icon="el-icon-refresh"
                      size="mini"
                      @click="resetQuery">重置</el-button>
@@ -275,7 +273,8 @@
         <el-form-item label="本次收款金额"
                       prop="amount">
           <el-input v-model="form.amount"
-                    placeholder="请输入类型名称" />
+                    placeholder="请输入"
+                    type="number" />
         </el-form-item>
         <el-form-item label="收款月份"
                       prop="payMonth">
@@ -292,7 +291,7 @@
         <el-form-item label="收款单号"
                       prop="receiptNum">
           <el-input v-model="form.receiptNum"
-                    placeholder="请输入类型名称" />
+                    placeholder="请输入" />
         </el-form-item>
       </el-form>
       <div slot="footer"
@@ -378,6 +377,7 @@ export default {
         Authorization: getToken(),
       },
       IncomeDetailList: [],
+      
     };
   },
   created () {
@@ -445,8 +445,8 @@ export default {
       this.fileList = [];
       this.loadingoption.close();
       this.centerDialogVisible = false;
-      if (res.status == 1000) {
-        this.$message.success("文件上传成功");
+      if (res.code == '00000') {
+        this.$message.success("导入成功");
         this.getList();
       } else {
         this.$message({
