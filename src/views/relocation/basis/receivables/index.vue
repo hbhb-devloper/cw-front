@@ -35,7 +35,6 @@
           <el-input v-model="queryParams.contractNum"
                     placeholder="请输入合同编号"
                     clearable
-                    size="small"
                     @keyup.enter.native="getList" />
         </el-form-item>
         <el-form-item label="经办单位"
@@ -49,7 +48,6 @@
           <el-input v-model="queryParams.contractName"
                     placeholder="请输入合同名称"
                     clearable
-                    size="small"
                     style="width: 240px"
                     @keyup.enter.native="getList" />
         </el-form-item>

@@ -269,8 +269,9 @@
           this.projectItem = res
         })
         //获取增值税下拉
-        getVatRate().then(res1 => {
-          this.VatRateOption = res1;
+      this.getDicts("budget", "project_vat_rate").then((response) => {
+        // getVatRate().then(res1 => {
+          this.VatRateOption = response;
           if (this.stutic == 'eidt') {
             this.fileList = [];
             GetInfo(this.$route.query.id).then(res => {

@@ -91,6 +91,15 @@
           >导入</el-button
         >
       </el-col>
+       <el-col :span="1.5">
+        <el-button
+          type="primary"
+          icon="el-icon-download"
+          size="mini"
+          @click="ContractVisible = true"
+          >上传合同</el-button
+        >
+      </el-col>
     </el-row>
 
     <el-table v-loading="loading" :data="typeList">
@@ -361,7 +370,7 @@
               />
             </el-form-item>
           </el-col>
-          <el-col :span="12"></el-col>
+          <!-- <el-col :span="12"></el-col> -->
           <el-col :span="12">
             <el-form-item label="迁改项目编号" prop="projectNum">
               <el-input
@@ -418,6 +427,16 @@
                 v-model="form.planEndTime"
                 type="date"
                 placeholder="选择计划完成时间"
+              ></el-date-picker>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="实际完工时间" prop="actualEndTime">
+              <el-date-picker
+                :disabled="inputAble"
+                v-model="form.actualEndTime"
+                type="date"
+                placeholder="选择实际完工时间"
               ></el-date-picker>
             </el-form-item>
           </el-col>
@@ -724,7 +743,7 @@
       </div>
     </el-dialog>
 
-    <el-dialog title="导入" :visible.sync="centerDialogVisible" width="500px">
+    <el-dialog title="项目信息导入" :visible.sync="centerDialogVisible" width="500px">
        <div style="margin-bottom: 10px">
         <el-button type="primary" @click="downTemplate">
           <i class="el-icon-download"></i>下载导入模板
@@ -744,6 +763,25 @@
         :limit="1"
         :on-exceed="handleExceed"
         :action="ActionUrl"
+        :file-list="fileList"
+      >
+        <el-button size="small" type="primary">点击上传</el-button>
+      </el-upload>
+    </el-dialog>
+    <el-dialog title="合同导入" :visible.sync="ContractVisible" width="500px">
+      <el-upload
+        class="upload-demo"
+        :headers="headers"
+        :on-preview="handlePreview"
+        :on-remove="handleRemove"
+        :before-remove="beforeRemove"
+        :on-success="handleSuccess"
+        :on-progress="handleupload"
+        :on-error="handleFail"
+        multiple
+        :limit="10"
+        :on-exceed="handleExceed"
+        :action="ActionUrl1"
         :file-list="fileList"
       >
         <el-button size="small" type="primary">点击上传</el-button>
@@ -924,16 +962,18 @@ export default {
       deptOptions: [],
       centerDialogVisible: false,
       ActionUrl: process.env.VUE_APP_GATEWAY_API + `${prefix}/project/import`, // 上传的图片服务器地址
+      ActionUrl1: process.env.VUE_APP_GATEWAY_API + `${prefix}/project/upload`, // 上传的图片服务器地址
       fileList: [],
       headers: {
         Authorization: getToken(),
       },
       inputAble: false,
+      ContractVisible:false,
     };
   },
   created() {
     // this.getList();
-    this.getDicts("relocation/compensation_sate").then((response) => {
+    this.getDicts("relocation","compensation_sate").then((response) => {
       this.compensationOptions = response;
 
       this.getTreeselect();
@@ -965,7 +1005,7 @@ export default {
     handlePreview(file) {},
     handleExceed(files, fileList) {
       this.$message.warning(
-        `当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${
+        `当前限制选择 10 个文件，本次选择了 ${files.length} 个文件，共选择了 ${
           files.length + fileList.length
         } 个文件`
       );
@@ -974,6 +1014,7 @@ export default {
       this.fileList = [];
       this.loadingoption.close();
       this.centerDialogVisible = false;
+      this.ContractVisible= false;
       if (res.code == "00000") {
         this.$message.success("导入上传成功");
         this.getList();

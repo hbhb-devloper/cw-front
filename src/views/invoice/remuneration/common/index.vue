@@ -3,7 +3,12 @@
     <div class="app-top">
       <div>
         <el-col :span="24" :xs="24">
-          <el-form ref="queryForm" :model="obj2" :inline="true" label-width="100px">
+          <el-form
+            ref="queryForm"
+            :model="obj2"
+            :inline="true"
+            label-width="100px"
+          >
             <el-form-item label="发票代码：" prop="invoiceCode">
               <el-input
                 placeholder="请输入关键词"
@@ -336,7 +341,13 @@
                   label="----------默认----------"
                   value=""
                 ></el-option>
-                <el-option label="桥闸通行费" value="13"></el-option>
+                <el-option
+                  v-for="dict in machineOptions"
+                  :key="dict.value"
+                  :label="dict.label"
+                  :value="dict.value"
+                />
+                <!-- <el-option label="桥闸通行费" value="13"></el-option>
                 <el-option label="一二级公路通行费" value="14"></el-option>
                 <el-option label="其他不可抵扣发票" value="16"></el-option>
                 <el-option label="代扣代缴税收缴款凭证" value="21"></el-option>
@@ -344,7 +355,7 @@
                 <el-option label="航空电子旅客行程单" value="23"></el-option>
                 <el-option label="火车票" value="24"></el-option>
                 <el-option label="其他车票船票" value="25"></el-option>
-                <el-option label="试报账虚拟发票" value="26"></el-option>
+                <el-option label="试报账虚拟发票" value="26"></el-option> -->
               </el-select>
             </el-form-item>
             <el-form-item label="发票号码：" :required="true">
@@ -650,10 +661,14 @@ export default {
       },
       param: {},
       batch: {},
+      machineOptions: [],
     };
   },
   mounted() {
-    this.handleSelect();
+    this.getDicts("invoice", "type_machine").then((response) => {
+      this.machineOptions = response;
+      this.handleSelect();
+    });
   },
   computed: {
     pages() {
@@ -827,7 +842,7 @@ export default {
       this.resetForm("queryForm");
       this.handleQuery();
     },
-  
+
     //修改记录
     handleUpdata() {
       if (this.delarrs.length != 1) {
@@ -949,11 +964,11 @@ export default {
 </script>
 <style scoped>
 body {
-  background: #F4F4F4;
+  background: #f4f4f4;
 }
 
 .app-container {
-  background: #F4F4F4;
+  background: #f4f4f4;
   display: flex;
   flex-direction: column;
 }
