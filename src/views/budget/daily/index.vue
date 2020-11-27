@@ -459,8 +459,10 @@ export default {
         this.deptOptions = res.list;
       });
       //获取增值税下拉
-      getVatRate().then((res) => {
-        this.VatRateOption = res;
+      // getVatRate().then((res) => {
+      this.getDicts("budget", "project_vat_rate").then((response) => {
+
+        this.VatRateOption = response;
       });
       getTypeList().then((res) => {
         this.options = res;

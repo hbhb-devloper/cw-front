@@ -3,7 +3,12 @@
     <div class="app-top">
       <div>
         <el-col :span="24" :xs="24">
-          <el-form ref="queryForm" :inline="true" label-width="100px">
+          <el-form
+            ref="queryForm"
+            :model="obj2"
+            :inline="true"
+            label-width="100px"
+          >
             <el-form-item label="发票代码：" prop="invoiceCode">
               <el-input
                 placeholder="请输入关键词"
@@ -77,7 +82,7 @@
                 style="width: 240px"
               />
             </el-form-item>
-            <el-form-item label="导入时间" prop="itime">
+            <el-form-item label="导入时间：" prop="itime">
               <el-date-picker
                 v-model="obj2.itime"
                 type="daterange"
@@ -142,7 +147,6 @@
           >批量导出</el-button
         >
         <el-table
-          v-loading="loading"
           ref="multipleTable"
           :data="tableData"
           tooltip-effect="dark"
@@ -307,14 +311,21 @@
             </template>
           </el-table-column>
         </el-table>
-        <pagination
-          v-show="total > 0"
-          :total="total"
-          :page.sync="obj2.pageNum"
-          :limit.sync="obj2.pageSize"
-          @pagination="handleSelect"
-        />
-        
+        <div class="paging">
+          <el-pagination
+            background
+            style="margin-top: 3px"
+            @current-change="handleCurrentChange"
+            layout="prev, pager, next"
+            :page-count="pages"
+          >
+          </el-pagination>
+          <el-select v-model="total" placeholder="请选择" style="width: 100px">
+            <el-option value="10" label="10条/页"></el-option>
+            <el-option value="20" label="20条/页"></el-option>
+            <el-option value="30" label="30条/页"></el-option>
+          </el-select>
+        </div>
       </div>
       <div class="updatas">
         <el-dialog :visible.sync="centerDialogVisible">
@@ -330,7 +341,13 @@
                   label="----------默认----------"
                   value=""
                 ></el-option>
-                <el-option label="桥闸通行费" value="13"></el-option>
+                <el-option
+                  v-for="dict in machineOptions"
+                  :key="dict.value"
+                  :label="dict.label"
+                  :value="dict.value"
+                />
+                <!-- <el-option label="桥闸通行费" value="13"></el-option>
                 <el-option label="一二级公路通行费" value="14"></el-option>
                 <el-option label="其他不可抵扣发票" value="16"></el-option>
                 <el-option label="代扣代缴税收缴款凭证" value="21"></el-option>
@@ -338,7 +355,7 @@
                 <el-option label="航空电子旅客行程单" value="23"></el-option>
                 <el-option label="火车票" value="24"></el-option>
                 <el-option label="其他车票船票" value="25"></el-option>
-                <el-option label="试报账虚拟发票" value="26"></el-option>
+                <el-option label="试报账虚拟发票" value="26"></el-option> -->
               </el-select>
             </el-form-item>
             <el-form-item label="发票号码：" :required="true">
@@ -591,16 +608,15 @@ import {
 import { exportData, BatchExport } from "@/utils/export";
 import { getToken } from "@/utils/auth";
 import { dateTimes } from "@/utils/date.js";
-import { param } from "../../../utils";
+import { param } from "@/utils";
 
 export default {
   data() {
     return {
-      loading: false,
       tableData: [],
       multipleSelection: [],
       count: 0,
-      total: 0,
+      total: 20,
       centerDialogVisible: false,
       obj: {
         branch: "",
@@ -645,12 +661,38 @@ export default {
       },
       param: {},
       batch: {},
+      machineOptions: [],
     };
   },
   mounted() {
-    this.handleSelect();
+    this.getDicts("invoice", "type_machine").then((response) => {
+      this.machineOptions = response;
+      this.handleSelect();
+    });
+  },
+  computed: {
+    pages() {
+      let page = Math.ceil(this.count / this.total);
+      return page;
+    },
+  },
+  watch: {
+    //监听选择条数
+    total: function (newVal, oldVal) {
+      this.obj2.pageNum = this.page;
+      this.obj2.pageSize = newVal;
+      this.handleSelect();
+    },
   },
   methods: {
+    //获取列表信息
+    handleList(data) {
+      this.token = getToken();
+      getList(data).then((res) => {
+        this.tableData = res.list;
+        this.count = res.count;
+      });
+    },
     //模糊查询
     handleSelect() {
       let params = {};
@@ -664,12 +706,9 @@ export default {
       }
       delete params.itime;
       this.batch = params;
-      this.loading = true;
-
       getList(params).then((res) => {
         this.tableData = res.list;
-        this.total = res.count;
-        this.loading = false;
+        this.count = res.count;
       });
     },
     //验证发票代码号码长度
@@ -686,6 +725,13 @@ export default {
           }
           break;
       }
+    },
+    //分页
+    handleCurrentChange(val) {
+      this.page = val;
+      this.obj2.pageNum = val;
+      this.obj2.pageSize = this.total;
+      this.handleSelect();
     },
     //添加弹窗
     handleInsrt() {
@@ -786,22 +832,17 @@ export default {
     /** 搜索按钮操作 */
     handleQuery() {
       this.obj2.pageNum = 1;
+      this.total = 20;
+      this.page = 1;
+      this.batch = {};
       this.handleSelect();
     },
-    /** 重置按钮操作 */
+    //充置搜索
     handleReset() {
       this.resetForm("queryForm");
-      this.obj2 = {
-        invoiceCode: undefined,
-        invoiceNumber: undefined,
-        invoiceDate: undefined,
-        buyerTaxId: undefined,
-        taxFreeAmount: undefined,
-        branch: undefined,
-        itime: undefined,
-      };
       this.handleQuery();
     },
+
     //修改记录
     handleUpdata() {
       if (this.delarrs.length != 1) {

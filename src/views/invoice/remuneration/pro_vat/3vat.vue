@@ -3,7 +3,12 @@
     <div class="app-top">
       <div>
         <el-col :span="24" :xs="24">
-          <el-form ref="queryForm" :inline="true" label-width="100px">
+          <el-form
+            ref="queryForm"
+            :model="obj2"
+            :inline="true"
+            label-width="100px"
+          >
             <el-form-item label="发票代码：" prop="invoiceCode">
               <el-input
                 placeholder="请输入关键词"
@@ -30,7 +35,6 @@
                 type="date"
                 name="invoiceDate"
                 style="width: 240px"
-                value-format="yyyy-MM-dd"
                 placeholder="选择日期"
               >
               </el-date-picker>
@@ -141,7 +145,6 @@
           >批量导出</el-button
         >
         <el-table
-          v-loading="loading"
           ref="multipleTable"
           :data="tableData"
           tooltip-effect="dark"
@@ -250,17 +253,25 @@
             </template>
           </el-table-column>
         </el-table>
-        <pagination
-          v-show="total > 0"
-          :total="total"
-          :page.sync="obj2.pageNum"
-          :limit.sync="obj2.pageSize"
-          @pagination="handleSelect"
-        />
+        <div class="paging">
+          <el-pagination
+            background
+            style="margin-top: 3px"
+            @current-change="handleCurrentChange"
+            layout="prev, pager, next"
+            :page-count="pages"
+          >
+          </el-pagination>
+          <el-select v-model="total" placeholder="请选择" style="width: 100px">
+            <el-option value="10" label="10条/页"></el-option>
+            <el-option value="20" label="20条/页"></el-option>
+            <el-option value="30" label="30条/页"></el-option>
+          </el-select>
+        </div>
       </div>
       <div class="updatas">
         <el-dialog :visible.sync="centerDialogVisible">
-          <el-form ref="queryForm" :inline="true" label-width="200px">
+          <el-form :inline="true" label-width="200px">
             <el-form-item label="发票种类代码：" :required="true">
               <el-select v-model="obj.invoiceType" placeholder="请选择关键词">
                 <el-option label="增值税专用发票" value="01"></el-option>
@@ -356,7 +367,7 @@ import {
   delData,
   delarr,
   getInfo,
-} from "@/api/invoice/pro_vat/6vat.js";
+} from "@/api/invoice/pro_vat/3vat.js";
 import { exportData, BatchExport } from "@/utils/export";
 import { getToken } from "@/utils/auth";
 import { dateTimes } from "@/utils/date.js";
@@ -364,11 +375,10 @@ import { dateTimes } from "@/utils/date.js";
 export default {
   data() {
     return {
-      loading:false,
       tableData: [],
       multipleSelection: [],
       count: 0,
-      total: 0,
+      total: 20,
       centerDialogVisible: false,
       obj: {
         branch: "",
@@ -384,7 +394,7 @@ export default {
         projectProperties: "",
         tableNumber: "",
         taxFreeAmount: "",
-        vat6Id: null,
+        vat3Id: null,
       },
       insetUpdata: 1,
       delarrs: [],
@@ -408,8 +418,21 @@ export default {
   mounted() {
     this.handleSelect();
   },
+  computed: {
+    pages() {
+      let page = Math.ceil(this.count / this.total);
+      return page;
+    },
+  },
+  watch: {
+    //监听选择条数
+    total: function (newVal, oldVal) {
+      this.obj2.pageNum = this.page;
+      this.obj2.pageSize = newVal;
+      this.handleSelect();
+    },
+  },
   methods: {
-    
     //模糊查询
     handleSelect() {
       let params = {};
@@ -423,11 +446,9 @@ export default {
       }
       delete params.itime;
       this.batch = params;
-      this.loading = true;
       getList(params).then((res) => {
         this.tableData = res.list;
-        this.total = res.count;
-        this.loading = false;
+        this.count = res.count;
       });
     },
     //验证发票代码号码长度
@@ -444,6 +465,13 @@ export default {
           }
           break;
       }
+    },
+    //分页
+    handleCurrentChange(val) {
+      this.page = val;
+      this.obj2.pageNum = val;
+      this.obj2.pageSize = this.total;
+      this.handleSelect();
     },
     //添加弹窗
     handleInsrt() {
@@ -467,7 +495,7 @@ export default {
     },
     //修改弹窗
     handleEdit(index, row, type) {
-      getInfo(row.vat6Id).then((res) => {
+      getInfo(row.vat3Id).then((res) => {
         this.obj = res;
       });
       this.insetUpdata = type || 2;
@@ -480,7 +508,7 @@ export default {
         cancelButtonText: "取消",
         type: "warning",
       }).then(() => {
-        delData(row.vat6Id).then((res) => {
+        delData(row.vat3Id).then((res) => {
           this.$message.success("删除成功！");
           this.handleSelect();
         });
@@ -490,7 +518,7 @@ export default {
     handleSelectionChange(val) {
       let arr = [];
       for (let key of val) {
-        arr.push(key.vat6Id);
+        arr.push(key.vat3Id);
       }
       this.delarrs = arr;
       this.insetUpdata = 2;
@@ -505,22 +533,15 @@ export default {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
-      })
-        .then(() => {
-          delarr(this.delarrs).then((res) => {
-            this.$message({
-              message: "删除成功！",
-              type: "success",
-            });
-            this.handleSelect();
-          });
-        })
-        .catch(() => {
+      }).then(() => {
+        delarr(this.delarrs).then((res) => {
           this.$message({
-            type: "info",
-            message: "已取消删除",
+            message: "删除成功！",
+            type: "success",
           });
+          this.handleSelect();
         });
+      });
     },
     //关闭弹窗
     handleCancel() {
@@ -529,20 +550,14 @@ export default {
     /** 搜索按钮操作 */
     handleQuery() {
       this.obj2.pageNum = 1;
+      this.total = 20;
+      this.page = 1;
+      this.batch = {};
       this.handleSelect();
     },
-    /** 重置按钮操作 */
+    //充置搜索
     handleReset() {
       this.resetForm("queryForm");
-      this.obj2 = {
-        invoiceCode: undefined,
-        invoiceNumber: undefined,
-        invoiceDate: undefined,
-        buyerTaxId: undefined,
-        taxFreeAmount: undefined,
-        branch: undefined,
-        itime: undefined,
-      };
       this.handleQuery();
     },
     //修改记录
@@ -609,8 +624,8 @@ export default {
       exportData(
         getToken(),
         this.delarrs,
-        "/invoice/invoice_6vat/export",
-        "增值税6%专票"
+        "/invoice/invoice_3vat/export",
+        "增值税3%专票"
       );
     },
     handleBatchExport() {
@@ -624,8 +639,8 @@ export default {
         BatchExport(
           getToken(),
           this.batch,
-          "/invoice/invoice_6vat/export/all",
-          "增值税6%专票"
+          "/invoice/invoice_3vat/export/all",
+          "增值税3%专票"
         );
       });
     },
@@ -634,14 +649,15 @@ export default {
 </script>
 <style scoped>
 body {
-  background: #f4f4f4;
+  background: #F4F4F4;
 }
 
 .app-container {
-  background: #f4f4f4;
+  background: #F4F4F4;
   display: flex;
   flex-direction: column;
 }
+
 .table-box {
   padding: 15px 20px;
   margin-top: 20px;

@@ -4,11 +4,18 @@
       <span>提示：</span><span>{{updateTime}}</span>
     </section>
     <section class="import-box">
-      <span class="title-blue">增值税发票信息导入模板</span><br/>
+      <!-- <span class="title-blue">增值税发票信息导入模板</span><br/> -->
       <div class="title-red">注意：导入单位模块后，请认真查看返回信息，若没有提示导入成功，则需要重新编辑模板导入。</div>
       <div class="title-import">新增导入</div>
       <div class="import">
-        <el-upload
+        <el-button
+        type="primary"
+        icon="el-icon-plus"
+        size="mini"
+        @click="handleImport"
+        >导入</el-button
+      >
+        <!-- <el-upload
           class="upload-demo"
           :show-file-list="false"
           multiple
@@ -18,12 +25,26 @@
           :file-list="fileList"
         >
           <el-button size="small" type="primary" class="uploadImgBtn">导入</el-button>
-        </el-upload>
+        </el-upload> -->
       </div>
 <!--      <el-table :data="tableData" style="width: 100%;margin-top:15px;">-->
 <!--        <el-table-column prop="date" label="数据导入检查结果"></el-table-column>-->
 <!--      </el-table>-->
     </section>
+    <el-dialog title="导入" :visible.sync="open" width="400px">
+      <el-upload
+        class="upload-demo"
+        :show-file-list="false"
+        :accept="'.xls,.xlsx'"
+        multiple
+        action="#"
+        :http-request="UploadFile"
+      >
+        <el-button size="small" type="primary" class="uploadImgBtn"
+          >导入数据</el-button
+        >
+      </el-upload>
+    </el-dialog>
   </div>
 </template>
 
@@ -36,6 +57,7 @@
       return {
         fileList: [],
         tableData:[],
+      open: false,
         ActionUrl: process.env.VUE_APP_BASE_API +'/invoice/library/import',
         updateTime:undefined,
       }
@@ -44,10 +66,19 @@
       this.handleNotie();
     },
     methods: {
+      handleImport() {
+      this.open = true;
+    },
       UploadFile(param){
         const _file = param.file;
         let params = new FormData();
         params.append('file', _file);
+         const loading = this.$loading({
+        lock: true,
+        text: "正在导入表格",
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.7)",
+      });
         axios({
           url: this.ActionUrl,
           method: 'post',
@@ -57,12 +88,16 @@
             'Authorization': getToken()
           }
         }).then(res => {
+          loading.close();
           if(res.data.status==1000){
             this.msgSuccess('导入成功');
             this.handleNotie();
           }else{
             this.msgError(res.data.message);
           }
+        }).catch(err=>{
+          loading.close();
+
         })
       },
       handleNotie(){

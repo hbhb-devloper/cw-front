@@ -28,7 +28,33 @@ export function exportData(tokens, data, url, fileName) {
     }
   })
 }
-
+export function exportData1(tokens, data, url, fileName) {
+  axios({
+    method: 'post',
+    responseType: 'blob',
+    url: process.env.VUE_APP_GATEWAY_API + url,
+    data: data,
+    headers: {
+      'Authorization':tokens
+    }
+  }).then(res => {
+    if (res.status === 200) {
+      let blob = new Blob([res.data], {
+        type: 'application/vnd.ms-excel'
+      })
+      let url = window.URL.createObjectURL(blob);
+      let link = document.createElement("a");
+      link.style.display = 'none';
+      link.href = url;
+      link.download = fileName + ".xlsx";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } else {
+      this.$message.error('导出失败');
+    }
+  })
+}
 export function BatchExport(tokens, data, url, fileName) {
   axios({
     method: 'post',
