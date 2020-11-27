@@ -40,8 +40,8 @@ const user = {
             return new Promise((resolve, reject) => {
                 check(userInfo).then(res => {
                     login(userInfo).then(res => {
-                        setToken('Bearer ' + res.accessToken)
-                        commit('SET_TOKEN', 'Bearer ' + res.accessToken)
+                        setToken('Bearer ' + res.access_token)
+                        commit('SET_TOKEN', 'Bearer ' + res.access_token)
                         resolve()
                     }).catch(error => {
                         reject(error)

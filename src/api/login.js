@@ -1,7 +1,7 @@
 import request from '@/utils/request1'
 import request1 from '@/utils/request'
 import {Encrypt} from '@/utils/AESCrypt'
-const client_id = 'client-app'
+const client_id = 'zhcw'
 const client_secret = '123456'
 const grant_type = 'password'
 const scope = 'server'
@@ -37,7 +37,7 @@ export function login(data) {
         return obj;
     }
     let userInfo=deepClone(data)
-    // userInfo.password=Encrypt(userInfo.password)
+    userInfo.password=Encrypt(userInfo.password)
     userInfo.grant_type =grant_type
     userInfo.client_id =client_id
     userInfo.client_secret  =client_secret
