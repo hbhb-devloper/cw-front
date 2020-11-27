@@ -683,7 +683,7 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 20,
-        isCancellation: undefined,
+        isCancellation: false,
       },
       // 表单参数
       form: {},

@@ -30,9 +30,9 @@
           style="width: 200px"
         />
       </el-form-item>
-      <el-form-item label="导入时间">
+      <el-form-item label="导入时间" prop="itime">
         <el-date-picker
-          v-model="itime"
+          v-model="queryParams.itime"
           type="daterange"
           start-placeholder="开始日期"
           end-placeholder="结束日期"
@@ -249,7 +249,7 @@ export default {
       updateTime: undefined,
       open: false,
       ActionUrl: process.env.VUE_APP_BASE_API + "/invoice/account/run/import",
-      morenUnit:undefined
+      morenUnit: undefined,
     };
   },
   components: {
@@ -258,7 +258,6 @@ export default {
   created() {
     this.getUnitId();
     this.getList();
-    
   },
   methods: {
     getUpdateTimes(queryParams) {
@@ -270,19 +269,38 @@ export default {
     getUnitId() {
       resourceTreeByUN().then((res) => {
         this.queryParams.unitId = res.checked[0];
-        this.morenUnit= res.checked[0];
+        this.morenUnit = res.checked[0];
         this.deptOptions = res.list;
       });
+    },
+    deepClone(obj) {
+      let result = typeof obj.splice === "function" ? [] : {};
+      if (obj && typeof obj === "object") {
+        for (let key in obj) {
+          if (obj[key] && typeof obj[key] === "object") {
+            result[key] = this.deepClone(obj[key]); //如果对象的属性值为object的时候，递归调用deepClone,即在吧某个值对象复制一份到新的对象的对应值中。
+          } else {
+            result[key] = obj[key]; //如果对象的属性值不为object的时候，直接复制参数对象的每一个键值到新的对象对应的键值对中。
+          }
+        }
+        return result;
+      }
+      return obj;
     },
     //表格数据列表
     getList() {
       this.loading = true;
-      if (this.itime.length == 2) {
-        this.queryParams.beginTime = this.itime[0];
-        this.queryParams.endTime = this.itime[1];
+      if (this.queryParams.itime) {
+        if (this.queryParams.itime.length == 2) {
+          this.queryParams.beginTime = this.queryParams.itime[0];
+          this.queryParams.endTime = this.queryParams.itime[1];
+        }
       }
-      this.getUpdateTimes(this.queryParams);
-      GetList(this.queryParams)
+      console.log('this.queryParams',this.queryParams);
+      let query = this.deepClone(this.queryParams);
+      query.itime = undefined;
+      this.getUpdateTimes(query);
+      GetList(query)
         .then((res) => {
           console.log(res);
           this.total = res.count;
@@ -296,14 +314,14 @@ export default {
     /** 搜索按钮操作 */
     handleQuery() {
       this.queryParams.pageNum = 1;
-      this.itime = [];
+      // this.itime = [];
       this.getList();
     },
     //充置搜索
     resetQuery() {
-      
       this.resetForm("queryForm");
       this.queryParams.unitId = this.morenUnit;
+      this.query={}
       this.handleQuery();
     },
     handleImport() {
