@@ -87,7 +87,7 @@
           type="success"
           icon="el-icon-download"
           size="mini"
-          @click="centerDialogVisible = true"
+          @click="opencenterDialogVisible"
           >导入</el-button
         >
       </el-col>
@@ -96,7 +96,7 @@
           type="primary"
           icon="el-icon-download"
           size="mini"
-          @click="ContractVisible = true"
+          @click="openContractVisible"
           >上传合同</el-button
         >
       </el-col>
@@ -1007,6 +1007,8 @@ export default {
       ContractVisible: false,
       fileDialog: false,
       fileItem: {},
+      loadingoption: undefined,
+      loadingCount: 0,
     };
   },
   created() {
@@ -1053,10 +1055,8 @@ export default {
       });
     },
     gotofileDetail(row) {
-      console.log("row", row);
       if (row.fileId) {
         fileInfo(row.fileId).then((res) => {
-          console.log("fileInfo", res);
           this.fileItem = res;
           this.fileDialog = true;
         });
@@ -1067,18 +1067,43 @@ export default {
     downTemplate() {
       exportData1(getToken(), "", `${prefix}/project/export`, "迁改基本信息");
     },
-    handleupload() {
-      const loading = this.$loading({
-        lock: true,
-        text: "正在导入表格",
-        spinner: "el-icon-loading",
-        background: "rgba(0, 0, 0, 0.7)",
+    opencenterDialogVisible() {
+      this.fileList = [];
+      this.$nextTick(() => {
+        this.centerDialogVisible = true;
       });
-      this.loadingoption = loading;
     },
-    handleFail() {
-      this.loadingoption.close();
-      this.$message.error("上传失败");
+    openContractVisible() {
+      this.fileList = [];
+      this.$nextTick(() => {
+        this.ContractVisible = true;
+      });
+    },
+    handleupload() {
+      if (this.loadingCount === 0) {
+        let loading = this.$loading({
+          lock: true,
+          text: "正在导入表格",
+          spinner: "el-icon-loading",
+          background: "rgba(0, 0, 0, 0.7)",
+        });
+        this.loadingoption = loading;
+      }
+      this.loadingCount += 1;
+      console.log("handleuploadCount", this.loadingCount);
+    },
+    handleFail(err, file, fileList) {
+      console.log("handleFail", err);
+      console.log("handleFailloadingCount", this.loadingCount);
+      console.log("loadingoption", this.loadingoption);
+      if (this.loadingCount <= 0) {
+        return;
+      }
+      this.loadingCount -= 1;
+      if (this.loadingCount === 0) {
+        this.loadingoption.close();
+        this.$message.error("上传失败");
+      }
     },
     handleRemove(file, fileList) {},
     handlePreview(file) {},
@@ -1089,9 +1114,14 @@ export default {
         } 个文件`
       );
     },
-    handleSuccess(res) {
-      this.fileList = [];
-      this.loadingoption.close();
+    handleSuccess(res, file, fileList) {
+      // this.fileList = [];
+
+      this.loadingCount -= 1;
+      if (this.loadingCount === 0) {
+        this.loadingoption.close();
+        // this.loadingoption = undefined;
+      }
       this.centerDialogVisible = false;
       this.ContractVisible = false;
       if (res.code == "00000") {
