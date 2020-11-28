@@ -353,9 +353,7 @@
           </el-col>
         </el-row>
         <span slot="footer" class="dialog-footer">
-          <el-button type="primary" @click="exportWord()"
-            >导出Word</el-button
-          >
+          <el-button type="primary" @click="exportWord()">导出Word</el-button>
           <el-button @click="open2 = false">关闭</el-button>
         </span>
       </el-dialog>
@@ -377,7 +375,7 @@ import { getVatRate } from "@/api/budget/report/report.js";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 import { getToken } from "@/utils/auth";
-import { exportData ,exportWord} from "@/utils/export.js";
+import { exportData, exportWord } from "@/utils/export.js";
 import axios from "axios";
 
 export default {
@@ -415,7 +413,7 @@ export default {
       formState: false,
       info: {},
       dowFile: process.env.FILE_DOWNLOAD_PATH,
-      infoDetail:undefined
+      infoDetail: undefined,
     };
   },
   created() {
@@ -461,11 +459,11 @@ export default {
       //获取增值税下拉
       // getVatRate().then((res) => {
       this.getDicts("budget", "project_vat_rate").then((response) => {
-
         this.VatRateOption = response;
       });
-      getTypeList().then((res) => {
-        this.options = res;
+
+      this.getDicts("budget", "budget_type").then((response) => {
+        this.options = response;
       });
     },
     //获取列表
@@ -502,7 +500,7 @@ export default {
         ).toFixed(6);
       }
     },
-    exportWord(){
+    exportWord() {
       // let queryForm=this.infoDetail
       // queryForm.id = this.infoId
       // console.log('queryForm',queryForm);
@@ -539,7 +537,7 @@ export default {
     },
     //详情
     handleInfo(row) {
-      this.infoDetail=row
+      this.infoDetail = row;
       getInfoDate(row.id).then((res) => {
         console.log(res);
         this.Filetable = res.files;

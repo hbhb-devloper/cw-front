@@ -264,8 +264,9 @@ export default {
   },
   methods: {
     handleGetBusiness() {
-      getBusiness().then((res) => {
-        this.busTypeOptions = res;
+      this.getDicts("fund", "business_type").then((response) => {
+      // getBusiness().then((res) => {
+        this.busTypeOptions = response;
       });
     },
     //获取部门列表

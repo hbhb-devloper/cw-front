@@ -326,13 +326,14 @@ export default {
         });
     },
     getFlowStates() {
-      getFlowState().then((res) => {
-        this.flowState = res;
+      this.getDicts("fund", "invoice_status").then((response) => {
+        this.flowState = response;
       });
     },
     handleGetBusiness() {
-      getBusiness().then((res) => {
-        this.busTypeOptions = res;
+      this.getDicts("fund", "business_type").then((response) => {
+
+        this.busTypeOptions = response;
       });
     },
     /** 搜索按钮操作 */
