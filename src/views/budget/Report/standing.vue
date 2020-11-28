@@ -297,7 +297,7 @@
           :total="total"
           :page.sync="obj.pageNum"
           :limit.sync="obj.pageSize"
-          @pagination="handleQuery"
+          @pagination="handleGetList"
         />
       </div>
     </div>

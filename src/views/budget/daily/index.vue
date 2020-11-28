@@ -177,7 +177,7 @@
         :total="total"
         :page.sync="obj.pageNum"
         :limit.sync="obj.pageSize"
-        @pagination="handleQuery"
+        @pagination="handleGetList"
       />
     </section>
     <!--    弹窗-->

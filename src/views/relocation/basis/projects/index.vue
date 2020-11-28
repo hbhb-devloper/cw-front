@@ -258,7 +258,16 @@
         prop="contractNum"
         width="150"
         align="center"
-      />
+      >
+        <template slot-scope="scope">
+          <div
+            style="color: #409eff; cursor: pointer"
+            @click="gotofileDetail(scope.row)"
+          >
+            {{ scope.row.contractNum }}
+          </div>
+        </template>
+      </el-table-column>
       <el-table-column
         label="赔补合同名"
         prop="contractName"
@@ -807,6 +816,11 @@
         <el-button size="small" type="primary">点击上传</el-button>
       </el-upload>
     </el-dialog>
+    <el-dialog title="查看合同" :visible.sync="fileDialog" width="500px">
+      <el-button type="primary" @click="reviewFile"> 预览 </el-button>
+
+      <el-button type="primary" @click="downFile">下载</el-button>
+    </el-dialog>
   </div>
 </template>
 
@@ -820,6 +834,8 @@ import {
   compensationSate,
   ProjectDetail,
 } from "@/api/relocation/basis/projects.js";
+
+import { fileInfo } from "@/api/system/file";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 import { getToken } from "@/utils/auth";
@@ -989,6 +1005,8 @@ export default {
       },
       inputAble: false,
       ContractVisible: false,
+      fileDialog: false,
+      fileItem: {},
     };
   },
   created() {
@@ -1000,6 +1018,52 @@ export default {
     });
   },
   methods: {
+    reviewFile() {
+      let fileItem = this.fileItem;
+      if (/.(pdf|PDF)$/.test(fileItem)) {
+        window.open(fileItem.filePath);
+      } else if (/.(zip|ZIP)$/.test(fileItem)) {
+        this.$message({
+          showClose: true,
+          message: "该文件格式无法预览",
+          type: "error",
+        });
+      } else {
+        window.open(
+          "https://view.officeapps.live.com/op/view.aspx?src=" +
+            fileItem.filePath
+        );
+      }
+    },
+    downFile() {
+      let fileItem = this.fileItem;
+
+      this.$confirm("是否下载" + fileItem.fileName + "？", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      }).then(() => {
+        let link = document.createElement("a");
+        link.style.display = "none";
+        link.href = fileItem.filePath;
+        link.download = fileItem.fileName;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      });
+    },
+    gotofileDetail(row) {
+      console.log("row", row);
+      if (row.fileId) {
+        fileInfo(row.fileId).then((res) => {
+          console.log("fileInfo", res);
+          this.fileItem = res;
+          this.fileDialog = true;
+        });
+      } else {
+        this.$message.warning("暂未上传合同");
+      }
+    },
     downTemplate() {
       exportData1(getToken(), "", `${prefix}/project/export`, "迁改基本信息");
     },
