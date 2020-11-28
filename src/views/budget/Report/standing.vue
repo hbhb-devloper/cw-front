@@ -43,10 +43,10 @@
             >
               <el-option :value="undefined" label="---全部类型---"></el-option>
               <el-option
-                v-for="(item, index) in options"
-                :key="index"
+                v-for="item in options"
+                :key="item.id"
                 :label="item.label"
-                :value="item.value"
+                :value="item.id"
               ></el-option>
             </el-select>
           </el-form-item>
@@ -91,7 +91,7 @@
               type="primary"
               icon="el-icon-search"
               size="mini"
-              @click="handleGetList"
+              @click="handleQuery"
               >搜索</el-button
             >
             <el-button icon="el-icon-refresh" size="mini" @click="handleRest"
@@ -297,7 +297,7 @@
           :total="total"
           :page.sync="obj.pageNum"
           :limit.sync="obj.pageSize"
-          @pagination="handleGetList"
+          @pagination="handleQuery"
         />
       </div>
     </div>
@@ -398,6 +398,7 @@ export default {
 
       loading: true, //表格加载
       projectId: undefined, //记录id
+      morenUnit:undefined
     };
   },
   created() {
@@ -424,6 +425,7 @@ export default {
       //获取单位树形
       getCompany().then((res) => {
         this.obj.unitId = res.checked[0];
+        this.morenUnit=res.checked[0];
         this.deptOptions = res.list;
         this.handleGetList();
       });
@@ -473,21 +475,34 @@ export default {
       });
     },
 
-    //重置
-    handleRest() {
-      this.obj = {
-        unitId: this.obj.unitId,
-        projectYear: "",
-        createTime: "",
-        budgetId: "",
-        projectName: "",
-        projectNum: "",
-        state: "",
-        pageSize: this.obj.pageSize,
-        pageNum: this.obj.pageNum,
-      };
-      this.$store.dispatch("SET_BUDGET_SELECT", this.obj);
+    /** 搜索按钮操作 */
+    handleQuery() {
+      this.obj.pageNum = 1;
+      this.handleGetList();
     },
+    /** 重置按钮操作 */
+    handleRest() {
+      this.resetForm("queryForm");
+      this.obj.unitId=this.morenUnit
+      this.$store.dispatch("SET_BUDGET_SELECT", this.obj);
+      this.handleQuery();
+    },
+
+    // //重置
+    // handleRest() {
+    //   this.obj = {
+    //     unitId: this.obj.unitId,
+    //     projectYear: "",
+    //     createTime: "",
+    //     budgetId: "",
+    //     projectName: "",
+    //     projectNum: "",
+    //     state: "",
+    //     pageSize: this.obj.pageSize,
+    //     pageNum: this.obj.pageNum,
+    //   };
+      // this.$store.dispatch("SET_BUDGET_SELECT", this.obj);
+    // },
 
     //删除方法
     handleDelete(row) {
