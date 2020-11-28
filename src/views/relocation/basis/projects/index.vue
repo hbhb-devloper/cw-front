@@ -91,7 +91,7 @@
           >导入</el-button
         >
       </el-col>
-       <el-col :span="1.5">
+      <el-col :span="1.5">
         <el-button
           type="primary"
           icon="el-icon-download"
@@ -117,7 +117,10 @@
         align="center"
       >
         <template slot-scope="scope">
-          <div style="color: #409eff; cursor: pointer;" @click="gotoDetail(scope.row)">
+          <div
+            style="color: #409eff; cursor: pointer"
+            @click="gotoDetail(scope.row)"
+          >
             {{ scope.row.projectName }}
           </div>
         </template>
@@ -269,6 +272,13 @@
         align="center"
       />
       <el-table-column
+        label="赔补总额（元）"
+        prop="totalCompensationAmount"
+        width="150"
+        align="center"
+      />
+
+      <el-table-column
         label="预付款应付金额"
         prop="anticipatePayable"
         width="150"
@@ -417,6 +427,8 @@
                 v-model="form.planStartTime"
                 type="date"
                 placeholder="选择计划施工时间"
+                format="yyyy-MM-dd"
+                value-format="yyyy-MM-dd"
               ></el-date-picker>
             </el-form-item>
           </el-col>
@@ -427,6 +439,8 @@
                 v-model="form.planEndTime"
                 type="date"
                 placeholder="选择计划完成时间"
+                format="yyyy-MM-dd"
+                value-format="yyyy-MM-dd"
               ></el-date-picker>
             </el-form-item>
           </el-col>
@@ -437,6 +451,8 @@
                 v-model="form.actualEndTime"
                 type="date"
                 placeholder="选择实际完工时间"
+                format="yyyy-MM-dd"
+                value-format="yyyy-MM-dd"
               ></el-date-picker>
             </el-form-item>
           </el-col>
@@ -743,8 +759,12 @@
       </div>
     </el-dialog>
 
-    <el-dialog title="项目信息导入" :visible.sync="centerDialogVisible" width="500px">
-       <div style="margin-bottom: 10px">
+    <el-dialog
+      title="项目信息导入"
+      :visible.sync="centerDialogVisible"
+      width="500px"
+    >
+      <div style="margin-bottom: 10px">
         <el-button type="primary" @click="downTemplate">
           <i class="el-icon-download"></i>下载导入模板
         </el-button>
@@ -968,12 +988,12 @@ export default {
         Authorization: getToken(),
       },
       inputAble: false,
-      ContractVisible:false,
+      ContractVisible: false,
     };
   },
   created() {
     // this.getList();
-    this.getDicts("relocation","compensation_sate").then((response) => {
+    this.getDicts("relocation", "compensation_sate").then((response) => {
       this.compensationOptions = response;
 
       this.getTreeselect();
@@ -981,12 +1001,7 @@ export default {
   },
   methods: {
     downTemplate() {
-      exportData1(
-        getToken(),
-        "",
-        `${prefix}/project/export`,
-        "迁改基本信息"
-      );
+      exportData1(getToken(), "", `${prefix}/project/export`, "迁改基本信息");
     },
     handleupload() {
       const loading = this.$loading({
@@ -1014,7 +1029,7 @@ export default {
       this.fileList = [];
       this.loadingoption.close();
       this.centerDialogVisible = false;
-      this.ContractVisible= false;
+      this.ContractVisible = false;
       if (res.code == "00000") {
         this.$message.success("导入上传成功");
         this.getList();
@@ -1104,7 +1119,7 @@ export default {
       const typeId = row.id || this.ids;
       this.inputAble = true;
       ProjectDetail(typeId).then((response) => {
-        console.log('ProjectDetail',response);
+        console.log("ProjectDetail", response);
         // this.compensationOptions.map((item) => {
         //   if (item.label == response.compensationSate) {
         //     row.compensationSate = item.value;
@@ -1210,7 +1225,6 @@ export default {
 }
 .el-col-12 {
   height: 59px;
-  
 }
 .el-table /deep/ th.gutter {
   display: table-cell !important;
