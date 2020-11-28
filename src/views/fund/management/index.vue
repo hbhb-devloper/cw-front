@@ -731,6 +731,17 @@
       typeList: [],
       formTypeList: [],
       typeState: [],
+      CancellationOptions:[{
+          label:'全部',
+          value:''
+        },
+        {
+          label:'作废',
+          value:true
+        },{
+          label:'不作废',
+          value:false
+        }]
     };
   },
   computed: {
@@ -751,19 +762,20 @@
       });
     },
     handleGetBusiness () {
-      getBusiness().then(res => {
-        this.typeList = res;
-        this.formTypeList = res;
+      this.getDicts("fund", "business").then((response) => {
+      // getBusiness().then(res => {
+        this.typeList = response;
+        this.formTypeList = response;
       })
     },
     handleGetContent () {
-      getContentList().then(res => {
-        this.InvoiceContentList = res;
+      this.getDicts("fund", "invoice_content").then((response) => {
+        this.InvoiceContentList = response;
       })
     },
     handleGetStatusList () {
-      getStatusList().then(res => {
-        this.StateOptions = res;
+      this.getDicts("fund", "invoice_status").then((response) => {
+        this.StateOptions = response;
       })
     },
     /** 查询角色列表 */
