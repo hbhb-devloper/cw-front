@@ -181,14 +181,14 @@
               />
             </el-form-item>
           </el-col>
-          <el-col :span="24">
+          <el-col :span="12">
             <el-form-item label="活动名称">
               <el-input v-model="form.email"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="24">
+          <el-col :span="12">
             <el-form-item label="是否为活动 ">
-              <el-input v-model="form.email"></el-input>
+              <el-switch v-model="form.flag"></el-switch>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -313,7 +313,9 @@ export default {
       //相关设定弹窗
       SetVisible: false,
       Isdisable: true,
-      form: {},
+      form: {
+        flag: true,
+      },
       // 部门树选项
       deptOptions: undefined,
       // 状态数据字典
@@ -456,5 +458,8 @@ export default {
 .addline {
   margin-left: 25px;
   margin-bottom: 20px;
+}
+.el-form-item {
+    height: 37px;
 }
 </style>

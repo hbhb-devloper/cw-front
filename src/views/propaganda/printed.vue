@@ -85,6 +85,18 @@
       </el-form-item>
     </el-form>
 
+    <el-row :gutter="10" class="mb8">
+      <el-col :span="1.5">
+        <el-button
+          type="primary"
+          icon="el-icon-plus"
+          size="mini"
+          @click="handleAdd"
+          >添加新申请</el-button
+        >
+      </el-col>
+    </el-row>
+
     <el-table v-loading="loading" :data="printList">
       <el-table-column align="center" label="申请单号" prop="printNum" />
       <el-table-column align="center" label="申请单名称" prop="printName" />
@@ -108,19 +120,17 @@
     <el-dialog
       title="中国移动通信集团印刷品申请单"
       :visible.sync="SetVisible"
-      width="600px"
+      width="1000px"
     >
-      <el-row>
-        <el-col :span="8">
+      <el-row style="margin-bottom: 25px">
+        <el-col v-for="i in 3" :key="i" :span="8">
           <div class="flowItem">
             <el-form>
-              <el-form-item label="印刷品申请人">
+              <el-form-item label="印刷品申请人" label-width="110px">
                 <el-select
                   v-model="queryParams.state"
                   placeholder="请选择审批状态"
                   clearable
-                  size="small"
-                  style="width: 200px"
                 >
                   <el-option
                     v-for="dict in statusOptions"
@@ -130,13 +140,11 @@
                   />
                 </el-select>
               </el-form-item>
-              <el-form-item label="同意原因">
-            <el-select
+              <el-form-item label="意见" label-width="110px">
+                <el-select
                   v-model="queryParams.state"
                   placeholder="请选择审批状态"
                   clearable
-                  size="small"
-                  style="width: 200px"
                 >
                   <el-option
                     v-for="dict in statusOptions"
@@ -145,15 +153,155 @@
                     :value="dict.dictValue"
                   />
                 </el-select>
-
               </el-form-item>
-              <el-form-item>
-                李华  2020/4/28 14:05:11
-              </el-form-item>
+              <div class="flowItemDown">
+                <div>李华 2020/4/28 14:05:11</div>
+                <i class="el-icon-success" v-if="true"></i>
+                <i class="el-icon-error" v-if="false"></i>
+              </div>
             </el-form>
           </div>
         </el-col>
       </el-row>
+      <el-form ref="form" :model="form" :rules="rules" label-width="100px">
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="申请单名称" prop="unitId">
+              <el-input
+                v-model="queryParams.unitId"
+                placeholder="请输入申请单名称"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="申请部门" prop="unitId">
+              <el-input
+                v-model="queryParams.unitId"
+                placeholder="请输入申请部门"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="申请单人" prop="unitId">
+              <el-input
+                v-model="queryParams.unitId"
+                placeholder="请输入申请单人"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="申请时间" prop="unitId">
+              <el-input
+                v-model="queryParams.unitId"
+                placeholder="请输入申请时间"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="材料类型" prop="unitId">
+              <el-select
+                v-model="queryParams.state"
+                placeholder="请选择材料类型"
+                style="width:100%"
+                clearable
+              >
+                <el-option
+                  v-for="dict in statusOptions"
+                  :key="dict.dictValue"
+                  :label="dict.dictLabel"
+                  :value="dict.dictValue"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="市场部审核员" prop="unitId">
+              <el-select
+                v-model="queryParams.state"
+                placeholder="请选择市场部审核员"
+                style="width:100%"
+                clearable
+              >
+                <el-option
+                  v-for="dict in statusOptions"
+                  :key="dict.dictValue"
+                  :label="dict.dictLabel"
+                  :value="dict.dictValue"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="预估金额" prop="unitId">
+              <el-input
+                v-model="queryParams.unitId"
+                placeholder="请输入预估金额"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="备注" prop="unitId">
+              <el-input
+                type="textarea"
+                v-model="queryParams.unitId"
+                placeholder="请输入备注"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="附件" prop="unitId">
+              <el-button
+                type="primary"
+                icon="el-icon-plus"
+                size="mini"
+                @click="handleAdd"
+                >添加附件</el-button
+              >
+              <el-table :data="tableData" style="width: 100%">
+                <el-table-column prop="date" label="标题" width="180">
+                </el-table-column>
+                <el-table-column prop="name" label="作者" width="180">
+                </el-table-column>
+                <el-table-column prop="address" label="时间"> </el-table-column>
+                <el-table-column prop="address" label="大小"> </el-table-column>
+                <el-table-column prop="address" label="操作">
+                  <template slot-scope="scope">
+                    <el-button
+                      size="mini"
+                      type="text"
+                      icon="el-icon-edit"
+                      @click="handleUpdate(scope.row)"
+                      >修改</el-button
+                    >
+                  </template>
+                </el-table-column>
+              </el-table>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item>
+              <el-upload
+                class="upload-demo"
+                action="https://jsonplaceholder.typicode.com/posts/"
+                :on-preview="handlePreview"
+                :on-remove="handleRemove"
+                :before-remove="beforeRemove"
+                multiple
+                :limit="3"
+                :on-exceed="handleExceed"
+                :file-list="fileList"
+              >
+                <el-button size="small" type="primary">点击上传</el-button>
+                <el-button size="small" type="text">业务单式模板下载</el-button>
+                <el-button size="small" type="text">宣传单页模板下载</el-button>
+                <div slot="tip" class="el-upload__tip">
+                  只能上传jpg/png文件，且不超过500kb
+                </div>
+              </el-upload>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
     </el-dialog>
   </div>
 </template>
@@ -167,7 +315,7 @@ export default {
   name: "Role",
   data() {
     return {
-      SetVisible: true,
+      SetVisible: false,
       // 遮罩层
       loading: true,
       // 总条数
@@ -194,6 +342,9 @@ export default {
     this.getMenuTreeselect();
   },
   methods: {
+    handleAdd() {
+      this.SetVisible = true;
+    },
     /** 查询角色列表 */
     getList() {
       this.loading = true;
@@ -239,7 +390,7 @@ export default {
   },
 };
 </script>
-<style scoped>
+<style lang="scss" scoped>
 .tips {
   width: 100%;
   text-align: center;
@@ -247,5 +398,23 @@ export default {
   align-items: start;
   justify-content: center;
   margin-bottom: 10px;
+}
+.flowItem {
+  padding-right: 10px;
+  border-right: 1px solid #e6e6e6;
+  .flowItemDown {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    .el-icon-success {
+      color: #67c23a;
+      font-size: 27px;
+    }
+
+    .el-icon-error {
+      color: #f56c6c;
+      font-size: 27px;
+    }
+  }
 }
 </style>
