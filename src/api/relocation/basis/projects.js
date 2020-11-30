@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-09-23 14:42:03
  * @LastEditors: CYZ
- * @LastEditTime: 2020-11-20 09:40:25
+ * @LastEditTime: 2020-11-24 15:28:06
  */
 
 import request from '@/utils/request1'
@@ -39,6 +39,14 @@ export function listProject(query) {
         url: `${prefix}/project/list`,
         method: 'get',
         params: queryParams
+    })
+}
+
+// 查看迁改基础信息详情
+export function ProjectDetail(id) {
+    return request({
+        url:  `${prefix}/project/${id}`,
+        method: 'get',
     })
 }
 

@@ -87,8 +87,17 @@
           type="success"
           icon="el-icon-download"
           size="mini"
-          @click="centerDialogVisible = true"
+          @click="opencenterDialogVisible"
           >导入</el-button
+        >
+      </el-col>
+      <el-col :span="1.5">
+        <el-button
+          type="primary"
+          icon="el-icon-download"
+          size="mini"
+          @click="openContractVisible"
+          >上传合同</el-button
         >
       </el-col>
     </el-row>
@@ -106,7 +115,16 @@
         prop="projectName"
         width="120"
         align="center"
-      />
+      >
+        <template slot-scope="scope">
+          <div
+            style="color: #409eff; cursor: pointer"
+            @click="gotoDetail(scope.row)"
+          >
+            {{ scope.row.projectName }}
+          </div>
+        </template>
+      </el-table-column>
       <el-table-column
         label="迁改项目编号"
         prop="projectNum"
@@ -240,7 +258,16 @@
         prop="contractNum"
         width="150"
         align="center"
-      />
+      >
+        <template slot-scope="scope">
+          <div
+            style="color: #409eff; cursor: pointer"
+            @click="gotofileDetail(scope.row)"
+          >
+            {{ scope.row.contractNum }}
+          </div>
+        </template>
+      </el-table-column>
       <el-table-column
         label="赔补合同名"
         prop="contractName"
@@ -253,6 +280,13 @@
         width="150"
         align="center"
       />
+      <el-table-column
+        label="赔补总额（元）"
+        prop="totalCompensationAmount"
+        width="150"
+        align="center"
+      />
+
       <el-table-column
         label="预付款应付金额"
         prop="anticipatePayable"
@@ -348,16 +382,18 @@
           <el-col :span="12">
             <el-form-item label="区域" prop="unitId">
               <treeselect
+                :disabled="inputAble"
                 v-model="form.unitId"
                 :options="deptOptions"
                 placeholder="请选择区域"
               />
             </el-form-item>
           </el-col>
-          <el-col :span="12"></el-col>
+          <!-- <el-col :span="12"></el-col> -->
           <el-col :span="12">
             <el-form-item label="迁改项目编号" prop="projectNum">
               <el-input
+                :disabled="inputAble"
                 v-model="form.projectNum"
                 placeholder="请输入迁改项目编号"
               />
@@ -366,6 +402,7 @@
           <el-col :span="12">
             <el-form-item label="工程名称" prop="projectName">
               <el-input
+                :disabled="inputAble"
                 v-model="form.projectName"
                 placeholder="请输入工程名称"
               />
@@ -377,6 +414,7 @@
               prop="eomsRepairNum"
             >
               <el-input
+                :disabled="inputAble"
                 v-model="form.eomsRepairNum"
                 placeholder="请输入EOMS迁移修缮管理流程工单号"
               />
@@ -385,6 +423,7 @@
           <el-col :span="12">
             <el-form-item label="EOMS光缆割接流程工单号" prop="eomsCutNum">
               <el-input
+                :disabled="inputAble"
                 v-model="form.eomsCutNum"
                 placeholder="请输入EOMS光缆割接流程工单号"
               />
@@ -393,24 +432,43 @@
           <el-col :span="12">
             <el-form-item label="计划施工时间" prop="planStartTime">
               <el-date-picker
+                :disabled="inputAble"
                 v-model="form.planStartTime"
                 type="date"
                 placeholder="选择计划施工时间"
+                format="yyyy-MM-dd"
+                value-format="yyyy-MM-dd"
               ></el-date-picker>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="计划完成时间" prop="planEndTime">
               <el-date-picker
+                :disabled="inputAble"
                 v-model="form.planEndTime"
                 type="date"
                 placeholder="选择计划完成时间"
+                format="yyyy-MM-dd"
+                value-format="yyyy-MM-dd"
+              ></el-date-picker>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="实际完工时间" prop="actualEndTime">
+              <el-date-picker
+                :disabled="inputAble"
+                v-model="form.actualEndTime"
+                type="date"
+                placeholder="选择实际完工时间"
+                format="yyyy-MM-dd"
+                value-format="yyyy-MM-dd"
               ></el-date-picker>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="施工单位" prop="constructionUnit">
               <el-input
+                :disabled="inputAble"
                 v-model="form.constructionUnit"
                 placeholder="请输入施工单位"
               />
@@ -422,6 +480,7 @@
               prop="networkHierarchy"
             >
               <el-input
+                :disabled="inputAble"
                 v-model="form.networkHierarchy"
                 placeholder="请输入迁改涉及网络层级"
               />
@@ -430,6 +489,7 @@
           <el-col :span="12">
             <el-form-item label="施工费（预算：元）" prop="constructionBudget">
               <el-input
+                :disabled="inputAble"
                 v-model="form.constructionBudget"
                 type="number"
                 placeholder="请输入施工费"
@@ -439,6 +499,7 @@
           <el-col :span="12">
             <el-form-item label="甲供材料费（预算：元）" prop="materialBudget">
               <el-input
+                :disabled="inputAble"
                 v-model="form.materialBudget"
                 type="number"
                 placeholder="请输入甲供材料费"
@@ -451,6 +512,7 @@
               prop="constructionCost"
             >
               <el-input
+                :disabled="inputAble"
                 v-model="form.constructionCost"
                 type="number"
                 placeholder="请输入施工费"
@@ -463,6 +525,7 @@
               prop="materialCost"
             >
               <el-input
+                :disabled="inputAble"
                 v-model="form.materialCost"
                 type="number"
                 placeholder="请输入甲供材料费"
@@ -475,6 +538,7 @@
               prop="constructionAuditCost"
             >
               <el-input
+                :disabled="inputAble"
                 v-model="form.constructionAuditCost"
                 type="number"
                 placeholder="请输入施工费审定金额"
@@ -484,6 +548,7 @@
           <el-col :span="12">
             <el-form-item label="主动迁改或者被动" prop="isInitiative">
               <el-select
+                :disabled="inputAble"
                 v-model="form.isInitiative"
                 placeholder="请选择主动迁改或者被动"
                 clearable
@@ -502,6 +567,7 @@
           <el-col :span="12">
             <el-form-item label="性质归类" prop="projectType">
               <el-input
+                :disabled="inputAble"
                 v-model="form.projectType"
                 placeholder="请输入性质归类"
               />
@@ -509,13 +575,18 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="迁改原因" prop="cause">
-              <el-input v-model="form.cause" placeholder="请输入迁改原因" />
+              <el-input
+                :disabled="inputAble"
+                v-model="form.cause"
+                placeholder="请输入迁改原因"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="对方单位" prop="oppositeUnit">
               <el-input
                 v-model="form.oppositeUnit"
+                :disabled="inputAble"
                 placeholder="请输入对方单位"
               />
             </el-form-item>
@@ -523,6 +594,7 @@
           <el-col :span="12">
             <el-form-item label="对方联系人" prop="oppositeContacts">
               <el-input
+                :disabled="inputAble"
                 v-model="form.oppositeContacts"
                 placeholder="请输入对方联系人"
               />
@@ -531,6 +603,7 @@
           <el-col :span="12">
             <el-form-item label="对方联系电话" prop="oppositeContactsNum">
               <el-input
+                :disabled="inputAble"
                 v-model="form.oppositeContactsNum"
                 placeholder="请输入对方联系电话"
               />
@@ -539,6 +612,7 @@
           <el-col :span="12">
             <el-form-item label="有无赔补" prop="hasCompensation">
               <el-select
+                :disabled="inputAble"
                 v-model="form.hasCompensation"
                 placeholder="赔补状态"
                 clearable
@@ -557,6 +631,7 @@
           <el-col :span="12">
             <el-form-item label="被动无赔类型" prop="compensationType">
               <el-input
+                :disabled="inputAble"
                 v-model="form.compensationType"
                 placeholder="请输入被动无赔类型"
               />
@@ -565,6 +640,7 @@
           <el-col :span="12">
             <el-form-item label="合同编号" prop="contractNum">
               <el-input
+                :disabled="inputAble"
                 v-model="form.contractNum"
                 placeholder="请输入合同编号"
               />
@@ -573,6 +649,7 @@
           <el-col :span="12">
             <el-form-item label="赔补合同名" prop="contractName">
               <el-input
+                :disabled="inputAble"
                 v-model="form.contractName"
                 placeholder="请输入赔补合同名"
               />
@@ -581,6 +658,7 @@
           <el-col :span="12">
             <el-form-item label="赔补金额（元）" prop="compensationAmount">
               <el-input
+                :disabled="inputAble"
                 v-model="form.compensationAmount"
                 type="number"
                 placeholder="请输入赔补金额"
@@ -590,6 +668,7 @@
           <el-col :span="12">
             <el-form-item label="预付款到账金额（元）" prop="anticipatePayment">
               <el-input
+                :disabled="inputAble"
                 v-model="form.anticipatePayment"
                 type="number"
                 placeholder="请输入预付款到账金额"
@@ -599,6 +678,7 @@
           <el-col :span="12">
             <el-form-item label="预付款应付金额（元）" prop="anticipatePayable">
               <el-input
+                :disabled="inputAble"
                 v-model="form.anticipatePayable"
                 type="number"
                 placeholder="请输入预付款应付金额"
@@ -611,6 +691,7 @@
               prop="finalPayment"
             >
               <el-input
+                :disabled="inputAble"
                 v-model="form.finalPayment"
                 type="number"
                 placeholder="请输入决算款到账金额"
@@ -620,6 +701,7 @@
           <el-col :span="12">
             <el-form-item label="赔补状态" prop="compensationSate">
               <el-select
+                :disabled="inputAble"
                 v-model="form.compensationSate"
                 placeholder="赔补状态"
                 clearable
@@ -641,6 +723,7 @@
               prop="contractDuration"
             >
               <el-input
+                :disabled="inputAble"
                 v-model="form.contractDuration"
                 placeholder="请输入未全款回款合同合同签订时长"
               />
@@ -649,6 +732,7 @@
           <el-col :span="12">
             <el-form-item label="赔补特殊情况备注" prop="compensationRemake">
               <el-input
+                :disabled="inputAble"
                 v-model="form.compensationRemake"
                 placeholder="请输入赔补特殊情况备注"
               />
@@ -656,12 +740,17 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="月报" prop="projectMonth">
-              <el-input v-model="form.projectMonth" placeholder="请输入月报" />
+              <el-input
+                :disabled="inputAble"
+                v-model="form.projectMonth"
+                placeholder="请输入月报"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="年份" prop="projectYear">
               <el-date-picker
+                :disabled="inputAble"
                 v-model="form.projectYear"
                 value-format="yyyy"
                 type="year"
@@ -679,7 +768,17 @@
       </div>
     </el-dialog>
 
-    <el-dialog title="导入" :visible.sync="centerDialogVisible" width="500px">
+    <el-dialog
+      title="项目信息导入"
+      :visible.sync="centerDialogVisible"
+      width="500px"
+    >
+      <div style="margin-bottom: 10px">
+        <el-button type="primary" @click="downTemplate">
+          <i class="el-icon-download"></i>下载导入模板
+        </el-button>
+      </div>
+
       <el-upload
         class="upload-demo"
         :headers="headers"
@@ -698,6 +797,30 @@
         <el-button size="small" type="primary">点击上传</el-button>
       </el-upload>
     </el-dialog>
+    <el-dialog title="合同导入" :visible.sync="ContractVisible" width="500px">
+      <el-upload
+        class="upload-demo"
+        :headers="headers"
+        :on-preview="handlePreview"
+        :on-remove="handleRemove"
+        :before-remove="beforeRemove"
+        :on-success="handleSuccess"
+        :on-progress="handleupload"
+        :on-error="handleFail"
+        multiple
+        :limit="10"
+        :on-exceed="handleExceed"
+        :action="ActionUrl1"
+        :file-list="fileList"
+      >
+        <el-button size="small" type="primary">点击上传</el-button>
+      </el-upload>
+    </el-dialog>
+    <el-dialog title="查看合同" :visible.sync="fileDialog" width="500px">
+      <el-button type="primary" @click="reviewFile"> 预览 </el-button>
+
+      <el-button type="primary" @click="downFile">下载</el-button>
+    </el-dialog>
   </div>
 </template>
 
@@ -709,10 +832,14 @@ import {
   updateProject,
   delarr,
   compensationSate,
+  ProjectDetail,
 } from "@/api/relocation/basis/projects.js";
+
+import { fileInfo } from "@/api/system/file";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 import { getToken } from "@/utils/auth";
+import { exportData1 } from "@/utils/export";
 import { prefix } from "@/api/relocation/relocation";
 export default {
   name: "Flowtype",
@@ -871,47 +998,132 @@ export default {
       deptOptions: [],
       centerDialogVisible: false,
       ActionUrl: process.env.VUE_APP_GATEWAY_API + `${prefix}/project/import`, // 上传的图片服务器地址
+      ActionUrl1: process.env.VUE_APP_GATEWAY_API + `${prefix}/project/upload`, // 上传的图片服务器地址
       fileList: [],
       headers: {
         Authorization: getToken(),
       },
+      inputAble: false,
+      ContractVisible: false,
+      fileDialog: false,
+      fileItem: {},
+      loadingoption: undefined,
+      loadingCount: 0,
     };
   },
   created() {
     // this.getList();
-    this.getDicts("relocation/compensation_sate").then((response) => {
+    this.getDicts("relocation", "compensation_sate").then((response) => {
       this.compensationOptions = response;
 
       this.getTreeselect();
     });
   },
   methods: {
-    handleupload() {
-      const loading = this.$loading({
-        lock: true,
-        text: "正在导入表格",
-        spinner: "el-icon-loading",
-        background: "rgba(0, 0, 0, 0.7)",
-      });
-      this.loadingoption = loading;
+    reviewFile() {
+      let fileItem = this.fileItem;
+      if (/.(pdf|PDF)$/.test(fileItem)) {
+        window.open(fileItem.filePath);
+      } else if (/.(zip|ZIP)$/.test(fileItem)) {
+        this.$message({
+          showClose: true,
+          message: "该文件格式无法预览",
+          type: "error",
+        });
+      } else {
+        window.open(
+          "https://view.officeapps.live.com/op/view.aspx?src=" +
+            fileItem.filePath
+        );
+      }
     },
-    handleFail() {
-      this.loadingoption.close();
-      this.$message.error("上传失败");
+    downFile() {
+      let fileItem = this.fileItem;
+
+      this.$confirm("是否下载" + fileItem.fileName + "？", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      }).then(() => {
+        let link = document.createElement("a");
+        link.style.display = "none";
+        link.href = fileItem.filePath;
+        link.download = fileItem.fileName;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      });
+    },
+    gotofileDetail(row) {
+      if (row.fileId) {
+        fileInfo(row.fileId).then((res) => {
+          this.fileItem = res;
+          this.fileDialog = true;
+        });
+      } else {
+        this.$message.warning("暂未上传合同");
+      }
+    },
+    downTemplate() {
+      exportData1(getToken(), "", `${prefix}/project/export`, "迁改基本信息");
+    },
+    opencenterDialogVisible() {
+      this.fileList = [];
+      this.$nextTick(() => {
+        this.centerDialogVisible = true;
+      });
+    },
+    openContractVisible() {
+      this.fileList = [];
+      this.$nextTick(() => {
+        this.ContractVisible = true;
+      });
+    },
+    handleupload() {
+      if (this.loadingCount === 0) {
+        let loading = this.$loading({
+          lock: true,
+          text: "正在导入表格",
+          spinner: "el-icon-loading",
+          background: "rgba(0, 0, 0, 0.7)",
+        });
+        this.loadingoption = loading;
+      }
+      this.loadingCount += 1;
+      console.log("handleuploadCount", this.loadingCount);
+    },
+    handleFail(err, file, fileList) {
+      console.log("handleFail", err);
+      console.log("handleFailloadingCount", this.loadingCount);
+      console.log("loadingoption", this.loadingoption);
+      if (this.loadingCount <= 0) {
+        return;
+      }
+      this.loadingCount -= 1;
+      if (this.loadingCount === 0) {
+        this.loadingoption.close();
+        this.$message.error("上传失败");
+      }
     },
     handleRemove(file, fileList) {},
     handlePreview(file) {},
     handleExceed(files, fileList) {
       this.$message.warning(
-        `当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${
+        `当前限制选择 10 个文件，本次选择了 ${files.length} 个文件，共选择了 ${
           files.length + fileList.length
         } 个文件`
       );
     },
-    handleSuccess(res) {
-      this.fileList = [];
-      this.loadingoption.close();
+    handleSuccess(res, file, fileList) {
+      // this.fileList = [];
+
+      this.loadingCount -= 1;
+      if (this.loadingCount === 0) {
+        this.loadingoption.close();
+        // this.loadingoption = undefined;
+      }
       this.centerDialogVisible = false;
+      this.ContractVisible = false;
       if (res.code == "00000") {
         this.$message.success("导入上传成功");
         this.getList();
@@ -995,9 +1207,27 @@ export default {
       this.open = true;
       this.title = "添加迁改项目管理信息";
     },
+    // 查看详情操作
+    gotoDetail(row) {
+      this.reset();
+      const typeId = row.id || this.ids;
+      this.inputAble = true;
+      ProjectDetail(typeId).then((response) => {
+        console.log("ProjectDetail", response);
+        // this.compensationOptions.map((item) => {
+        //   if (item.label == response.compensationSate) {
+        //     row.compensationSate = item.value;
+        //   }
+        // });
+        this.form = response;
+        this.open = true;
+        this.title = "迁改项目管理信息详情";
+      });
+    },
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
+      this.inputAble = false;
       const typeId = row.id || this.ids;
       //   getRole(typeId).then(response => {
       console.log(row);

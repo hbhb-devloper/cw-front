@@ -284,8 +284,8 @@ export default {
       getCompany().then((res) => {
         this.unitList = res.list;
       });
-      getTaxtype().then((res) => {
-        this.typeOptions = res;
+      this.getDicts("invoice", "tax_type").then((response) => {
+        this.typeOptions = response;
       });
     },
     handleOpen(type) {

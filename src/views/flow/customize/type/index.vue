@@ -178,7 +178,8 @@ export default {
   },
   created() {
     this.getList();
-    listModule().then(response => {
+      this.getDicts("module", "module").then((response) => {
+      
       this.moduleOptions = response;
     });
   },

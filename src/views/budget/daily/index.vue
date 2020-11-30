@@ -3,8 +3,8 @@
     <!--顶部搜索-->
     <section class="search-box">
       <el-row :span="24">
-        <el-form :inline="true" label-width="100px">
-          <el-form-item label="单位">
+        <el-form ref="queryForm" :model="obj" :inline="true" label-width="100px">
+          <el-form-item label="单位"  prop="unitId">
             <treeselect
               v-model="obj.unitId"
               :options="deptOptions"
@@ -17,7 +17,6 @@
               <el-radio :label="3">项目年度</el-radio>
               <el-radio :label="6">创建时间</el-radio>
             </el-radio-group>
-
             <el-date-picker
               v-show="radio == 3"
               v-model="obj.date"
@@ -40,7 +39,7 @@
             </el-date-picker>
           </el-form-item>
           <el-form-item> </el-form-item>
-          <el-form-item label="类型">
+          <el-form-item label="类型" prop="budgetType">
             <el-select
               v-model="obj.budgetType"
               filterable
@@ -57,7 +56,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="编号">
+          <el-form-item label="编号" prop="projectNum">
             <el-input
               placeholder="请输入关键词"
               v-model="obj.projectNum"
@@ -67,7 +66,7 @@
               style="width: 200px"
             />
           </el-form-item>
-          <el-form-item label="不含税金额">
+          <el-form-item label="不含税金额" prop="cost">
             <el-input
               placeholder="请输入关键词"
               v-model="obj.cost"
@@ -84,7 +83,7 @@
               type="primary"
               icon="el-icon-search"
               size="mini"
-              @click="handleGetList"
+              @click="handleQuery"
               >搜索</el-button
             >
             <el-button icon="el-icon-refresh" size="mini" @click="handleRest"
@@ -354,9 +353,7 @@
           </el-col>
         </el-row>
         <span slot="footer" class="dialog-footer">
-          <el-button type="primary" @click="exportWord()"
-            >导出Word</el-button
-          >
+          <el-button type="primary" @click="exportWord()">导出Word</el-button>
           <el-button @click="open2 = false">关闭</el-button>
         </span>
       </el-dialog>
@@ -378,7 +375,7 @@ import { getVatRate } from "@/api/budget/report/report.js";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 import { getToken } from "@/utils/auth";
-import { exportData ,exportWord} from "@/utils/export.js";
+import { exportData, exportWord } from "@/utils/export.js";
 import axios from "axios";
 
 export default {
@@ -416,7 +413,8 @@ export default {
       formState: false,
       info: {},
       dowFile: process.env.FILE_DOWNLOAD_PATH,
-      infoDetail:undefined
+      infoDetail: undefined,
+      morenUnit:undefined
     };
   },
   created() {
@@ -457,14 +455,17 @@ export default {
     getUnitList() {
       getCompany().then((res) => {
         this.obj.unitId = res.checked[0];
+        this.morenUnit= res.checked[0];
         this.deptOptions = res.list;
       });
       //获取增值税下拉
-      getVatRate().then((res) => {
-        this.VatRateOption = res;
+      // getVatRate().then((res) => {
+      this.getDicts("budget", "project_vat_rate").then((response) => {
+        this.VatRateOption = response;
       });
-      getTypeList().then((res) => {
-        this.options = res;
+
+      this.getDicts("budget", "budget_type").then((response) => {
+        this.options = response;
       });
     },
     //获取列表
@@ -474,19 +475,22 @@ export default {
         this.tableData = res.list;
       });
     },
-    //重置
-    handleRest() {
-      let times = new Date();
-      this.obj = {
-        unitId: this.obj.unitId,
-        pageSize: 20,
-        pageNum: 1,
-      };
-      this.radio = 3;
-      this.obj.date = times.getFullYear().toString();
+     /** 搜索按钮操作 */
+    handleQuery() {
+      this.obj.pageNum = 1;
+      this.handleGetList();
     },
+    /** 重置按钮操作 */
+    handleRest() {
+      this.resetForm("queryForm");
+      this.obj.unitId=this.morenUnit
+      let times = new Date();
+      this.obj.date = times.getFullYear().toString();
+      this.radio = 3;
+      this.handleQuery();
+    },
+    
     //新增
-
     handleAdd() {
       this.open = true;
       this.obj2 = {
@@ -502,7 +506,7 @@ export default {
         ).toFixed(6);
       }
     },
-    exportWord(){
+    exportWord() {
       // let queryForm=this.infoDetail
       // queryForm.id = this.infoId
       // console.log('queryForm',queryForm);
@@ -539,7 +543,7 @@ export default {
     },
     //详情
     handleInfo(row) {
-      this.infoDetail=row
+      this.infoDetail = row;
       getInfoDate(row.id).then((res) => {
         console.log(res);
         this.Filetable = res.files;
@@ -579,7 +583,6 @@ export default {
         list.fileId = res.data.data[0].id;
         this.$message.success("附件上传成功！");
         list.required = 0; //非必传
-
         this.fileList.push({
           name: res.data.data[0].fileName,
           id: res.data.data[0].id,

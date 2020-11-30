@@ -19,9 +19,9 @@ export function getData(dictCode) {
 }
 
 // 根据字典类型查询字典数据信息
-export function getDicts(dictType) {
+export function getDicts(Type,Code) {
   return request({
-    url: `${prefix}/dict/` + dictType,
+    url: `${prefix}/dict?type=${Type}&code=${Code}`,
     method: 'get'
   })
 }

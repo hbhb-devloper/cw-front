@@ -35,13 +35,13 @@ const user = {
     },
 
     actions: {
-        // 登录
+        // 新-登录
         Login({ commit }, userInfo) {
             return new Promise((resolve, reject) => {
                 check(userInfo).then(res => {
                     login(userInfo).then(res => {
-                        setToken('Bearer ' + res.accessToken)
-                        commit('SET_TOKEN', 'Bearer ' + res.accessToken)
+                        setToken('Bearer ' + res.access_token)
+                        commit('SET_TOKEN', 'Bearer ' + res.access_token)
                         resolve()
                     }).catch(error => {
                         reject(error)
@@ -52,6 +52,19 @@ const user = {
                 })
             })
         },
+
+        // 旧-登录
+        // Login({ commit }, userInfo) {
+        //     return new Promise((resolve, reject) => {
+        //         login(userInfo).then(res => {
+        //             setToken(res)
+        //             commit('SET_TOKEN', res)
+        //             resolve()
+        //         }).catch(error => {
+        //             reject(error)
+        //         })
+        //     })
+        // },
 
         // 获取用户信息
         GetInfo({ commit, state }) {
@@ -75,7 +88,6 @@ const user = {
                 })
             })
         },
-
 
         // 退出系统
         LogOut({ commit, state }) {

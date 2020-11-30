@@ -7,3 +7,9 @@ export function GetList(params){
     params
   })
 }
+export function GetTaxpayerDict(){
+  return request({
+    url:'/dict/invoice/invoice-taxpayer',
+    method:'get',
+  })
+}
