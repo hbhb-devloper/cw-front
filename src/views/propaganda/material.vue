@@ -31,7 +31,6 @@
           icon="el-icon-plus"
           size="mini"
           @click="handleAdd"
-          v-hasPermi="['system:user:add']"
           >新增</el-button
         >
       </el-col>
@@ -41,7 +40,6 @@
           icon="el-icon-edit"
           size="mini"
           @click="handleUpdate"
-          v-hasPermi="['system:user:edit']"
           >修改</el-button
         >
       </el-col>
@@ -51,7 +49,6 @@
           icon="el-icon-download"
           size="mini"
           @click="SetVisible = true"
-          v-hasPermi="['system:user:export']"
           >相关设定</el-button
         >
       </el-col>
@@ -76,10 +73,11 @@
       <el-col :span="14" :xs="24">
         <el-form label-width="120px" width="500px" :model="form">
           <el-form-item label="类别名称：">
-            <el-input
+            <!-- <el-input
               v-model="form.administrator"
               :disabled="Isdisable"
-            ></el-input>
+            ></el-input> -->
+            <div>移动电话虚拟网</div>
           </el-form-item>
           <el-form-item label="类别代码：">
             <el-input v-model="form.phone" :disabled="Isdisable"></el-input>
@@ -115,31 +113,27 @@
             <el-input v-model="form.email" :disabled="Isdisable"></el-input>
           </el-form-item>
           <el-form-item label="备注：">
-            <el-input v-model="form.email" :disabled="Isdisable"></el-input>
+            <el-input
+              type="textarea"
+              v-model="form.desc"
+              :disabled="Isdisable"
+            ></el-input>
           </el-form-item>
-          <el-form-item label="上传照片：">
-            <el-upload
-              action="https://jsonplaceholder.typicode.com/posts/"
-              list-type="picture-card"
-              :on-preview="handlePictureCardPreview"
-              :on-remove="handleRemove"
-            >
-              <i class="el-icon-plus"></i>
-            </el-upload>
-            <el-dialog :visible.sync="dialogVisible">
-              <img width="100%" :src="dialogImageUrl" alt="" />
-            </el-dialog>
-            <!-- <el-input v-model="form.email" :disabled="Isdisable"></el-input> -->
+          <el-form-item label="图片：">
+            <el-image style="width: 30%" :src="src"></el-image>
+            <el-image style="width: 30%" :src="src"></el-image>
+            <el-image style="width: 30%" :src="src"></el-image>
+            <el-image style="width: 30%" :src="src"></el-image>
           </el-form-item>
         </el-form>
-        <div  style="padding-left:50px">
+        <!-- <div  style="padding-left:50px">
                 <el-button type="danger" size="mini" @click="Isdisable =!Isdisable">编辑</el-button>
                 <el-button type="primary" size="mini" :disabled="Isdisable" @click="submit">保存</el-button>
-              </div>
+              </div> -->
       </el-col>
     </el-row>
     <el-dialog title="相关设定" :visible.sync="SetVisible" width="600px">
-      <el-form label-width="160px"  :model="form">
+      <el-form label-width="160px" :model="form">
         <el-form-item
           :label="item.title"
           v-for="(item, index) in applicationList"
@@ -160,7 +154,9 @@
           >
         </el-form-item>
       </el-form>
-      <el-button type="success" class="addline" @click="addLine">添加行数</el-button>
+      <el-button type="success" class="addline" @click="addLine"
+        >添加行数</el-button
+      >
       <el-form label-width="160px" width="500px" :model="form">
         <el-form-item label="添加页面提示内容">
           <el-input type="textarea" v-model="form.desc"></el-input>
@@ -168,7 +164,124 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitFileForm">确 定</el-button>
-        <el-button @click="upload.open = false">取 消</el-button>
+        <el-button @click="cancel">取 消</el-button>
+      </div>
+    </el-dialog>
+
+    <!-- 添加或修改活动对话框 -->
+    <el-dialog :title="title" :visible.sync="open" width="800px">
+      <el-form ref="form" :model="form" :rules="rules" label-width="100px">
+        <el-row>
+          <el-col :span="24" v-if="form.parentId !== 0">
+            <el-form-item label="上级部门" prop="parentId">
+              <treeselect
+                v-model="form.parentId"
+                :options="deptOptions"
+                placeholder="选择上级部门"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="活动名称">
+              <el-input v-model="form.email"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="是否为活动 ">
+              <el-input v-model="form.email"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="类别名称：">
+              <el-input v-model="form.administrator"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="类别代码：">
+              <el-input v-model="form.phone"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="物料审核人：">
+              <el-input v-model="form.email"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="计量单位：">
+              <el-input v-model="form.email"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="尺寸：">
+              <el-input v-model="form.email"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="纸张：">
+              <el-input v-model="form.email"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="联次：">
+              <el-input v-model="form.email"></el-input>
+            </el-form-item>
+          </el-col>
+
+          <el-col :span="12">
+            <el-form-item label="是否有编号：">
+              <el-input v-model="form.email"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="版面关联人：">
+              <el-input v-model="form.email"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="是否使用：">
+              <el-input v-model="form.email"></el-input>
+            </el-form-item>
+          </el-col>
+
+          <el-col :span="12">
+            <el-form-item label="编辑时间：">
+              <el-input v-model="form.email"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item
+              label="是否加盖杭州分公司合同章："
+              label-width="200px"
+            >
+              <el-input v-model="form.email"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="备注：">
+              <el-input type="textarea" v-model="form.desc"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="上传照片：">
+              <el-upload
+                action="https://jsonplaceholder.typicode.com/posts/"
+                list-type="picture-card"
+                :on-preview="handlePictureCardPreview"
+                :on-remove="handleRemove"
+              >
+                <i class="el-icon-plus"></i>
+              </el-upload>
+              <el-dialog :visible.sync="dialogVisible">
+                <img width="100%" :src="dialogImageUrl" alt="" />
+              </el-dialog>
+              <!-- <el-input v-model="form.email" :disabled="Isdisable"></el-input> -->
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="submitForm">确 定</el-button>
+        <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
   </div>
@@ -184,6 +297,9 @@ export default {
   components: { Treeselect },
   data() {
     return {
+      src:
+        "https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg",
+      title: "",
       value1: undefined,
       defaultProps: {
         children: "children",
@@ -207,6 +323,7 @@ export default {
       ],
       // 查询参数
       queryParams: {},
+      open: false,
       // 表单校验
       rules: {
         userName: [
@@ -261,17 +378,35 @@ export default {
       this.queryParams.unitId = data.id;
       this.getList();
     },
+    // 表单重置
+    reset() {
+      this.form = {
+        deptId: undefined,
+        parentId: undefined,
+        unitName: undefined,
+        address: undefined,
+        abbr: undefined,
+        email: undefined,
+        fax: undefined,
+        shortName: undefined,
+        unitFunc: undefined,
+        unitGrade: undefined,
+        unitHeader: undefined,
+        officePhone: undefined,
+        zipCode: undefined,
+      };
+      this.resetForm("form");
+    },
     /** 新增按钮操作 */
     handleAdd() {
       this.reset();
-      this.getTreeselect();
-      DeptList().then((response) => {
-        this.postOptions = response.data;
-        // this.roleOptions = response.roles;
-        this.open = true;
-        this.title = "添加用户";
-        this.form.pwd = this.initPassword;
-      });
+      this.open = true;
+      this.title = "新增";
+    },
+    cancel() {
+      this.SetVisible = false;
+      this.open = false;
+      this.reset();
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
