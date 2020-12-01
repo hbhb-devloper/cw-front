@@ -66,6 +66,7 @@
             default-expand-all
             @node-click="handleNodeClick"
             draggable
+            v-loading="loading"
           />
         </div>
       </el-col>
@@ -73,43 +74,43 @@
       <el-col :span="14" :xs="24">
         <el-form label-width="120px" width="500px" :model="publicityForm">
           <el-form-item label="类别名称">
-            <div>{{publicityForm.goodsName}}</div>
+            <div>{{ publicityForm.goodsName }}</div>
           </el-form-item>
           <el-form-item label="类别代码">
-            <div>{{publicityForm.goodsNum}}</div>
+            <div>{{ publicityForm.goodsNum }}</div>
           </el-form-item>
           <el-form-item label="物料审核人">
-            <div>{{publicityForm.checker}}</div>
+            <div>{{ publicityForm.checker }}</div>
           </el-form-item>
           <el-form-item label="计量单位">
-            <div>{{publicityForm.unit}}</div>
+            <div>{{ publicityForm.unit }}</div>
           </el-form-item>
           <el-form-item label="尺寸">
-            <div>{{publicityForm.size}}</div>
+            <div>{{ publicityForm.size }}</div>
           </el-form-item>
           <el-form-item label="纸张">
-            <div>{{publicityForm.paper}}</div>
+            <div>{{ publicityForm.paper }}</div>
           </el-form-item>
           <el-form-item label="联次">
-            <div>{{publicityForm.attribute}}</div>
+            <div>{{ publicityForm.attribute }}</div>
           </el-form-item>
           <el-form-item label="是否加盖杭州分公司合同章">
-            <div>{{publicityForm.hasSeal}}</div>
+            <div>{{ publicityForm.hasSeal }}</div>
           </el-form-item>
           <el-form-item label="是否有编号">
-            <div>{{publicityForm.hasNum}}</div>
+            <div>{{ publicityForm.hasNum }}</div>
           </el-form-item>
           <el-form-item label="版面关联人">
-            <div>{{publicityForm.updateBy}}</div>
+            <div>{{ publicityForm.updateBy }}</div>
           </el-form-item>
           <el-form-item label="是否使用">
-            <div>{{publicityForm.state}}</div>
+            <div>{{ publicityForm.state }}</div>
           </el-form-item>
           <el-form-item label="编辑时间">
-            <div>{{publicityForm.updateTime}}</div>
+            <div>{{ publicityForm.updateTime }}</div>
           </el-form-item>
           <el-form-item label="备注">
-            <div>{{publicityForm.remark}}</div>
+            <div>{{ publicityForm.remark }}</div>
           </el-form-item>
           <el-form-item label="图片">
             <el-image style="width: 30%" :src="src"></el-image>
@@ -184,84 +185,83 @@
               />
             </el-form-item>
           </el-col>
-          <el-col :span="12" v-if="form.flag">
+          <el-col :span="12" v-if="form.mold">
             <el-form-item label="类别名称" prop="goodsName">
-              <el-input v-model="form.goodsName" placeholder="请输入类别名称"></el-input>
+              <el-input
+                v-model="form.goodsName"
+                placeholder="请输入类别名称"
+              ></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="12" v-if="!form.flag">
+          <el-col :span="12" v-if="!form.mold">
             <el-form-item label="物料名称" prop="goodsName">
               <el-input v-model="form.goodsName"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="是否为类别 " prop="flag">
-              <el-switch v-model="form.flag"></el-switch>
+            <el-form-item label="是否为类别 " prop="mold">
+              <el-switch v-model="form.mold"></el-switch>
             </el-form-item>
           </el-col>
-          
-          <el-col :span="12" v-if="!form.flag">
+
+          <el-col :span="12" v-if="!form.mold">
             <el-form-item label="类别代码" prop="goodsNum">
               <el-input v-model="form.goodsNum"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="12" v-if="!form.flag">
+          <el-col :span="12" v-if="!form.mold">
             <el-form-item label="物料审核人" prop="checker">
               <el-input v-model="form.checker"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="12" v-if="!form.flag">
+          <el-col :span="12" v-if="!form.mold">
             <el-form-item label="计量单位" prop="unit">
               <el-input v-model="form.unit"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="12" v-if="!form.flag">
+          <el-col :span="12" v-if="!form.mold">
             <el-form-item label="尺寸" prop="size">
               <el-input v-model="form.size"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="12" v-if="!form.flag">
+          <el-col :span="12" v-if="!form.mold">
             <el-form-item label="纸张" prop="paper">
               <el-input v-model="form.paper"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="12" v-if="!form.flag">
+          <el-col :span="12" v-if="!form.mold">
             <el-form-item label="联次" prop="attribute">
               <el-input v-model="form.attribute"></el-input>
             </el-form-item>
           </el-col>
 
-          <el-col :span="12" v-if="!form.flag">
-            <el-form-item label="是否有编号" >
+          <el-col :span="12" v-if="!form.mold">
+            <el-form-item label="是否有编号">
               <el-switch v-model="form.hasNum"></el-switch>
             </el-form-item>
           </el-col>
-          <el-col :span="12" v-if="!form.flag">
+          <el-col :span="12" v-if="!form.mold">
             <el-form-item label="版面关联人" prop="updateBy">
               <el-input v-model="form.updateBy"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="12" v-if="!form.flag">
-            <el-form-item label="是否使用" >
+          <el-col :span="12" v-if="!form.mold">
+            <el-form-item label="是否使用">
               <el-switch v-model="form.state"></el-switch>
               <el-input v-model="form.state"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="24" v-if="!form.flag">
-            <el-form-item
-              label="是否加盖杭州分公司合同章"
-              label-width="200px"
-              
-            >
+          <el-col :span="24" v-if="!form.mold">
+            <el-form-item label="是否加盖杭州分公司合同章" label-width="200px">
               <el-switch v-model="form.hasSeal"></el-switch>
             </el-form-item>
           </el-col>
-          <el-col :span="24" v-if="!form.flag">
+          <el-col :span="24" v-if="!form.mold">
             <el-form-item label="备注" prop="remark">
               <el-input type="textarea" v-model="form.remark"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="24" v-if="!form.flag">
+          <el-col :span="24" v-if="!form.mold">
             <el-form-item label="上传照片" prop="parentId">
               <el-upload
                 action="https://jsonplaceholder.typicode.com/posts/"
@@ -288,10 +288,14 @@
 </template>
 
 <script>
-import { addLibrary , putLibrary , getLibraryDetail , getLibraryTree} from "@/api/propaganda/material";
+import {
+  addLibrary,
+  putLibrary,
+  getLibraryDetail,
+  getLibraryTree,
+} from "@/api/propaganda/material";
 import { DeptList } from "@/api/system/dept";
 import Treeselect from "@riophae/vue-treeselect";
-
 
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 
@@ -300,8 +304,10 @@ export default {
   components: { Treeselect },
   data() {
     return {
-      settingForm:{},
-      publicityForm:{},
+      loading: false,
+      LibraryTree: [],
+      settingForm: {},
+      publicityForm: {},
       src:
         "https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg",
       title: "",
@@ -319,10 +325,10 @@ export default {
       SetVisible: false,
       Isdisable: true,
       form: {
-        flag: true,
-        state:true,
-        hasNum:true,
-        hasSeal:true
+        mold: true,
+        state: true,
+        hasNum: true,
+        hasSeal: true,
       },
       // 部门树选项
       deptOptions: undefined,
@@ -336,34 +342,30 @@ export default {
       open: false,
       // 表单校验
       rules: {
-        userName: [
-          { required: true, message: "登录账号不能为空", trigger: "blur" },
+        goodsName: [
+          { required: true, message: "类别名称不能为空", trigger: "blur" },
         ],
-        nickName: [
-          { required: true, message: "用户姓名不能为空", trigger: "blur" },
+        goodsNum: [
+          { required: true, message: "类别代码不能为空", trigger: "blur" },
         ],
         unitId: [
           { required: true, message: "归属单位不能为空", trigger: "blur" },
         ],
-        defaultUnitId: [
-          { required: true, message: "默认数据单位不能为空", trigger: "blur" },
+        checker: [
+          { required: true, message: "物料审核人不能为空", trigger: "blur" },
         ],
-        jobNum: [{ required: true, message: "工号不能为空", trigger: "blur" }],
-        email: [
-          { required: true, message: "邮箱地址不能为空", trigger: "blur" },
-          {
-            type: "email",
-            message: "'请输入正确的邮箱地址",
-            trigger: ["blur", "change"],
-          },
+        unit: [
+          { required: true, message: "计量单位不能为空", trigger: "blur" },
         ],
-        phone: [
+        size: [{ required: true, message: "尺寸不能为空", trigger: "blur" }],
+        paper: [
+          { required: true, message: "纸张不能为空", trigger: "blur" },
+        ],
+        updateBy: [
+          { required: true, message: "版面关联人不能为空", trigger: "blur" },
+        ],
+        updateBy: [
           { required: true, message: "手机号码不能为空", trigger: "blur" },
-          {
-            pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/,
-            message: "请输入正确的手机号码",
-            trigger: "blur",
-          },
         ],
       },
     };
@@ -376,13 +378,16 @@ export default {
   },
   created() {
     this.getTreeselect();
-    this.getList()
+    this.getList();
   },
   methods: {
-    getList(){
-      getLibraryTree(this.queryParams).then(response => {
-        console.log('getLibraryTree',response);
-        this.LibraryTree = response.list;
+    submitSettingForm() {},
+    getList() {
+      this.loading = true;
+      getLibraryTree(this.queryParams).then((response) => {
+        this.loading = false;
+        console.log("getLibraryTree", response);
+        this.LibraryTree = response;
       });
     },
     // 筛选节点
@@ -398,7 +403,7 @@ export default {
     // 表单重置
     reset() {
       this.form = {
-         flag:true
+        mold: true,
       };
       this.resetForm("form");
     },
@@ -432,27 +437,27 @@ export default {
         this.form.pwd = "";
       });
     },
-    submitForm: function() {
-      this.$refs["form"].validate(valid => {
+    submitForm: function () {
+      this.$refs["form"].validate((valid) => {
         if (valid) {
           if (this.form.id != undefined) {
             putLibrary(this.form)
-              .then(response => {
+              .then((response) => {
                 this.msgSuccess("修改成功");
                 this.open = false;
                 this.getList();
               })
-              .catch(err => {
+              .catch((err) => {
                 this.msgError(err.message);
               });
           } else {
             addLibrary(this.form)
-              .then(response => {
+              .then((response) => {
                 this.msgSuccess("新增成功");
                 this.open = false;
                 this.getList();
               })
-              .catch(err => {
+              .catch((err) => {
                 this.msgError(err.message);
               });
           }
@@ -490,6 +495,6 @@ export default {
   margin-bottom: 20px;
 }
 .el-form-item {
-    height: 37px;
+  height: 37px;
 }
 </style>

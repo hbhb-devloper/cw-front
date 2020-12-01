@@ -20,20 +20,6 @@
           style="width: 200px"
         >
         </el-date-picker>
-        <el-select
-          v-model="queryParams.state"
-          placeholder="请选择归属部门"
-          clearable
-          size="small"
-          style="width: 200px"
-        >
-          <el-option
-            v-for="dict in statusOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
       </el-form-item>
       <el-form-item label="审批状态" prop="state">
         <el-select
@@ -51,25 +37,21 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="申请单名称" prop="printName">
-        <el-input
-          v-model="queryParams.printName"
-          placeholder="请输入申请单名称"
+      <el-form-item label="物料类型" prop="printName">
+         <el-select
+          v-model="queryParams.state"
+          placeholder="请选择物料类型"
           clearable
           size="small"
           style="width: 200px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="申请单号" prop="printNum">
-        <el-input
-          v-model="queryParams.printNum"
-          placeholder="请输入申请单号"
-          clearable
-          size="small"
-          style="width: 200px"
-          @keyup.enter.native="handleQuery"
-        />
+        >
+          <el-option
+            v-for="dict in statusOptions"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item>
         <el-button
