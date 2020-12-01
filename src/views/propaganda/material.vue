@@ -58,7 +58,7 @@
       <el-col :span="10" :xs="24">
         <div class="head-container">
           <el-tree
-            :data="deptOptions"
+            :data="LibraryTree"
             :props="defaultProps"
             :expand-on-click-node="false"
             :filter-node-method="filterNode"
@@ -71,55 +71,47 @@
       </el-col>
       <!--用户数据-->
       <el-col :span="14" :xs="24">
-        <el-form label-width="120px" width="500px" :model="form">
-          <el-form-item label="类别名称：">
-            <!-- <el-input
-              v-model="form.administrator"
-              :disabled="Isdisable"
-            ></el-input> -->
-            <div>移动电话虚拟网</div>
+        <el-form label-width="120px" width="500px" :model="publicityForm">
+          <el-form-item label="类别名称">
+            <div>{{publicityForm.goodsName}}</div>
           </el-form-item>
-          <el-form-item label="类别代码：">
-            <el-input v-model="form.phone" :disabled="Isdisable"></el-input>
+          <el-form-item label="类别代码">
+            <div>{{publicityForm.goodsNum}}</div>
           </el-form-item>
-          <el-form-item label="物料审核人：">
-            <el-input v-model="form.email" :disabled="Isdisable"></el-input>
+          <el-form-item label="物料审核人">
+            <div>{{publicityForm.checker}}</div>
           </el-form-item>
-          <el-form-item label="计量单位：">
-            <el-input v-model="form.email" :disabled="Isdisable"></el-input>
+          <el-form-item label="计量单位">
+            <div>{{publicityForm.unit}}</div>
           </el-form-item>
-          <el-form-item label="尺寸：">
-            <el-input v-model="form.email" :disabled="Isdisable"></el-input>
+          <el-form-item label="尺寸">
+            <div>{{publicityForm.size}}</div>
           </el-form-item>
-          <el-form-item label="纸张：">
-            <el-input v-model="form.email" :disabled="Isdisable"></el-input>
+          <el-form-item label="纸张">
+            <div>{{publicityForm.paper}}</div>
           </el-form-item>
-          <el-form-item label="联次：">
-            <el-input v-model="form.email" :disabled="Isdisable"></el-input>
+          <el-form-item label="联次">
+            <div>{{publicityForm.attribute}}</div>
           </el-form-item>
-          <el-form-item label="是否加盖杭州分公司合同章：">
-            <el-input v-model="form.email" :disabled="Isdisable"></el-input>
+          <el-form-item label="是否加盖杭州分公司合同章">
+            <div>{{publicityForm.hasSeal}}</div>
           </el-form-item>
-          <el-form-item label="是否有编号：">
-            <el-input v-model="form.email" :disabled="Isdisable"></el-input>
+          <el-form-item label="是否有编号">
+            <div>{{publicityForm.hasNum}}</div>
           </el-form-item>
-          <el-form-item label="版面关联人：">
-            <el-input v-model="form.email" :disabled="Isdisable"></el-input>
+          <el-form-item label="版面关联人">
+            <div>{{publicityForm.updateBy}}</div>
           </el-form-item>
-          <el-form-item label="是否使用：">
-            <el-input v-model="form.email" :disabled="Isdisable"></el-input>
+          <el-form-item label="是否使用">
+            <div>{{publicityForm.state}}</div>
           </el-form-item>
-          <el-form-item label="编辑时间：">
-            <el-input v-model="form.email" :disabled="Isdisable"></el-input>
+          <el-form-item label="编辑时间">
+            <div>{{publicityForm.updateTime}}</div>
           </el-form-item>
-          <el-form-item label="备注：">
-            <el-input
-              type="textarea"
-              v-model="form.desc"
-              :disabled="Isdisable"
-            ></el-input>
+          <el-form-item label="备注">
+            <div>{{publicityForm.remark}}</div>
           </el-form-item>
-          <el-form-item label="图片：">
+          <el-form-item label="图片">
             <el-image style="width: 30%" :src="src"></el-image>
             <el-image style="width: 30%" :src="src"></el-image>
             <el-image style="width: 30%" :src="src"></el-image>
@@ -133,16 +125,18 @@
       </el-col>
     </el-row>
     <el-dialog title="相关设定" :visible.sync="SetVisible" width="600px">
-      <el-form label-width="160px" :model="form">
+      <el-form label-width="160px" :model="settingForm">
         <el-form-item
           :label="item.title"
           v-for="(item, index) in applicationList"
           :key="index"
         >
           <el-date-picker
-            v-model="value1"
+            v-model="settingForm.deadline"
             type="datetime"
+            size="mini"
             placeholder="选择日期时间"
+            value-format="yyyy-MM-dd HH:mm:ss"
           >
           </el-date-picker>
           <el-button
@@ -157,13 +151,13 @@
       <el-button type="success" class="addline" @click="addLine"
         >添加行数</el-button
       >
-      <el-form label-width="160px" width="500px" :model="form">
+      <el-form label-width="160px" width="500px" :model="settingForm">
         <el-form-item label="添加页面提示内容">
-          <el-input type="textarea" v-model="form.desc"></el-input>
+          <el-input type="textarea" v-model="settingForm.contents"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitFileForm">确 定</el-button>
+        <el-button type="primary" @click="submitSettingForm">确 定</el-button>
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
@@ -173,96 +167,102 @@
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">
         <el-row>
           <el-col :span="24" v-if="form.parentId !== 0">
-            <el-form-item label="上级部门" prop="parentId">
+            <el-form-item label="分公司" prop="unitId">
               <treeselect
-                v-model="form.parentId"
+                v-model="form.unitId"
                 :options="deptOptions"
-                placeholder="选择上级部门"
+                placeholder="选择分公司"
               />
             </el-form-item>
           </el-col>
-          <el-col :span="12">
-            <el-form-item label="活动名称">
-              <el-input v-model="form.email"></el-input>
+          <el-col :span="24" v-if="form.parentId !== 0">
+            <el-form-item label="类别" prop="parentId">
+              <treeselect
+                v-model="form.parentId"
+                :options="LibraryTree"
+                placeholder="选择类别"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12" v-if="form.flag">
+            <el-form-item label="类别名称" prop="goodsName">
+              <el-input v-model="form.goodsName" placeholder="请输入类别名称"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12" v-if="!form.flag">
+            <el-form-item label="物料名称" prop="goodsName">
+              <el-input v-model="form.goodsName"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="是否为活动 ">
+            <el-form-item label="是否为类别 " prop="flag">
               <el-switch v-model="form.flag"></el-switch>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
-            <el-form-item label="类别名称：">
-              <el-input v-model="form.administrator"></el-input>
+          
+          <el-col :span="12" v-if="!form.flag">
+            <el-form-item label="类别代码" prop="goodsNum">
+              <el-input v-model="form.goodsNum"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
-            <el-form-item label="类别代码：">
-              <el-input v-model="form.phone"></el-input>
+          <el-col :span="12" v-if="!form.flag">
+            <el-form-item label="物料审核人" prop="checker">
+              <el-input v-model="form.checker"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
-            <el-form-item label="物料审核人：">
-              <el-input v-model="form.email"></el-input>
+          <el-col :span="12" v-if="!form.flag">
+            <el-form-item label="计量单位" prop="unit">
+              <el-input v-model="form.unit"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
-            <el-form-item label="计量单位：">
-              <el-input v-model="form.email"></el-input>
+          <el-col :span="12" v-if="!form.flag">
+            <el-form-item label="尺寸" prop="size">
+              <el-input v-model="form.size"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
-            <el-form-item label="尺寸：">
-              <el-input v-model="form.email"></el-input>
+          <el-col :span="12" v-if="!form.flag">
+            <el-form-item label="纸张" prop="paper">
+              <el-input v-model="form.paper"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
-            <el-form-item label="纸张：">
-              <el-input v-model="form.email"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="联次：">
-              <el-input v-model="form.email"></el-input>
+          <el-col :span="12" v-if="!form.flag">
+            <el-form-item label="联次" prop="attribute">
+              <el-input v-model="form.attribute"></el-input>
             </el-form-item>
           </el-col>
 
-          <el-col :span="12">
-            <el-form-item label="是否有编号：">
-              <el-input v-model="form.email"></el-input>
+          <el-col :span="12" v-if="!form.flag">
+            <el-form-item label="是否有编号" >
+              <el-switch v-model="form.hasNum"></el-switch>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
-            <el-form-item label="版面关联人：">
-              <el-input v-model="form.email"></el-input>
+          <el-col :span="12" v-if="!form.flag">
+            <el-form-item label="版面关联人" prop="updateBy">
+              <el-input v-model="form.updateBy"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
-            <el-form-item label="是否使用：">
-              <el-input v-model="form.email"></el-input>
+          <el-col :span="12" v-if="!form.flag">
+            <el-form-item label="是否使用" >
+              <el-switch v-model="form.state"></el-switch>
+              <el-input v-model="form.state"></el-input>
             </el-form-item>
           </el-col>
-
-          <el-col :span="12">
-            <el-form-item label="编辑时间：">
-              <el-input v-model="form.email"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="24">
+          <el-col :span="24" v-if="!form.flag">
             <el-form-item
-              label="是否加盖杭州分公司合同章："
+              label="是否加盖杭州分公司合同章"
               label-width="200px"
+              
             >
-              <el-input v-model="form.email"></el-input>
+              <el-switch v-model="form.hasSeal"></el-switch>
             </el-form-item>
           </el-col>
-          <el-col :span="24">
-            <el-form-item label="备注：">
-              <el-input type="textarea" v-model="form.desc"></el-input>
+          <el-col :span="24" v-if="!form.flag">
+            <el-form-item label="备注" prop="remark">
+              <el-input type="textarea" v-model="form.remark"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="24">
-            <el-form-item label="上传照片：">
+          <el-col :span="24" v-if="!form.flag">
+            <el-form-item label="上传照片" prop="parentId">
               <el-upload
                 action="https://jsonplaceholder.typicode.com/posts/"
                 list-type="picture-card"
@@ -288,8 +288,11 @@
 </template>
 
 <script>
+import { addLibrary , putLibrary , getLibraryDetail , getLibraryTree} from "@/api/propaganda/material";
 import { DeptList } from "@/api/system/dept";
 import Treeselect from "@riophae/vue-treeselect";
+
+
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 
 export default {
@@ -297,6 +300,8 @@ export default {
   components: { Treeselect },
   data() {
     return {
+      settingForm:{},
+      publicityForm:{},
       src:
         "https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg",
       title: "",
@@ -315,6 +320,9 @@ export default {
       Isdisable: true,
       form: {
         flag: true,
+        state:true,
+        hasNum:true,
+        hasSeal:true
       },
       // 部门树选项
       deptOptions: undefined,
@@ -368,8 +376,15 @@ export default {
   },
   created() {
     this.getTreeselect();
+    this.getList()
   },
   methods: {
+    getList(){
+      getLibraryTree(this.queryParams).then(response => {
+        console.log('getLibraryTree',response);
+        this.LibraryTree = response.list;
+      });
+    },
     // 筛选节点
     filterNode(value, data) {
       if (!value) return true;
@@ -383,19 +398,7 @@ export default {
     // 表单重置
     reset() {
       this.form = {
-        deptId: undefined,
-        parentId: undefined,
-        unitName: undefined,
-        address: undefined,
-        abbr: undefined,
-        email: undefined,
-        fax: undefined,
-        shortName: undefined,
-        unitFunc: undefined,
-        unitGrade: undefined,
-        unitHeader: undefined,
-        officePhone: undefined,
-        zipCode: undefined,
+         flag:true
       };
       this.resetForm("form");
     },
@@ -427,6 +430,33 @@ export default {
         this.open = true;
         this.title = "修改用户";
         this.form.pwd = "";
+      });
+    },
+    submitForm: function() {
+      this.$refs["form"].validate(valid => {
+        if (valid) {
+          if (this.form.id != undefined) {
+            putLibrary(this.form)
+              .then(response => {
+                this.msgSuccess("修改成功");
+                this.open = false;
+                this.getList();
+              })
+              .catch(err => {
+                this.msgError(err.message);
+              });
+          } else {
+            addLibrary(this.form)
+              .then(response => {
+                this.msgSuccess("新增成功");
+                this.open = false;
+                this.getList();
+              })
+              .catch(err => {
+                this.msgError(err.message);
+              });
+          }
+        }
       });
     },
     // 添加行

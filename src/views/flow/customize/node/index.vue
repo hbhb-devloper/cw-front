@@ -200,7 +200,6 @@ import {
   getFlowRoleUser,
   addFlowProp,
   putFlowProp,
-  addFlowPropNotice,
   getFlowPropNotice,
   getFlowPropNodeRole,
 } from "@/api/flow/vfd";
