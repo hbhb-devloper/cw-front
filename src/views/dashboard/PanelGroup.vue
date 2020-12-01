@@ -1,11 +1,14 @@
 <template>
   <el-row :gutter="40" class="panel-group">
-    <el-col style="flex: 1" class="card-panel-col" v-for="(item,index) in workList" :key="index">
+    <el-col
+      style="flex: 1"
+      class="card-panel-col"
+      v-for="(item, index) in workList"
+      :key="index"
+    >
       <div
         class="card-panel"
-        @click="
-          handleSetLineChartData(item.module, item.moduleName)
-        "
+        @click="handleSetLineChartData(item.module, item.moduleName)"
       >
         <div class="card-panel-icon-wrapper icon-people">
           <svg-icon icon-class="peoples" class-name="card-panel-icon" />
@@ -97,7 +100,9 @@ export default {
     workList: {
       deep: true,
       handler(val) {
-        this.workList = val;
+        this.$next(() => {
+          this.workList = val;
+        });
       },
     },
   },
