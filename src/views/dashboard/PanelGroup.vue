@@ -1,27 +1,30 @@
 <template>
   <el-row :gutter="40" class="panel-group">
-    <el-col style="flex: 1" class="card-panel-col">
+    <el-col
+      style="flex: 1"
+      class="card-panel-col"
+      v-for="(item, index) in workList"
+      :key="index"
+    >
       <div
         class="card-panel"
-        @click="
-          handleSetLineChartData(workList[0].module, workList[0].moduleName)
-        "
+        @click="handleSetLineChartData(item.module, item.moduleName)"
       >
         <div class="card-panel-icon-wrapper icon-people">
           <svg-icon icon-class="peoples" class-name="card-panel-icon" />
         </div>
         <div class="card-panel-description">
-          <div class="card-panel-text">{{ workList[0].moduleName }}</div>
+          <div class="card-panel-text">{{ item.moduleName }}</div>
           <count-to
             :start-val="0"
-            :end-val="workList[0].count"
+            :end-val="item.count"
             :duration="2600"
             class="card-panel-num"
           />
         </div>
       </div>
     </el-col>
-    <el-col style="flex: 1" class="card-panel-col">
+    <!-- <el-col style="flex: 1" class="card-panel-col">
       <div
         class="card-panel"
         @click="
@@ -41,7 +44,7 @@
           />
         </div>
       </div>
-    </el-col>
+    </el-col> -->
     <!-- <el-col style="flex: 1" class="card-panel-col">
       <div class="card-panel" @click="handleSetLineChartData(workList[2].module, workList[2].moduleName)">
         <div class="card-panel-icon-wrapper icon-money">
@@ -97,7 +100,9 @@ export default {
     workList: {
       deep: true,
       handler(val) {
-        this.workList = val;
+        // this.$next(() => {
+          this.workList = val;
+        // });
       },
     },
   },

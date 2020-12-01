@@ -3,8 +3,8 @@
     <!--顶部搜索-->
     <section class="search-box">
       <el-row :span="24">
-        <el-form :inline="true" label-width="100px">
-          <el-form-item label="单位">
+        <el-form ref="queryForm" :model="obj" :inline="true" label-width="100px">
+          <el-form-item label="单位"  prop="unitId">
             <treeselect
               v-model="obj.unitId"
               :options="deptOptions"
@@ -39,7 +39,7 @@
             </el-date-picker>
           </el-form-item>
           <el-form-item> </el-form-item>
-          <el-form-item label="类型">
+          <el-form-item label="类型" prop="budgetType">
             <el-select
               v-model="obj.budgetType"
               filterable
@@ -56,7 +56,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="编号">
+          <el-form-item label="编号" prop="projectNum">
             <el-input
               placeholder="请输入关键词"
               v-model="obj.projectNum"
@@ -66,7 +66,7 @@
               style="width: 200px"
             />
           </el-form-item>
-          <el-form-item label="不含税金额">
+          <el-form-item label="不含税金额" prop="cost">
             <el-input
               placeholder="请输入关键词"
               v-model="obj.cost"
@@ -83,7 +83,7 @@
               type="primary"
               icon="el-icon-search"
               size="mini"
-              @click="handleGetList"
+              @click="handleQuery"
               >搜索</el-button
             >
             <el-button icon="el-icon-refresh" size="mini" @click="handleRest"
@@ -414,6 +414,7 @@ export default {
       info: {},
       dowFile: process.env.FILE_DOWNLOAD_PATH,
       infoDetail: undefined,
+      morenUnit:undefined
     };
   },
   created() {
@@ -454,6 +455,7 @@ export default {
     getUnitList() {
       getCompany().then((res) => {
         this.obj.unitId = res.checked[0];
+        this.morenUnit= res.checked[0];
         this.deptOptions = res.list;
       });
       //获取增值税下拉
@@ -473,17 +475,21 @@ export default {
         this.tableData = res.list;
       });
     },
-    //重置
-    handleRest() {
-      let times = new Date();
-      this.obj = {
-        unitId: this.obj.unitId,
-        pageSize: 20,
-        pageNum: 1,
-      };
-      this.radio = 3;
-      this.obj.date = times.getFullYear().toString();
+     /** 搜索按钮操作 */
+    handleQuery() {
+      this.obj.pageNum = 1;
+      this.handleGetList();
     },
+    /** 重置按钮操作 */
+    handleRest() {
+      this.resetForm("queryForm");
+      this.obj.unitId=this.morenUnit
+      let times = new Date();
+      this.obj.date = times.getFullYear().toString();
+      this.radio = 3;
+      this.handleQuery();
+    },
+    
     //新增
     handleAdd() {
       this.open = true;
