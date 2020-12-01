@@ -100,9 +100,9 @@ export default {
     workList: {
       deep: true,
       handler(val) {
-        this.$next(() => {
+        // this.$next(() => {
           this.workList = val;
-        });
+        // });
       },
     },
   },
