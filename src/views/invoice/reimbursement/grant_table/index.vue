@@ -16,18 +16,18 @@
           综合补贴模板下载
         </li>
         <li>
-          <el-upload
+          <!-- <el-upload
             class="upload-demo"
             :show-file-list="false"
             multiple
             action="#"
             :accept="'.xls,.xlsx'"
             :http-request="imageUpload"
-          >
+          > -->
             <el-button type="primary" @click="handleOpen(1)" round
               >综合补贴导入</el-button
             >
-          </el-upload>
+          <!-- </el-upload> -->
         </li>
       </ul>
       <ul>
@@ -35,18 +35,18 @@
           往来账模板下载
         </li>
         <li>
-          <el-upload
+          <!-- <el-upload
             class="upload-demo"
             :show-file-list="false"
             multiple
             action="#"
             :accept="'.xls,.xlsx'"
             :http-request="imageUpload"
-          >
+          > -->
             <el-button type="primary" @click="handleOpen(2)" round
               >往来账导入</el-button
             >
-          </el-upload>
+          <!-- </el-upload> -->
         </li>
       </ul>
     </section>
@@ -191,7 +191,7 @@
     <section>
       <el-dialog :title="title" :visible.sync="open1">
         <el-form :inline="true" label-width="80px">
-          <el-row :span="12">
+          <el-row :span="12" v-if="importType == 0">
             <el-form-item label="税率选择" required>
               <el-select v-model="tax" placeholder="请选择" style="width: 100%">
                 <el-option
@@ -219,7 +219,7 @@
             </el-form-item>
           </el-row>
         </el-form>
-        <el-table :data="tableData1" v-if="importType == 0">
+        <el-table :data="tableData1" >
           <el-table-column label="数据导入检查结果" prop="date" />
         </el-table>
         <el-button class="cancel" size="mini" @click="open1 = false"
@@ -255,7 +255,7 @@ export default {
         pageNum: 1,
         pageSize: 20,
       },
-      total: undefined,
+      total: 0,
       loading: false,
       ActionUrl: undefined,
       open1: false,
@@ -290,17 +290,24 @@ export default {
         this.ActionUrl =
           process.env.VUE_APP_BASE_API + "/invoice/remuneration/import/reward";
         this.title = "酬金发放表导入";
-        getTaxtype().then((res) => {
-          this.taxrate = res;
+        this.getDicts("invoice", "tax_type").then((response) => {
+          // getTaxtype().then((res) => {
+          this.taxrate = response;
           this.tableData1 = [];
           this.open1 = true;
         });
       } else if (type == 1) {
         this.ActionUrl =
           process.env.VUE_APP_BASE_API + "/invoice/remuneration/import/subsidy";
+        this.title = "综合补贴导入";
+        this.tableData1 = [];
+        this.open1 = true;
       } else if (type == 2) {
         this.ActionUrl =
           process.env.VUE_APP_BASE_API + "/invoice/remuneration/import/account";
+        this.title = "往来账导入";
+        this.tableData1 = [];
+        this.open1 = true;
       }
     },
     /** 搜索按钮操作 */
@@ -345,12 +352,12 @@ export default {
           loading.close();
           if (res.data.status == 1000) {
             this.$message.success("导入成功！");
-            if (this.importType == 0) {
+            // if (this.importType == 0) {
               this.tableData1 = [];
               for (let item in res.data.data) {
                 this.tableData1.push({ date: res.data.data[item] });
               }
-            }
+            // }
           } else {
             this.msgError(res.data.message);
           }

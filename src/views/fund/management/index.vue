@@ -960,7 +960,7 @@ export default {
     UploadFile(param) {
       const _file = param.file;
       let params = new FormData();
-      params.append("files", _file);
+      params.append("file", _file);
       axios({
         url: this.ActionUrl,
         method: "post",
@@ -970,15 +970,16 @@ export default {
           Authorization: getToken(),
         },
       }).then((res) => {
+        console.log('UploadFile',res);
         this.fileList.push({
-          fileId: res.data.data[0].id,
-          fileName: res.data.data[0].fileName,
-          fileSize: res.data.data[0].fileSize,
+          fileId: res.data.data.id,
+          fileName: res.data.data.fileName,
+          fileSize: res.data.data.fileSize,
         });
-        this.form.files.push({
-          fileId: res.data.data[0].id,
-          fileName: res.data.data[0].fileName,
-          fileSize: res.data.data[0].fileSize,
+        this.form.file.push({
+          fileId: res.data.data.id,
+          fileName: res.data.data.fileName,
+          fileSize: res.data.data.fileSize,
         });
         this.$message.success("附件上传成功！");
       });
@@ -1026,7 +1027,7 @@ export default {
         });
         this.invoiceDisabel = false;
         this.fileList = [];
-        this.form.files = [];
+        this.form.file = [];
       });
     },
     /** 修改按钮操作 */
@@ -1045,8 +1046,8 @@ export default {
           console.log("111");
         }
         console.log(response);
-        console.log("www", response.files);
-        response.files = [];
+        console.log("www", response.file);
+        response.file = [];
         this.form = response;
         this.open = true;
         this.title = "修改类型";
@@ -1065,7 +1066,7 @@ export default {
               return item;
             }
           });
-          this.form.files = this.form.files.filter((item) => {
+          this.form.file = this.form.file.filter((item) => {
             if (item.fileId != row.fileId) {
               return item;
             }
@@ -1142,7 +1143,7 @@ export default {
           this.msgSuccess("修改成功");
           this.open = false;
           this.getList();
-          this.form.files = [];
+          this.form.file = [];
           this.fileList = [];
         });
       } else {
@@ -1150,7 +1151,7 @@ export default {
           this.msgSuccess("新增成功");
           this.open = false;
           this.getList();
-          this.form.files = [];
+          this.form.file = [];
           this.fileList = [];
         });
       }

@@ -208,7 +208,7 @@
 </template>
 
 <script>
-import { getTaxtype, getList } from "@/api/invoice/grant_table/index";
+import { getList } from "@/api/invoice/grant_table/index";
 import { exportData } from "@/utils/export";
 import { getToken } from "@/utils/auth";
 import {resourceTreeByUN} from "@/api/system/unit";
