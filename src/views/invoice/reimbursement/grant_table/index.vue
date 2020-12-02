@@ -238,7 +238,6 @@ import {
   getList,
   DeleteSerialNumber,
 } from "@/api/invoice/grant_table/index";
-import { getCompany } from "@/api/budget/report/report";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 import { exportData } from "@/utils/export";
@@ -264,7 +263,6 @@ export default {
       taxrate: [],
       tax: undefined,
       importType: undefined,
-      unitList: [],
     };
   },
   mounted() {
@@ -281,9 +279,6 @@ export default {
       });
     },
     getListUnit() {
-      getCompany().then((res) => {
-        this.unitList = res.list;
-      });
       this.getDicts("invoice", "tax_type").then((response) => {
         this.typeOptions = response;
       });

@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-07-20 18:22:09
  * @LastEditors: CYZ
- * @LastEditTime: 2020-08-30 20:38:23
+ * @LastEditTime: 2020-12-02 13:58:24
 --> 
 <template>
   <div class="app-container">
@@ -215,7 +215,7 @@ import {
   getFlowPropNodeRole,
   delPropNotice,
 } from "@/api/flow/vfd";
-import { DeptList } from "@/api/system/dept";
+import { listUnit } from "@/api/system/unit";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 import { listFlowRole, listFlowRoles } from "@/api/flow/flowrole";
@@ -429,7 +429,7 @@ export default {
     },
     /** 查询部门下拉树结构 */
     getTreeselect() {
-      DeptList().then((response) => {
+      listUnit().then((response) => {
         this.deptOptions = response;
         let morendept = {
           id: 0,

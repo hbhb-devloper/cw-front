@@ -198,7 +198,8 @@
 </template>
 
 <script>
-import { getCompany, getList } from "@/api/invoice/check/index";
+import {  getList } from "@/api/invoice/check/index";
+import {resourceTreeByUN} from "@/api/system/unit";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 import { exportData } from "@/utils/export.js";
@@ -235,7 +236,7 @@ export default {
   },
   methods: {
     getUnitList() {
-      getCompany().then((res) => {
+      resourceTreeByUN().then((res) => {
         console.log(res);
         this.queryParams.unitId = res.checked[0];
         this.morenUnit=res.checked[0];

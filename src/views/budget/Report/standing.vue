@@ -339,7 +339,6 @@
 
 <script>
 import {
-  getCompany,
   getList,
   getProejctType,
   deleteData,
@@ -356,6 +355,7 @@ import { dateTimes } from "@/utils/date.js";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 import { mapGetters } from "vuex";
+import {resourceTreeByUN} from "@/api/system/unit";
 
 export default {
   name: "standing",
@@ -423,7 +423,7 @@ export default {
     //页面初始化加载
     handleLoad() {
       //获取单位树形
-      getCompany().then((res) => {
+      resourceTreeByUN().then((res) => {
         this.obj.unitId = res.checked[0];
         this.morenUnit=res.checked[0];
         this.deptOptions = res.list;

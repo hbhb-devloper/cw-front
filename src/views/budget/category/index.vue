@@ -146,7 +146,6 @@
 </template>
 
 <script>
-import { DeptList } from "@/api/system/dept";
 import { resourceTreeByUN } from "@/api/system/unit";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";

@@ -8,13 +8,7 @@
  */
 import request from '@/utils/request'
 
-//查询单位
-export function getCompany() {
-    return request({
-        url: '/unit/list',
-        method: 'get',
-    })
-}
+
 //查询列表
 export function getProgressList(query) {
     return request({
