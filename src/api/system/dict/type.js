@@ -1,10 +1,19 @@
 import request from '@/utils/request1'
 import {prefix} from '../system'
 
-// 查询字典类型列表
+// 查询字典类型列表（不分页）
 export function listType(query) {
   return request({
     url: `${prefix}/dict/type/list`,
+    method: 'get',
+    params: query
+  })
+}
+
+// 查询字典类型列表（分页）
+export function pageType(query) {
+  return request({
+    url: `${prefix}/dict/type/page`,
     method: 'get',
     params: query
   })
