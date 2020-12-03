@@ -2,7 +2,7 @@
   <div class="containers">
     <div class="top-control">
       <el-col :span="24">
-        <el-form ref="queryForm" :inline="true" label-width="100px">
+        <el-form ref="queryForm" :model="obj" :inline="true" label-width="100px">
           <el-form-item label="单位：">
             <treeselect
               v-model="obj.unitId"
@@ -34,7 +34,7 @@
             ></el-date-picker>
           </el-form-item>
           <el-form-item></el-form-item>
-          <el-form-item label="项目类型：">
+          <el-form-item label="项目类型：" prop="budgetId">
             <el-select
               v-model="obj.budgetId"
               filterable
@@ -60,7 +60,7 @@
               style="width: 200px; margin-left: -5px"
             />
           </el-form-item>
-          <el-form-item label="项目编号：" prop="userName">
+          <el-form-item label="项目编号：" prop="projectNum">
             <el-input
               placeholder="请输入关键词"
               v-model="obj.projectNum"
@@ -70,7 +70,7 @@
               style="width: 200px"
             />
           </el-form-item>
-          <el-form-item label="项目状态：">
+          <el-form-item label="项目状态：" prop="state">
             <el-select
               v-model="obj.state"
               placeholder="请选择"
@@ -297,7 +297,7 @@
           :total="total"
           :page.sync="obj.pageNum"
           :limit.sync="obj.pageSize"
-          @pagination="handleQuery"
+          @pagination="handleGetList"
         />
       </div>
     </div>
