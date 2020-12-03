@@ -376,6 +376,7 @@ import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 import { getToken } from "@/utils/auth";
 import { exportData, exportWord } from "@/utils/export.js";
+import { prefix } from "@/api/system/system";
 import axios from "axios";
 
 export default {
