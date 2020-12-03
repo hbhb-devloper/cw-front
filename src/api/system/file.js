@@ -21,7 +21,7 @@ export function getFileList(bizType) {
 // 查询文件列表
 export function delFileList(id) {
   return request1({
-      url: `${prefix}/file/delete/`+id,
+      url: `${prefix}/file/`+id,
       method: 'DELETE',
   })
 }
