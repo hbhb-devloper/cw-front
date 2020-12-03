@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-07-20 18:22:09
  * @LastEditors: CYZ
- * @LastEditTime: 2020-11-19 20:34:46
+ * @LastEditTime: 2020-12-02 16:39:18
 -->
 <template>
   <div class="dashboard-editor-container">
@@ -429,8 +429,6 @@ import { getToken } from "@/utils/auth";
 import {
   getNoticeList,
   updateNotice,
-  getFileList,
-  delFileList,
   getWorkList,
   getWorkDetailList,
   updateFund,
@@ -438,6 +436,8 @@ import {
 } from "@/api/workbench/workbench";
 import PanelGroup from "./dashboard/PanelGroup";
 
+import { prefix } from "@/api/system/system";
+import { getFileList , delFileList } from "@/api/system/file";
 export default {
   name: "Index",
   components: {
@@ -448,7 +448,7 @@ export default {
     return {
       module1: undefined,
       centerDialogVisible: false,
-      ActionUrl: process.env.VUE_APP_BASE_API + "/file/system", // 上传的图片服务器地址
+      ActionUrl:  process.env.VUE_APP_GATEWAY_API + `${prefix}/file/upload?bizType=10`, // 上传的图片服务器地址
       headers: {
         Authorization: getToken(),
       },
@@ -666,7 +666,7 @@ export default {
     // },
     getFileList() {
       this.loading2 = true;
-      getFileList().then((response) => {
+      getFileList(10).then((response) => {
         this.FiletableData = response;
         this.loading2 = false;
       });

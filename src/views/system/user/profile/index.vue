@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-07-20 18:22:09
  * @LastEditors: CYZ
- * @LastEditTime: 2020-08-17 16:35:05
+ * @LastEditTime: 2020-12-02 13:59:18
 -->
 <template>
   <div class="app-container">
@@ -70,7 +70,7 @@
               </el-col>
 
             </el-row>
-            <div class="button" style="padding-left:50px">
+            <div style="padding-left:50px">
                 <el-button type="danger" size="mini" @click="Isdisable =!Isdisable">编辑</el-button>
                 <el-button type="primary" size="mini" :disabled="Isdisable" @click="submit">保存</el-button>
               </div>
@@ -89,7 +89,7 @@ import userAvatar from "./userAvatar";
 import userInfo from "./userInfo";
 import resetPwd from "./resetPwd";
 import { getUserProfile , updateUserProfile} from "@/api/system/user";
-import { DeptList } from "@/api/system/dept";
+import { listUnit } from "@/api/system/unit";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 export default {
@@ -148,7 +148,7 @@ export default {
   methods: {
     /** 查询部门下拉树结构 */
     getTreeselect() {
-      DeptList().then((response) => {
+      listUnit().then((response) => {
         this.deptOptions = response;
       });
     },

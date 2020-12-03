@@ -208,10 +208,10 @@
 </template>
 
 <script>
-import { getTaxtype, getList } from "@/api/invoice/grant_table/index";
+import { getList } from "@/api/invoice/grant_table/index";
 import { exportData } from "@/utils/export";
 import { getToken } from "@/utils/auth";
-import { getCompany } from "@/api/budget/report/report";
+import {resourceTreeByUN} from "@/api/system/unit";
 
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
@@ -250,7 +250,7 @@ export default {
       });
     },
     getListUnit() {
-      getCompany().then((res) => {
+      resourceTreeByUN().then((res) => {
         this.queryParams.unitId = res.checked[0];
         this.unitList = res.list;
         this.getLists();

@@ -204,7 +204,6 @@ import {
   getFlowPropNotice,
   getFlowPropNodeRole,
 } from "@/api/flow/vfd";
-import { DeptList } from "@/api/system/dept";
 import { listNode , listflow} from "@/api/flow/node";
 import { listUnit } from "@/api/system/unit";
 import Treeselect from "@riophae/vue-treeselect";
@@ -288,7 +287,7 @@ export default {
       });
     },
     getTreeselect() {
-      DeptList().then((response) => {
+      listUnit().then((response) => {
         this.deptOptions = response;
         let morendept = {
           id: 0,

@@ -66,7 +66,7 @@ import Search from "@/components/HeaderSearch";
 import RuoYiGit from "@/components/RuoYi/Git";
 import RuoYiDoc from "@/components/RuoYi/Doc";
 import {getNotice} from "@/api/system/notice"
-import { getInfo } from "@/api/login.js";
+import { getInfo } from "@/api/system/user";
 import Stomp from "stompjs";
 
 export default {

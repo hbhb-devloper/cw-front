@@ -302,7 +302,6 @@ export default {
       this.getUpdateTimes(query);
       GetList(query)
         .then((res) => {
-          console.log(res);
           this.total = res.count;
           this.tableData = res.list;
           this.loading = false;
@@ -321,7 +320,9 @@ export default {
     resetQuery() {
       this.resetForm("queryForm");
       this.queryParams.unitId = this.morenUnit;
-      this.query={}
+      // this.query={}
+      this.queryParams.beginTime=undefined
+      this.queryParams.endTime=undefined
       this.handleQuery();
     },
     handleImport() {

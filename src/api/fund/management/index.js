@@ -103,10 +103,4 @@ export function updateInfo(data) {
     data
   })
 }
-//查询单位
-export function getCompany(){
-  return request({
-    url:'/unit/tree-select',
-    method:'get',
-  })
-}
+

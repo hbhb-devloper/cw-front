@@ -14,7 +14,7 @@
           <svg-icon icon-class="peoples" class-name="card-panel-icon" />
         </div>
         <div class="card-panel-description">
-          <div class="card-panel-text">{{ item.moduleName }}</div>
+          <div class="card-panel-text">{{ item.moduleName }}待办事项</div>
           <count-to
             :start-val="0"
             :end-val="item.count"
