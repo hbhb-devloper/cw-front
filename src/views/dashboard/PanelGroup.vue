@@ -11,7 +11,7 @@
           <svg-icon icon-class="peoples" class-name="card-panel-icon" />
         </div>
         <div class="card-panel-description">
-          <div class="card-panel-text">{{ workList[0].moduleName }}</div>
+          <div class="card-panel-text">{{ workList[0].moduleName }}待办事项</div>
           <count-to
             :start-val="0"
             :end-val="workList[0].count"
@@ -32,7 +32,7 @@
           <svg-icon icon-class="message" class-name="card-panel-icon" />
         </div>
         <div class="card-panel-description">
-          <div class="card-panel-text">{{ workList[1].moduleName }}</div>
+          <div class="card-panel-text">{{ workList[1].moduleName }}待办事项</div>
           <count-to
             :start-val="0"
             :end-val="workList[1].count"
