@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-11-27 19:00:38
  * @LastEditors: CYZ
- * @LastEditTime: 2020-12-02 16:53:12
+ * @LastEditTime: 2020-12-04 11:42:24
 -->
 <template>
   <div>
@@ -336,6 +336,7 @@ import axios from "axios";
 import ElFormItem from "@/components/customize/ElFormItem";
 
 import { mapGetters } from "vuex";
+import { prefix } from "@/api/system/system";
 
 export default {
   props: ["stutic"],
