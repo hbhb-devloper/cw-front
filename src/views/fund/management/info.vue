@@ -395,7 +395,7 @@ export default {
       this.programObj.operation = type;
       this.programObj.id = item.id;
       if (!this.disables) {
-        if (!this.form2.versions || !this.form2.invoiceNumber) {
+        if ((!this.form2.versions || !this.form2.invoiceNumber)&&type==1 ) {
           this.msgError("发票版本号或发票编号不能为空！");
           return;
         }
