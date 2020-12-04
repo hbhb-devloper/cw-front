@@ -314,7 +314,7 @@ export default {
     handleQuery() {
       this.queryParams.pageNum = 1;
       this.tableData = [];
-      this.getList();
+      this.getLists();
     },
     //充置搜索
     resetQuery() {

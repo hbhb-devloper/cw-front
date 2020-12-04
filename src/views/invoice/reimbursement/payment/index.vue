@@ -7,7 +7,7 @@
         :inline="true"
         label-width="110px"
       >
-        <el-form-item label="部门" prop="dptId">
+        <el-form-item label="部门" prop="unitId">
           <treeselect
             v-model="queryParams.unitId"
             style="width: 200px"
@@ -15,7 +15,7 @@
             placeholder="请选择部门"
           />
         </el-form-item>
-        <el-form-item label="报账流水" prop="noticeTitle">
+        <el-form-item label="报账流水" prop="serialNumber">
           <el-input
             v-model="queryParams.serialNumber"
             placeholder="请输入报账流水"
@@ -66,7 +66,7 @@
           >
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="税率" prop="noticeType">
+        <el-form-item label="税率" prop="taxRate">
           <el-select
             v-model="queryParams.taxRate"
             placeholder="请选择税率"
@@ -87,7 +87,7 @@
             type="primary"
             icon="el-icon-search"
             size="mini"
-            @click="getLists"
+            @click="handleQuery"
             >搜索</el-button
           >
           <el-button icon="el-icon-refresh" size="mini" @click="resetQuery"
@@ -230,6 +230,7 @@ export default {
       total: 1,
       unitList: [],
       typeOptions: [],
+      morenUnit:undefined,
     };
   },
   mounted() {
@@ -253,20 +254,33 @@ export default {
       resourceTreeByUN().then((res) => {
         this.queryParams.unitId = res.checked[0];
         this.unitList = res.list;
+        this.morenUnit=res.checked[0];
         this.getLists();
       });
       this.getDicts("invoice", "tax_type").then((response) => {
         this.typeOptions = response;
       });
     },
-    resetQuery() {
-      this.queryParams = {
-        unitId: this.queryParams.unitId,
-        pageNum: 1,
-        pageSize: 20,
-      };
+    /** 搜索按钮操作 */
+    handleQuery() {
+      this.queryParams.pageNum = 1;
+      // this.tableData = [];
       this.getLists();
     },
+    //充置搜索
+    resetQuery() {
+      this.resetForm("queryForm");
+      this.queryParams.unitId = this.morenUnit
+      this.handleQuery();
+    },
+    // resetQuery() {
+    //   this.queryParams = {
+    //     unitId: this.queryParams.unitId,
+    //     pageNum: 1,
+    //     pageSize: 20,
+    //   };
+    //   this.getLists();
+    // },
     handleExportExcel(type) {
       let url = undefined,
         fileName = undefined;
