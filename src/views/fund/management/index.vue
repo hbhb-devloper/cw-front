@@ -149,7 +149,7 @@
       <el-table-column
         label="发票开具部门"
         prop="invoiceUnit"
-        width="180"
+        width="100"
         align="center"
       >
         <template slot-scope="scope">
@@ -162,7 +162,7 @@
       <el-table-column
         label="客户经理"
         prop="clientManager"
-        width="180"
+        width="100"
         align="center"
       >
         <template slot-scope="scope">
@@ -338,7 +338,8 @@
         prop="stateLabel"
         align="center"
         label="流程状态"
-        width="130"
+        width="100"
+            fixed="right"
       >
         <template slot-scope="scope">
           <router-link
@@ -355,10 +356,11 @@
       </el-table-column>
 
       <el-table-column
-        width="130"
+        width="100"
         prop="itemName"
         align="center"
         label="发起流程"
+            fixed="right"
       >
         <template slot-scope="scope">
           <el-button
@@ -381,7 +383,8 @@
           </el-button>
         </template>
       </el-table-column>
-      <el-table-column prop="itemName" align="center" width="150" label="操作">
+           
+      <el-table-column prop="itemName" align="center" width="130" label="操作"  fixed="right">
         <template slot-scope="scope">
           <el-button
             :class="scope.row.isCancellation ? 'red' : ''"
@@ -406,7 +409,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="编辑到账" prop="invoiceCreateTime" align="center">
+      <el-table-column label="编辑到账" prop="invoiceCreateTime" align="center"  fixed="right">
         <template slot-scope="scope">
           <el-button
             :class="scope.row.isCancellation ? 'red' : ''"
@@ -419,7 +422,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="是否作废" prop="isCancellation" align="center">
+      <el-table-column label="是否作废" prop="isCancellation" align="center" fixed="right">
         <template slot-scope="scope">
           <el-switch
             v-model="scope.row.isCancellation"
@@ -1264,5 +1267,14 @@ export default {
 }
 .red {
   color: red !important;
+}
+.el-table {
+  position: relative;
+  background: #fff;
+  // padding: 30px 20px;
+}
+
+.el-table /deep/ .is-hidden {
+  display: table-cell !important;
 }
 </style>
