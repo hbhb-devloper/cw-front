@@ -339,7 +339,6 @@
 
 <script>
 import {
-  getCompany,
   getList,
   getProejctType,
   deleteData,
@@ -356,6 +355,7 @@ import { dateTimes } from "@/utils/date.js";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 import { mapGetters } from "vuex";
+import {resourceTreeByUN} from "@/api/system/unit";
 
 export default {
   name: "standing",
@@ -423,12 +423,23 @@ export default {
     //页面初始化加载
     handleLoad() {
       //获取单位树形
-      getCompany().then((res) => {
+      if (!this.obj.unitId) {
+        resourceTreeByUN().then((res) => {
         this.obj.unitId = res.checked[0];
         this.morenUnit=res.checked[0];
         this.deptOptions = res.list;
         this.handleGetList();
       });
+      }else{
+        resourceTreeByUN().then((res) => {
+        // this.obj.unitId = res.checked[0];
+        this.morenUnit=res.checked[0];
+        this.deptOptions = res.list;
+        this.handleGetList();
+      });
+
+      }
+      
       //获取状态下拉菜单
       this.getDicts("budget", "project_status").then((response) => {
         this.stateArr = response;
@@ -478,13 +489,14 @@ export default {
     /** 搜索按钮操作 */
     handleQuery() {
       this.obj.pageNum = 1;
+      console.log('this.obj', this.obj);
+      // this.$store.dispatch("SET_BUDGET_SELECT", this.obj);
       this.handleGetList();
     },
     /** 重置按钮操作 */
     handleRest() {
       this.resetForm("queryForm");
       this.obj.unitId=this.morenUnit
-      this.$store.dispatch("SET_BUDGET_SELECT", this.obj);
       this.handleQuery();
     },
 

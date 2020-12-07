@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-11-27 19:00:38
  * @LastEditors: CYZ
- * @LastEditTime: 2020-11-28 10:38:22
+ * @LastEditTime: 2020-12-04 11:42:24
 -->
 <template>
   <div>
@@ -319,7 +319,6 @@
 
 <script>
 import {
-  getCompany,
   getList,
   getProejctType,
   addData,
@@ -337,13 +336,14 @@ import axios from "axios";
 import ElFormItem from "@/components/customize/ElFormItem";
 
 import { mapGetters } from "vuex";
+import { prefix } from "@/api/system/system";
 
 export default {
   props: ["stutic"],
   data() {
     return {
       fileList: [], //上传文件
-      ActionUrl: process.env.VUE_APP_BASE_API + "/file/upload", // 上传的图片服务器地址
+      ActionUrl: process.env.VUE_APP_GATEWAY_API + `${prefix}/file/upload?bizType=20`, // 上传的图片服务器地址
       obj2: {
         //修改新增
         budgetId: undefined, //预算科目类型

@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-07-20 18:22:09
  * @LastEditors: CYZ
- * @LastEditTime: 2020-08-06 18:07:40
+ * @LastEditTime: 2020-12-02 11:46:50
 -->
 <template>
   <div class="containers">
@@ -42,7 +42,7 @@
           </el-form-item>
         </el-form>
 
-        <div class="button">
+        <div >
           <el-button type="danger" size="mini" @click="Isdisable =!Isdisable">编辑</el-button>
           <el-button type="primary" size="mini" :disabled="Isdisable" @click="submit">保存</el-button>
         </div>

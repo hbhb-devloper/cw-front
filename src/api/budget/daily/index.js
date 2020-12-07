@@ -1,12 +1,6 @@
 import request from '@/utils/request'
 
-//查询单位
-export function getCompany(){
-  return request({
-    url:'/unit/tree-select',
-    method:'get',
-  })
-}
+
 export function getDataList(params) {
   return request({
     url:'/budget/agile/list',

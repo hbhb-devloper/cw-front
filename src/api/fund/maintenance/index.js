@@ -9,7 +9,7 @@ export function getUnitList(params) {
   })
 }
 //单位修改
-export function UpdateUnit(data) {
+export function UpdateFund(data) {
   return request({
     url:'/fund/update',
     method:'put',
