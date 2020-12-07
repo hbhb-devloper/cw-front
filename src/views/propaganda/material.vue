@@ -7,20 +7,12 @@
       label-width="68px"
     >
       <el-form-item label="归属部门" prop="state">
-        <el-select
+        <treeselect
           v-model="queryParams.state"
+          :options="deptOptions"
           placeholder="请选择归属部门"
-          clearable
-          size="small"
           style="width: 240px"
-        >
-          <el-option
-            v-for="dict in statusOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
+        />
       </el-form-item>
     </el-form>
 
@@ -167,7 +159,7 @@
     <el-dialog :title="title" :visible.sync="open" width="800px">
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">
         <el-row>
-          <el-col :span="24" v-if="form.parentId !== 0">
+          <el-col :span="24">
             <el-form-item label="分公司" prop="unitId">
               <treeselect
                 v-model="form.unitId"
@@ -176,7 +168,7 @@
               />
             </el-form-item>
           </el-col>
-          <el-col :span="24" v-if="form.parentId !== 0">
+          <el-col :span="24">
             <el-form-item label="类别" prop="parentId">
               <treeselect
                 v-model="form.parentId"
@@ -185,7 +177,7 @@
               />
             </el-form-item>
           </el-col>
-          <el-col :span="12" v-if="form.mold">
+          <el-col :span="12" v-if="isMold == 1">
             <el-form-item label="类别名称" prop="goodsName">
               <el-input
                 v-model="form.goodsName"
@@ -193,76 +185,103 @@
               ></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="12" v-if="!form.mold">
+          <el-col :span="12" v-if="isMold != 1">
             <el-form-item label="物料名称" prop="goodsName">
-              <el-input v-model="form.goodsName"></el-input>
+              <el-input
+                v-model="form.goodsName"
+                placeholder="请输入物料名称"
+              ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="是否为类别 " prop="mold">
-              <el-switch v-model="form.mold"></el-switch>
+              <el-switch
+                v-model="form.mold"
+                @change="changeMold"
+              ></el-switch>
             </el-form-item>
           </el-col>
 
-          <el-col :span="12" v-if="!form.mold">
+          <el-col :span="12" v-if="isMold != 1">
             <el-form-item label="类别代码" prop="goodsNum">
-              <el-input v-model="form.goodsNum"></el-input>
+              <el-input
+                v-model="form.goodsNum"
+                placeholder="请输入类别代码"
+              ></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="12" v-if="!form.mold">
+          <el-col :span="12" v-if="isMold != 1">
             <el-form-item label="物料审核人" prop="checker">
-              <el-input v-model="form.checker"></el-input>
+              <el-input
+                v-model="form.checker"
+                placeholder="请输入物料审核人"
+              ></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="12" v-if="!form.mold">
+          <el-col :span="12" v-if="isMold != 1">
             <el-form-item label="计量单位" prop="unit">
-              <el-input v-model="form.unit"></el-input>
+              <el-input
+                v-model="form.unit"
+                placeholder="请输入计量单位"
+              ></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="12" v-if="!form.mold">
+          <el-col :span="12" v-if="isMold != 1">
             <el-form-item label="尺寸" prop="size">
-              <el-input v-model="form.size"></el-input>
+              <el-input v-model="form.size" placeholder="请输入尺寸"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="12" v-if="!form.mold">
+          <el-col :span="12" v-if="isMold != 1">
             <el-form-item label="纸张" prop="paper">
-              <el-input v-model="form.paper"></el-input>
+              <el-input
+                v-model="form.paper"
+                placeholder="请输入纸张"
+              ></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="12" v-if="!form.mold">
+          <el-col :span="12" v-if="isMold != 1">
             <el-form-item label="联次" prop="attribute">
-              <el-input v-model="form.attribute"></el-input>
+              <el-input
+                v-model="form.attribute"
+                placeholder="请输入联次"
+              ></el-input>
             </el-form-item>
           </el-col>
 
-          <el-col :span="12" v-if="!form.mold">
+          <el-col :span="12" v-if="isMold != 1">
             <el-form-item label="是否有编号">
               <el-switch v-model="form.hasNum"></el-switch>
             </el-form-item>
           </el-col>
-          <el-col :span="12" v-if="!form.mold">
+          <el-col :span="12" v-if="isMold != 1">
             <el-form-item label="版面关联人" prop="updateBy">
-              <el-input v-model="form.updateBy"></el-input>
+              <el-input
+                v-model="form.updateBy"
+                placeholder="请输入版面关联人"
+              ></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="12" v-if="!form.mold">
+          <el-col :span="12" v-if="isMold != 1">
             <el-form-item label="是否使用">
               <el-switch v-model="form.state"></el-switch>
-              <el-input v-model="form.state"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="24" v-if="!form.mold">
+          <el-col :span="24" v-if="isMold != 1">
             <el-form-item label="是否加盖杭州分公司合同章" label-width="200px">
               <el-switch v-model="form.hasSeal"></el-switch>
             </el-form-item>
           </el-col>
-          <el-col :span="24" v-if="!form.mold">
+          <el-col :span="24" v-if="isMold != 1">
             <el-form-item label="备注" prop="remark">
-              <el-input type="textarea" v-model="form.remark"></el-input>
+              <el-input
+                type="textarea"
+                v-model="form.remark"
+                placeholder="请输入备注"
+              ></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="24" v-if="!form.mold">
-            <el-form-item label="上传照片" prop="parentId">
+          <el-col :span="24" v-if="isMold != 1" style="height:150px">
+            <el-form-item label="上传照片">
               <el-upload
                 action="https://jsonplaceholder.typicode.com/posts/"
                 list-type="picture-card"
@@ -294,7 +313,7 @@ import {
   getLibraryDetail,
   getLibraryTree,
 } from "@/api/propaganda/material";
-import { DeptList } from "@/api/system/dept";
+import { resourceTreeByUN } from "@/api/system/unit";
 import Treeselect from "@riophae/vue-treeselect";
 
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
@@ -324,11 +343,12 @@ export default {
       //相关设定弹窗
       SetVisible: false,
       Isdisable: true,
+      isMold:1,
       form: {
         mold: true,
-        state: true,
-        hasNum: true,
-        hasSeal: true,
+        state: false,
+        hasNum: false,
+        hasSeal: false,
       },
       // 部门树选项
       deptOptions: undefined,
@@ -358,15 +378,13 @@ export default {
           { required: true, message: "计量单位不能为空", trigger: "blur" },
         ],
         size: [{ required: true, message: "尺寸不能为空", trigger: "blur" }],
-        paper: [
-          { required: true, message: "纸张不能为空", trigger: "blur" },
-        ],
+        paper: [{ required: true, message: "纸张不能为空", trigger: "blur" }],
         updateBy: [
           { required: true, message: "版面关联人不能为空", trigger: "blur" },
         ],
-        updateBy: [
-          { required: true, message: "手机号码不能为空", trigger: "blur" },
-        ],
+        // updateBy: [
+        //   { required: true, message: "手机号码不能为空", trigger: "blur" },
+        // ],
       },
     };
   },
@@ -381,6 +399,13 @@ export default {
     this.getList();
   },
   methods: {
+    changeMold(val) {
+      if (typeof (this.form.mold)!=undefined) {
+        this.$nextTick(() => {
+          this.isMold=val
+        });
+      }
+    },
     submitSettingForm() {},
     getList() {
       this.loading = true;
@@ -398,12 +423,24 @@ export default {
     // 节点单击事件
     handleNodeClick(data) {
       this.queryParams.unitId = data.id;
-      this.getList();
+      this.getListDetail(data);
+    },
+    getListDetail(data){
+      if (data.mold) {
+        this.$message.error('请点击活动')
+      }else{
+      getLibraryDetail(data.id).then(res=>{
+        console.log('res',res);
+        this.publicityForm=res
+      })}
     },
     // 表单重置
     reset() {
       this.form = {
         mold: true,
+        state: false,
+        hasNum: false,
+        hasSeal: false,
       };
       this.resetForm("form");
     },
@@ -421,24 +458,18 @@ export default {
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
-      this.getTreeselect();
+      // this.getTreeselect();
       const userId = row.id || this.ids;
 
       getUser(userId).then((response) => {
         this.form = response;
-        this.checkedRsRoleIds = this.form.checkedRsRoleIds;
-        this.checkedUnRoleIds = this.form.checkedUnRoleIds;
-        // this.postOptions = response.posts;
-        // this.roleOptions = response.roles;
-        // this.form.postIds = response.postIds;
-        // this.form.roleIds = response.roleIds;
         this.open = true;
-        this.title = "修改用户";
-        this.form.pwd = "";
+        this.title = "修改";
       });
     },
     submitForm: function () {
       this.$refs["form"].validate((valid) => {
+        console.log("valid", valid);
         if (valid) {
           if (this.form.id != undefined) {
             putLibrary(this.form)
@@ -466,7 +497,6 @@ export default {
     },
     // 添加行
     addLine() {
-      console.log("this.applicationList.length", this.applicationList.length);
       var list = {
         title: `第${this.applicationList.length + 1}次申请截止时间`,
       };
@@ -474,8 +504,8 @@ export default {
     },
     /** 查询部门下拉树结构 */
     getTreeselect() {
-      DeptList().then((response) => {
-        this.deptOptions = response;
+      resourceTreeByUN().then((response) => {
+        this.deptOptions = response.list;
       });
     },
     handleRemove(file, fileList) {

@@ -1,15 +1,13 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true">
-      <el-form-item label="单位" prop="roleName">
-        <el-input
-          v-model="queryParams.roleName"
-          placeholder="请输入单位"
-          clearable
-          size="small"
-          style="width: 200px"
-          @keyup.enter.native="handleQuery"
-        />
+      <el-form-item label="单位" prop="unitId">
+         <treeselect
+                v-model="queryParams.unitId"
+                :options="deptOptions"
+                placeholder="选择分公司"
+                style="width:200px"
+              />
       </el-form-item>
       <el-form-item label="营业厅" prop="roleName">
         <el-input
@@ -21,9 +19,9 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="日期" prop="roleName">
+      <el-form-item label="日期" prop="time">
         <el-date-picker
-          v-model="queryParams.value1"
+          v-model="queryParams.time"
           type="datetime"
           placeholder="选择日期时间"
           size="small"
@@ -31,7 +29,7 @@
         >
         </el-date-picker>
         <el-select
-          v-model="queryParams.state"
+          v-model="queryParams.goodsIndex"
           placeholder="请选择归属部门"
           clearable
           size="small"
@@ -90,16 +88,21 @@
     <el-dialog :visible.sync="dialogVisible">
       <img width="100%" :src="dialogImageUrl" alt="" />
     </el-dialog>
-    
   </div>
 </template>
 
 <script>
+import { goodsList } from "@/api/propaganda/flyer";
+import { resourceTreeByUN } from "@/api/system/unit";
+import Treeselect from "@riophae/vue-treeselect";
+
+import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 export default {
   name: "Role",
+  components: { Treeselect },
   data() {
     return {
-      dialogImageUrl:'',
+      dialogImageUrl: "",
       dialogVisible: false,
       input: 0,
       currentDate: new Date(),
@@ -108,7 +111,8 @@ export default {
         { dictValue: 1, dictLabel: "正常" },
         { dictValue: 2, dictLabel: "停用" },
       ],
-
+// 部门树选项
+      deptOptions: undefined,
       // 查询参数
       queryParams: {},
       // 表单参数
@@ -116,31 +120,36 @@ export default {
     };
   },
   created() {
-    // this.getList();
+    this.getTreeselect();
+
+    this.getList();
     // this.getMenuTreeselect();
   },
   methods: {
-    showPic(){
-this.dialogImageUrl = "https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png";
-        this.dialogVisible = true;
+     /** 查询部门下拉树结构 */
+    getTreeselect() {
+      resourceTreeByUN().then((response) => {
+        this.deptOptions = response.list;
+      });
+    },
+    showPic() {
+      this.dialogImageUrl =
+        "https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png";
+      this.dialogVisible = true;
     },
     /** 查询角色列表 */
     getList() {
-      this.loading = true;
-      pageRole(this.queryParams).then((response) => {
+      goodsList(this.queryParams).then((response) => {
         this.roleList = response.list;
         this.total = response.count;
-        this.loading = false;
       });
     },
     /** 搜索按钮操作 */
     handleQuery() {
-      this.queryParams.pageNum = 1;
       this.getList();
     },
     /** 重置按钮操作 */
     resetQuery() {
-      this.dateRange = [];
       this.resetForm("queryForm");
       this.handleQuery();
     },
