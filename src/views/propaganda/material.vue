@@ -6,9 +6,9 @@
       :inline="true"
       label-width="68px"
     >
-      <el-form-item label="归属部门" prop="state">
+      <el-form-item label="归属部门" prop="unitId">
         <treeselect
-          v-model="queryParams.state"
+          v-model="queryParams.unitId"
           :options="deptOptions"
           placeholder="请选择归属部门"
           style="width: 240px"
@@ -195,10 +195,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="是否为类别 " prop="mold">
-              <el-switch
-                v-model="form.mold"
-                @change="changeMold"
-              ></el-switch>
+              <el-switch v-model="form.mold" @change="changeMold"></el-switch>
             </el-form-item>
           </el-col>
 
@@ -280,7 +277,7 @@
               ></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="24" v-if="isMold != 1" style="height:150px">
+          <el-col :span="24" v-if="isMold != 1" style="height: 150px">
             <el-form-item label="上传照片">
               <el-upload
                 action="https://jsonplaceholder.typicode.com/posts/"
@@ -315,7 +312,6 @@ import {
 } from "@/api/propaganda/material";
 import { resourceTreeByUN } from "@/api/system/unit";
 import Treeselect from "@riophae/vue-treeselect";
-
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 
 export default {
@@ -343,7 +339,7 @@ export default {
       //相关设定弹窗
       SetVisible: false,
       Isdisable: true,
-      isMold:1,
+      isMold: 1,
       form: {
         mold: true,
         state: false,
@@ -400,9 +396,9 @@ export default {
   },
   methods: {
     changeMold(val) {
-      if (typeof (this.form.mold)!=undefined) {
+      if (typeof this.form.mold != undefined) {
         this.$nextTick(() => {
-          this.isMold=val
+          this.isMold = val;
         });
       }
     },
@@ -425,14 +421,15 @@ export default {
       this.queryParams.unitId = data.id;
       this.getListDetail(data);
     },
-    getListDetail(data){
+    getListDetail(data) {
       if (data.mold) {
-        this.$message.error('请点击活动')
-      }else{
-      getLibraryDetail(data.id).then(res=>{
-        console.log('res',res);
-        this.publicityForm=res
-      })}
+        this.$message.error("请点击活动");
+      } else {
+        getLibraryDetail(data.id).then((res) => {
+          console.log("res", res);
+          this.publicityForm = res;
+        });
+      }
     },
     // 表单重置
     reset() {

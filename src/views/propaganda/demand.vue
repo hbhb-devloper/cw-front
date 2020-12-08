@@ -1,29 +1,22 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true">
-      <el-form-item label="归属部门" prop="roleName">
-         <el-select
-          v-model="queryParams.state"
+      <el-form-item label="归属部门" prop="unitId">
+         <treeselect
+          v-model="queryParams.unitId"
+          :options="deptOptions"
           placeholder="请选择归属部门"
-          clearable
-          size="small"
-          style="width: 200px"
-        >
-          <el-option
-            v-for="dict in statusOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
+          style="width: 240px"
+        />
       </el-form-item>
-      <el-form-item label="日期" prop="roleName">
+      <el-form-item label="日期" prop="time">
         <el-date-picker
-          v-model="queryParams.value1"
+          v-model="queryParams.time"
           type="datetime"
           placeholder="选择日期时间"
           size="small"
           style="width: 200px"
+          value-format="yyyy-MM-dd HH:mm:ss"
         >
         </el-date-picker>
         <el-select
@@ -60,15 +53,15 @@
       <el-table-column
         align="center"
         label="物料名称"
-        prop="roleName"
+        prop="goodsName"
       />
-      <el-table-column align="center" label="计量单位" prop="roleName" />
-      <el-table-column align="center" label="申请数量" prop="roleName" />
-      <el-table-column align="center" label="尺寸" prop="roleName" />
-      <el-table-column align="center" label="联次" prop="roleName" />
-      <el-table-column align="center" label="纸张" prop="roleName" />
-      <el-table-column align="center" label="归属部门" prop="roleName" />
-      <el-table-column align="center" label="物料负责人" prop="roleName" />
+      <el-table-column align="center" label="计量单位" prop="unit" />
+      <el-table-column align="center" label="申请数量" prop="modifyAmount" />
+      <el-table-column align="center" label="尺寸" prop="size" />
+      <el-table-column align="center" label="联次" prop="attribute" />
+      <el-table-column align="center" label="纸张" prop="paper" />
+      <el-table-column align="center" label="归属部门" prop="unitName" />
+      <el-table-column align="center" label="物料负责人" prop="checker" />
     </el-table>
 
     <pagination
@@ -85,10 +78,16 @@
 import { listUnit, UNroleMenuTreeselect } from "@/api/system/unit";
 import { pageRole } from "@/api/system/role";
 import { resourceTree, roleMenuTreeselect } from "@/api/system/resource";
+import { resourceTreeByUN } from "@/api/system/unit";
+import Treeselect from "@riophae/vue-treeselect";
+import "@riophae/vue-treeselect/dist/vue-treeselect.css";
+
 export default {
   name: "Role",
   data() {
     return {
+      // 部门树选项
+      deptOptions: undefined,
       // 遮罩层
       loading: true,
       // 总条数
@@ -115,6 +114,12 @@ export default {
     this.getMenuTreeselect();
   },
   methods: {
+     /** 查询部门下拉树结构 */
+    getTreeselect() {
+      resourceTreeByUN().then((response) => {
+        this.deptOptions = response.list;
+      });
+    },
     /** 查询角色列表 */
     getList() {
       this.loading = true;

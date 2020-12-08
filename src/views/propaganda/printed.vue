@@ -2,13 +2,19 @@
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true">
       <el-form-item label="单位" prop="unitId">
-        <el-input
+        <!-- <el-input
           v-model="queryParams.unitId"
           placeholder="请输入单位"
           clearable
           size="small"
           style="width: 200px"
           @keyup.enter.native="handleQuery"
+        /> -->
+        <treeselect
+          v-model="queryParams.unitId"
+          :options="deptOptions"
+          placeholder="请选择归属部门"
+          style="width: 240px"
         />
       </el-form-item>
       <el-form-item label="日期" prop="roleName">
@@ -38,7 +44,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="物料类型" prop="printName">
-         <el-select
+        <el-select
           v-model="queryParams.state"
           placeholder="请选择物料类型"
           clearable
@@ -184,7 +190,7 @@
               <el-select
                 v-model="queryParams.state"
                 placeholder="请选择材料类型"
-                style="width:100%"
+                style="width: 100%"
                 clearable
               >
                 <el-option
@@ -201,7 +207,7 @@
               <el-select
                 v-model="queryParams.state"
                 placeholder="请选择市场部审核员"
-                style="width:100%"
+                style="width: 100%"
                 clearable
               >
                 <el-option
@@ -232,13 +238,28 @@
           </el-col>
           <el-col :span="24">
             <el-form-item label="附件" prop="unitId">
-              <el-button
-                type="primary"
-                icon="el-icon-plus"
-                size="mini"
-                @click="handleAdd"
-                >添加附件</el-button
+              <el-upload
+                class="upload-demo"
+                :action="ActionUrl"
+                :file-list="fileList"
+                :on-preview="handlePreview"
+                :on-remove="handleRemove"
+                :before-remove="beforeRemove"
+                :limit="1"
+                :on-exceed="handleExceed"
+                :headers="headers"
+                :on-success="handleSuccess"
+                :on-progress="handleupload"
+                :on-error="handleFail"
               >
+                <el-button
+                  type="primary"
+                  icon="el-icon-plus"
+                  size="mini"
+                  @click="handleAdd"
+                  >添加附件</el-button
+                >
+              </el-upload>
               <el-table :data="tableData" style="width: 100%">
                 <el-table-column prop="date" label="标题" width="180">
                 </el-table-column>
@@ -264,22 +285,31 @@
             <el-form-item>
               <el-upload
                 class="upload-demo"
-                action="https://jsonplaceholder.typicode.com/posts/"
+                :action="ActionUrl1"
+                :file-list="fileList"
                 :on-preview="handlePreview"
                 :on-remove="handleRemove"
                 :before-remove="beforeRemove"
-                multiple
-                :limit="3"
+                :limit="1"
                 :on-exceed="handleExceed"
-                :file-list="fileList"
+                :headers="headers"
+                :on-success="handleSuccess"
+                :on-progress="handleupload"
+                :on-error="handleFail"
+                :data="importObj"
               >
                 <el-button size="small" type="primary">点击上传</el-button>
-                <el-button size="small" type="text">业务单式模板下载</el-button>
-                <el-button size="small" type="text">宣传单页模板下载</el-button>
+
                 <div slot="tip" class="el-upload__tip">
                   只能上传jpg/png文件，且不超过500kb
                 </div>
               </el-upload>
+              <el-button size="small" type="text" @click="publicitydown"
+                >业务单式模板下载</el-button
+              >
+              <el-button size="small" type="text" @click="businessdown"
+                >宣传单页模板下载</el-button
+              >
             </el-form-item>
           </el-col>
         </el-row>
@@ -293,10 +323,20 @@ import { listUnit, UNroleMenuTreeselect } from "@/api/system/unit";
 import { pageRole } from "@/api/system/role";
 import { listPrint } from "@/api/propaganda/printed";
 import { resourceTree, roleMenuTreeselect } from "@/api/system/resource";
+import { getToken } from "@/utils/auth";
+import { exportData1 } from "@/utils/export";
+import { prefix } from "@/api/propaganda/propaganda";
+import { resourceTreeByUN } from "@/api/system/unit";
+import Treeselect from "@riophae/vue-treeselect";
+import "@riophae/vue-treeselect/dist/vue-treeselect.css";
+
 export default {
   name: "Role",
+  components: { Treeselect },
   data() {
     return {
+      // 部门树选项
+      deptOptions: undefined,
       SetVisible: false,
       // 遮罩层
       loading: true,
@@ -312,18 +352,85 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        roleType: "UN",
-        roleName: undefined,
-        roleKey: undefined,
-        state: undefined,
+      },
+      ActionUrl: process.env.VUE_APP_GATEWAY_API + `${prefix}/print/upload`, // 上传的图片服务器地址
+      ActionUrl1: process.env.VUE_APP_GATEWAY_API + `${prefix}/print/import`, // 上传的图片服务器地址
+      fileList: [],
+      importObj: {},
+      headers: {
+        Authorization: getToken(),
       },
     };
   },
   created() {
     this.getList();
-    this.getMenuTreeselect();
+    this.getTreeselect();
   },
   methods: {
+    /** 查询部门下拉树结构 */
+    getTreeselect() {
+      resourceTreeByUN().then((response) => {
+        this.deptOptions = response.list;
+      });
+    },
+    // 文件上传模块
+    handleupload() {
+      const loading = this.$loading({
+        lock: true,
+        text: "正在导入表格",
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.7)",
+      });
+      this.loadingoption = loading;
+      // this.importObj.printId=
+    },
+    handleFail() {
+      this.loadingoption.close();
+      this.$message.error("上传失败");
+    },
+    handleRemove(file, fileList) {},
+    handlePreview(file) {},
+    handleExceed(files, fileList) {
+      this.$message.warning(
+        `当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${
+          files.length + fileList.length
+        } 个文件`
+      );
+    },
+    handleSuccess(res) {
+      this.fileList = [];
+      this.loadingoption.close();
+      this.centerDialogVisible = false;
+      if (res.code == "00000") {
+        this.$message.success("导入成功");
+        this.getList();
+      } else {
+        this.$message({
+          message: res.message,
+          type: "error",
+        });
+        this.getList();
+      }
+    },
+    beforeRemove(file, fileList) {
+      return this.$confirm(`确定移除 ${file.name}？`);
+    },
+    publicitydown() {
+      exportData1(
+        getToken(),
+        "",
+        `${prefix}/print/export/publicity`,
+        "宣传单页模板"
+      );
+    },
+    businessdown() {
+      exportData1(
+        getToken(),
+        "",
+        `${prefix}/print/export/business`,
+        "业务单式模板"
+      );
+    },
     handleAdd() {
       this.SetVisible = true;
     },
@@ -334,12 +441,6 @@ export default {
         this.printList = response.list;
         this.total = response.count;
         this.loading = false;
-      });
-    },
-    /** 查询菜单树结构 */
-    getMenuTreeselect() {
-      listUnit().then((response) => {
-        this.menuOptions = response;
       });
     },
     /** 搜索按钮操作 */
