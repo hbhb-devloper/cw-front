@@ -299,7 +299,6 @@ export default {
   },
   created() {
     this.getUnitId();
-    this.getList();
     this.handleGetBusiness();
     this.getFlowStates();
   },
@@ -310,6 +309,7 @@ export default {
         this.queryParams.dptId = res.checked[0];
         this.morenUnit = res.checked[0];
         this.deptOptions = res.list;
+        this.getList();
       });
     },
     //表格数据列表
@@ -332,7 +332,6 @@ export default {
     },
     handleGetBusiness() {
       this.getDicts("fund", "business_type").then((response) => {
-
         this.busTypeOptions = response;
       });
     },
