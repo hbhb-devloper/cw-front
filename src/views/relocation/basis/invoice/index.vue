@@ -104,7 +104,12 @@
         width="150"
         align="center"
       />
-      <el-table-column label="经办单位" prop="unit" width="150" align="center" />
+      <el-table-column
+        label="经办单位"
+        prop="unit"
+        width="150"
+        align="center"
+      />
       <el-table-column
         label="迁改收款责任人"
         prop="applicant"
@@ -117,10 +122,12 @@
         width="150"
         align="center"
       />
-      <el-table-column label="合同编号"
-                       prop="contractNum"
-                       width="150"
-                       align="center" />
+      <el-table-column
+        label="合同编号"
+        prop="contractNum"
+        width="150"
+        align="center"
+      />
       <el-table-column
         label="合同名称"
         prop="contractName"
@@ -157,7 +164,12 @@
         width="170"
         align="center"
       />
-      <el-table-column label="发票类型" prop="invoiceType" width="150" align="center" />
+      <el-table-column
+        label="发票类型"
+        prop="invoiceType"
+        width="150"
+        align="center"
+      />
       <el-table-column label="价款" prop="amount" width="150" align="center" />
       <el-table-column
         label="税额"
@@ -213,12 +225,7 @@
         width="150"
         align="center"
       />
-      <el-table-column
-        label="备注"
-        prop="remake"
-        width="150"
-        align="center"
-      />
+      <el-table-column label="备注" prop="remake" width="150" align="center" />
       <el-table-column
         label="操作"
         align="center"
@@ -251,10 +258,7 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="类别" prop="category">
-              <el-input
-                v-model="form.category"
-                placeholder="请输入类别"
-              />
+              <el-input v-model="form.category" placeholder="请输入类别" />
             </el-form-item>
           </el-col>
           <!-- <el-col :span="12"></el-col> -->
@@ -277,10 +281,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="供应商" prop="supplier">
-              <el-input
-                v-model="form.supplier"
-                placeholder="请输入供应商"
-              />
+              <el-input v-model="form.supplier" placeholder="请输入供应商" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -293,7 +294,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="合同名称" prop="contractName">
-               <el-input
+              <el-input
                 v-model="form.contractName"
                 placeholder="选择合同名称"
               ></el-input>
@@ -353,7 +354,12 @@
                 clearable
                 style="width: 220px"
               >
-                <el-option v-for="(item,index) in invoiceTypeOption" :key="index" :label="item.label" :value="item.value" />
+                <el-option
+                  v-for="(item, index) in invoiceTypeOption"
+                  :key="index"
+                  :label="item.label"
+                  :value="item.value"
+                />
               </el-select>
             </el-form-item>
           </el-col>
@@ -361,7 +367,7 @@
             <el-form-item label="价款" prop="amount">
               <el-input
                 v-model="form.amount"
-                 type="number"
+                type="number"
                 placeholder="请输入价款"
               />
             </el-form-item>
@@ -370,7 +376,7 @@
             <el-form-item label="税额" prop="taxAmount">
               <el-input
                 v-model="form.taxAmount"
-                 type="number"
+                type="number"
                 placeholder="请输入税额"
               />
             </el-form-item>
@@ -378,29 +384,40 @@
 
           <el-col :span="12">
             <el-form-item label="价税合计" prop="taxIncludeAmount">
-              <el-input v-model="form.taxIncludeAmount" type="number" placeholder="请输入价税合计" />
+              <el-input
+                v-model="form.taxIncludeAmount"
+                type="number"
+                placeholder="请输入价税合计"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="工程名" prop="constructionName">
-              <el-input v-model="form.constructionName" placeholder="请输入工程名" />
+              <el-input
+                v-model="form.constructionName"
+                placeholder="请输入工程名"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="账龄分类" prop="amountType">
-              <el-input v-model="form.amountType"  placeholder="请输入账龄分类" />
+              <el-input
+                v-model="form.amountType"
+                placeholder="请输入账龄分类"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="账龄（月）" prop="aging">
-              <el-input v-model="form.aging" type="number" placeholder="请输入账龄" />
+              <el-input
+                v-model="form.aging"
+                type="number"
+                placeholder="请输入账龄"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item
-              label="收款情况"
-              prop="isReceived"
-            >
+            <el-form-item label="收款情况" prop="isReceived">
               <el-input
                 v-model="form.isReceived"
                 placeholder="请输入收款情况"
@@ -409,17 +426,29 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="应收" prop="receivable">
-              <el-input v-model="form.receivable"  type="number" placeholder="请输入应收" />
+              <el-input
+                v-model="form.receivable"
+                type="number"
+                placeholder="请输入应收"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="已收" prop="received">
-              <el-input v-model="form.received"  type="number" placeholder="请输入已收" />
+              <el-input
+                v-model="form.received"
+                type="number"
+                placeholder="请输入已收"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="未收" prop="unreceived">
-              <el-input v-model="form.unreceived" type="number" placeholder="请输入未收" />
+              <el-input
+                v-model="form.unreceived"
+                type="number"
+                placeholder="请输入未收"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -435,7 +464,7 @@
       </div>
     </el-dialog>
 
-    <el-dialog title="导入" :visible.sync="centerDialogVisible" width="500px">
+    <el-dialog title="导入" :visible.sync="centerDialogVisible" width="700px">
       <div style="margin-bottom: 10px">
         <el-button type="primary" @click="downTemplate">
           <i class="el-icon-download"></i>下载导入模板
@@ -458,6 +487,9 @@
       >
         <el-button size="small" type="primary">点击上传</el-button>
       </el-upload>
+      <el-table :data="codeMsgList">
+        <el-table-column label="错误信息" prop="codeMsg" />
+      </el-table>
     </el-dialog>
   </div>
 </template>
@@ -527,7 +559,11 @@ export default {
           { required: true, message: "经办单位不能为空", trigger: "blur" },
         ],
         applicant: [
-          { required: true, message: "迁改收款责任人不能为空", trigger: "blur" },
+          {
+            required: true,
+            message: "迁改收款责任人不能为空",
+            trigger: "blur",
+          },
         ],
         supplier: [
           { required: true, message: "供应商不能为空", trigger: "blur" },
@@ -550,11 +586,13 @@ export default {
         invoiceTime: [
           { required: true, message: "开票日期不能为空", trigger: "blur" },
         ],
-        invoiceNumber: [{ required: true, message: "发票号码不能为空", trigger: "blur" }],
-        invoiceType: [{ required: true, message: "发票类型不能为空", trigger: "blur" }],
-        amount: [
-          { required: true, message: "价款不能为空", trigger: "blur" },
+        invoiceNumber: [
+          { required: true, message: "发票号码不能为空", trigger: "blur" },
         ],
+        invoiceType: [
+          { required: true, message: "发票类型不能为空", trigger: "blur" },
+        ],
+        amount: [{ required: true, message: "价款不能为空", trigger: "blur" }],
         taxAmount: [
           { required: true, message: "税额不能为空", trigger: "blur" },
         ],
@@ -571,10 +609,18 @@ export default {
             trigger: "blur",
           },
         ],
-        isReceived: [{ required: true, message: "收款情况不能为空", trigger: "blur" }],
-        receivable: [{ required: true, message: "应收不能为空", trigger: "blur" }],
-        received: [{ required: true, message: "已收不能为空", trigger: "blur" }],
-        unreceived: [{ required: true, message: "未收不能为空", trigger: "blur" }],
+        isReceived: [
+          { required: true, message: "收款情况不能为空", trigger: "blur" },
+        ],
+        receivable: [
+          { required: true, message: "应收不能为空", trigger: "blur" },
+        ],
+        received: [
+          { required: true, message: "已收不能为空", trigger: "blur" },
+        ],
+        unreceived: [
+          { required: true, message: "未收不能为空", trigger: "blur" },
+        ],
       },
       // 状态数据字典
       statusOptions: [
@@ -589,7 +635,9 @@ export default {
       headers: {
         Authorization: getToken(),
       },
-      invoiceTypeOption:[]
+      invoiceTypeOption: [],
+      errorMessage: [],
+      codeMsgList: [],
     };
   },
   watch: {
@@ -648,6 +696,14 @@ export default {
       if (res.code == "00000") {
         this.$message.success("导入成功");
         this.getList();
+      } else if (res.code == "80898") {
+        res.message = res.message.substr(1, res.message.length - 2);
+        this.errorMessage = res.message.split(",");
+        for (let i in this.errorMessage) {
+          var j = {};
+          j.codeMsg = this.errorMessage[i];
+          this.codeMsgList.push(j);
+        }
       } else {
         this.$message({
           message: res.message,

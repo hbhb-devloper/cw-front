@@ -771,7 +771,7 @@
     <el-dialog
       title="项目信息导入"
       :visible.sync="centerDialogVisible"
-      width="500px"
+      width="700px"
     >
       <div style="margin-bottom: 10px">
         <el-button type="primary" @click="downTemplate">
@@ -796,6 +796,9 @@
       >
         <el-button size="small" type="primary">点击上传</el-button>
       </el-upload>
+      <el-table :data="codeMsgList">
+        <el-table-column label="错误信息" prop="codeMsg" />
+      </el-table>
     </el-dialog>
     <el-dialog title="合同导入" :visible.sync="ContractVisible" width="500px">
       <el-upload
@@ -818,7 +821,6 @@
     </el-dialog>
     <el-dialog title="查看合同" :visible.sync="fileDialog" width="500px">
       <el-button type="primary" @click="reviewFile"> 预览 </el-button>
-
       <el-button type="primary" @click="downFile">下载</el-button>
     </el-dialog>
   </div>
@@ -1009,6 +1011,8 @@ export default {
       fileItem: {},
       loadingoption: undefined,
       loadingCount: 0,
+      errorMessage: [],
+      codeMsgList: [],
     };
   },
   created() {
@@ -1109,7 +1113,7 @@ export default {
     handlePreview(file) {},
     handleExceed(files, fileList) {
       this.$message.warning(
-        `当前限制选择 10 个文件，本次选择了 ${files.length} 个文件，共选择了 ${
+        `当前限制选择 1 个文件，本次选择了 ${files.length} 个文件，共选择了 ${
           files.length + fileList.length
         } 个文件`
       );
@@ -1122,17 +1126,28 @@ export default {
         this.loadingoption.close();
         // this.loadingoption = undefined;
       }
-      this.centerDialogVisible = false;
-      this.ContractVisible = false;
+
       if (res.code == "00000") {
         this.$message.success("导入上传成功");
         this.getList();
+        this.centerDialogVisible = false;
+        this.ContractVisible = false;
+      } else if (res.code == "80898") {
+        res.message = res.message.substr(1, res.message.length - 2);
+        this.errorMessage = res.message.split(",");
+        for (let i in this.errorMessage) {
+          var j = {};
+          j.codeMsg = this.errorMessage[i];
+          this.codeMsgList.push(j);
+        }
       } else {
         this.$message({
           message: res.message,
           type: "error",
         });
         this.getList();
+        this.centerDialogVisible = false;
+        this.ContractVisible = false;
       }
     },
     beforeRemove(file, fileList) {

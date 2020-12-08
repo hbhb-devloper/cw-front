@@ -1,3 +1,11 @@
+<!--
+ * @Descripttion: 
+ * @version: 
+ * @Author: CYZ
+ * @Date: 2020-12-07 11:36:21
+ * @LastEditors: CYZ
+ * @LastEditTime: 2020-12-08 15:12:24
+-->
 <template>
   <div class="containers">
     <el-form
@@ -296,7 +304,7 @@ export default {
           this.queryParams.endTime = this.queryParams.itime[1];
         }
       }
-      console.log('this.queryParams',this.queryParams);
+      console.log("this.queryParams", this.queryParams);
       let query = this.deepClone(this.queryParams);
       query.itime = undefined;
       this.getUpdateTimes(query);
@@ -321,8 +329,8 @@ export default {
       this.resetForm("queryForm");
       this.queryParams.unitId = this.morenUnit;
       // this.query={}
-      this.queryParams.beginTime=undefined
-      this.queryParams.endTime=undefined
+      this.queryParams.beginTime = undefined;
+      this.queryParams.endTime = undefined;
       this.handleQuery();
     },
     handleImport() {

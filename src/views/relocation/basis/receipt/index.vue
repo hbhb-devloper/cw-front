@@ -169,7 +169,7 @@
         width="150"
         align="supplier"
       />
-      
+
       <el-table-column
         label="操作"
         align="center"
@@ -226,6 +226,9 @@
       >
         <el-button size="small" type="primary">点击上传</el-button>
       </el-upload>
+      <el-table :data="codeMsgList">
+        <el-table-column label="错误信息" prop="codeMsg" />
+      </el-table>
     </el-dialog>
     <!-- 添加或修改角色配置对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="1000px">
@@ -334,17 +337,13 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item
-              label="供应商信息"
-              prop="supplier"
-            >
+            <el-form-item label="供应商信息" prop="supplier">
               <el-input
                 v-model="form.supplier"
                 placeholder="请输入供应商信息"
               />
             </el-form-item>
           </el-col>
-          
         </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -446,6 +445,8 @@ export default {
       headers: {
         Authorization: getToken(),
       },
+      errorMessage: [],
+      codeMsgList: [],
     };
   },
   filters: {
@@ -499,6 +500,14 @@ export default {
       if (res.code == "00000") {
         this.$message.success("导入成功");
         this.getList();
+      } else if (res.code == "80898") {
+        res.message = res.message.substr(1, res.message.length - 2);
+        this.errorMessage = res.message.split(",");
+        for (let i in this.errorMessage) {
+          var j = {};
+          j.codeMsg = this.errorMessage[i];
+          this.codeMsgList.push(j);
+        }
       } else {
         this.$message({
           message: res.message,

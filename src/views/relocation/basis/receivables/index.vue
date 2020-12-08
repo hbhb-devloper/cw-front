@@ -278,6 +278,9 @@
       >
         <el-button size="small" type="primary">点击上传</el-button>
       </el-upload>
+      <el-table :data="codeMsgList">
+        <el-table-column label="错误信息" prop="codeMsg" />
+      </el-table>
     </el-dialog>
     <el-dialog :title="title" :visible.sync="open" width="600px">
       <el-table v-loading="loading1" :data="IncomeDetailList">
@@ -752,6 +755,8 @@ export default {
         Authorization: getToken(),
       },
       IncomeDetailList: [],
+      errorMessage: [],
+      codeMsgList: [],
     };
   },
   created() {
@@ -841,6 +846,14 @@ export default {
       if (res.code == "00000") {
         this.$message.success("导入成功");
         this.getList();
+      } else if (res.code == "80898") {
+        res.message = res.message.substr(1, res.message.length - 2);
+        this.errorMessage = res.message.split(",");
+        for (let i in this.errorMessage) {
+          var j = {};
+          j.codeMsg = this.errorMessage[i];
+          this.codeMsgList.push(j);
+        }
       } else {
         this.$message({
           message: res.message,
