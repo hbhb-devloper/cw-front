@@ -1,6 +1,7 @@
 import request1 from '@/utils/request1'
 import request from '@/utils/request'
 import {Encrypt} from '@/utils/AESCrypt'
+import {prefix} from './auth'
 
 const grant_type = 'password'
 const client_id = 'zhcw'
@@ -9,7 +10,7 @@ const client_secret = '123456'
 // 新-获取验证码
 export function getCodeImg() {
     return request1({
-        url: '/auth/captcha',
+        url: `${prefix}/captcha`,
         method: 'get'
     })
 }
@@ -29,7 +30,7 @@ export function check(data) {
         captchaKey:data.captchaKey
     }
   return request1({
-    url: '/auth/captcha/check',
+    url: `${prefix}/captcha/check`,
     method: 'get',
     params: info
   })
@@ -60,7 +61,7 @@ export function login(data) {
     userInfo.captcha  =undefined
     userInfo.captchaKey  =undefined
     return request1({
-        url: '/auth/oauth/token',
+        url: `${prefix}/oauth/token`,
         method: 'post',
         params: userInfo
     })
@@ -103,7 +104,7 @@ export function getInfo() {
 // 新-退出方法
 export function logout() {
     return request1({
-        url: '/auth/oauth/logout',
+        url: `${prefix}/oauth/logout`,
         method: 'DELETE'
     })
 }
