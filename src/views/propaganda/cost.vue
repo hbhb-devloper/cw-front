@@ -1,14 +1,12 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true">
-      <el-form-item label="单位" prop="roleName">
-        <el-input
-          v-model="queryParams.roleName"
-          placeholder="请输入单位"
-          clearable
-          size="small"
-          style="width: 200px"
-          @keyup.enter.native="handleQuery"
+      <el-form-item label="单位" prop="unitId">
+        <treeselect
+          v-model="queryParams.unitId"
+          :options="deptOptions"
+          placeholder="请选择归属部门"
+          style="width: 240px"
         />
       </el-form-item>
       <el-form-item label="日期" prop="roleName">
@@ -86,8 +84,12 @@
 import { listUnit, UNroleMenuTreeselect } from "@/api/system/unit";
 import { pageRole } from "@/api/system/role";
 import { resourceTree, roleMenuTreeselect } from "@/api/system/resource";
+import { resourceTreeByUN } from "@/api/system/unit";
+import Treeselect from "@riophae/vue-treeselect";
+import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 export default {
   name: "Role",
+  components: { Treeselect },
   data() {
     return {
       // 遮罩层
@@ -109,6 +111,7 @@ export default {
         roleKey: undefined,
         state: undefined,
       },
+      deptOptions:[]
     };
   },
   created() {
@@ -116,6 +119,12 @@ export default {
     this.getMenuTreeselect();
   },
   methods: {
+     /** 查询部门下拉树结构 */
+    getTreeselect() {
+      resourceTreeByUN().then((response) => {
+        this.deptOptions = response.list;
+      });
+    },
     /** 查询角色列表 */
     getList() {
       this.loading = true;
