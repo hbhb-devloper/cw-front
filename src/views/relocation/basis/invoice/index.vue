@@ -99,69 +99,32 @@
       </el-table-column>
       <!-- <el-table-column label="类型名称" prop="flowTypeName" width="150" align="center" /> -->
       <el-table-column
-        label="类别"
-        prop="category"
+        label="地区"
+        prop="district"
         width="150"
         align="center"
       />
+      <el-table-column label="县市" prop="unit" width="150" align="center" />
       <el-table-column
-        label="经办单位"
-        prop="unit"
-        width="150"
-        align="center"
-      />
-      <el-table-column
-        label="迁改收款责任人"
-        prop="applicant"
-        width="150"
-        align="center"
-      />
-      <el-table-column
-        label="供应商"
-        prop="supplier"
-        width="150"
-        align="center"
-      />
-      <el-table-column
-        label="合同编号"
-        prop="contractNum"
-        width="150"
-        align="center"
-      />
-      <el-table-column
-        label="合同名称"
-        prop="contractName"
-        width="150"
-        align="center"
-      />
-      <el-table-column
-        label="起始时间"
-        prop="startTime"
-        width="150"
-        align="center"
-      />
-      <el-table-column
-        label="合同截止时间"
-        prop="contractDeadline"
-        width="150"
-        align="center"
-      />
-      <el-table-column
-        label="合同金额"
-        prop="contractAmount"
-        width="150"
-        align="center"
-      />
-      <el-table-column
-        label="开票日期"
-        prop="invoiceTime"
+        label="发票代码"
+        prop="invoiceCode"
         width="150"
         align="center"
       />
       <el-table-column
         label="发票号码"
         prop="invoiceNumber"
-        width="170"
+        width="150"
+        align="center"
+      />
+      <!-- <el-table-column label="开票点"
+                       prop="invoiceSite"
+                       width="150"
+                       align="center" /> -->
+      <el-table-column
+        label="业务类型"
+        prop="businessType"
+        width="150"
         align="center"
       />
       <el-table-column
@@ -170,7 +133,32 @@
         width="150"
         align="center"
       />
-      <el-table-column label="价款" prop="amount" width="150" align="center" />
+      <el-table-column
+        label="购方税号"
+        prop="buyerTax"
+        width="150"
+        align="center"
+      />
+      <el-table-column
+        label="购方名称"
+        prop="buyerName"
+        width="150"
+        align="center"
+      />
+      <el-table-column
+        label="开票项目"
+        prop="invoiceProject"
+        width="150"
+        align="center"
+      />
+      <el-table-column
+        label="开票日期"
+        prop="invoiceTime"
+        width="170"
+        align="center"
+      />
+      <el-table-column label="金额" prop="amount" width="150" align="center" />
+      <el-table-column label="税率" prop="taxRate" width="150" align="center" />
       <el-table-column
         label="税额"
         prop="taxAmount"
@@ -184,48 +172,47 @@
         align="center"
       />
       <el-table-column
-        label="工程名"
-        prop="constructionName"
+        label="备注格式：合同号；区县；款项性质；项目信息"
+        prop="remake"
         width="350"
         align="center"
       />
       <el-table-column
-        label="账龄分类"
-        prop="amountType"
+        label="申请人"
+        prop="applicant"
         width="150"
         align="center"
       />
       <el-table-column
-        label="账龄（月）"
-        prop="aging"
+        label="开票人"
+        prop="issuer"
         width="150"
         align="center"
       />
       <el-table-column
-        label="收款情况"
-        prop="isReceived"
+        label="票据状态"
+        prop="state"
         width="150"
         align="center"
       />
       <el-table-column
-        label="应收"
-        prop="receivable"
+        label="是否为自定义菜单开票"
+        prop="isImport"
         width="150"
         align="center"
       />
       <el-table-column
-        label="已收"
-        prop="received"
+        label="客户经理"
+        prop="manager"
         width="150"
         align="center"
       />
       <el-table-column
-        label="未收"
-        prop="unreceived"
+        label="描述"
+        prop="describe"
         width="150"
         align="center"
       />
-      <el-table-column label="备注" prop="remake" width="150" align="center" />
       <el-table-column
         label="操作"
         align="center"
@@ -257,85 +244,30 @@
       <el-form ref="form" :model="form" :rules="rules" label-width="140px">
         <el-row>
           <el-col :span="12">
-            <el-form-item label="类别" prop="category">
-              <el-input v-model="form.category" placeholder="请输入类别" />
+            <el-form-item label="地区" prop="district">
+              <treeselect
+                v-model="form.district"
+                :options="deptOptions"
+                placeholder="请选择地区"
+              />
             </el-form-item>
           </el-col>
           <!-- <el-col :span="12"></el-col> -->
           <el-col :span="12">
-            <el-form-item label="经办单位" prop="unit">
+            <el-form-item label="县市" prop="unitId">
               <treeselect
-                v-model="form.unit"
+                v-model="form.unitId"
                 :options="deptOptions"
-                placeholder="请选择经办单位"
+                placeholder="请选择县市"
               />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="迁改收款责任人" prop="applicant">
+            <el-form-item label="发票代码" prop="invoiceCode">
               <el-input
-                v-model="form.applicant"
-                placeholder="请输入迁改收款责任人"
+                v-model="form.invoiceCode"
+                placeholder="请输入发票代码"
               />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="供应商" prop="supplier">
-              <el-input v-model="form.supplier" placeholder="请输入供应商" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="合同编号" prop="contractNum">
-              <el-input
-                v-model="form.contractNum"
-                placeholder="选择合同编号"
-              ></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="合同名称" prop="contractName">
-              <el-input
-                v-model="form.contractName"
-                placeholder="选择合同名称"
-              ></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="合同起始时间" prop="startTime">
-              <el-date-picker
-                v-model="form.startTime"
-                type="date"
-                placeholder="请输入合同起始时间"
-                value-format="yyyy-MM-dd HH:mm:ss"
-              ></el-date-picker>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="合同截止时间" prop="contractDeadline">
-              <el-date-picker
-                v-model="form.contractDeadline"
-                type="date"
-                placeholder="请输入开票日期"
-                value-format="yyyy-MM-dd HH:mm:ss"
-              ></el-date-picker>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="合同金额" prop="contractAmount">
-              <el-input
-                v-model="form.contractAmount"
-                placeholder="请输入合同金额"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="开票日期" prop="invoiceTime">
-              <el-date-picker
-                v-model="form.invoiceTime"
-                type="date"
-                placeholder="请输入开票日期"
-                value-format="yyyy-MM-dd HH:mm:ss"
-              ></el-date-picker>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -346,6 +278,19 @@
               />
             </el-form-item>
           </el-col>
+          <!-- <el-col :span="12">
+            <el-form-item label="开票点" prop="invoiceSite">
+              <el-date-picker v-model="form.invoiceSite" type="date" placeholder="选择开票点"></el-date-picker>
+            </el-form-item>
+          </el-col> -->
+          <el-col :span="12">
+            <el-form-item label="业务类型" prop="businessType">
+              <el-input
+                v-model="form.businessType"
+                placeholder="选择业务类型"
+              ></el-input>
+            </el-form-item>
+          </el-col>
           <el-col :span="12">
             <el-form-item label="发票类型" prop="invoiceType">
               <el-select
@@ -354,21 +299,54 @@
                 clearable
                 style="width: 220px"
               >
-                <el-option
-                  v-for="(item, index) in invoiceTypeOption"
-                  :key="index"
-                  :label="item.label"
-                  :value="item.value"
-                />
+                <el-option :key="0" label="增值税专用发票" :value="0" />
+                <el-option :key="1" label="增值税普通发票" :value="1" />
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="价款" prop="amount">
+            <el-form-item label="购方税号" prop="buyerTax">
+              <el-input v-model="form.buyerTax" placeholder="请输入购方税号" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="购方名称" prop="buyerName">
+              <el-input v-model="form.buyerName" placeholder="请输入购方名称" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="开票项目" prop="invoiceProject">
+              <el-input
+                v-model="form.invoiceProject"
+                placeholder="请输入开票项目"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="开票日期" prop="invoiceTime">
+              <el-date-picker
+                v-model="form.invoiceTime"
+                type="date"
+                placeholder="请输入开票日期"
+                value-format="yyyy-MM-dd"
+              ></el-date-picker>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="金额" prop="amount">
               <el-input
                 v-model="form.amount"
                 type="number"
-                placeholder="请输入价款"
+                placeholder="请输入金额"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="税率" prop="taxRate">
+              <el-input
+                v-model="form.taxRate"
+                type="number"
+                placeholder="请输入税率"
               />
             </el-form-item>
           </el-col>
@@ -376,84 +354,71 @@
             <el-form-item label="税额" prop="taxAmount">
               <el-input
                 v-model="form.taxAmount"
-                type="number"
+                disabled
                 placeholder="请输入税额"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="价税合计" prop="taxIncludeAmount">
+              <el-input
+                v-model="form.taxIncludeAmount"
+                disabled
+                placeholder="请输入价税合计"
               />
             </el-form-item>
           </el-col>
 
           <el-col :span="12">
-            <el-form-item label="价税合计" prop="taxIncludeAmount">
+            <el-form-item label="申请人" prop="applicant">
+              <el-input v-model="form.applicant" placeholder="请输入申请人" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="开票人" prop="issuer">
+              <el-input v-model="form.issuer" placeholder="请输入开票人" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="票据状态" prop="state">
+              <el-select
+                v-model="form.state"
+                placeholder="请选择票据状态"
+                clearable
+                style="width: 220px"
+              >
+                <el-option :key="1" label="蓝字" :value="1" />
+                <el-option :key="0" label="红字" :value="0" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="是否为自定义菜单开票" prop="isImport">
+              <el-select
+                v-model="form.isImport"
+                placeholder="请选择是否为自定义菜单开票"
+                clearable
+                style="width: 220px"
+              >
+                <el-option :key="1" label="是" :value="1" />
+                <el-option :key="0" label="否" :value="0" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item
+              label="备注格式：合同号；区县；款项性质；项目信息"
+              prop="remake"
+            >
               <el-input
-                v-model="form.taxIncludeAmount"
-                type="number"
-                placeholder="请输入价税合计"
+                v-model="form.remake"
+                placeholder="请输入备注格式：合同号；区县；款项性质；项目信息"
               />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="工程名" prop="constructionName">
-              <el-input
-                v-model="form.constructionName"
-                placeholder="请输入工程名"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="账龄分类" prop="amountType">
-              <el-input
-                v-model="form.amountType"
-                placeholder="请输入账龄分类"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="账龄（月）" prop="aging">
-              <el-input
-                v-model="form.aging"
-                type="number"
-                placeholder="请输入账龄"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="收款情况" prop="isReceived">
-              <el-input
-                v-model="form.isReceived"
-                placeholder="请输入收款情况"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="应收" prop="receivable">
-              <el-input
-                v-model="form.receivable"
-                type="number"
-                placeholder="请输入应收"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="已收" prop="received">
-              <el-input
-                v-model="form.received"
-                type="number"
-                placeholder="请输入已收"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="未收" prop="unreceived">
-              <el-input
-                v-model="form.unreceived"
-                type="number"
-                placeholder="请输入未收"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="备注" prop="remake">
-              <el-input v-model="form.remake" placeholder="请输入备注" />
+            <el-form-item label="描述" prop="describe">
+              <el-input v-model="form.describe" placeholder="请输入描述" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -552,39 +517,11 @@ export default {
       },
       // 表单校验
       rules: {
-        category: [
-          { required: true, message: "类别不能为空", trigger: "blur" },
+        flowTypeName: [
+          { required: true, message: "类型名称不能为空", trigger: "blur" },
         ],
-        unit: [
-          { required: true, message: "经办单位不能为空", trigger: "blur" },
-        ],
-        applicant: [
-          {
-            required: true,
-            message: "迁改收款责任人不能为空",
-            trigger: "blur",
-          },
-        ],
-        supplier: [
-          { required: true, message: "供应商不能为空", trigger: "blur" },
-        ],
-        contractNum: [
-          { required: true, message: "合同编号不能为空", trigger: "blur" },
-        ],
-        contractName: [
-          { required: true, message: "合同名称不能为空", trigger: "blur" },
-        ],
-        startTime: [
-          { required: true, message: "起始时间不能为空", trigger: "blur" },
-        ],
-        contractDeadline: [
-          { required: true, message: "合同截止时间不能为空", trigger: "blur" },
-        ],
-        contractAmount: [
-          { required: true, message: "合同金额不能为空", trigger: "blur" },
-        ],
-        invoiceTime: [
-          { required: true, message: "开票日期不能为空", trigger: "blur" },
+        invoiceCode: [
+          { required: true, message: "发票代码不能为空", trigger: "blur" },
         ],
         invoiceNumber: [
           { required: true, message: "发票号码不能为空", trigger: "blur" },
@@ -592,35 +529,43 @@ export default {
         invoiceType: [
           { required: true, message: "发票类型不能为空", trigger: "blur" },
         ],
-        amount: [{ required: true, message: "价款不能为空", trigger: "blur" }],
+        buyerTax: [
+          { required: true, message: "购方税号不能为空", trigger: "blur" },
+        ],
+        buyerName: [
+          { required: true, message: "购方名称不能为空", trigger: "blur" },
+        ],
+        invoiceProject: [
+          { required: true, message: "开票项目不能为空", trigger: "blur" },
+        ],
+        invoiceTime: [
+          { required: true, message: "开票日期不能为空", trigger: "blur" },
+        ],
+        amount: [{ required: true, message: "金额不能为空", trigger: "blur" }],
+        taxRate: [{ required: true, message: "税率不能为空", trigger: "blur" }],
         taxAmount: [
           { required: true, message: "税额不能为空", trigger: "blur" },
         ],
         taxIncludeAmount: [
           { required: true, message: "价税合计不能为空", trigger: "blur" },
         ],
-        amountType: [
-          { required: true, message: "账龄分类不能为空", trigger: "blur" },
+        applicant: [
+          { required: true, message: "申请人不能为空", trigger: "blur" },
         ],
-        aging: [
+        issuer: [
+          { required: true, message: "开票人不能为空", trigger: "blur" },
+        ],
+        state: [
+          { required: true, message: "票据状态不能为空", trigger: "blur" },
+        ],
+        isImport: [
           {
             required: true,
-            message: "账龄不能为空",
+            message: "是否为自定义菜单开票不能为空",
             trigger: "blur",
           },
         ],
-        isReceived: [
-          { required: true, message: "收款情况不能为空", trigger: "blur" },
-        ],
-        receivable: [
-          { required: true, message: "应收不能为空", trigger: "blur" },
-        ],
-        received: [
-          { required: true, message: "已收不能为空", trigger: "blur" },
-        ],
-        unreceived: [
-          { required: true, message: "未收不能为空", trigger: "blur" },
-        ],
+        remake: [{ required: true, message: "备注不能为空", trigger: "blur" }],
       },
       // 状态数据字典
       statusOptions: [
@@ -641,13 +586,13 @@ export default {
     };
   },
   watch: {
-    // form: {
-    //   handler: function (val) {
-    //     this.form.taxAmount = val.amount * val.taxRate;
-    //     this.form.taxIncludeAmount = Number(val.amount) + Number(val.taxAmount);
-    //   },
-    //   deep: true,
-    // },
+    form: {
+      handler: function (val) {
+        this.form.taxAmount = val.amount * val.taxRate;
+        this.form.taxIncludeAmount = Number(val.amount) + Number(val.taxAmount);
+      },
+      deep: true,
+    },
   },
   created() {
     // this.getList();
