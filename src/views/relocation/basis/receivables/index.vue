@@ -35,7 +35,7 @@
             v-model="queryParams.contractNum"
             placeholder="请输入合同编号"
             clearable
-            @keyup.enter.native="getList"
+            @keyup.enter.native="handleQuery"
           />
         </el-form-item>
         <el-form-item label="经办单位" prop="unitId">
@@ -51,12 +51,12 @@
             placeholder="请输入合同名称"
             clearable
             style="width: 240px"
-            @keyup.enter.native="getList"
+            @keyup.enter.native="handleQuery"
           />
         </el-form-item>
 
         <el-form-item>
-          <el-button type="primary" icon="el-icon-search" size="mini" @click="getList"
+          <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery"
             >搜索</el-button
           >
           <el-button icon="el-icon-refresh" size="mini" @click="resetQuery"
