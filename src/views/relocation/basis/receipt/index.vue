@@ -165,9 +165,9 @@
       />
       <el-table-column
         label="供应商信息"
-        prop="remake"
+        prop="supplier"
         width="150"
-        align="supplier"
+        align="center"
       />
 
       <el-table-column
@@ -204,11 +204,11 @@
     />
     <!-- 导入弹框 -->
     <el-dialog title="导入" :visible.sync="centerDialogVisible" width="500px">
-      <!-- <div style="margin-bottom: 10px">
+      <div style="margin-bottom: 10px">
         <el-button type="primary" @click="downTemplate">
           <i class="el-icon-download"></i>下载导入模板
         </el-button>
-      </div> -->
+      </div>
       <el-upload
         class="upload-demo"
         :headers="headers"
@@ -439,6 +439,7 @@ export default {
           { required: true, message: "开收据时间不能为空", trigger: "blur" },
         ],
         remake: [{ required: true, message: "备注不能为空", trigger: "blur" }],
+        supplier: [{ required: true, message: "供应商不能为空", trigger: "blur" }],
       },
       centerDialogVisible: false,
       ActionUrl: process.env.VUE_APP_GATEWAY_API + `${prefix}/receipt/import`, // 上传的图片服务器地址
@@ -463,6 +464,9 @@ export default {
     this.getTreeselect();
   },
   methods: {
+     downTemplate() {
+      exportData1(getToken(), "", `${prefix}/income/export/template`, "收据管理导入模板");
+    },
     getTreeselect() {
       let that = this;
       resourceTreeByUN().then((response) => {

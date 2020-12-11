@@ -226,7 +226,7 @@
       </el-table>
     </el-dialog>
     <!-- 添加收款对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="500px">
+    <el-dialog :title="title" :visible.sync="open1" width="500px">
       <el-form ref="form" :model="form" label-width="120px">
         <el-form-item label="本次收款金额" prop="amount">
           <el-input v-model="form.amount" placeholder="请输入" type="number" />
@@ -653,7 +653,7 @@ export default {
   },
   methods: {
     downTemplate() {
-      exportData1(getToken(), "", `${prefix}/receipt/export/template`, "收据管理导入模板");
+      exportData1(getToken(), "", `${prefix}/income/export/template`, "收款管理导入模板");
     },
     gotoInvoiceDetail(row) {
       console.log("row", row);
@@ -777,8 +777,8 @@ export default {
     cancel() {
       this.open = false;
       this.open1 = false;
-      this.receiptOpen = true;
-      this.invoiceOpen = true;
+      this.receiptOpen = false;
+      this.invoiceOpen = false;
       this.reset();
     },
     // 表单重置

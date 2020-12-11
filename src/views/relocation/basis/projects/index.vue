@@ -1084,7 +1084,7 @@ export default {
       });
     },
     handleupload() {
-      if (this.loadingCount === 0) {
+      // if (this.loadingCount === 0) {
         let loading = this.$loading({
           lock: true,
           text: "正在导入表格",
@@ -1092,22 +1092,22 @@ export default {
           background: "rgba(0, 0, 0, 0.7)",
         });
         this.loadingoption = loading;
-      }
-      this.loadingCount += 1;
-      console.log("handleuploadCount", this.loadingCount);
+      // }
+      // this.loadingCount += 1;
+      // console.log("handleuploadCount", this.loadingCount);
     },
     handleFail(err, file, fileList) {
-      console.log("handleFail", err);
-      console.log("handleFailloadingCount", this.loadingCount);
-      console.log("loadingoption", this.loadingoption);
-      if (this.loadingCount <= 0) {
-        return;
-      }
-      this.loadingCount -= 1;
-      if (this.loadingCount === 0) {
-        this.loadingoption.close();
-        this.$message.error("上传失败");
-      }
+      // console.log("handleFail", err);
+      // console.log("handleFailloadingCount", this.loadingCount);
+      // console.log("loadingoption", this.loadingoption);
+      // if (this.loadingCount <= 0) {
+      //   return;
+      // }
+      // this.loadingCount -= 1;
+      // if (this.loadingCount === 0) {
+      //   this.loadingoption.close();
+      //   this.$message.error("上传失败");
+      // }
     },
     handleRemove(file, fileList) {},
     handlePreview(file) {},
@@ -1121,11 +1121,12 @@ export default {
     handleSuccess(res, file, fileList) {
       // this.fileList = [];
 
-      this.loadingCount -= 1;
-      if (this.loadingCount === 0) {
+      // this.loadingCount -= 1;
+      // if (this.loadingCount === 0) {
+      //   this.loadingoption.close();
+      //   // this.loadingoption = undefined;
+      // }
         this.loadingoption.close();
-        // this.loadingoption = undefined;
-      }
 
       if (res.code == "00000") {
         this.$message.success("导入上传成功");
