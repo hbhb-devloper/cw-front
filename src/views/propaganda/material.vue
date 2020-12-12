@@ -72,7 +72,7 @@
             <div>{{ publicityForm.goodsNum }}</div>
           </el-form-item>
           <el-form-item label="物料审核人">
-            <div>{{ publicityForm.checker }}</div>
+            <div>{{ publicityForm.checkerName }}</div>
           </el-form-item>
           <el-form-item label="计量单位">
             <div>{{ publicityForm.unit }}</div>
@@ -93,7 +93,7 @@
             <div>{{ publicityForm.hasNum }}</div>
           </el-form-item>
           <el-form-item label="版面关联人">
-            <div>{{ publicityForm.updateBy }}</div>
+            <div>{{ publicityForm.updateName }}</div>
           </el-form-item>
           <el-form-item label="是否使用">
             <div>{{ publicityForm.state }}</div>

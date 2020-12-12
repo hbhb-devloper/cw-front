@@ -9,3 +9,20 @@ export function goodsList(query) {
         params: query
     })
 }
+
+// 通过时间得到第几月的第几次
+export function goodsTime(time) {
+    return request({
+        url: `${prefix}/goods/setting/time?time=${time}`,
+        method: 'get',
+    })
+}
+
+// 通过时间得到第几月的第几次
+export function goodsApply(data) {
+    return request({
+        url: `${prefix}/goods/apply`,
+        method: 'post',
+        data:data
+    })
+}
