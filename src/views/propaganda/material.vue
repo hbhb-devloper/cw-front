@@ -40,7 +40,7 @@
           type="warning"
           icon="el-icon-download"
           size="mini"
-          @click="SetVisible = true"
+          @click="OpenSetVisible"
           >相关设定</el-button
         >
       </el-col>
@@ -104,7 +104,7 @@
           <el-form-item label="备注">
             <div>{{ publicityForm.remark }}</div>
           </el-form-item>
-          <el-form-item label="图片">
+          <el-form-item label="图片" class="picItem">
             <el-image style="width: 30%" :src="src"></el-image>
             <el-image style="width: 30%" :src="src"></el-image>
             <el-image style="width: 30%" :src="src"></el-image>
@@ -120,23 +120,24 @@
     <el-dialog title="相关设定" :visible.sync="SetVisible" width="600px">
       <el-form label-width="160px" :model="settingForm">
         <el-form-item
-          :label="item.title"
+          :label="'第' + (index + 1) + '次申请截止时间'"
           v-for="(item, index) in applicationList"
           :key="index"
         >
           <el-date-picker
-            v-model="settingForm.deadline"
+            v-model="item.deadline"
             type="datetime"
             size="mini"
             placeholder="选择日期时间"
-            value-format="yyyy-MM-dd HH:mm:ss"
+            value-format="yyyy-MM-dd HH"
+            format="yyyy-MM-dd HH"
           >
           </el-date-picker>
           <el-button
             type="danger"
             icon="el-icon-delete"
             size="mini"
-            @click="DelLine(item.id)"
+            @click="DelLine(index)"
             >删除</el-button
           >
         </el-form-item>
@@ -198,7 +199,18 @@
               <el-switch v-model="form.mold" @change="changeMold"></el-switch>
             </el-form-item>
           </el-col>
-
+          <el-col :span="12" v-if="isMold != 1">
+            <el-form-item label="物料属性" prop="type">
+              <el-select
+                v-model="form.type"
+                placeholder="请选择物料属性"
+                style="width: 100%"
+              >
+                <el-option key="1" label="宣传单页" value="1"></el-option>
+                <el-option key="0" label="业务单式" value="0"> </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
           <el-col :span="12" v-if="isMold != 1">
             <el-form-item label="类别代码" prop="goodsNum">
               <el-input
@@ -212,6 +224,7 @@
               <el-input
                 v-model="form.checker"
                 placeholder="请输入物料审核人"
+                type="number"
               ></el-input>
             </el-form-item>
           </el-col>
@@ -309,6 +322,8 @@ import {
   putLibrary,
   getLibraryDetail,
   getLibraryTree,
+  addSetting,
+  getSetting,
 } from "@/api/propaganda/material";
 import { resourceTreeByUN } from "@/api/system/unit";
 import Treeselect from "@riophae/vue-treeselect";
@@ -395,6 +410,27 @@ export default {
     this.getList();
   },
   methods: {
+    // 删除行
+    DelLine(index) {
+      this.applicationList.splice(index, 1);
+    },
+    // 打开设置弹出框
+    OpenSetVisible() {
+      this.settingForm = {};
+      this.applicationList = [];
+      getSetting().then((res) => {
+        console.log("getSetting", res);
+        // this.settingForm = res;
+        this.settingForm.contents = res[0].contents;
+        res.map((item,index) => {
+          let deadObj={
+            deadline:item.deadline
+          }
+          this.applicationList.push(deadObj)
+        });
+        this.SetVisible = true;
+      });
+    },
     changeMold(val) {
       if (typeof this.form.mold != undefined) {
         this.$nextTick(() => {
@@ -402,7 +438,17 @@ export default {
         });
       }
     },
-    submitSettingForm() {},
+    submitSettingForm() {
+      this.settingForm.deadlineList = [];
+      this.applicationList.map((item) => {
+        this.settingForm.deadlineList.push(item.deadline);
+      });
+      addSetting(this.settingForm).then((res) => {
+        console.log("addSetting", res);
+        this.msgSuccess("添加 成功");
+        this.SetVisible = false;
+      });
+    },
     getList() {
       this.loading = true;
       getLibraryTree(this.queryParams).then((response) => {
@@ -418,7 +464,7 @@ export default {
     },
     // 节点单击事件
     handleNodeClick(data) {
-      this.queryParams.unitId = data.id;
+      // this.queryParams.unitId = data.id;
       this.getListDetail(data);
     },
     getListDetail(data) {
@@ -536,5 +582,10 @@ export default {
   margin-left: 0 !important;
   width: 240px;
 }
-
+.picItem {
+  align-items: flex-start !important;
+}
+.picItem /deep/ .el-form-item__content {
+  width: 440px !important;
+}
 </style>
