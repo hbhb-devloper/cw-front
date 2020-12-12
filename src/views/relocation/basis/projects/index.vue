@@ -1085,13 +1085,13 @@ export default {
     },
     handleupload() {
       // if (this.loadingCount === 0) {
-        let loading = this.$loading({
-          lock: true,
-          text: "正在导入表格",
-          spinner: "el-icon-loading",
-          background: "rgba(0, 0, 0, 0.7)",
-        });
-        this.loadingoption = loading;
+      let loading = this.$loading({
+        lock: true,
+        text: "正在导入表格",
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.7)",
+      });
+      this.loadingoption = loading;
       // }
       // this.loadingCount += 1;
       // console.log("handleuploadCount", this.loadingCount);
@@ -1126,7 +1126,7 @@ export default {
       //   this.loadingoption.close();
       //   // this.loadingoption = undefined;
       // }
-        this.loadingoption.close();
+      this.loadingoption.close();
 
       if (res.code == "00000") {
         this.$message.success("导入上传成功");
@@ -1246,16 +1246,17 @@ export default {
       this.inputAble = false;
       const typeId = row.id || this.ids;
       //   getRole(typeId).then(response => {
-      console.log(row);
-      this.compensationOptions.map((item) => {
-        if (item.label == row.compensationSate) {
-          row.compensationSate = item.value;
-        }
+      ProjectDetail(typeId).then((response) => {
+        // console.log(row);
+        // this.compensationOptions.map((item) => {
+        //   if (item.label == row.compensationSate) {
+        //     row.compensationSate = item.value;
+        //   }
+        // });
+        this.form = response;
+        this.open = true;
+        this.title = "修改迁改项目管理信息";
       });
-      this.form = row;
-      this.open = true;
-      this.title = "修改迁改项目管理信息";
-      //   });
     },
 
     /** 提交按钮 */

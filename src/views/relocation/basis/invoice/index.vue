@@ -608,7 +608,7 @@ export default {
       exportData1(
         getToken(),
         "",
-        `${prefix}/invoice/exportTemplate`,
+        `${prefix}/invoice/export/template`,
         "发票管理"
       );
     },
