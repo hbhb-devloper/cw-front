@@ -63,7 +63,7 @@
         </div>
       </el-col>
       <!--用户数据-->
-      <el-col :span="14" :xs="24">
+      <el-col :span="14" :xs="24" class="materialDetail">
         <el-form label-width="120px" width="500px" :model="publicityForm">
           <el-form-item label="类别名称">
             <div>{{ publicityForm.goodsName }}</div>
@@ -524,4 +524,17 @@ export default {
 .el-form-item {
   height: 37px;
 }
+.materialDetail .el-form-item--medium /deep/ .el-form-item__label {
+  line-height: 20px;
+  font-size: 12px;
+}
+.materialDetail .el-form-item {
+  display: flex;
+  align-items: center;
+}
+.materialDetail .el-form-item--medium /deep/ .el-form-item__content {
+  margin-left: 0 !important;
+  width: 240px;
+}
+
 </style>
