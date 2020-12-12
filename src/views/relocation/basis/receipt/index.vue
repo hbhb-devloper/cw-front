@@ -322,6 +322,7 @@
                 v-model="form.receiptTime"
                 type="date"
                 placeholder="请输入开收据时间"
+                value-format="yyyy-MM-dd"
               />
             </el-form-item>
           </el-col>
@@ -360,6 +361,7 @@ import {
   addReceipt,
   updateReceipt,
   delarr,
+  receiptByreceiptNum,
 } from "@/api/relocation/basis/receipt.js";
 import { getToken } from "@/utils/auth";
 import { exportData1 } from "@/utils/export";
@@ -371,6 +373,18 @@ export default {
   name: "Flowtype",
   components: { Treeselect },
   data() {
+    const validateReceiptNum = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error("收据编号不能为空"));
+      } else {
+        var reg = /^[A-Za-z0-9]{1,30}$/;
+        if (!reg.test(value)) {
+          callback(new Error("收据编号不能输入中文"));
+        }
+
+        callback();
+      }
+    };
     return {
       morenUnit: undefined,
       deptOptions: [],
@@ -423,7 +437,7 @@ export default {
           { required: true, message: "合同编号不能为空", trigger: "blur" },
         ],
         receiptNum: [
-          { required: true, message: "收据编号不能为空", trigger: "blur" },
+          { required: true, validator: validateReceiptNum, trigger: "blur" },
         ],
         paymentDesc: [
           {
@@ -439,7 +453,9 @@ export default {
           { required: true, message: "开收据时间不能为空", trigger: "blur" },
         ],
         remake: [{ required: true, message: "备注不能为空", trigger: "blur" }],
-        supplier: [{ required: true, message: "供应商不能为空", trigger: "blur" }],
+        supplier: [
+          { required: true, message: "供应商不能为空", trigger: "blur" },
+        ],
       },
       centerDialogVisible: false,
       ActionUrl: process.env.VUE_APP_GATEWAY_API + `${prefix}/receipt/import`, // 上传的图片服务器地址
@@ -464,8 +480,13 @@ export default {
     this.getTreeselect();
   },
   methods: {
-     downTemplate() {
-      exportData1(getToken(), "", `${prefix}/income/export/template`, "收据管理导入模板");
+    downTemplate() {
+      exportData1(
+        getToken(),
+        "",
+        `${prefix}/income/export/template`,
+        "收据管理导入模板"
+      );
     },
     getTreeselect() {
       let that = this;
@@ -594,37 +615,29 @@ export default {
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
-      const typeId = row.id || this.ids;
-      //   getRole(typeId).then(response => {
-      this.form = row;
-      this.open = true;
-      this.title = "修改类型";
-      //   });
+      const receiptNum = row.receiptNum;
+      receiptByreceiptNum(receiptNum).then((response) => {
+        this.form = response;
+        this.open = true;
+        this.title = "修改类型";
+      });
     },
     /** 提交按钮 */
     submitForm: function () {
       this.$refs["form"].validate((valid) => {
         if (valid) {
           if (this.form.id != undefined) {
-            updateReceipt(this.form)
-              .then((response) => {
-                this.msgSuccess("修改成功");
-                this.open = false;
-                this.getList();
-              })
-              .catch((err) => {
-                this.msgError(err.message);
-              });
+            updateReceipt(this.form).then((response) => {
+              this.msgSuccess("修改成功");
+              this.open = false;
+              this.getList();
+            });
           } else {
-            addReceipt(this.form)
-              .then((response) => {
-                this.msgSuccess("新增成功");
-                this.open = false;
-                this.getList();
-              })
-              .catch((err) => {
-                this.msgError(err.message);
-              });
+            addReceipt(this.form).then((response) => {
+              this.msgSuccess("新增成功");
+              this.open = false;
+              this.getList();
+            });
           }
         }
       });

@@ -478,6 +478,18 @@ export default {
   name: "Flowtype",
   components: { Treeselect },
   data() {
+      const validateInvoiceNumber = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error("发票编号不能为空"));
+      } else {
+        var reg = /^[A-Za-z0-9]{1,30}$/;
+        if (!reg.test(value)) {
+          callback(new Error("发票编号不能输入中文"));
+        }
+
+        callback();
+      }
+    };
     return {
       // 遮罩层
       loading: true,
@@ -524,7 +536,7 @@ export default {
           { required: true, message: "发票代码不能为空", trigger: "blur" },
         ],
         invoiceNumber: [
-          { required: true, message: "发票号码不能为空", trigger: "blur" },
+          { required: true, validator: validateInvoiceNumber, trigger: "blur" },
         ],
         invoiceType: [
           { required: true, message: "发票类型不能为空", trigger: "blur" },
