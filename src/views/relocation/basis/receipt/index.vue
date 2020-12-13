@@ -495,7 +495,7 @@ export default {
       exportData1(
         getToken(),
         "",
-        `${prefix}/income/export/template`,
+        `${prefix}​/receipt​/export​/template`,
         "收据管理导入模板"
       );
     },
