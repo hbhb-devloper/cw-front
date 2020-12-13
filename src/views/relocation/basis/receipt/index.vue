@@ -430,6 +430,7 @@ export default {
         `${prefix}/receipt/export/template`,
         "收款管理导入模板"
       );
+      
     },
     getTreeselect() {
       let that = this;
