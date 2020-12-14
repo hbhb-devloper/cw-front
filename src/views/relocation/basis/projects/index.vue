@@ -137,12 +137,12 @@
         width="150"
         align="center"
       />
-      <el-table-column
+      <!-- <el-table-column
         label="EOMS光缆割接流程工单号"
         prop="eomsCutNum"
         width="150"
         align="center"
-      />
+      /> -->
       <el-table-column
         label="计划施工时间"
         prop="planStartTime"
@@ -894,13 +894,13 @@ export default {
             trigger: "blur",
           },
         ],
-        eomsCutNum: [
-          {
-            required: true,
-            message: "请输入EOMS光缆割接流程工单号",
-            trigger: "blur",
-          },
-        ],
+        // eomsCutNum: [
+        //   {
+        //     required: true,
+        //     message: "请输入EOMS光缆割接流程工单号",
+        //     trigger: "blur",
+        //   },
+        // ],
         planStartTime: [
           { required: true, message: "请选择计划施工时间", trigger: "blur" },
         ],

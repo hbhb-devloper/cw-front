@@ -134,7 +134,18 @@
         width="150"
         align="center"
       />
-
+      <el-table-column
+        label="收款情况"
+        prop="isReceived"
+        width="150"
+        align="center"
+      />
+      <el-table-column
+        label="已收"
+        prop="received"
+        width="150"
+        align="center"
+      />
       <el-table-column
         label="赔补金额到账情况说明"
         prop="paymentDesc"

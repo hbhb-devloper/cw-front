@@ -172,6 +172,18 @@
         align="center"
       />
       <el-table-column
+        label="收款情况"
+        prop="isReceived"
+        width="150"
+        align="center"
+      />
+      <el-table-column
+        label="已收"
+        prop="received"
+        width="150"
+        align="center"
+      />
+      <el-table-column
         label="备注格式：合同号；区县；款项性质；项目信息"
         prop="remake"
         width="350"
@@ -299,8 +311,7 @@
                 clearable
                 style="width: 220px"
               >
-                <el-option :key="0" label="增值税专用发票" :value="0" />
-                <el-option :key="1" label="增值税普通发票" :value="1" />
+                <el-option v-for="item in invoiceTypeOption" :key="item.value" :label="item.label" :value="item.value"  />
               </el-select>
             </el-form-item>
           </el-col>
