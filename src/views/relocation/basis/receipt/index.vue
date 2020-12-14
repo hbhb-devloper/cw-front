@@ -428,9 +428,9 @@ export default {
         getToken(),
         "",
         `${prefix}/receipt/export/template`,
-        "收款管理导入模板"
+        "收据管理导入模板"
       );
-      
+
     },
     getTreeselect() {
       let that = this;
@@ -466,10 +466,20 @@ export default {
     handleSuccess(res) {
       this.fileList = [];
       this.loadingoption.close();
-      this.centerDialogVisible = false;
+      // this.centerDialogVisible = false;
       if (res.code == "00000") {
-        this.$message.success("导入成功");
-        this.getList();
+        if (res.data == "") {
+          this.$message.success("导入成功");
+          this.getList();
+          this.centerDialogVisible = false;
+        } else {
+          for (let i in res.data) {
+            var j = {};
+            j.codeMsg = res.data[i];
+            this.codeMsgList.push(j);
+          }
+          console.log('this.codeMsgList',this.codeMsgList);
+        }
       } else if (res.code == "80898") {
         res.message = res.message.substr(1, res.message.length - 2);
         this.errorMessage = res.message.split(",");
