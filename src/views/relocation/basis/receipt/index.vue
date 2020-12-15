@@ -493,7 +493,8 @@ export default {
   methods: {
     downTemplate() {
       //exportData1(getToken(),"", `${prefix}/receipt​/export/template`,"收据管理导入模板");
-      exportData1(getToken(), "", `${prefix}/receipt​/export/template`, "收款管理导入模板");
+    //  exportData1(getToken(), "", `${prefix}/receipt​/export/template`, "收款管理导入模板");
+        exportData1(getToken(), "", `${prefix}/receipt​/export/template`, "收款管理导入模板"); 
     },
     getTreeselect() {
       let that = this;
