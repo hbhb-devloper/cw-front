@@ -4,7 +4,7 @@ import {prefix} from './propaganda'
 // 新增物料活动产品列表
 export function goodsList(query) {
     return request({
-        url: `${prefix}/goods/list`,
+        url: `${prefix}/application/list`,
         method: 'get',
         params: query
     })
@@ -18,10 +18,10 @@ export function goodsTime(time) {
     })
 }
 
-// 通过时间得到第几月的第几次
+// 新增申请数量
 export function goodsApply(data) {
     return request({
-        url: `${prefix}/goods/apply`,
+        url: `${prefix}/application/apply`,
         method: 'post',
         data:data
     })

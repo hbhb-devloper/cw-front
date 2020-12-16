@@ -136,7 +136,7 @@ export default {
   methods: {
     // 保存所有物料数据
     save(){
-      let applyObj=this.$deepClone(this.queryParams)
+      let applyObj=this.deepClone(this.queryParams)
       applyObj.list=this.goodsList
       goodsApply(applyObj).then(res=>{
         console.log('goodsApply',res);

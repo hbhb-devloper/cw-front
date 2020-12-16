@@ -201,7 +201,6 @@ import {
   addFlowProp,
   putFlowProp,
   getFlowPropNotice,
-  getFlowPropNodeRole,
 } from "@/api/flow/vfd";
 import { listNode , listflow} from "@/api/flow/node";
 import { listUnit } from "@/api/system/unit";
