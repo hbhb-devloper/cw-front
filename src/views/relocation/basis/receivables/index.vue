@@ -72,7 +72,7 @@
           type="success"
           icon="el-icon-download"
           size="mini"
-          @click="centerDialogVisible = true"
+          @click="openCenterDialogVisible"
           >导入</el-button
         >
       </el-col>
@@ -652,6 +652,10 @@ export default {
     this.getTreeselect();
   },
   methods: {
+    openCenterDialogVisible(){
+      this.centerDialogVisible=true
+      this.codeMsgList=[]
+    },
     downTemplate() {
       exportData1(getToken(), "", `${prefix}/income/export/template`, "收款管理导入模板");
     },

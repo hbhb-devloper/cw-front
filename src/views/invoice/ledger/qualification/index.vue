@@ -183,6 +183,9 @@
           >导入数据</el-button
         >
       </el-upload>
+      <el-table :data="tableData1">
+        <el-table-column label="数据导入检查结果" prop="date" />
+      </el-table>
     </el-dialog>
   </div>
 </template>
@@ -210,6 +213,7 @@ export default {
       ActionUrl: process.env.VUE_APP_BASE_API + "/invoice/taxpayer/import",
       morenUnit: undefined,
       TaxpayerDict: [],
+      tableData1: [],
     };
   },
   components: {
@@ -265,6 +269,7 @@ export default {
     },
 
     handleImport() {
+      this.tableData1 = [];
       this.open = true;
     },
     UploadFile(param) {
@@ -289,12 +294,19 @@ export default {
         .then((res) => {
           loading.close();
           if (res.data.status == 1000) {
-            this.$message.success("数据导入成功");
-            this.getList();
+            if (res.data.data == "") {
+              this.$message.success("数据导入成功");
+              this.open = false;
+              this.getList();
+            } else {
+              this.tableData1 = [];
+              for (let item in res.data.data) {
+                this.tableData1.push({ date: res.data.data[item] });
+              }
+            }
           } else {
             this.msgError("数据导入失败");
           }
-          this.open = false;
         })
         .catch((err) => {
           loading.close();

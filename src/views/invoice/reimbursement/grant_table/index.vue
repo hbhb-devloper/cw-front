@@ -24,9 +24,9 @@
             :accept="'.xls,.xlsx'"
             :http-request="imageUpload"
           > -->
-            <el-button type="primary" @click="handleOpen(1)" round
-              >综合补贴导入</el-button
-            >
+          <el-button type="primary" @click="handleOpen(1)" round
+            >综合补贴导入</el-button
+          >
           <!-- </el-upload> -->
         </li>
       </ul>
@@ -43,9 +43,9 @@
             :accept="'.xls,.xlsx'"
             :http-request="imageUpload"
           > -->
-            <el-button type="primary" @click="handleOpen(2)" round
-              >往来账导入</el-button
-            >
+          <el-button type="primary" @click="handleOpen(2)" round
+            >往来账导入</el-button
+          >
           <!-- </el-upload> -->
         </li>
       </ul>
@@ -219,7 +219,7 @@
             </el-form-item>
           </el-row>
         </el-form>
-        <el-table :data="tableData1" >
+        <el-table :data="tableData1">
           <el-table-column label="数据导入检查结果" prop="date" />
         </el-table>
         <el-button class="cancel" size="mini" @click="open1 = false"
@@ -350,14 +350,17 @@ export default {
       })
         .then((res) => {
           loading.close();
+          console.log('上传上传',res);
           if (res.data.status == 1000) {
-            this.$message.success("导入成功！");
-            // if (this.importType == 0) {
+            if (res.data.data == "") {
+              this.$message.success("导入成功！");
+              this.open1 = false;
+            } else {
               this.tableData1 = [];
               for (let item in res.data.data) {
                 this.tableData1.push({ date: res.data.data[item] });
               }
-            // }
+            }
           } else {
             this.msgError(res.data.message);
           }
