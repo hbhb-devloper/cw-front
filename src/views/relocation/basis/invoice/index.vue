@@ -69,7 +69,7 @@
           type="success"
           icon="el-icon-download"
           size="mini"
-          @click="centerDialogVisible = true"
+          @click="openCenterDialogVisible"
           >导入</el-button
         >
       </el-col>
@@ -500,6 +500,10 @@ export default {
     });
   },
   methods: {
+    openCenterDialogVisible(){
+      this.centerDialogVisible=true
+      this.codeMsgList=[]
+    },
     downTemplate() {
       exportData1(getToken(), "", `${prefix}/invoice/export/template`, "发票管理");
     },

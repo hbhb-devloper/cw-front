@@ -1073,6 +1073,7 @@ export default {
     },
     opencenterDialogVisible() {
       this.fileList = [];
+      this.codeMsgList=[]
       this.$nextTick(() => {
         this.centerDialogVisible = true;
       });
