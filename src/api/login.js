@@ -55,20 +55,12 @@ export function login(data) {
         return obj;
     }
     let userInfo = deepClone(data)
-    userInfo.password = Encrypt(userInfo.password)
-    userInfo.grant_type = grant_type
-    userInfo.client_id = client_id
-    userInfo.client_secret = client_secret
-    userInfo.client_id = undefined
-    userInfo.client_secret = undefined
-    userInfo.captcha = undefined
-    userInfo.captchaKey = undefined
     return request1({
         method: 'post',
         url: `${process.env.VUE_APP_GATEWAY_API}${prefix}/oauth/token`,
-        data: "password=" + userInfo.password + "&grant_type=" + userInfo.grant_type + "&username=" + userInfo.username,
+        data: "grant_type=" + grant_type + "&username=" + userInfo.username + "&password=" + Encrypt(userInfo.password),
         headers: {
-            'Authorization': 'Basic ' + window.btoa(userInfo.client_id + ":" + userInfo.client_secret),
+            'Authorization': 'Basic ' + window.btoa(client_id + ":" + client_secret),
             'Content-Type': 'application/x-www-form-urlencoded'
         }
     })
