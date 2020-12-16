@@ -40,7 +40,7 @@ const user = {
         // 新-登录
         Login({ commit }, userInfo) {
             return new Promise((resolve, reject) => {
-                // check(userInfo).then(res => {
+                check(userInfo).then(res => {
                     login(userInfo).then(res => {
                         console.log('login',res);
                         setToken('Bearer ' + res.access_token)
@@ -49,10 +49,10 @@ const user = {
                     }).catch(error => {
                         reject(error)
                     })
-                // }
-                // ).catch(error => {
-                //     reject(error)
-                // })
+                }
+                ).catch(error => {
+                    reject(error)
+                })
             })
         },
 
