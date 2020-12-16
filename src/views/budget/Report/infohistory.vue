@@ -690,7 +690,6 @@ import {
   getQuota,
   addData,
   getSubject,
-  getLaunchType,
   LaunchApprove,
 } from "@/api/budget/report/report.js";
 import {
@@ -714,6 +713,7 @@ import {
   approvedFlow,
 } from "@/api/budget/report/infohistory.js";
 
+import { FlowTypeList } from "@/api/flow/list.js";
 import { getList } from "@/api/flow/opinion.js";
 import { dateTimes } from "@/utils/date.js";
 import AddEidt from "./add";
@@ -978,7 +978,7 @@ export default {
     handleRestLaunch() {
       approvedInfo(this.$route.params.id).then((res) => {
         if (res.state == 10 || res.state == 30 || res.state == 31) {
-          getLaunchType().then((res) => {
+          FlowTypeList().then((res) => {
             this.LaunchOption = res;
           });
           this.isLaunch = true;

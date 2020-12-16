@@ -344,7 +344,6 @@ import {
   deleteData,
   GetInfo,
   getState,
-  getLaunchType,
   LaunchApprove,
   getVatRate,
   RevokeRevert,
@@ -356,6 +355,7 @@ import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 import { mapGetters } from "vuex";
 import {resourceTreeByUN} from "@/api/system/unit";
+import { FlowTypeList } from "@/api/flow/list.js";
 
 export default {
   name: "standing",
@@ -574,7 +574,7 @@ export default {
           res.state == 40
         ) {
           this.projectId = row.id;
-          getLaunchType({ module: 100 }).then((response) => {
+          FlowTypeList({ module: 100 }).then((response) => {
             this.LaunchOption = response;
             this.isLaunch = true;
             this.LaunchId = 1;

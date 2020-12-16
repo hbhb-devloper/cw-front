@@ -128,7 +128,7 @@
 </template>
 
 <script>
-import { listType, addType, updateType, delFlowType , listModule} from "@/api/flow/type";
+import { listType, addType, updateType, delFlowType} from "@/api/flow/type";
 
 export default {
   name: "Flowtype",

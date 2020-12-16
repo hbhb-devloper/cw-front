@@ -109,14 +109,6 @@ export function DeleteFile(id){
   })
 }
 
-//获取流程类型列表
-export function getLaunchType(params) {
-  return request({
-    url:'/flow/type/select',
-    method:'get',
-    params
-  })
-}
 
 //发起审批
 export function LaunchApprove(data) {

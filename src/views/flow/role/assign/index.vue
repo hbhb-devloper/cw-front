@@ -83,7 +83,7 @@
 <script>
 import { listRole, updateRoleUser } from "@/api/flow/role";
 import { resourceTreeByUN } from "@/api/system/unit";
-import { UserList } from "@/api/system/user";
+import { UserList,userSelect } from "@/api/system/user";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 export default {
@@ -199,15 +199,15 @@ export default {
     },
     getUserList() {
       this.loading1 = true;
-      UserList(this.queryParams).then((response) => {
-        this.UserList = [];
-        response.list.map((item) => {
-          let UserItem = {
-            key: item.id,
-            label: item.nickName + "-" + item.unitName,
-          };
-          this.UserList.push(UserItem);
-        });
+      userSelect().then((response) => {
+        this.UserList = response;
+        // response.list.map((item) => {
+        //   let UserItem = {
+        //     key: item.id,
+        //     label: item.nickName + "-" + item.unitName,
+        //   };
+        //   this.UserList.push(UserItem);
+        // });
         // this.UserList = response.list;
 
         this.total = response.count;

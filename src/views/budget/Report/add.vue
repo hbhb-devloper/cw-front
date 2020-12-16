@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-11-27 19:00:38
  * @LastEditors: CYZ
- * @LastEditTime: 2020-12-04 11:42:24
+ * @LastEditTime: 2020-12-16 11:47:28
 -->
 <template>
   <div>
@@ -326,7 +326,6 @@ import {
   upData,
   getQuota,
   DeleteFile,
-  getLaunchType,
   LaunchApprove,
   getVatRate,
 } from "@/api/budget/report/report.js";
