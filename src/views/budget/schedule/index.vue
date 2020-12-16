@@ -237,12 +237,17 @@ export default {
   },
   methods: {
     gotodetail(row) {
-      GetProjectInfo(row.projectNum).then((res) => {
+      if (row.id) {
+         GetProjectInfo(row.projectNum).then((res) => {
       // GetInfo(row.id).then((res) => {
         res.vatRate=String(Number(res.vatRate)*100) 
         this.innerVisible = true;
         this.obj2 = res;
       });
+      }else{
+        this.$message.error("该项目无详细信息")
+      }
+     
     },
     Showproject(row) {
       this.outerVisible = true;

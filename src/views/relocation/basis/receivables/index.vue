@@ -35,7 +35,7 @@
             v-model="queryParams.contractNum"
             placeholder="请输入合同编号"
             clearable
-            @keyup.enter.native="getList"
+            @keyup.enter.native="handleQuery"
           />
         </el-form-item>
         <el-form-item label="经办单位" prop="unitId">
@@ -51,16 +51,12 @@
             placeholder="请输入合同名称"
             clearable
             style="width: 240px"
-            @keyup.enter.native="getList"
+            @keyup.enter.native="handleQuery"
           />
         </el-form-item>
 
         <el-form-item>
-          <el-button
-            type="primary"
-            icon="el-icon-search"
-            size="mini"
-            @click="getList"
+          <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery"
             >搜索</el-button
           >
           <el-button icon="el-icon-refresh" size="mini" @click="resetQuery"
@@ -96,42 +92,12 @@
       <!-- <el-table-column label="序号" prop="id" width="120" align="center" /> -->
       <el-table-column label="序号" type="index" align="center" width="50">
       </el-table-column>
-      <el-table-column
-        label="类别"
-        prop="category"
-        width="150"
-        align="center"
-      />
-      <el-table-column
-        label="经办单位"
-        prop="unit"
-        width="150"
-        align="center"
-      />
-      <el-table-column
-        label="供应商"
-        prop="supplier"
-        width="150"
-        align="center"
-      />
-      <el-table-column
-        label="合同编号"
-        prop="contractNum"
-        width="150"
-        align="center"
-      />
-      <el-table-column
-        label="合同名称"
-        prop="contractName"
-        width="150"
-        align="center"
-      />
-      <el-table-column
-        label="发票号码"
-        prop="invoiceNum"
-        width="150"
-        align="center"
-      >
+      <el-table-column label="类别" prop="category" width="150" align="center" />
+      <el-table-column label="经办单位" prop="unit" width="150" align="center" />
+      <el-table-column label="供应商" prop="supplier" width="150" align="center" />
+      <el-table-column label="合同编号" prop="contractNum" width="150" align="center" />
+      <el-table-column label="合同名称" prop="contractName" width="150" align="center" />
+      <el-table-column label="发票号码" prop="invoiceNum" width="150" align="center">
         <template slot-scope="scope">
           <div
             style="color: #409eff; cursor: pointer"
@@ -141,12 +107,7 @@
           </div>
         </template>
       </el-table-column>
-      <el-table-column
-        label="起始时间"
-        prop="startTime"
-        width="150"
-        align="center"
-      />
+      <el-table-column label="起始时间" prop="startTime" width="150" align="center" />
       <el-table-column
         label="合同截止时间"
         prop="contractDeadline"
@@ -159,18 +120,8 @@
         width="150"
         align="center"
       />
-      <el-table-column
-        label="开票日期"
-        prop="invoiceTime"
-        width="150"
-        align="center"
-      />
-      <el-table-column
-        label="发票类型"
-        prop="invoiceType"
-        width="150"
-        align="center"
-      />
+      <el-table-column label="开票日期" prop="invoiceTime" width="150" align="center" />
+      <el-table-column label="发票类型" prop="invoiceType" width="150" align="center" />
       <el-table-column label="价款" prop="amount" width="150" align="center" />
       <el-table-column label="税额" prop="tax" width="150" align="center" />
       <el-table-column
@@ -185,19 +136,9 @@
         width="150"
         align="center"
       />
-      <el-table-column
-        label="收款情况"
-        prop="isReceived"
-        width="150"
-        align="center"
-      />
+      <el-table-column label="收款情况" prop="isReceived" width="150" align="center" />
       <el-table-column label="账龄" prop="aging" width="150" align="center" />
-      <el-table-column
-        label="应收"
-        prop="receivable"
-        width="150"
-        align="center"
-      />
+      <el-table-column label="应收" prop="receivable" width="150" align="center" />
       <el-table-column label="已收" prop="received" width="150" align="center">
         <template slot-scope="scope">
           <el-button size="mini" type="text" @click="Showproject(scope.row, 0)"
@@ -205,24 +146,9 @@
           </el-button>
         </template>
       </el-table-column>
-      <el-table-column
-        label="未收"
-        prop="unreceived"
-        width="150"
-        align="center"
-      />
-      <el-table-column
-        label="款项类型"
-        prop="paymentType"
-        width="150"
-        align="center"
-      />
-      <el-table-column
-        label="当月收款金额"
-        prop="monthAmount"
-        width="150"
-        align="center"
-      >
+      <el-table-column label="未收" prop="unreceived" width="150" align="center" />
+      <el-table-column label="款项类型" prop="paymentType" width="150" align="center" />
+      <el-table-column label="当月收款金额" prop="monthAmount" width="150" align="center">
         <template slot-scope="scope">
           <el-button size="mini" type="text" @click="Showproject(scope.row, 1)"
             >{{ scope.row.monthAmount }}
@@ -256,11 +182,11 @@
       @pagination="getList"
     />
     <el-dialog title="导入" :visible.sync="centerDialogVisible" width="500px">
-      <!-- <div style="margin-bottom: 10px">
+      <div style="margin-bottom: 10px">
         <el-button type="primary" @click="downTemplate">
           <i class="el-icon-download"></i>下载导入模板
         </el-button>
-      </div> -->
+      </div>
       <el-upload
         class="upload-demo"
         :headers="headers"
@@ -278,22 +204,15 @@
       >
         <el-button size="small" type="primary">点击上传</el-button>
       </el-upload>
+      <el-table :data="codeMsgList">
+        <el-table-column label="错误信息" prop="codeMsg" />
+      </el-table>
     </el-dialog>
     <el-dialog :title="title" :visible.sync="open" width="600px">
       <el-table v-loading="loading1" :data="IncomeDetailList">
-        <el-table-column
-          label="本次收款金额"
-          prop="amount"
-          align="center"
-          width="150"
-        >
+        <el-table-column label="本次收款金额" prop="amount" align="center" width="150">
         </el-table-column>
-        <el-table-column
-          label="收款月份"
-          prop="payMonth"
-          align="payMonth"
-          width="150"
-        >
+        <el-table-column label="收款月份" prop="payMonth" align="payMonth" width="150">
         </el-table-column>
         <el-table-column label="收款人" prop="payee" align="payee" width="150">
         </el-table-column>
@@ -307,7 +226,7 @@
       </el-table>
     </el-dialog>
     <!-- 添加收款对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="500px">
+    <el-dialog :title="title" :visible.sync="open1" width="500px">
       <el-form ref="form" :model="form" label-width="120px">
         <el-form-item label="本次收款金额" prop="amount">
           <el-input v-model="form.amount" placeholder="请输入" type="number" />
@@ -523,20 +442,12 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="购方税号" prop="buyerTax">
-              <el-input
-                v-model="form.buyerTax"
-                disabled
-                placeholder="请输入购方税号"
-              />
+              <el-input v-model="form.buyerTax" disabled placeholder="请输入购方税号" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="购方名称" prop="buyerName">
-              <el-input
-                v-model="form.buyerName"
-                disabled
-                placeholder="请输入购方名称"
-              />
+              <el-input v-model="form.buyerName" disabled placeholder="请输入购方名称" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -581,11 +492,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="税额" prop="taxAmount">
-              <el-input
-                v-model="form.taxAmount"
-                disabled
-                placeholder="请输入税额"
-              />
+              <el-input v-model="form.taxAmount" disabled placeholder="请输入税额" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -600,20 +507,12 @@
 
           <el-col :span="12">
             <el-form-item label="申请人" prop="applicant">
-              <el-input
-                v-model="form.applicant"
-                disabled
-                placeholder="请输入申请人"
-              />
+              <el-input v-model="form.applicant" disabled placeholder="请输入申请人" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="开票人" prop="issuer">
-              <el-input
-                v-model="form.issuer"
-                disabled
-                placeholder="请输入开票人"
-              />
+              <el-input v-model="form.issuer" disabled placeholder="请输入开票人" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -658,11 +557,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="描述" prop="describe">
-              <el-input
-                v-model="form.describe"
-                disabled
-                placeholder="请输入描述"
-              />
+              <el-input v-model="form.describe" disabled placeholder="请输入描述" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -734,12 +629,8 @@ export default {
       },
       // 表单校验
       rules: {
-        flowTypeName: [
-          { required: true, message: "类型名称不能为空", trigger: "blur" },
-        ],
-        sortNum: [
-          { required: true, message: "显示顺序不能为空", trigger: "blur" },
-        ],
+        flowTypeName: [{ required: true, message: "类型名称不能为空", trigger: "blur" }],
+        sortNum: [{ required: true, message: "显示顺序不能为空", trigger: "blur" }],
       },
       // 状态数据字典
       statusOptions: [
@@ -752,6 +643,8 @@ export default {
         Authorization: getToken(),
       },
       IncomeDetailList: [],
+      errorMessage: [],
+      codeMsgList: [],
     };
   },
   created() {
@@ -759,21 +652,32 @@ export default {
     this.getTreeselect();
   },
   methods: {
+    downTemplate() {
+      exportData1(getToken(), "", `${prefix}/income/export/template`, "收款管理导入模板");
+    },
     gotoInvoiceDetail(row) {
       console.log("row", row);
       if (row.invoiceTypeLabel == 50) {
         receiptByreceiptNum(row.invoiceNum).then((response) => {
           console.log("receiptByreceiptNum", response);
-          this.form = response;
-          this.receiptOpen = true;
-          this.title = "收据详情";
+          if (response) {
+            this.form = response;
+            this.receiptOpen = true;
+            this.title = "收据详情";
+          } else {
+            this.$message.error("无法匹配到收据详情");
+          }
         });
       } else {
         invoiceByInvoiceNum(row.invoiceNum).then((response) => {
           console.log("invoiceByInvoiceNum", response);
-          this.form = response;
-          this.invoiceOpen = true;
-          this.title = "发票详情";
+          if (response) {
+            this.form = response;
+            this.invoiceOpen = true;
+            this.title = "发票详情";
+          } else {
+            this.$message.error("无法匹配到发票详情");
+          }
         });
       }
     },
@@ -841,6 +745,14 @@ export default {
       if (res.code == "00000") {
         this.$message.success("导入成功");
         this.getList();
+      } else if (res.code == "80898") {
+        res.message = res.message.substr(1, res.message.length - 2);
+        this.errorMessage = res.message.split(",");
+        for (let i in this.errorMessage) {
+          var j = {};
+          j.codeMsg = this.errorMessage[i];
+          this.codeMsgList.push(j);
+        }
       } else {
         this.$message({
           message: res.message,
@@ -865,8 +777,8 @@ export default {
     cancel() {
       this.open = false;
       this.open1 = false;
-      this.receiptOpen = true;
-      this.invoiceOpen = true;
+      this.receiptOpen = false;
+      this.invoiceOpen = false;
       this.reset();
     },
     // 表单重置

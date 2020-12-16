@@ -165,11 +165,11 @@
       />
       <el-table-column
         label="供应商信息"
-        prop="remake"
+        prop="supplier"
         width="150"
-        align="supplier"
+        align="center"
       />
-      
+
       <el-table-column
         label="操作"
         align="center"
@@ -204,11 +204,11 @@
     />
     <!-- 导入弹框 -->
     <el-dialog title="导入" :visible.sync="centerDialogVisible" width="500px">
-      <!-- <div style="margin-bottom: 10px">
+      <div style="margin-bottom: 10px">
         <el-button type="primary" @click="downTemplate">
           <i class="el-icon-download"></i>下载导入模板
         </el-button>
-      </div> -->
+      </div>
       <el-upload
         class="upload-demo"
         :headers="headers"
@@ -226,6 +226,9 @@
       >
         <el-button size="small" type="primary">点击上传</el-button>
       </el-upload>
+      <el-table :data="codeMsgList">
+        <el-table-column label="错误信息" prop="codeMsg" />
+      </el-table>
     </el-dialog>
     <!-- 添加或修改角色配置对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="1000px">
@@ -319,6 +322,7 @@
                 v-model="form.receiptTime"
                 type="date"
                 placeholder="请输入开收据时间"
+                value-format="yyyy-MM-dd"
               />
             </el-form-item>
           </el-col>
@@ -334,17 +338,13 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item
-              label="供应商信息"
-              prop="supplier"
-            >
+            <el-form-item label="供应商信息" prop="supplier">
               <el-input
                 v-model="form.supplier"
                 placeholder="请输入供应商信息"
               />
             </el-form-item>
           </el-col>
-          
         </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -361,16 +361,30 @@ import {
   addReceipt,
   updateReceipt,
   delarr,
+  receiptByreceiptNum,
 } from "@/api/relocation/basis/receipt.js";
 import { getToken } from "@/utils/auth";
 import { exportData1 } from "@/utils/export";
 import { resourceTreeByUN } from "@/api/system/unit";
 import Treeselect from "@riophae/vue-treeselect";
+import { prefix } from "@/api/relocation/relocation";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 export default {
   name: "Flowtype",
   components: { Treeselect },
   data() {
+    const validateReceiptNum = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error("收据编号不能为空"));
+      } else {
+        var reg = /^[A-Za-z0-9]{1,30}$/;
+        if (!reg.test(value)) {
+          callback(new Error("收据编号不能输入中文"));
+        }
+
+        callback();
+      }
+    };
     return {
       morenUnit: undefined,
       deptOptions: [],
@@ -423,7 +437,7 @@ export default {
           { required: true, message: "合同编号不能为空", trigger: "blur" },
         ],
         receiptNum: [
-          { required: true, message: "收据编号不能为空", trigger: "blur" },
+          { required: true, validator: validateReceiptNum, trigger: "blur" },
         ],
         paymentDesc: [
           {
@@ -439,13 +453,18 @@ export default {
           { required: true, message: "开收据时间不能为空", trigger: "blur" },
         ],
         remake: [{ required: true, message: "备注不能为空", trigger: "blur" }],
+        supplier: [
+          { required: true, message: "供应商不能为空", trigger: "blur" },
+        ],
       },
       centerDialogVisible: false,
-      ActionUrl: process.env.VUE_APP_GATEWAY_API + "/relocation/receipt/import", // 上传的图片服务器地址
+      ActionUrl: process.env.VUE_APP_GATEWAY_API + `${prefix}/receipt/import`, // 上传的图片服务器地址
       fileList: [],
       headers: {
         Authorization: getToken(),
       },
+      errorMessage: [],
+      codeMsgList: [],
     };
   },
   filters: {
@@ -461,6 +480,14 @@ export default {
     this.getTreeselect();
   },
   methods: {
+    downTemplate() {
+      exportData1(
+        getToken(),
+        "",
+        `${prefix}/income/export/template`,
+        "收据管理导入模板"
+      );
+    },
     getTreeselect() {
       let that = this;
       resourceTreeByUN().then((response) => {
@@ -499,6 +526,14 @@ export default {
       if (res.code == "00000") {
         this.$message.success("导入成功");
         this.getList();
+      } else if (res.code == "80898") {
+        res.message = res.message.substr(1, res.message.length - 2);
+        this.errorMessage = res.message.split(",");
+        for (let i in this.errorMessage) {
+          var j = {};
+          j.codeMsg = this.errorMessage[i];
+          this.codeMsgList.push(j);
+        }
       } else {
         this.$message({
           message: res.message,
@@ -546,7 +581,7 @@ export default {
           return exportData1(
             getToken(),
             queryParams,
-            "/relocation/receipt/export",
+            `${prefix}/receipt/export`,
             "收据管理"
           );
         })
@@ -580,37 +615,29 @@ export default {
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
-      const typeId = row.id || this.ids;
-      //   getRole(typeId).then(response => {
-      this.form = row;
-      this.open = true;
-      this.title = "修改类型";
-      //   });
+      const receiptNum = row.receiptNum;
+      receiptByreceiptNum(receiptNum).then((response) => {
+        this.form = response;
+        this.open = true;
+        this.title = "修改类型";
+      });
     },
     /** 提交按钮 */
     submitForm: function () {
       this.$refs["form"].validate((valid) => {
         if (valid) {
           if (this.form.id != undefined) {
-            updateReceipt(this.form)
-              .then((response) => {
-                this.msgSuccess("修改成功");
-                this.open = false;
-                this.getList();
-              })
-              .catch((err) => {
-                this.msgError(err.message);
-              });
+            updateReceipt(this.form).then((response) => {
+              this.msgSuccess("修改成功");
+              this.open = false;
+              this.getList();
+            });
           } else {
-            addReceipt(this.form)
-              .then((response) => {
-                this.msgSuccess("新增成功");
-                this.open = false;
-                this.getList();
-              })
-              .catch((err) => {
-                this.msgError(err.message);
-              });
+            addReceipt(this.form).then((response) => {
+              this.msgSuccess("新增成功");
+              this.open = false;
+              this.getList();
+            });
           }
         }
       });

@@ -771,7 +771,7 @@
     <el-dialog
       title="项目信息导入"
       :visible.sync="centerDialogVisible"
-      width="500px"
+      width="700px"
     >
       <div style="margin-bottom: 10px">
         <el-button type="primary" @click="downTemplate">
@@ -796,6 +796,9 @@
       >
         <el-button size="small" type="primary">点击上传</el-button>
       </el-upload>
+      <el-table :data="codeMsgList">
+        <el-table-column label="错误信息" prop="codeMsg" />
+      </el-table>
     </el-dialog>
     <el-dialog title="合同导入" :visible.sync="ContractVisible" width="500px">
       <el-upload
@@ -818,7 +821,6 @@
     </el-dialog>
     <el-dialog title="查看合同" :visible.sync="fileDialog" width="500px">
       <el-button type="primary" @click="reviewFile"> 预览 </el-button>
-
       <el-button type="primary" @click="downFile">下载</el-button>
     </el-dialog>
   </div>
@@ -1009,6 +1011,8 @@ export default {
       fileItem: {},
       loadingoption: undefined,
       loadingCount: 0,
+      errorMessage: [],
+      codeMsgList: [],
     };
   },
   created() {
@@ -1080,36 +1084,36 @@ export default {
       });
     },
     handleupload() {
-      if (this.loadingCount === 0) {
-        let loading = this.$loading({
-          lock: true,
-          text: "正在导入表格",
-          spinner: "el-icon-loading",
-          background: "rgba(0, 0, 0, 0.7)",
-        });
-        this.loadingoption = loading;
-      }
-      this.loadingCount += 1;
-      console.log("handleuploadCount", this.loadingCount);
+      // if (this.loadingCount === 0) {
+      let loading = this.$loading({
+        lock: true,
+        text: "正在导入表格",
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.7)",
+      });
+      this.loadingoption = loading;
+      // }
+      // this.loadingCount += 1;
+      // console.log("handleuploadCount", this.loadingCount);
     },
     handleFail(err, file, fileList) {
-      console.log("handleFail", err);
-      console.log("handleFailloadingCount", this.loadingCount);
-      console.log("loadingoption", this.loadingoption);
-      if (this.loadingCount <= 0) {
-        return;
-      }
-      this.loadingCount -= 1;
-      if (this.loadingCount === 0) {
-        this.loadingoption.close();
-        this.$message.error("上传失败");
-      }
+      // console.log("handleFail", err);
+      // console.log("handleFailloadingCount", this.loadingCount);
+      // console.log("loadingoption", this.loadingoption);
+      // if (this.loadingCount <= 0) {
+      //   return;
+      // }
+      // this.loadingCount -= 1;
+      // if (this.loadingCount === 0) {
+      //   this.loadingoption.close();
+      //   this.$message.error("上传失败");
+      // }
     },
     handleRemove(file, fileList) {},
     handlePreview(file) {},
     handleExceed(files, fileList) {
       this.$message.warning(
-        `当前限制选择 10 个文件，本次选择了 ${files.length} 个文件，共选择了 ${
+        `当前限制选择 1 个文件，本次选择了 ${files.length} 个文件，共选择了 ${
           files.length + fileList.length
         } 个文件`
       );
@@ -1117,22 +1121,34 @@ export default {
     handleSuccess(res, file, fileList) {
       // this.fileList = [];
 
-      this.loadingCount -= 1;
-      if (this.loadingCount === 0) {
-        this.loadingoption.close();
-        // this.loadingoption = undefined;
-      }
-      this.centerDialogVisible = false;
-      this.ContractVisible = false;
+      // this.loadingCount -= 1;
+      // if (this.loadingCount === 0) {
+      //   this.loadingoption.close();
+      //   // this.loadingoption = undefined;
+      // }
+      this.loadingoption.close();
+
       if (res.code == "00000") {
         this.$message.success("导入上传成功");
         this.getList();
+        this.centerDialogVisible = false;
+        this.ContractVisible = false;
+      } else if (res.code == "80898") {
+        res.message = res.message.substr(1, res.message.length - 2);
+        this.errorMessage = res.message.split(",");
+        for (let i in this.errorMessage) {
+          var j = {};
+          j.codeMsg = this.errorMessage[i];
+          this.codeMsgList.push(j);
+        }
       } else {
         this.$message({
           message: res.message,
           type: "error",
         });
         this.getList();
+        this.centerDialogVisible = false;
+        this.ContractVisible = false;
       }
     },
     beforeRemove(file, fileList) {
@@ -1230,16 +1246,17 @@ export default {
       this.inputAble = false;
       const typeId = row.id || this.ids;
       //   getRole(typeId).then(response => {
-      console.log(row);
-      this.compensationOptions.map((item) => {
-        if (item.label == row.compensationSate) {
-          row.compensationSate = item.value;
-        }
+      ProjectDetail(typeId).then((response) => {
+        // console.log(row);
+        // this.compensationOptions.map((item) => {
+        //   if (item.label == row.compensationSate) {
+        //     row.compensationSate = item.value;
+        //   }
+        // });
+        this.form = response;
+        this.open = true;
+        this.title = "修改迁改项目管理信息";
       });
-      this.form = row;
-      this.open = true;
-      this.title = "修改迁改项目管理信息";
-      //   });
     },
 
     /** 提交按钮 */

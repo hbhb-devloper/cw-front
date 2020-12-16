@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-09-23 14:42:03
  * @LastEditors: CYZ
- * @LastEditTime: 2020-12-03 13:35:20
+ * @LastEditTime: 2020-12-12 10:51:44
  */
 
 import request from '@/utils/request1'
@@ -64,7 +64,7 @@ export function delarr(InvoiceId) {
 // 跟据收据编号查看收据详情
 export function invoiceByInvoiceNum(InvoiceNum) {
     return request({
-        url: `${prefix}/invoice/info?InvoiceNum=${InvoiceNum }`,
+        url: `${prefix}/invoice/info?invoiceNum=${InvoiceNum }`,
         method: 'get',
     })
 }

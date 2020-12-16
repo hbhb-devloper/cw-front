@@ -31,6 +31,7 @@
                 name="invoiceDate"
                 style="width: 240px"
                 placeholder="选择日期"
+                value-format="yyyy-MM-dd"
               >
               </el-date-picker>
             </el-form-item>
@@ -300,6 +301,7 @@
                 name="invoiceDate"
                 style="width: 200px"
                 placeholder="选择日期"
+                value-format="yyyy-MM-dd"
               >
               </el-date-picker>
             </el-form-item>
