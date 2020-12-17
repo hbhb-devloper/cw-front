@@ -189,7 +189,7 @@ export default {
       this.loading = true;
       listType(this.queryParams).then((response) => {
         this.typeList = response.list;
-        this.total = response.count;
+        this.total = response.totalRow;
         this.loading = false;
       });
     },

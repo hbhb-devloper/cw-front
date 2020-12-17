@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-07-20 18:22:09
  * @LastEditors: CYZ
- * @LastEditTime: 2020-12-02 13:58:24
+ * @LastEditTime: 2020-12-17 16:41:09
 --> 
 <template>
   <div class="app-container">
@@ -17,12 +17,22 @@
         @saveFlow="saveFlow"
       ></flow-panel>
       <!-- @clickLine="clickline" -->
-      <el-dialog title="修改节点" :visible.sync="ItemVisible" width="50%" :before-close="handleClose">
-        <el-radio-group v-model="FormType" style="margin-bottom: 30px;">
+      <el-dialog
+        title="修改节点"
+        :visible.sync="ItemVisible"
+        width="50%"
+        :before-close="handleClose"
+      >
+        <el-radio-group v-model="FormType" style="margin-bottom: 30px">
           <el-radio-button label="jbxx">基本信息</el-radio-button>
           <el-radio-button label="xgtx">相关提醒</el-radio-button>
         </el-radio-group>
-        <el-form ref="dataForm" :model="node" label-width="80px" v-if="FormType=='jbxx'">
+        <el-form
+          ref="dataForm"
+          :model="node"
+          label-width="80px"
+          v-if="FormType == 'jbxx'"
+        >
           <!-- <el-form-item label="类型">
             <el-input v-model="node.type"></el-input>
           </el-form-item>
@@ -40,7 +50,7 @@
               <el-option
                 v-for="dict in roleOptions"
                 :key="dict.id"
-                :label="dict.roleName"
+                :label="dict.label"
                 :value="dict.id"
               />
             </el-select>
@@ -60,7 +70,7 @@
           <el-form-item label="默认用户">
             <el-select
               v-model="node.userId"
-              :disabled="node.unitId==0"
+              :disabled="node.unitId == 0"
               placeholder="请选择默认用户"
               clearable
               size="medium"
@@ -79,7 +89,12 @@
             <el-input v-model="node.linkId"></el-input>
           </el-form-item>-->
           <el-form-item label="分配者">
-            <el-select v-model="node.assigner" placeholder="请选择分配者" clearable size="medium">
+            <el-select
+              v-model="node.assigner"
+              placeholder="请选择分配者"
+              clearable
+              size="medium"
+            >
               <el-option
                 v-for="dict in flowRoleLidOptions"
                 :key="dict.id"
@@ -95,16 +110,24 @@
             <el-checkbox v-model="checked"></el-checkbox>
           </el-form-item>-->
           <el-form-item label="是否能够自定义流程">
-            <el-checkbox v-model="node.controlAccess" :true-label="Istrue" :false-label="Isfalse"></el-checkbox>
+            <el-checkbox
+              v-model="node.controlAccess"
+              :true-label="Istrue"
+              :false-label="Isfalse"
+            ></el-checkbox>
           </el-form-item>
           <!-- <el-form-item label="是否允许添加提醒">
             <el-checkbox v-model="checked"></el-checkbox>
           </el-form-item>-->
           <el-form-item label="是否允许被不参与流程">
-            <el-checkbox v-model="node.isJoin" :true-label="Istrue" :false-label="Isfalse"></el-checkbox>
+            <el-checkbox
+              v-model="node.isJoin"
+              :true-label="Istrue"
+              :false-label="Isfalse"
+            ></el-checkbox>
           </el-form-item>
           <el-form-item label="启用条件">
-            <div style="width:70px">项目金额</div>
+            <div style="width: 70px">项目金额</div>
             <el-select
               v-model="node.enableCond"
               placeholder="关系"
@@ -119,11 +142,19 @@
                 :value="dict.dictValue"
               />
             </el-select>
-            <el-input v-model="node.amount" type="number" style="width: 150px;margin-left:10px;"></el-input>
+            <el-input
+              v-model="node.amount"
+              type="number"
+              style="width: 150px; margin-left: 10px"
+            ></el-input>
           </el-form-item>
         </el-form>
 
-        <el-table :data="tableData" style="width: 100%" v-if="FormType=='xgtx'">
+        <el-table
+          :data="tableData"
+          style="width: 100%"
+          v-if="FormType == 'xgtx'"
+        >
           <el-table-column label="提醒流程" width="180" align="center">
             <template slot-scope="scope">
               <el-select v-model="scope.row.noticeNodeId" placeholder="请选择">
@@ -167,11 +198,14 @@
                 type="text"
                 icon="el-icon-edit"
                 @click="delLine(scope.$index, scope.row)"
-              >删除</el-button>
+                >删除</el-button
+              >
             </template>
           </el-table-column>
         </el-table>
-        <el-button class="addline" v-if="FormType=='xgtx'" @click="addLine">添加行数</el-button>
+        <el-button class="addline" v-if="FormType == 'xgtx'" @click="addLine"
+          >添加行数</el-button
+        >
         <!-- <el-button
           class="addline"
           v-if="FormType=='xgtx'"
@@ -180,13 +214,22 @@
         >删除选择行</el-button>-->
         <span slot="footer" class="dialog-footer">
           <el-button @click="ItemVisible = false">取 消</el-button>
-          <el-button type="primary" @click="submitForm" :loading="submitLoading">
+          <el-button
+            type="primary"
+            @click="submitForm"
+            :loading="submitLoading"
+          >
             <span v-if="!submitLoading">确 定</span>
             <span v-else>保存中</span>
           </el-button>
         </span>
       </el-dialog>
-      <el-dialog title="修改条件" :visible.sync="LineVisible" width="30%" :before-close="handleClose">
+      <el-dialog
+        title="修改条件"
+        :visible.sync="LineVisible"
+        width="30%"
+        :before-close="handleClose"
+      >
         <el-form ref="dataForm" :model="line" label-width="80px">
           <el-form-item label="条件" prop="roleName">
             <el-input v-model="line.label" placeholder="请输入条件" />
@@ -194,7 +237,9 @@
         </el-form>
         <span slot="footer" class="dialog-footer">
           <el-button @click="LineVisible = false">取 消</el-button>
-          <el-button type="primary" @click="LineVisible = false">确 定</el-button>
+          <el-button type="primary" @click="LineVisible = false"
+            >确 定</el-button
+          >
         </span>
       </el-dialog>
     </div>
@@ -218,7 +263,7 @@ import {
 import { listUnit } from "@/api/system/unit";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
-import { listFlowRole, listFlowRoles } from "@/api/flow/flowrole";
+import { listFlowRoles } from "@/api/flow/flowrole";
 export default {
   components: {
     FlowPanel,
@@ -306,12 +351,18 @@ export default {
             this.$message.success("修改属性成功");
             this.ItemVisible = false;
             this.submitLoading = false;
+          }).catch(err=>{
+            this.$message.error("修改属性失败");
+            this.submitLoading = false;
           });
         } else {
           this.node.flowNodeId = this.nodeId;
           addFlowProp(this.node).then((res) => {
             this.$message.success("修改属性成功");
             this.ItemVisible = false;
+            this.submitLoading = false;
+          }).catch(err=>{
+            this.$message.error("修改属性失败");
             this.submitLoading = false;
           });
         }
@@ -384,23 +435,29 @@ export default {
       this.tableData.push(list);
     },
     changeuser(select) {
-      this.loading = true;
-      this.flowRoleId = select;
-      this.node.userId = undefined;
-      getFlowRoleUser(this.flowRoleId, this.node.unitId).then((res) => {
-        this.uesrOptions = res;
-        this.loading = false;
-      });
-    },
-    changeuser1(select) {
-      this.loading = true;
-      this.unitId = select.id;
-      this.node.userId = undefined;
-      if (select.id != 0) {
-        getFlowRoleUser(this.node.flowRoleId, this.unitId).then((res) => {
+      this.uesrOptions = [];
+      if (select && this.node.unitId) {
+        this.loading = true;
+        this.flowRoleId = select;
+        this.node.userId = undefined;
+        getFlowRoleUser(this.flowRoleId, this.node.unitId).then((res) => {
           this.uesrOptions = res;
           this.loading = false;
         });
+      }
+    },
+    changeuser1(select) {
+      this.uesrOptions = [];
+      if (select && this.node.flowRoleId) {
+        this.loading = true;
+        this.unitId = select.id;
+        this.node.userId = undefined;
+        if (select.id != 0) {
+          getFlowRoleUser(this.node.flowRoleId, this.unitId).then((res) => {
+            this.uesrOptions = res;
+            this.loading = false;
+          });
+        }
       }
     },
     getRoleList() {

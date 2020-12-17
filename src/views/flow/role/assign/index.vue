@@ -32,27 +32,27 @@
           <el-table-column label="角色标识号" prop="id" align="center" />
           <el-table-column label="角色名称" prop="roleName" align="center" />
         </el-table>
-<!--        <pagination-->
-<!--          v-show="total1>0"-->
-<!--          :total="total1"-->
-<!--          :page.sync="queryParams1.pageNum"-->
-<!--          :limit.sync="queryParams1.pageSize"-->
-<!--          @pagination="getList"-->
-<!--        />-->
+       <pagination
+         v-show="total1>0"
+         :total="total1"
+         :page.sync="queryParams1.pageNum"
+         :limit.sync="queryParams1.pageSize"
+         @pagination="getList"
+       />
         <div class="page-box">
 
-          <el-pagination
+          <!-- <el-pagination
             background
             style="margin-top:3px;"
             @current-change="handleRole"
             layout="prev, pager, next"
             :page-count="total1">
-          </el-pagination>
-          <el-select v-model="queryParams1.pageSize" placeholder="请选择" @change="getList" style="width:100px">
+          </el-pagination> -->
+          <!-- <el-select v-model="queryParams1.pageSize" placeholder="请选择" @change="getList" style="width:100px">
             <el-option value="10" label="10条/页"></el-option>
             <el-option value="20" label="20条/页"></el-option>
             <el-option value="30" label="30条/页"></el-option>
-          </el-select>
+          </el-select> -->
         </div>
       </div>
       <div class="tablist">
@@ -193,21 +193,22 @@ export default {
       this.loading = true;
       listRole(this.queryParams1).then((response) => {
         this.RoleList = response.list;
-        this.total1 = Math.ceil(response.count/this.queryParams1.pageSize);
+        // this.total1 = Math.ceil(response.count/this.queryParams1.pageSize);
+        this.total1 = response.totalRow
         this.loading = false;
       });
     },
     getUserList() {
       this.loading1 = true;
       userSelect().then((response) => {
-        this.UserList = response;
-        // response.list.map((item) => {
-        //   let UserItem = {
-        //     key: item.id,
-        //     label: item.nickName + "-" + item.unitName,
-        //   };
-        //   this.UserList.push(UserItem);
-        // });
+        // this.UserList = response;
+        response.map((item) => {
+          let UserItem = {
+            key: item.id,
+            label: item.label,
+          };
+          this.UserList.push(UserItem);
+        });
         // this.UserList = response.list;
 
         this.total = response.count;

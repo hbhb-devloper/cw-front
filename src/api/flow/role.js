@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-07-23 10:24:22
  * @LastEditors: CYZ
- * @LastEditTime: 2020-12-16 11:06:26
+ * @LastEditTime: 2020-12-17 10:16:10
  */
 import request from '@/utils/request'
 import request1 from '@/utils/request1'
@@ -20,13 +20,6 @@ export function listRole(query) {
     })
 }
 
-// 查询流程类型详细
-export function getFlow(FlowId) {
-    return request1({
-        url: `${prefix}` + FlowId,
-        method: 'get'
-    })
-}
 
 // 新增流程类型
 export function addRole(data) {

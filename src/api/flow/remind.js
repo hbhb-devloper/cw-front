@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-11-18 18:32:13
  * @LastEditors: CYZ
- * @LastEditTime: 2020-12-16 11:05:44
+ * @LastEditTime: 2020-12-17 17:02:12
  */
 import request from '@/utils/request'
 import request1 from '@/utils/request1'
@@ -27,7 +27,7 @@ export function addData(data) {
 //修改提醒
 export function upData(data) {
     return request1({
-        url: `${prefix}/notice/update`,
+        url: `${prefix}/notice`,
         method: 'put',
         data
     })
@@ -42,7 +42,7 @@ export function DeleteRecord(id) {
 //记录详情
 export function getInfo(id) {
     return request1({
-        url: `${prefix}/notice/info/${id}`,
+        url: `${prefix}/notice/${id}`,
         method: 'get'
     })
 }

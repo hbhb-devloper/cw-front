@@ -71,7 +71,7 @@
       @selection-change="handleSelectionChange"
     >
       <!-- <el-table-column type="selection" width="55" align="center" /> -->
-      <el-table-column label="流程id" prop="flowId" width="120" align="center" />
+      <el-table-column label="流程id" prop="id" width="120" align="center" />
       <el-table-column
         label="流程名称"
         prop="flowName"
@@ -285,7 +285,7 @@ export default {
       });
     },
     gotodetail(data) {
-      this.$router.push(`/flow/customize/vfd/${data.flowId}`);
+      this.$router.push(`/flow/customize/vfd/${data.id}`);
     },
     getTypeList() {
       listType().then((response) => {
@@ -297,7 +297,7 @@ export default {
       this.loading = true;
       listFlow(this.queryParams).then((response) => {
         this.flowList = response.list;
-        this.total = response.count;
+        this.total = response.totalRow;
         this.loading = false;
       });
     },
@@ -342,12 +342,12 @@ export default {
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
-      const flowId = row.flowId || this.ids;
+      const flowId = row.id || this.ids;
       getFlow(flowId).then((response) => {
         this.form = response;
         this.form.unitId = [];
-        this.form.flowUnitInfoVOS.map((item) => {
-          this.form.unitId.push(item.unitId);
+        this.form.unitIds.map((item) => {
+          this.form.unitId.push(item);
         });
         this.$nextTick(() => {
           this.$refs.dept.setCheckedKeys(this.form.unitId);
@@ -361,8 +361,8 @@ export default {
     submitForm: function () {
       this.$refs["form"].validate((valid) => {
         if (valid) {
-          if (this.form.flowId != undefined) {
-            this.form.unitId = this.getMenuAllCheckedKeys();
+          if (this.form.id != undefined) {
+            this.form.unitIds = this.getMenuAllCheckedKeys();
             updateFlow(this.form)
               .then((response) => {
                 this.msgSuccess("修改成功");
@@ -373,7 +373,7 @@ export default {
                 this.msgError(err.message);
               });
           } else {
-            this.form.unitId = this.getMenuAllCheckedKeys();
+            this.form.unitIds = this.getMenuAllCheckedKeys();
             addFlow(this.form)
               .then((response) => {
                 this.msgSuccess("新增成功");
@@ -391,7 +391,7 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const Flowname = row.flowName;
-      const FlowId = row.flowId;
+      const FlowId = row.id;
       this.$confirm(
         '是否确认删除流程名称为"' + Flowname + '"的数据项?',
         "警告",
