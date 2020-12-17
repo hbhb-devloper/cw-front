@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-07-27 10:48:37
  * @LastEditors: CYZ
- * @LastEditTime: 2020-12-17 17:17:31
+ * @LastEditTime: 2020-12-17 23:51:00
  */
 
 import request from '@/utils/request'
@@ -95,14 +95,14 @@ export function delPropNotice(id) {
 // 删除节点
 export function delProp(flowNodeId) {
     return request1({
-        url: `${prefix}/node/delete/` + flowNodeId,
+        url: `${prefix}/node/` + flowNodeId,
         method: 'delete',
     })
 }
 // 删除线
 export function delLine(fromNodeId, toNodeId) {
     return request1({
-        url: `${prefix}/node/delete/line?fromNodeId=` + fromNodeId + "&toNodeId=" + toNodeId,
+        url: `${prefix}/node/line?fromNodeId=` + fromNodeId + "&toNodeId=" + toNodeId,
         method: 'delete',
     })
 }
