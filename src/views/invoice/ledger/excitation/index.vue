@@ -120,6 +120,9 @@
           >导入数据</el-button
         >
       </el-upload>
+      <el-table :data="tableData1">
+        <el-table-column label="数据导入检查结果" prop="date" />
+      </el-table>
     </el-dialog>
   </div>
 </template>
@@ -149,7 +152,8 @@ export default {
 
       tableData: [], //表格数据
       loading: false, //表格加载动画
-      morenUnit:undefined
+      morenUnit:undefined,
+      tableData1: [],
     };
   },
   components: {
@@ -204,6 +208,7 @@ export default {
       });
     },
     handleImport() {
+      this.tableData1 = [];
       this.open = true;
     },
     //下载导入模板
@@ -246,8 +251,16 @@ export default {
         .then((res) => {
           loading.close();
           if (res.data.status == 1000) {
-            this.$message.success("导入成功！");
-            this.getList();
+            if (res.data.data == "") {
+              this.$message.success("导入成功！");
+              this.open = false;
+              this.getList();
+            } else {
+              this.tableData1 = [];
+              for (let item in res.data.data) {
+                this.tableData1.push({ date: res.data.data[item] });
+              }
+            }
           } else {
             this.msgError(res.data.message);
           }
