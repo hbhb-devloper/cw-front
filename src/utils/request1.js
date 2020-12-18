@@ -29,10 +29,12 @@ service.interceptors.request.use(config => {
 service.interceptors.response.use(
   response => {
     const res = response.data;
-    // const code = res.status;
+    // 用于token接口响应体解析
+    if (res.access_token) {
+      return res
+    }
     const code = res.code;
     const message = errorCode[code] || res.message || errorCode['default']
-    // if (code === 1000) {
     if (code === '00000') {
       return res.data
     } else if (code === 'A0002' ||code === 'A0204') {

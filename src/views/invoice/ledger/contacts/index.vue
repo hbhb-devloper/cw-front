@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-12-07 11:36:21
  * @LastEditors: CYZ
- * @LastEditTime: 2020-12-08 15:12:24
+ * @LastEditTime: 2020-12-16 16:35:10
 -->
 <template>
   <div class="containers">
@@ -229,6 +229,9 @@
           >导入数据</el-button
         >
       </el-upload>
+      <el-table :data="tableData1">
+        <el-table-column label="数据导入检查结果" prop="date" />
+      </el-table>
     </el-dialog>
   </div>
 </template>
@@ -258,6 +261,7 @@ export default {
       open: false,
       ActionUrl: process.env.VUE_APP_BASE_API + "/invoice/account/run/import",
       morenUnit: undefined,
+      tableData1: [],
     };
   },
   components: {
@@ -334,6 +338,7 @@ export default {
       this.handleQuery();
     },
     handleImport() {
+      this.tableData1 = [];
       this.open = true;
     },
     UploadFile(param) {
@@ -358,13 +363,20 @@ export default {
         .then((res) => {
           loading.close();
           if (res.data.status == 1000) {
-            this.$message.success("数据导入成功");
-            this.getList();
-            this.getUpdateTimes();
+            if (res.data.data == "") {
+              this.$message.success("数据导入成功");
+              this.open = false;
+              this.getUpdateTimes();
+              this.getList();
+            } else {
+              this.tableData1 = [];
+              for (let item in res.data.data) {
+                this.tableData1.push({ date: res.data.data[item] });
+              }
+            }
           } else {
             this.msgError("数据导入失败");
           }
-          this.open = false;
         })
         .catch((err) => {
           loading.close();

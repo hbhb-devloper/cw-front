@@ -72,7 +72,7 @@
           type="success"
           icon="el-icon-download"
           size="mini"
-          @click="centerDialogVisible = true"
+          @click="openCenterDialogVisible"
           >导入</el-button
         >
       </el-col>
@@ -652,6 +652,10 @@ export default {
     this.getTreeselect();
   },
   methods: {
+    openCenterDialogVisible(){
+      this.centerDialogVisible=true
+      this.codeMsgList=[]
+    },
     downTemplate() {
       exportData1(getToken(), "", `${prefix}/income/export/template`, "收款管理导入模板");
     },
@@ -741,10 +745,20 @@ export default {
     handleSuccess(res) {
       this.fileList = [];
       this.loadingoption.close();
-      this.centerDialogVisible = false;
       if (res.code == "00000") {
-        this.$message.success("导入成功");
-        this.getList();
+        if (res.data == "") {
+          this.$message.success("导入成功");
+          this.getList();
+          this.centerDialogVisible = false;
+        } else {
+          this.codeMsgList=[]
+          for (let i in res.data) {
+            var j = {};
+            j.codeMsg = res.data[i];
+            this.codeMsgList.push(j);
+          }
+          console.log('this.codeMsgList',this.codeMsgList);
+        }
       } else if (res.code == "80898") {
         res.message = res.message.substr(1, res.message.length - 2);
         this.errorMessage = res.message.split(",");

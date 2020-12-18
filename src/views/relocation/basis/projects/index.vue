@@ -137,12 +137,12 @@
         width="150"
         align="center"
       />
-      <el-table-column
+      <!-- <el-table-column
         label="EOMS光缆割接流程工单号"
         prop="eomsCutNum"
         width="150"
         align="center"
-      />
+      /> -->
       <el-table-column
         label="计划施工时间"
         prop="planStartTime"
@@ -338,6 +338,12 @@
       <el-table-column
         label="合同类型"
         prop="contractType"
+        width="150"
+        align="center"
+      />
+       <el-table-column
+        label="是否包含附件"
+        prop="isFile"
         width="150"
         align="center"
       />
@@ -894,13 +900,13 @@ export default {
             trigger: "blur",
           },
         ],
-        eomsCutNum: [
-          {
-            required: true,
-            message: "请输入EOMS光缆割接流程工单号",
-            trigger: "blur",
-          },
-        ],
+        // eomsCutNum: [
+        //   {
+        //     required: true,
+        //     message: "请输入EOMS光缆割接流程工单号",
+        //     trigger: "blur",
+        //   },
+        // ],
         planStartTime: [
           { required: true, message: "请选择计划施工时间", trigger: "blur" },
         ],
@@ -1073,6 +1079,7 @@ export default {
     },
     opencenterDialogVisible() {
       this.fileList = [];
+      this.codeMsgList=[]
       this.$nextTick(() => {
         this.centerDialogVisible = true;
       });
@@ -1127,12 +1134,20 @@ export default {
       //   // this.loadingoption = undefined;
       // }
       this.loadingoption.close();
-
       if (res.code == "00000") {
-        this.$message.success("导入上传成功");
-        this.getList();
-        this.centerDialogVisible = false;
+        if (res.data == "") {
+          this.$message.success("导入上传成功");
+          this.getList();
+          this.centerDialogVisible = false;
         this.ContractVisible = false;
+        } else {
+          this.codeMsgList=[]
+          for (let i in res.data) {
+            var j = {};
+            j.codeMsg = res.data[i];
+            this.codeMsgList.push(j);
+          }
+        }
       } else if (res.code == "80898") {
         res.message = res.message.substr(1, res.message.length - 2);
         this.errorMessage = res.message.split(",");

@@ -42,6 +42,7 @@ const user = {
             return new Promise((resolve, reject) => {
                 check(userInfo).then(res => {
                     login(userInfo).then(res => {
+                        console.log('login',res);
                         setToken('Bearer ' + res.access_token)
                         commit('SET_TOKEN', 'Bearer ' + res.access_token)
                         resolve()

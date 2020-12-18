@@ -756,7 +756,6 @@ import {
   cancellation,
 } from "@/api/fund/management/index";
 import { resourceTreeByUN } from "@/api/system/unit";
-import { getLaunchType } from "@/api/budget/report/report";
 import { listUnit } from "@/api/system/unit";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
@@ -766,6 +765,7 @@ import ElFormItem from "../../../components/customize/ElFormItem/index";
 import { mapGetters } from "vuex";
 import axios from "axios";
 import { prefix } from "@/api/system/system";
+import { FlowTypeList } from "@/api/flow/list.js";
 
 export default {
   name: "Flowtype",
@@ -992,7 +992,7 @@ export default {
         this.$message.warning("该发票已作废");
         return;
       }
-      getLaunchType({ module: 101 }).then((res) => {
+      FlowTypeList({ module: 101 }).then((res) => {
         this.typeState = res;
         this.open1 = true;
         this.title = "发起审批";

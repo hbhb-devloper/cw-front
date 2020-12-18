@@ -128,7 +128,7 @@
 </template>
 
 <script>
-import { listType, addType, updateType, delFlowType , listModule} from "@/api/flow/type";
+import { listType, addType, updateType, delFlowType} from "@/api/flow/type";
 
 export default {
   name: "Flowtype",
@@ -189,7 +189,7 @@ export default {
       this.loading = true;
       listType(this.queryParams).then((response) => {
         this.typeList = response.list;
-        this.total = response.count;
+        this.total = response.totalRow;
         this.loading = false;
       });
     },

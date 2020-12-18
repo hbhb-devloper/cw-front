@@ -225,3 +225,11 @@ export function getInfo() {
         method: 'get'
     })
 }
+
+// 获取当前所有用户的信息（不分页）
+export function userSelect() {
+    return request1({
+        url: `${prefix}/user/select`,
+        method: 'get'
+    })
+}
