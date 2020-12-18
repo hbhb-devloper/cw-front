@@ -853,7 +853,7 @@ export default {
   methods: {
     getMenuTreeselect() {
       resourceTreeByUN().then((response) => {
-        this.queryParams.unitId = response.checked[0];
+        this.queryParams.unitId = response.checked;
         this.deptOptions = response.list;
         this.getList();
       });

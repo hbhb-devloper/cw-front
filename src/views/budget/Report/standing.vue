@@ -425,15 +425,15 @@ export default {
       //获取单位树形
       if (!this.obj.unitId) {
         resourceTreeByUN().then((res) => {
-        this.obj.unitId = res.checked[0];
-        this.morenUnit=res.checked[0];
+        this.obj.unitId = res.checked;
+        this.morenUnit=res.checked;
         this.deptOptions = res.list;
         this.handleGetList();
       });
       }else{
         resourceTreeByUN().then((res) => {
-        // this.obj.unitId = res.checked[0];
-        this.morenUnit=res.checked[0];
+        // this.obj.unitId = res.checked;
+        this.morenUnit=res.checked;
         this.deptOptions = res.list;
         this.handleGetList();
       });

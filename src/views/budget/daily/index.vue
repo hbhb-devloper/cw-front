@@ -455,8 +455,8 @@ export default {
     //获取单位
     getUnitList() {
       resourceTreeByUN().then((res) => {
-        this.obj.unitId = res.checked[0];
-        this.morenUnit= res.checked[0];
+        this.obj.unitId = res.checked;
+        this.morenUnit= res.checked;
         this.deptOptions = res.list;
       });
       //获取增值税下拉

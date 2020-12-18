@@ -175,7 +175,7 @@ export default {
       let that = this;
       resourceTreeByUN().then((response) => {
         that.deptOptions = response.list;
-        // that.queryParams.unitId = response.checked[0];
+        // that.queryParams.unitId = response.checked;
         // that.getList();
       });
     },

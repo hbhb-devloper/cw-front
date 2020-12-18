@@ -252,9 +252,9 @@ export default {
     },
     getListUnit() {
       resourceTreeByUN().then((res) => {
-        this.queryParams.unitId = res.checked[0];
+        this.queryParams.unitId = res.checked;
         this.unitList = res.list;
-        this.morenUnit=res.checked[0];
+        this.morenUnit=res.checked;
         this.getLists();
       });
       this.getDicts("invoice", "tax_type").then((response) => {
