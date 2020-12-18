@@ -54,7 +54,7 @@
           @click="handleQuery"
           >搜索</el-button
         >
-        <el-button icon="el-icon-refresh" size="mini" @click="save"
+        <el-button icon="el-icon-refresh" size="mini" @click="save" :disabled="!editAble"
           >保存</el-button
         >
       </el-form-item>
@@ -81,8 +81,9 @@
                 v-model="item.applyAmount"
                 type="number"
                 style="width: 100px"
+                :disabled="!editAble"
               ></el-input>
-              <el-button type="text" class="button">√</el-button>
+              <!-- <el-button type="text" class="button">√</el-button> -->
             </div>
           </div>
         </el-card>
@@ -125,7 +126,8 @@ export default {
       // 表单参数
       form: {},
       // 次序选项
-      timeOption:[]
+      timeOption:[],
+      editAble:true
     };
   },
   created() {
@@ -140,6 +142,7 @@ export default {
       applyObj.list=this.goodsList
       goodsApply(applyObj).then(res=>{
         console.log('goodsApply',res);
+        this.getList()
       })
     },
     // 根据时间获取一共有几次
@@ -165,6 +168,7 @@ export default {
     /** 查询商品列表 */
     getList() {
       goodsList(this.queryParams).then((response) => {
+        this.editAble=response.flag
         this.goodsList = response.list;
         this.total = response.count;
       });

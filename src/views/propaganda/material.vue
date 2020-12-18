@@ -53,13 +53,17 @@
             :data="LibraryTree"
             :props="defaultProps"
             :expand-on-click-node="false"
-            :filter-node-method="filterNode"
             ref="tree"
             default-expand-all
             @node-click="handleNodeClick"
+            highlight-current
             draggable
             v-loading="loading"
-          />
+          >
+            <span  slot-scope="{ node ,data }">
+              <span :class="!data.state?'colorRed':''">{{ node.label }}</span>
+            </span>
+          </el-tree>
         </div>
       </el-col>
       <!--用户数据-->
@@ -87,16 +91,16 @@
             <div>{{ publicityForm.attribute }}</div>
           </el-form-item>
           <el-form-item label="是否加盖杭州分公司合同章">
-            <div>{{ publicityForm.hasSeal }}</div>
+            <div>{{ publicityForm.hasSealLable }}</div>
           </el-form-item>
           <el-form-item label="是否有编号">
-            <div>{{ publicityForm.hasNum }}</div>
+            <div>{{ publicityForm.hasNumLable }}</div>
           </el-form-item>
           <el-form-item label="版面关联人">
             <div>{{ publicityForm.updateName }}</div>
           </el-form-item>
           <el-form-item label="是否使用">
-            <div>{{ publicityForm.state }}</div>
+            <div>{{ publicityForm.stateLable }}</div>
           </el-form-item>
           <el-form-item label="编辑时间">
             <div>{{ publicityForm.updateTime }}</div>
@@ -206,8 +210,8 @@
                 placeholder="请选择物料属性"
                 style="width: 100%"
               >
-                <el-option key="1" label="宣传单页" value="1"></el-option>
-                <el-option key="0" label="业务单式" value="0"> </el-option>
+                <el-option key="1" label="宣传单页" :value="1"></el-option>
+                <el-option key="0" label="业务单式" :value="0"> </el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -259,7 +263,7 @@
           </el-col>
 
           <el-col :span="12" v-if="isMold != 1">
-            <el-form-item label="是否有编号">
+            <el-form-item label="是否有编号" prop="state">
               <el-switch v-model="form.hasNum"></el-switch>
             </el-form-item>
           </el-col>
@@ -271,13 +275,17 @@
               ></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="12" v-if="isMold != 1">
-            <el-form-item label="是否使用">
+          <el-col :span="12">
+            <el-form-item label="是否使用" prop="state">
               <el-switch v-model="form.state"></el-switch>
             </el-form-item>
           </el-col>
           <el-col :span="24" v-if="isMold != 1">
-            <el-form-item label="是否加盖杭州分公司合同章" label-width="200px">
+            <el-form-item
+              label="是否加盖杭州分公司合同章"
+              label-width="200px"
+              prop="hasSeal"
+            >
               <el-switch v-model="form.hasSeal"></el-switch>
             </el-form-item>
           </el-col>
@@ -291,7 +299,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="24" v-if="isMold != 1" style="height: 150px">
-            <el-form-item label="上传照片">
+            <el-form-item label="上传照片" prop="pic">
               <el-upload
                 action="https://jsonplaceholder.typicode.com/posts/"
                 list-type="picture-card"
@@ -371,6 +379,7 @@ export default {
       // 查询参数
       queryParams: {},
       open: false,
+      libraryId: undefined,
       // 表单校验
       rules: {
         goodsName: [
@@ -404,6 +413,11 @@ export default {
     deptName(val) {
       this.$refs.tree.filter(val);
     },
+    "form.mold"() {
+      this.$nextTick(() => {
+        this.isMold = this.form.mold;
+      });
+    },
   },
   created() {
     this.getTreeselect();
@@ -422,11 +436,11 @@ export default {
         console.log("getSetting", res);
         // this.settingForm = res;
         this.settingForm.contents = res[0].contents;
-        res.map((item,index) => {
-          let deadObj={
-            deadline:item.deadline
-          }
-          this.applicationList.push(deadObj)
+        res.map((item, index) => {
+          let deadObj = {
+            deadline: item.deadline,
+          };
+          this.applicationList.push(deadObj);
         });
         this.SetVisible = true;
       });
@@ -445,7 +459,7 @@ export default {
       });
       addSetting(this.settingForm).then((res) => {
         console.log("addSetting", res);
-        this.msgSuccess("添加 成功");
+        this.msgSuccess("添加成功");
         this.SetVisible = false;
       });
     },
@@ -453,18 +467,17 @@ export default {
       this.loading = true;
       getLibraryTree(this.queryParams).then((response) => {
         this.loading = false;
-        console.log("getLibraryTree", response);
         this.LibraryTree = response;
       });
     },
     // 筛选节点
-    filterNode(value, data) {
-      if (!value) return true;
-      return data.label.indexOf(value) !== -1;
-    },
+    // filterNode(value, data) {
+    //   if (!value) return true;
+    //   return data.label.indexOf(value) !== -1;
+    // },
     // 节点单击事件
     handleNodeClick(data) {
-      // this.queryParams.unitId = data.id;
+      this.libraryId = data.id;
       this.getListDetail(data);
     },
     getListDetail(data) {
@@ -499,12 +512,12 @@ export default {
       this.reset();
     },
     /** 修改按钮操作 */
-    handleUpdate(row) {
+    handleUpdate() {
       this.reset();
       // this.getTreeselect();
-      const userId = row.id || this.ids;
+      const libraryId = this.libraryId;
 
-      getUser(userId).then((response) => {
+      getLibraryDetail(libraryId).then((response) => {
         this.form = response;
         this.open = true;
         this.title = "修改";
@@ -512,28 +525,25 @@ export default {
     },
     submitForm: function () {
       this.$refs["form"].validate((valid) => {
-        console.log("valid", valid);
         if (valid) {
           if (this.form.id != undefined) {
-            putLibrary(this.form)
-              .then((response) => {
-                this.msgSuccess("修改成功");
-                this.open = false;
-                this.getList();
-              })
-              .catch((err) => {
-                this.msgError(err.message);
-              });
+            putLibrary(this.form).then((response) => {
+              this.msgSuccess("修改成功");
+              this.open = false;
+              this.getList();
+            });
+            // .catch((err) => {
+            //   this.msgError(err.message);
+            // });
           } else {
-            addLibrary(this.form)
-              .then((response) => {
-                this.msgSuccess("新增成功");
-                this.open = false;
-                this.getList();
-              })
-              .catch((err) => {
-                this.msgError(err.message);
-              });
+            addLibrary(this.form).then((response) => {
+              this.msgSuccess("新增成功");
+              this.open = false;
+              this.getList();
+            });
+            // .catch((err) => {
+            //   this.msgError(err.message);
+            // });
           }
         }
       });
@@ -587,5 +597,8 @@ export default {
 }
 .picItem /deep/ .el-form-item__content {
   width: 440px !important;
+}
+.colorRed {
+  color: red;
 }
 </style>
