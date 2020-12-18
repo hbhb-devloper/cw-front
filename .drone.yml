@@ -18,7 +18,7 @@ steps:
         - prd
 
   # 打包
-  - name: build
+  - name: build-prd
     image: node:10-alpine
     commands:
       - node -v
