@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-07-20 18:22:09
  * @LastEditors: CYZ
- * @LastEditTime: 2020-12-17 16:41:09
+ * @LastEditTime: 2020-12-18 10:54:20
 --> 
 <template>
   <div class="app-container">
@@ -347,7 +347,7 @@ export default {
       this.submitLoading = true;
       if (this.FormType == "jbxx") {
         if (this.node.flowNodeId) {
-          putFlowProp(this.node).then((res) => {
+          addFlowProp(this.node).then((res) => {
             this.$message.success("修改属性成功");
             this.ItemVisible = false;
             this.submitLoading = false;

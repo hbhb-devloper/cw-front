@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-07-27 10:48:37
  * @LastEditors: CYZ
- * @LastEditTime: 2020-12-17 23:51:00
+ * @LastEditTime: 2020-12-18 10:54:39
  */
 
 import request from '@/utils/request'
@@ -48,7 +48,7 @@ export function getFlowRoleUser(flowRoleId, unitId) {
 // 新增流程节点属性
 export function addFlowProp(data) {
     return request1({
-        url: `${prefix}/prop`,
+        url: `${prefix}/node/prop`,
         method: 'post',
         data: data
     })
