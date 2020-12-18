@@ -1,19 +1,17 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true">
-      <el-form-item label="单位" prop="roleName">
-        <el-input
-          v-model="queryParams.roleName"
-          placeholder="请输入单位"
-          clearable
-          size="small"
+      <el-form-item label="单位" prop="unitId">
+       <treeselect
+          v-model="queryParams.unitId"
+          :options="deptOptions"
+          placeholder="选择分公司"
           style="width: 200px"
-          @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="营业厅" prop="roleName">
+      <el-form-item label="营业厅" prop="hallId">
         <el-input
-          v-model="queryParams.roleName"
+          v-model="queryParams.hallId"
           placeholder="请输入营业厅"
           clearable
           size="small"
@@ -21,30 +19,34 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="日期" prop="roleName">
+      <el-form-item label="日期" prop="time">
         <el-date-picker
-          v-model="queryParams.value1"
-          type="datetime"
+          v-model="queryParams.time"
+          type="month"
           placeholder="选择日期时间"
           size="small"
           style="width: 200px"
+          value-format="yyyy-MM"
+          format="yyyy-MM"
+          @change="changeTime"
         >
         </el-date-picker>
         <el-select
-          v-model="queryParams.state"
-          placeholder="请选择归属部门"
+          v-model="queryParams.goodsIndex"
+          placeholder="请选择第几次"
           clearable
           size="small"
           style="width: 200px"
         >
           <el-option
-            v-for="dict in statusOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
+            v-for="(dict,index) in timeOption"
+            :key="index"
+            :label="'第'+dict+'次'"
+            :value="dict"
           />
         </el-select>
       </el-form-item>
+      
       <el-form-item>
         <el-button
           type="primary"
@@ -72,7 +74,7 @@
       </el-col>
     </el-row>
     
-    <el-table v-loading="loading" :data="roleList">
+    <el-table v-loading="loading" :data="singleList">
       <el-table-column align="center" label="序号" prop="id" />
       <el-table-column
         align="center"
@@ -83,12 +85,12 @@
       <el-table-column
         align="center"
         label="物料名称"
-        prop="roleKey"
+        prop="goodsName"
         :show-overflow-tooltip="true"
       />
-      <el-table-column align="center" label="计量单位" prop="sortNum" />
+      <el-table-column align="center" label="计量单位" prop="unit" />
       <el-table-column align="center" label="物料归属单位" prop="sortNum" />
-      <el-table-column align="center" label="申请数量" prop="sortNum" />
+      <el-table-column align="center" label="申请数量" prop="applyAmount" />
       <el-table-column align="center" label="修改后申请数量" prop="sortNum" >
         <template slot-scope="scope">
           <el-input
@@ -98,69 +100,70 @@
         </template>
       </el-table-column>
     </el-table>
-
-    <pagination
-      v-show="total > 0"
-      :total="total"
-      :page.sync="queryParams.pageNum"
-      :limit.sync="queryParams.pageSize"
-      @pagination="getList"
-    />
   </div>
 </template>
 
 <script>
+import { goodsTime } from "@/api/propaganda/flyer";
 import { listUnit, UNroleMenuTreeselect } from "@/api/system/unit";
-import { pageRole } from "@/api/system/role";
+import { resourceTreeByUN } from "@/api/system/unit";
+import { verifySingle , verifySimplex } from "@/api/propaganda/summary";
 import { resourceTree, roleMenuTreeselect } from "@/api/system/resource";
+import Treeselect from "@riophae/vue-treeselect";
+
+import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 export default {
   name: "Role",
+  components: { Treeselect },
   data() {
     return {
       // 遮罩层
       loading: true,
-      // 总条数
-      total: 0,
-      // 角色表格数据
-      roleList: [],
+      // 宣传单页表格数据
+      singleList: [],
       // 状态数据字典
       statusOptions: [
         { dictValue: 1, dictLabel: "正常" },
         { dictValue: 2, dictLabel: "停用" },
       ],
+      // 部门树选项
+      deptOptions: undefined,
       queryParams: {
-        pageNum: 1,
-        pageSize: 10,
-        roleType: "UN",
-        roleName: undefined,
-        roleKey: undefined,
-        state: undefined,
+        hallId: 1,
       },
+      timeOption:[]
     };
   },
   created() {
-    this.getList();
-    this.getMenuTreeselect();
+    // this.getList();
+    this.getTreeselect();
+
   },
   methods: {
+     // 根据时间获取一共有几次
+    changeTime() {
+      goodsTime(this.queryParams.time).then(res=>{
+        this.timeOption=res.goodsIndexList
+      })
+    },
+    /** 查询部门下拉树结构 */
+    getTreeselect() {
+      resourceTreeByUN().then((response) => {
+        this.deptOptions = response.list;
+        this.queryParams.unitId = response.checked[0];
+        this.getList();
+      });
+    },
     /** 查询角色列表 */
     getList() {
       this.loading = true;
-      pageRole(this.queryParams).then((response) => {
-        this.roleList = response.list;
-        this.total = response.count;
+      verifySingle(this.queryParams).then((response) => {
+        this.singleList = response.singleList;
         this.loading = false;
-      });
-    },
-    /** 查询菜单树结构 */
-    getMenuTreeselect() {
-      listUnit().then((response) => {
-        this.menuOptions = response;
       });
     },
     /** 搜索按钮操作 */
     handleQuery() {
-      this.queryParams.pageNum = 1;
       this.getList();
     },
     /** 重置按钮操作 */

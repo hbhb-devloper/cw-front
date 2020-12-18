@@ -148,7 +148,6 @@ export default {
     // 根据时间获取一共有几次
     changeTime() {
       goodsTime(this.queryParams.time).then(res=>{
-        console.log('goodsTime',res);
         this.timeOption=res.goodsIndexList
       })
     },
