@@ -477,6 +477,7 @@ export default {
           this.getList();
           this.centerDialogVisible = false;
         } else {
+          this.codeMsgList=[]
           for (let i in res.data) {
             var j = {};
             j.codeMsg = res.data[i];

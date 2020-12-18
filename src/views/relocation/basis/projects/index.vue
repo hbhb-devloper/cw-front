@@ -1141,12 +1141,12 @@ export default {
           this.centerDialogVisible = false;
         this.ContractVisible = false;
         } else {
+          this.codeMsgList=[]
           for (let i in res.data) {
             var j = {};
             j.codeMsg = res.data[i];
             this.codeMsgList.push(j);
           }
-          console.log('this.codeMsgList',this.codeMsgList);
         }
       } else if (res.code == "80898") {
         res.message = res.message.substr(1, res.message.length - 2);
