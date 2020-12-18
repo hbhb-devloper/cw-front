@@ -13,6 +13,9 @@ steps:
     volumes:
       - name: node_cache
         path: /cache
+    when:
+      branch:
+        - prd
 
   # 打包
   - name: build
@@ -34,6 +37,9 @@ steps:
     volumes:
       - name: node_cache
         path: /cache
+    when:
+      branch:
+        - prd
 
   # 部署
   - name: deploy
