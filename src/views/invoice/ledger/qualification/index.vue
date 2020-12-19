@@ -238,8 +238,8 @@ export default {
     //获取部门列表
     getUnitId() {
       resourceTreeByUN().then((res) => {
-        this.queryParams.dptId = res.checked[0];
-        this.morenUnit = res.checked[0];
+        this.queryParams.dptId = res.checked;
+        this.morenUnit = res.checked;
         this.deptOptions = res.list;
       });
     },

@@ -174,7 +174,7 @@ export default {
     },
     getList() {
       this.loading = true;
-      listRole().then((response) => {
+      listRole(this.queryParams).then((response) => {
         this.flowList = response.list;
         this.total = response.totalRow;
         this.loading = false;

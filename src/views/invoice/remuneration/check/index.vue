@@ -238,8 +238,8 @@ export default {
     getUnitList() {
       resourceTreeByUN().then((res) => {
         console.log(res);
-        this.queryParams.unitId = res.checked[0];
-        this.morenUnit=res.checked[0];
+        this.queryParams.unitId = res.checked;
+        this.morenUnit=res.checked;
         this.deptOptions = res.list;
         this.getLists();
       });

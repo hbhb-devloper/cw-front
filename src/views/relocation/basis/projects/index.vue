@@ -1196,7 +1196,7 @@ export default {
       resourceTreeByUN().then((response) => {
         console.log(response);
         that.deptOptions = response.list;
-        that.morenUnit = response.checked[0];
+        that.morenUnit = response.checked;
         that.queryParams.unitId = that.morenUnit;
         that.getList();
       });
