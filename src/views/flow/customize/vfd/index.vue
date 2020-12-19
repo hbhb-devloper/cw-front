@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-07-20 18:22:09
  * @LastEditors: CYZ
- * @LastEditTime: 2020-12-18 10:54:20
+ * @LastEditTime: 2020-12-19 18:12:06
 --> 
 <template>
   <div class="app-container">
@@ -524,11 +524,14 @@ export default {
           if (!this.node.userId) {
             this.node.userId = undefined;
           }
-          getFlowRoleUser(this.node.flowRoleId, this.node.unitId).then(
+          if (this.node.unitId&&this.node.flowRoleId) {
+            getFlowRoleUser(this.node.flowRoleId, this.node.unitId).then(
             (res) => {
               that.uesrOptions = res;
             }
           );
+          }
+          
         } else {
           // this.node.flowNodeId = nodeId;
         }
