@@ -5,31 +5,44 @@
         <treeselect
           v-model="queryParams.unitId"
           :options="deptOptions"
-          placeholder="请选择归属部门"
-          style="width: 240px"
+          placeholder="选择分公司"
+          style="width: 200px"
         />
       </el-form-item>
-      <el-form-item label="日期" prop="roleName">
+      <el-form-item label="营业厅" prop="hallId">
+        <el-input
+          v-model="queryParams.hallId"
+          placeholder="请输入营业厅"
+          clearable
+          size="small"
+          style="width: 200px"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="日期" prop="time">
         <el-date-picker
-          v-model="queryParams.value1"
-          type="datetime"
+          v-model="queryParams.time"
+          type="month"
           placeholder="选择日期时间"
           size="small"
           style="width: 200px"
+          value-format="yyyy-MM"
+          format="yyyy-MM"
+          @change="changeTime"
         >
         </el-date-picker>
         <el-select
-          v-model="queryParams.state"
-          placeholder="请选择归属部门"
+          v-model="queryParams.goodsIndex"
+          placeholder="请选择第几次"
           clearable
           size="small"
           style="width: 200px"
         >
           <el-option
-            v-for="dict in statusOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
+            v-for="(dict, index) in timeOption"
+            :key="index"
+            :label="'第' + dict + '次'"
+            :value="dict"
           />
         </el-select>
       </el-form-item>
@@ -42,48 +55,80 @@
           >搜索</el-button
         >
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery"
-          >保存</el-button
+          >发起审批</el-button
         >
       </el-form-item>
     </el-form>
     <div class="tips">
       如果发起审批，等待审核的默认审核通过，没有提交的同意采购数为0。
       <el-button size="mini" type="text">查看各单位状态</el-button>
-      <el-button size="mini" type="text">查看明细</el-button>
+      <el-button size="mini" type="text" @click="openDetail"
+        >查看明细</el-button
+      >
     </div>
-    <el-table v-loading="loading" :data="roleList">
-      <el-table-column align="center" label="序号" prop="id" />
+    <el-table v-loading="loading" :data="GoodsList">
+      <el-table-column align="center" label="序号" prop="lineNum" />
+      <el-table-column align="center" label="单位" prop="unitName" />
+      <el-table-column align="center" label="物料名称" prop="goodsName" />
+      <el-table-column align="center" label="计量单位" prop="unit" />
       <el-table-column
         align="center"
-        label="单位"
-        prop="roleName"
-        :show-overflow-tooltip="true"
+        label="业务单式申请数量"
+        prop="simplexAmount"
       />
       <el-table-column
         align="center"
-        label="物料名称"
-        prop="roleKey"
-        :show-overflow-tooltip="true"
+        label="宣传单页申请数量"
+        prop="singleAmount"
       />
-      <el-table-column align="center" label="计量单位" prop="sortNum" />
-      <el-table-column align="center" label="业务单式申请数量" prop="sortNum" />
-      <el-table-column align="center" label="宣传单页申请数量" prop="sortNum" />
     </el-table>
 
-    <pagination
-      v-show="total > 0"
-      :total="total"
-      :page.sync="queryParams.pageNum"
-      :limit.sync="queryParams.pageSize"
-      @pagination="getList"
-    />
+    <!-- 查看明细详情弹窗 -->
+    <el-dialog :title="title" :visible.sync="detailOpen" width="800px">
+    <div class="summarytitle">宣传单页申请表</div>
+      <el-table v-loading="loading" :data="detailSingleList">
+        <el-table-column align="center" label="序号" prop="lineNum" />
+        <el-table-column align="center" label="单位" prop="unitName" />
+        <el-table-column align="center" label="物料名称" prop="goodsName" />
+        <el-table-column align="center" label="计量单位" prop="unit" />
+        <el-table-column
+          align="center"
+          label="业务单式申请数量"
+          prop="simplexAmount"
+        />
+        <el-table-column
+          align="center"
+          label="宣传单页申请数量"
+          prop="singleAmount"
+        />
+      </el-table>
+    <div class="summarytitle">业务单式申请表</div>
+      <el-table v-loading="loading" :data="detailSimpleList">
+        <el-table-column align="center" label="序号" prop="lineNum" />
+        <el-table-column align="center" label="单位" prop="unitName" />
+        <el-table-column align="center" label="物料名称" prop="goodsName" />
+        <el-table-column align="center" label="计量单位" prop="unit" />
+        <el-table-column
+          align="center"
+          label="业务单式申请数量"
+          prop="simplexAmount"
+        />
+        <el-table-column
+          align="center"
+          label="宣传单页申请数量"
+          prop="singleAmount"
+        />
+      </el-table>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { listUnit, UNroleMenuTreeselect } from "@/api/system/unit";
-import { pageRole } from "@/api/system/role";
-import { resourceTree, roleMenuTreeselect } from "@/api/system/resource";
+import {
+  applicationGoods,
+  applicationDetailInfoList
+} from "@/api/propaganda/cost";
+import { goodsTime } from "@/api/propaganda/flyer";
 import { resourceTreeByUN } from "@/api/system/unit";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
@@ -92,57 +137,60 @@ export default {
   components: { Treeselect },
   data() {
     return {
+      title:'',
+      // 详情弹窗判断
+      detailOpen: false,
       // 遮罩层
       loading: true,
-      // 总条数
-      total: 0,
-      // 角色表格数据
-      roleList: [],
-      // 状态数据字典
-      statusOptions: [
-        { dictValue: 1, dictLabel: "正常" },
-        { dictValue: 2, dictLabel: "停用" },
-      ],
-      queryParams: {
-        pageNum: 1,
-        pageSize: 10,
-        roleType: "UN",
-        roleName: undefined,
-        roleKey: undefined,
-        state: undefined,
-      },
-      deptOptions:[]
+      // 费用签报表格数据
+      GoodsList: [],
+      // 详情表格数据
+      detailList: [],
+      queryParams: {},
+      deptOptions: [],
+      timeOption: [],
+      detailSimpleList:[],
+      detailSingleList:[]
     };
   },
   created() {
-    this.getList();
-    this.getMenuTreeselect();
+    // this.getList();
+    this.getTreeselect();
   },
   methods: {
-     /** 查询部门下拉树结构 */
+    // 打开详情弹窗
+    openDetail() {
+      applicationDetailInfoList(this.queryParams).then((res) => {
+        this.detailSingleList = res.singList;
+        this.detailSimpleList = res.singList;
+        this.detailOpen = true;
+        this.title='查看详情'
+      });
+    },
+    /** 查询部门下拉树结构 */
     getTreeselect() {
       resourceTreeByUN().then((response) => {
         this.deptOptions = response.list;
+        this.queryParams.unitId = response.checked;
+        this.getList();
       });
     },
     /** 查询角色列表 */
     getList() {
       this.loading = true;
-      pageRole(this.queryParams).then((response) => {
-        this.roleList = response.list;
-        this.total = response.count;
+      applicationGoods(this.queryParams).then((response) => {
+        this.GoodsList = response.list;
         this.loading = false;
       });
     },
-    /** 查询菜单树结构 */
-    getMenuTreeselect() {
-      listUnit().then((response) => {
-        this.menuOptions = response;
+    // 根据时间获取一共有几次
+    changeTime() {
+      goodsTime(this.queryParams.time).then((res) => {
+        this.timeOption = res.goodsIndexList;
       });
     },
     /** 搜索按钮操作 */
     handleQuery() {
-      this.queryParams.pageNum = 1;
       this.getList();
     },
     /** 重置按钮操作 */
@@ -171,12 +219,16 @@ export default {
 };
 </script>
 <style scoped>
-.tips{
+.tips {
   width: 100%;
   text-align: center;
   display: flex;
   align-items: start;
   justify-content: center;
   margin-bottom: 10px;
+}
+.summarytitle {
+  font-weight: bold;
+  font-size: 18px;
 }
 </style>

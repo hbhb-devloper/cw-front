@@ -155,7 +155,7 @@ export default {
     getTreeselect() {
       resourceTreeByUN().then((response) => {
         this.deptOptions = response.list;
-        this.queryParams.unitId = response.checked[0];
+        this.queryParams.unitId = response.checked;
         this.getList();
       });
     },
