@@ -199,7 +199,7 @@ import { resourceTree, roleMenuTreeselect } from "@/api/system/resource";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 import { getToken } from "@/utils/auth";
-import { prefix } from "@/api/relocation/relocation";
+import { prefix } from "@/api/propaganda/propaganda";
 import { exportData1 } from "@/utils/export";
 export default {
   name: "Role",
@@ -221,7 +221,6 @@ export default {
       // 部门树选项
       deptOptions: undefined,
       queryParams: {
-        hallId: 1,
       },
       timeOption: [],
       flag: true,

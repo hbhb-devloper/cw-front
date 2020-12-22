@@ -19,3 +19,12 @@ export function applicationDetailInfoList(query) {
     })
 }
 
+
+// 营业厅物料分公司汇总（政企/市场部）
+export function applicationDetailStateList(query) {
+    return request({
+        url: `${prefix}/application/detail/state`,
+        method: 'get',
+        params: query
+    })
+}

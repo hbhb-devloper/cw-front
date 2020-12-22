@@ -2,14 +2,6 @@
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true">
       <el-form-item label="单位" prop="unitId">
-        <!-- <el-input
-          v-model="queryParams.unitId"
-          placeholder="请输入单位"
-          clearable
-          size="small"
-          style="width: 200px"
-          @keyup.enter.native="handleQuery"
-        /> -->
         <treeselect
           v-model="queryParams.unitId"
           :options="deptOptions"
@@ -43,21 +35,25 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="物料类型" prop="printName">
-        <el-select
-          v-model="queryParams.state"
-          placeholder="请选择物料类型"
+      <el-form-item label="申请单名称" prop="printName">
+        <el-input
+          v-model="queryParams.printName"
+          placeholder="请输入申请单名称"
           clearable
           size="small"
           style="width: 200px"
-        >
-          <el-option
-            v-for="dict in statusOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="申请单号" prop="printNum">
+        <el-input
+          v-model="queryParams.printNum"
+          placeholder="请输入申请单号"
+          clearable
+          size="small"
+          style="width: 200px"
+          @keyup.enter.native="handleQuery"
+        />
       </el-form-item>
       <el-form-item>
         <el-button
@@ -86,16 +82,78 @@
     </el-row>
 
     <el-table v-loading="loading" :data="printList">
-      <el-table-column align="center" label="申请单号" prop="printNum" />
-      <el-table-column align="center" label="申请单名称" prop="printName" />
+      <el-table-column align="center" label="申请单号" prop="printNum"  width="180"/>
+      <el-table-column align="center" label="申请单名称" prop="printName" width="180"/>
       <el-table-column align="center" label="申请单位" prop="unitName" />
-      <el-table-column align="center" label="申请时间" prop="applyTime" />
-      <el-table-column align="center" label="申请人" prop="userName" />
+      <el-table-column align="center" label="申请时间" prop="applyTime"  width="180"/>
+      <el-table-column align="center" label="申请人" prop="userName" width="120"/>
       <el-table-column
         align="center"
         label="预估金额（万元）"
         prop="predictAmount"
+         width="180"
       />
+      <el-table-column
+        label="查看"
+        align="center"
+        class-name="small-padding fixed-width"
+      >
+        <template slot-scope="scope">
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-edit"
+            @click="gotoProAdd(scope.row)"
+            >查看</el-button
+          >
+        </template>
+      </el-table-column>
+      
+       <el-table-column
+        label="流程状态"
+        align="center"
+        class-name="small-padding fixed-width"
+      >
+        <template slot-scope="scope">
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-edit"
+            @click="gotoProAdd(scope.row)"
+            >通过</el-button
+          >
+        </template>
+      </el-table-column>
+       <el-table-column
+        label="发起流程"
+        align="center"
+        class-name="small-padding fixed-width"
+      >
+        <template slot-scope="scope">
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-edit"
+            @click="gotoProAdd(scope.row)"
+            >禁止</el-button
+          >
+        </template>
+      </el-table-column>
+       <el-table-column
+        label="删除"
+        align="center"
+        class-name="small-padding fixed-width"
+      >
+        <template slot-scope="scope">
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-edit"
+            @click="handleDelete(scope.row)"
+            >删除</el-button
+          >
+        </template>
+      </el-table-column>
     </el-table>
 
     <pagination
@@ -105,7 +163,7 @@
       :limit.sync="queryParams.pageSize"
       @pagination="getList"
     />
-    <el-dialog
+    <!-- <el-dialog
       title="中国移动通信集团印刷品申请单"
       :visible.sync="SetVisible"
       width="1000px"
@@ -314,15 +372,12 @@
           </el-col>
         </el-row>
       </el-form>
-    </el-dialog>
+    </el-dialog> -->
   </div>
 </template>
 
 <script>
-import { listUnit, UNroleMenuTreeselect } from "@/api/system/unit";
-import { pageRole } from "@/api/system/role";
 import { listPrint } from "@/api/propaganda/printed";
-import { resourceTree, roleMenuTreeselect } from "@/api/system/resource";
 import { getToken } from "@/utils/auth";
 import { exportData1 } from "@/utils/export";
 import { prefix } from "@/api/propaganda/propaganda";
@@ -367,6 +422,11 @@ export default {
     this.getTreeselect();
   },
   methods: {
+    gotoProAdd(row) {
+      console.log("row", row);
+
+      this.$router.push(`/propaganda/propagandaAdd?id=${row.id}`);
+    },
     /** 查询部门下拉树结构 */
     getTreeselect() {
       resourceTreeByUN().then((response) => {
@@ -432,14 +492,14 @@ export default {
       );
     },
     handleAdd() {
-      this.SetVisible = true;
+      this.$router.push(`/propaganda/propagandaAdd`);
     },
     /** 查询角色列表 */
     getList() {
       this.loading = true;
       listPrint(this.queryParams).then((response) => {
         this.printList = response.list;
-        this.total = response.count;
+        this.total = response.totalRow;
         this.loading = false;
       });
     },
@@ -467,6 +527,28 @@ export default {
         })
         .then((response) => {
           this.download(response.msg);
+        })
+        .catch(function () {});
+    },
+    /** 删除按钮操作 */
+    handleDelete(row) {
+      const printname = row.printName;
+      const printId = row.id;
+      this.$confirm(
+        '是否确认删除流程名称为"' + printname + '"的数据项?',
+        "警告",
+        {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning",
+        }
+      )
+        .then(function () {
+          return delarr(printId);
+        })
+        .then(() => {
+          this.getList();
+          this.msgSuccess("删除成功");
         })
         .catch(function () {});
     },

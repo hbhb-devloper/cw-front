@@ -9,3 +9,11 @@ export function listPrint(query) {
         params: query
     })
 }
+
+// 删除印刷品
+export function deletePrint(id) {
+    return request({
+        url: `${prefix}/print/${id}`,
+        method: 'delete',
+    })
+}

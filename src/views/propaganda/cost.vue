@@ -61,7 +61,9 @@
     </el-form>
     <div class="tips">
       如果发起审批，等待审核的默认审核通过，没有提交的同意采购数为0。
-      <el-button size="mini" type="text">查看各单位状态</el-button>
+      <el-button size="mini" type="text" @click="openState"
+        >查看各单位状态</el-button
+      >
       <el-button size="mini" type="text" @click="openDetail"
         >查看明细</el-button
       >
@@ -85,7 +87,7 @@
 
     <!-- 查看明细详情弹窗 -->
     <el-dialog :title="title" :visible.sync="detailOpen" width="800px">
-    <div class="summarytitle">宣传单页申请表</div>
+      <div class="summarytitle">宣传单页申请表</div>
       <el-table v-loading="loading" :data="detailSingleList">
         <el-table-column align="center" label="序号" prop="lineNum" />
         <el-table-column align="center" label="单位" prop="unitName" />
@@ -102,7 +104,7 @@
           prop="singleAmount"
         />
       </el-table>
-    <div class="summarytitle">业务单式申请表</div>
+      <div class="summarytitle">业务单式申请表</div>
       <el-table v-loading="loading" :data="detailSimpleList">
         <el-table-column align="center" label="序号" prop="lineNum" />
         <el-table-column align="center" label="单位" prop="unitName" />
@@ -120,13 +122,22 @@
         />
       </el-table>
     </el-dialog>
+
+    <!-- 查看状态详情弹窗 -->
+    <el-dialog :title="title" :visible.sync="StateOpen" width="800px">
+      <el-table v-loading="loading" :data="StateList">
+        <el-table-column align="center" label="单位" prop="unitName" width="100"/>
+        <el-table-column align="center" label="状态" prop="state" />
+      </el-table>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import {
   applicationGoods,
-  applicationDetailInfoList
+  applicationDetailInfoList,
+  applicationDetailStateList,
 } from "@/api/propaganda/cost";
 import { goodsTime } from "@/api/propaganda/flyer";
 import { resourceTreeByUN } from "@/api/system/unit";
@@ -137,7 +148,7 @@ export default {
   components: { Treeselect },
   data() {
     return {
-      title:'',
+      title: "",
       // 详情弹窗判断
       detailOpen: false,
       // 遮罩层
@@ -149,8 +160,10 @@ export default {
       queryParams: {},
       deptOptions: [],
       timeOption: [],
-      detailSimpleList:[],
-      detailSingleList:[]
+      detailSimpleList: [],
+      detailSingleList: [],
+      StateOpen: false,
+      StateList: [],
     };
   },
   created() {
@@ -158,13 +171,21 @@ export default {
     this.getTreeselect();
   },
   methods: {
+    // 打开状态弹窗
+    openState() {
+      applicationDetailStateList(this.queryParams).then((res) => {
+        this.StateList = res;
+        this.StateOpen = true;
+        this.title = "查看状态";
+      });
+    },
     // 打开详情弹窗
     openDetail() {
       applicationDetailInfoList(this.queryParams).then((res) => {
         this.detailSingleList = res.singList;
         this.detailSimpleList = res.singList;
         this.detailOpen = true;
-        this.title='查看详情'
+        this.title = "查看详情";
       });
     },
     /** 查询部门下拉树结构 */
