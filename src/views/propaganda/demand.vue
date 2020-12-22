@@ -136,8 +136,8 @@ export default {
     getList() {
       this.loading = true;
       goodsPurchase(this.queryParams).then((response) => {
-        this.purchaseList = response;
-        this.total = response.count;
+        this.purchaseList = response.list;
+        this.total = response.totalRow;
         this.loading = false;
       });
     },
