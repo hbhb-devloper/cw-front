@@ -39,9 +39,9 @@
           style="width: 200px"
         >
           <el-option
-            v-for="(dict,index) in timeOption"
+            v-for="(dict, index) in timeOption"
             :key="index"
-            :label="'第'+dict+'次'"
+            :label="'第' + dict + '次'"
             :value="dict"
           />
         </el-select>
@@ -54,7 +54,11 @@
           @click="handleQuery"
           >搜索</el-button
         >
-        <el-button icon="el-icon-refresh" size="mini" @click="save" :disabled="!editAble"
+        <el-button
+          icon="el-icon-refresh"
+          size="mini"
+          @click="save"
+          :disabled="!editAble"
           >保存</el-button
         >
       </el-form-item>
@@ -74,8 +78,8 @@
             @click="showPic"
           />
           <div style="padding: 14px">
-            <div>{{item.goodsName}}</div>
-            <div>计量单位：{{item.unit}}</div>
+            <div>{{ item.goodsName }}</div>
+            <div>计量单位：{{ item.unit }}</div>
             <div class="bottom clearfix">
               申请数量：<el-input
                 v-model="item.applyAmount"
@@ -96,7 +100,7 @@
 </template>
 
 <script>
-import { goodsList,goodsTime,goodsApply } from "@/api/propaganda/flyer";
+import { goodsList, goodsTime, goodsApply } from "@/api/propaganda/flyer";
 import { resourceTreeByUN } from "@/api/system/unit";
 import Treeselect from "@riophae/vue-treeselect";
 
@@ -109,14 +113,13 @@ export default {
       dialogImageUrl: "",
       dialogVisible: false,
       input: 0,
-      currentDate: new Date(),
       // 状态数据字典
       statusOptions: [
         { dictValue: 1, dictLabel: "正常" },
         { dictValue: 2, dictLabel: "停用" },
       ],
       // 商品列表
-      goodsList:[],
+      goodsList: [],
       // 部门树选项
       deptOptions: undefined,
       // 查询参数
@@ -126,8 +129,8 @@ export default {
       // 表单参数
       form: {},
       // 次序选项
-      timeOption:[],
-      editAble:true
+      timeOption: [],
+      editAble: true,
     };
   },
   created() {
@@ -137,26 +140,41 @@ export default {
   },
   methods: {
     // 保存所有物料数据
-    save(){
-      let applyObj=this.deepClone(this.queryParams)
-      applyObj.list=this.goodsList
-      goodsApply(applyObj).then(res=>{
-        console.log('goodsApply',res);
-        this.getList()
-      })
+    save() {
+      let applyObj = this.deepClone(this.queryParams);
+      applyObj.list = this.goodsList;
+      goodsApply(applyObj).then((res) => {
+        console.log("goodsApply", res);
+        this.msgSuccess("保存成功");
+        this.getList();
+      });
     },
     // 根据时间获取一共有几次
     changeTime() {
-      goodsTime(this.queryParams.time).then(res=>{
-        this.timeOption=res.goodsIndexList
-      })
+      goodsTime(this.queryParams.time).then((res) => {
+        this.timeOption = res.goodsIndexList;
+        this.queryParams.goodsIndex = res.goodsIndex;
+        // this.$set(this.queryParams, "goodsIndex", res.goodsIndex);
+      });
     },
     /** 查询部门下拉树结构 */
     getTreeselect() {
+      var date = new Date();
+      this.$set(
+        this.queryParams,
+        "time",
+        date.getFullYear() +
+          "-" +
+          (date.getMonth() + 1).toString().padStart(2, "0")
+      );
       resourceTreeByUN().then((response) => {
         this.deptOptions = response.list;
         this.queryParams.unitId = response.checked;
-        this.getList();
+        goodsTime(this.queryParams.time).then((res) => {
+          this.timeOption = res.goodsIndexList;
+          this.$set(this.queryParams, "goodsIndex", res.goodsIndex);
+          this.getList();
+        });
       });
     },
     showPic() {
@@ -167,7 +185,7 @@ export default {
     /** 查询商品列表 */
     getList() {
       goodsList(this.queryParams).then((response) => {
-        this.editAble=response.flag
+        this.editAble = response.flag;
         this.goodsList = response.list;
         this.total = response.count;
       });

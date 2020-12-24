@@ -9,16 +9,6 @@
           style="width: 200px"
         />
       </el-form-item>
-      <el-form-item label="营业厅" prop="hallId">
-        <el-input
-          v-model="queryParams.hallId"
-          placeholder="请输入营业厅"
-          clearable
-          size="small"
-          style="width: 200px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
       <el-form-item label="日期" prop="time">
         <el-date-picker
           v-model="queryParams.time"
@@ -31,20 +21,6 @@
           @change="changeTime"
         >
         </el-date-picker>
-        <el-select
-          v-model="queryParams.goodsIndex"
-          placeholder="请选择第几次"
-          clearable
-          size="small"
-          style="width: 200px"
-        >
-          <el-option
-            v-for="(dict, index) in timeOption"
-            :key="index"
-            :label="'第' + dict + '次'"
-            :value="dict"
-          />
-        </el-select>
       </el-form-item>
       <el-form-item>
         <el-button
@@ -54,56 +30,61 @@
           @click="handleQuery"
           >搜索</el-button
         >
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery"
-          >发起审批</el-button
+        <el-button
+          icon="el-icon-refresh"
+          size="mini"
+          type="success"
+          :disabled="multiple"
+          @click="save(2)"
+          >同意</el-button
+        >
+        <el-button
+          icon="el-icon-refresh"
+          size="mini"
+          type="danger"
+          :disabled="multiple"
+          @click="save(3)"
+          >拒绝</el-button
         >
       </el-form-item>
     </el-form>
-    <el-table v-loading="loading" :data="GoodsList">
-      <el-table-column align="center" label="序号" prop="lineNum" />
+
+    <el-table
+      v-loading="loading"
+      :data="GoodsList"
+      @selection-change="handleSelectionChange"
+    >
+      <el-table-column type="selection" width="50" align="center" />
       <el-table-column align="center" label="单位" prop="unitName" />
       <el-table-column align="center" label="物料名称" prop="goodsName" />
-      <el-table-column align="center" label="计量单位" prop="unit" />
-      <el-table-column
-        align="center"
-        label="业务单式申请数量"
-        prop="simplexAmount"
-      />
-      <el-table-column
-        align="center"
-        label="宣传单页申请数量"
-        prop="singleAmount"
-      />
+      <el-table-column align="center" label="本期申请数量" prop="modifyAmount">
+        <template slot-scope="scope">
+          <el-button size="mini" type="text" @click="gotoDetail(scope.row)">{{
+            scope.row.modifyAmount
+          }}</el-button>
+        </template>
+      </el-table-column>
     </el-table>
 
     <!-- 查看明细详情弹窗 -->
     <el-dialog :title="title" :visible.sync="detailOpen" width="800px">
-      <el-table v-loading="loading" :data="detailSingleList">
-        <el-table-column align="center" label="序号" prop="lineNum" />
-        <el-table-column align="center" label="单位" prop="unitName" />
+      <el-table v-loading="loading" :data="DetailList">
+        <el-table-column align="center" label="分公司" prop="unitName" />
+        <el-table-column align="center" label="营业厅" prop="hallName" />
         <el-table-column align="center" label="物料名称" prop="goodsName" />
-        <el-table-column align="center" label="计量单位" prop="unit" />
-        <el-table-column
-          align="center"
-          label="业务单式申请数量"
-          prop="simplexAmount"
-        />
-        <el-table-column
-          align="center"
-          label="宣传单页申请数量"
-          prop="singleAmount"
-        />
+        <el-table-column align="center" label="申请数量" prop="modifyAmount" />
       </el-table>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import {
-  applicationGoods,
-  applicationDetailInfoList,
-} from "@/api/propaganda/cost";
 import { goodsTime } from "@/api/propaganda/flyer";
+import {
+  applicationDetailList,
+  applicationDetailHallList,
+  saveApplication,
+} from "@/api/propaganda/materialconfirm";
 import { resourceTreeByUN } from "@/api/system/unit";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
@@ -112,7 +93,7 @@ export default {
   components: { Treeselect },
   data() {
     return {
-        title:'',
+      title: "",
       // 详情弹窗判断
       detailOpen: false,
       // 遮罩层
@@ -121,11 +102,17 @@ export default {
       GoodsList: [],
       // 详情表格数据
       detailList: [],
+      // 查询条件
       queryParams: {},
+      // 部门下拉框
       deptOptions: [],
+      // 次数下拉框
       timeOption: [],
-      detailSimpleList: [],
-      detailSingleList: [],
+      // 详情列表
+      DetailList: [],
+      multiple: true,
+      // 多选内容
+      selection: [],
     };
   },
   created() {
@@ -133,13 +120,30 @@ export default {
     this.getTreeselect();
   },
   methods: {
-    // 打开详情弹窗
-    openDetail() {
-      applicationDetailInfoList(this.queryParams).then((res) => {
-        this.detailSingleList = res.singList;
-        this.detailSimpleList = res.singList;
+    save(state) {
+      let saveData = {
+        list: this.selection,
+        detailState: state,
+      };
+      saveApplication(saveData).then((res) => {
+        console.log("saveApplication", res);
+        this.getList();
+      });
+    },
+    // 多选框选中数据
+    handleSelectionChange(selection) {
+      this.selection = selection;
+      this.multiple = !selection.length;
+    },
+    gotoDetail(row) {
+      let queryParams = {
+        unitId: this.queryParams.unitId,
+        goodsId: row.goodsId,
+      };
+      applicationDetailHallList(queryParams).then((res) => {
+        console.log("applicationDetailHallList", res);
+        this.DetailList = res;
         this.detailOpen = true;
-        this.title='确定申请数量'
       });
     },
     /** 查询部门下拉树结构 */
@@ -153,8 +157,8 @@ export default {
     /** 查询角色列表 */
     getList() {
       this.loading = true;
-      applicationGoods(this.queryParams).then((response) => {
-        this.GoodsList = response.list;
+      applicationDetailList(this.queryParams).then((response) => {
+        this.GoodsList = response;
         this.loading = false;
       });
     },
@@ -167,28 +171,6 @@ export default {
     /** 搜索按钮操作 */
     handleQuery() {
       this.getList();
-    },
-    /** 重置按钮操作 */
-    resetQuery() {
-      this.dateRange = [];
-      this.resetForm("queryForm");
-      this.handleQuery();
-    },
-    /** 导出按钮操作 */
-    handleExport() {
-      const queryParams = this.queryParams;
-      this.$confirm("是否确认导出所有角色数据项?", "警告", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
-      })
-        .then(function () {
-          return exportRole(queryParams);
-        })
-        .then((response) => {
-          this.download(response.msg);
-        })
-        .catch(function () {});
     },
   },
 };

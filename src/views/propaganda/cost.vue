@@ -1,5 +1,84 @@
 <template>
   <div class="app-container">
+    <el-row style="margin-bottom: 25px" v-if="flowList">
+      <el-col v-for="(item, index) in flowList" :key="index" :span="8">
+        <div class="flowItem">
+          <el-form>
+            <el-form-item :label="item.approverRole" label-width="110px">
+              <el-select
+                v-model="item.approver.value"
+                placeholder="请选择审批人"
+                clearable
+                :disabled="item.approver.readOnly"
+                filterable
+                style="width:100%;"
+              >
+                <el-option
+                  v-for="dict in item.approverSelect"
+                  :key="dict.id"
+                  :label="dict.label"
+                  :value="dict.id"
+                />
+              </el-select>
+            </el-form-item>
+            <el-form-item label-width="110px">
+              <el-button
+                size="small"
+                v-if="item.controlAccess == true"
+                :disabled="
+                  item.operation.value == 1 || info.state == 0 ? true : false
+                "
+                @click="handleGetDel"
+                >自定义流程</el-button
+              >
+              <el-button
+                size="small"
+                v-if="!item.operation.hidden"
+                @click="handleApprove(item, 1)"
+                >同意</el-button
+              >
+              <el-button
+                size="small"
+                v-if="!item.operation.hidden"
+                @click="handleApprove(item, 0)"
+                >拒绝</el-button
+              >
+            </el-form-item>
+            <el-form-item label="意见" label-width="110px">
+              <el-input
+                v-if="item.suggestion.readOnly"
+                :disabled="item.suggestion.readOnly"
+                v-model="item.suggestion.value"
+                placeholder="请输入审批意见"
+              ></el-input>
+              <el-select
+                v-else
+                v-model="item.suggestion.value"
+                placeholder="请选择审批意见"
+                filterable
+                allow-create
+                default-first-option
+                clearable
+              >
+                <el-option
+                  v-for="dict in opinionList"
+                  :key="dict.id"
+                  :label="dict.suggestion"
+                  :value="dict.suggestion"
+                />
+              </el-select>
+            </el-form-item>
+            <div class="flowItemDown" v-if="item.operation.value != 2">
+              <div>
+                {{ item.nickName }} ({{ item.updateTime | filterTime }})
+              </div>
+              <i class="el-icon-success" v-if="item.operation.value == 1"></i>
+              <i class="el-icon-error" v-if="item.operation.value == 0"></i>
+            </div>
+          </el-form>
+        </div>
+      </el-col>
+    </el-row>
     <el-form :model="queryParams" ref="queryForm" :inline="true">
       <el-form-item label="单位" prop="unitId">
         <treeselect
@@ -54,7 +133,7 @@
           @click="handleQuery"
           >搜索</el-button
         >
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery"
+        <el-button icon="el-icon-refresh" size="mini" @click="handleLaunch"
           >发起审批</el-button
         >
       </el-form-item>
@@ -126,9 +205,45 @@
     <!-- 查看状态详情弹窗 -->
     <el-dialog :title="title" :visible.sync="StateOpen" width="800px">
       <el-table v-loading="loading" :data="StateList">
-        <el-table-column align="center" label="单位" prop="unitName" width="100"/>
+        <el-table-column
+          align="center"
+          label="单位"
+          prop="unitName"
+          width="100"
+        />
         <el-table-column align="center" label="状态" prop="state" />
       </el-table>
+    </el-dialog>
+    <!-- 发起审批弹窗 -->
+    <el-dialog title="发起审批" :visible.sync="isLaunch" width="500px">
+      <el-form>
+        <el-form-item label="选择流程">
+          <el-select
+            v-model="LaunchId"
+            filterable
+            :placeholder="
+              LaunchOption.length == 0 ? '该单位没有流程类型' : '请选择'
+            "
+          >
+            <el-option
+              v-for="item in LaunchOption"
+              :key="item.id"
+              :label="item.label"
+              :value="item.id"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+
+      <div style="width: 100%; text-align: center">
+        <el-button
+          type="primary"
+          @click="handleCancel"
+          style="margin-right: 50px"
+          >取消</el-button
+        >
+        <el-button type="primary" @click="SubmitLaunch">提交</el-button>
+      </div>
     </el-dialog>
   </div>
 </template>
@@ -138,8 +253,13 @@ import {
   applicationGoods,
   applicationDetailInfoList,
   applicationDetailStateList,
+  applicationToApprove,
+  applicationFlow,
+  SubmitApprove
 } from "@/api/propaganda/cost";
 import { goodsTime } from "@/api/propaganda/flyer";
+import { FlowTypeList } from "@/api/flow/list.js";
+import { getList } from "@/api/flow/opinion.js";
 import { resourceTreeByUN } from "@/api/system/unit";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
@@ -148,6 +268,8 @@ export default {
   components: { Treeselect },
   data() {
     return {
+      // 选择列表
+      chooseForm: [],
       title: "",
       // 详情弹窗判断
       detailOpen: false,
@@ -164,13 +286,89 @@ export default {
       detailSingleList: [],
       StateOpen: false,
       StateList: [],
+      // 发起审批判断
+      isLaunch: false,
+      // 流程类型下拉框
+      LaunchOption: [],
+      // 流程列表
+      flowList: [],
+      // 意见下拉框
+      opinionList: [],
+      LaunchId:undefined,
+      batchNum:undefined
     };
+  },
+  filters: {
+    filterTime(e) {
+      if (e) {
+        return e.substr(0, 19);
+      } else {
+        return undefined;
+      }
+    },
   },
   created() {
     // this.getList();
     this.getTreeselect();
   },
   methods: {
+    //提交审批
+    handleApprove(item, type) {
+      if (!item.suggestion.value) {
+        this.$message.warning("请输入你的审批意见");
+        return;
+      }
+      let programObj={}
+      programObj.approvers = [];
+      for (let key of this.flowList) {
+        programObj.approvers.push({
+          flowNodeId: key.flowNodeId,
+          id: key.id,
+          userId: key.approver.value,
+        });
+      }
+      programObj.suggestion=item.suggestion.value
+      programObj.underUnitId=this.queryParams.unitId
+      programObj.operation = type;
+      programObj.id = item.id;
+      SubmitApprove(programObj).then((res) => {
+        this.$message.success("提交成功");
+        applicationFlow(this.batchNum).then((res) => {
+          this.flowList = res;
+        });
+      });
+    },
+    handleCancel() {
+      this.isLaunch = true;
+    },
+    //发起审批
+    SubmitLaunch() {
+      if (!this.LaunchId) {
+        this.$message.warning("请选择流程");
+        return;
+      }
+      let dataObj = {
+        time: this.queryParams.time,
+        goodsIndex: this.queryParams.goodsIndex,
+        flowTypeId: this.LaunchId,
+        underUnitId: this.queryParams.unitId,
+      };
+      applicationToApprove(dataObj).then((res) => {
+        console.log("applicationToApprove", res);
+        this.isLaunch = false;
+        this.LaunchId = undefined;
+        this.getList();
+        this.$message.success("流程发起成功！");
+      });
+    },
+    //打开发起审批流程
+    handleLaunch() {
+      FlowTypeList().then((response) => {
+        this.LaunchOption = response;
+        this.isLaunch = true;
+        this.LaunchId = 36;
+      });
+    },
     // 打开状态弹窗
     openState() {
       applicationDetailStateList(this.queryParams).then((res) => {
@@ -190,10 +388,22 @@ export default {
     },
     /** 查询部门下拉树结构 */
     getTreeselect() {
+      var date = new Date();
+      this.$set(
+        this.queryParams,
+        "time",
+        date.getFullYear() +
+          "-" +
+          (date.getMonth() + 1).toString().padStart(2, "0")
+      );
       resourceTreeByUN().then((response) => {
         this.deptOptions = response.list;
         this.queryParams.unitId = response.checked;
-        this.getList();
+        goodsTime(this.queryParams.time).then((res) => {
+          this.timeOption = res.goodsIndexList;
+          this.$set(this.queryParams, "goodsIndex", res.goodsIndex);
+          this.getList();
+        });
       });
     },
     /** 查询角色列表 */
@@ -202,12 +412,22 @@ export default {
       applicationGoods(this.queryParams).then((response) => {
         this.GoodsList = response.list;
         this.loading = false;
+        this.batchNum=response.batchNum
+        applicationFlow(response.batchNum).then((res) => {
+          console.log("applicationFlow", res);
+          this.flowList = res;
+          // 获取意见下拉框
+          getList().then((res) => {
+            this.opinionList = res;
+          });
+        });
       });
     },
     // 根据时间获取一共有几次
     changeTime() {
       goodsTime(this.queryParams.time).then((res) => {
         this.timeOption = res.goodsIndexList;
+        this.queryParams.goodsIndex = res.goodsIndex;
       });
     },
     /** 搜索按钮操作 */
@@ -239,7 +459,7 @@ export default {
   },
 };
 </script>
-<style scoped>
+<style lang="scss" scoped>
 .tips {
   width: 100%;
   text-align: center;
@@ -251,5 +471,23 @@ export default {
 .summarytitle {
   font-weight: bold;
   font-size: 18px;
+}
+.flowItem {
+  padding-right: 10px;
+  border-right: 1px solid #e6e6e6;
+  .flowItemDown {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    .el-icon-success {
+      color: #67c23a;
+      font-size: 27px;
+    }
+
+    .el-icon-error {
+      color: #f56c6c;
+      font-size: 27px;
+    }
+  }
 }
 </style>

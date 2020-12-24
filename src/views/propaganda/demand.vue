@@ -59,14 +59,9 @@
         >
       </el-form-item>
     </el-form>
-    
+
     <el-table v-loading="loading" :data="purchaseList">
-      
-      <el-table-column
-        align="center"
-        label="物料名称"
-        prop="goodsName"
-      />
+      <el-table-column align="center" label="物料名称" prop="goodsName" />
       <el-table-column align="center" label="计量单位" prop="unit" />
       <el-table-column align="center" label="申请数量" prop="modifyAmount" />
       <el-table-column align="center" label="尺寸" prop="size" />
@@ -121,17 +116,30 @@ export default {
     changeTime() {
       goodsTime(this.queryParams.time).then((res) => {
         this.timeOption = res.goodsIndexList;
+        this.queryParams.goodsIndex = res.goodsIndex;
       });
     },
     /** 查询部门下拉树结构 */
     getTreeselect() {
+      var date = new Date();
+      this.$set(
+        this.queryParams,
+        "time",
+        date.getFullYear() +
+          "-" +
+          (date.getMonth() + 1).toString().padStart(2, "0")
+      );
       resourceTreeByUN().then((response) => {
         this.deptOptions = response.list;
         this.queryParams.unitId = response.checked;
-        this.getList();
+        goodsTime(this.queryParams.time).then((res) => {
+          this.timeOption = res.goodsIndexList;
+          this.$set(this.queryParams, "goodsIndex", res.goodsIndex);
+          this.getList();
+        });
       });
     },
-     
+
     /** 查询角色列表 */
     getList() {
       this.loading = true;
@@ -141,7 +149,7 @@ export default {
         this.loading = false;
       });
     },
-   
+
     /** 搜索按钮操作 */
     handleQuery() {
       this.queryParams.pageNum = 1;
@@ -173,5 +181,4 @@ export default {
 };
 </script>
 <style scoped>
-
 </style>

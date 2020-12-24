@@ -60,8 +60,10 @@
             draggable
             v-loading="loading"
           >
-            <span  slot-scope="{ node ,data }">
-              <span :class="!data.state?'colorRed':''">{{ node.label }}</span>
+            <span slot-scope="{ node, data }">
+              <span :class="!data.state ? 'colorRed' : ''">{{
+                node.label
+              }}</span>
             </span>
           </el-tree>
         </div>
@@ -72,9 +74,9 @@
           <el-form-item label="类别名称">
             <div>{{ publicityForm.goodsName }}</div>
           </el-form-item>
-          <el-form-item label="类别代码">
+          <!-- <el-form-item label="类别代码">
             <div>{{ publicityForm.goodsNum }}</div>
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item label="物料审核人">
             <div>{{ publicityForm.checkerName }}</div>
           </el-form-item>
@@ -165,11 +167,11 @@
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">
         <el-row>
           <el-col :span="24">
-            <el-form-item label="分公司" prop="unitId">
+            <el-form-item label="归属部门" prop="unitId">
               <treeselect
                 v-model="form.unitId"
                 :options="deptOptions"
-                placeholder="选择分公司"
+                placeholder="选择归属部门"
               />
             </el-form-item>
           </el-col>
@@ -215,14 +217,14 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="12" v-if="isMold != 1">
+          <!-- <el-col :span="12" v-if="isMold != 1">
             <el-form-item label="类别代码" prop="goodsNum">
               <el-input
                 v-model="form.goodsNum"
                 placeholder="请输入类别代码"
               ></el-input>
             </el-form-item>
-          </el-col>
+          </el-col> -->
           <el-col :span="12" v-if="isMold != 1">
             <el-form-item label="物料审核人" prop="checker">
               <el-input
@@ -380,6 +382,7 @@ export default {
       queryParams: {},
       open: false,
       libraryId: undefined,
+      parentId: undefined,
       // 表单校验
       rules: {
         goodsName: [
@@ -390,6 +393,9 @@ export default {
         ],
         unitId: [
           { required: true, message: "归属单位不能为空", trigger: "blur" },
+        ],
+        type: [
+          { required: true, message: "物料属性不能为空", trigger: "blur" },
         ],
         checker: [
           { required: true, message: "物料审核人不能为空", trigger: "blur" },
@@ -478,11 +484,13 @@ export default {
     // 节点单击事件
     handleNodeClick(data) {
       this.libraryId = data.id;
+      this.parentId = data.id;
       this.getListDetail(data);
     },
     getListDetail(data) {
       if (data.mold) {
-        this.$message.error("请点击活动");
+        this.publicityForm = {};
+        // this.$message.error("请点击活动");
       } else {
         getLibraryDetail(data.id).then((res) => {
           console.log("res", res);
@@ -505,6 +513,7 @@ export default {
       this.reset();
       this.open = true;
       this.title = "新增";
+      this.form.parentId = this.parentId;
     },
     cancel() {
       this.SetVisible = false;
@@ -516,7 +525,6 @@ export default {
       this.reset();
       // this.getTreeselect();
       const libraryId = this.libraryId;
-
       getLibraryDetail(libraryId).then((response) => {
         this.form = response;
         this.open = true;

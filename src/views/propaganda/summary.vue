@@ -113,7 +113,7 @@
           >
         </el-col>
       </div>
-      <div class="summarytitle checkerState">{{checkerState}}</div>
+      <div class="summarytitle checkerState">{{ checkerState }}</div>
     </el-row>
 
     <div class="summarytitle">宣传单页申请表</div>
@@ -177,7 +177,7 @@
             type="number"
             v-model="scope.row.modifyAmount"
             placeholder="修改后申请数量"
-            :disabled="!flag"
+            :disabled="scope.row.state == 1 || scope.row.state == 2"
           ></el-input>
         </template>
       </el-table-column>
@@ -220,18 +220,17 @@ export default {
       ],
       // 部门树选项
       deptOptions: undefined,
-      queryParams: {
-      },
+      queryParams: {},
       timeOption: [],
       flag: true,
-      checkerState:''
+      checkerState: "",
     };
   },
   created() {
     // this.getList();
     this.getTreeselect();
     this.getStateOption();
-    this.getDicts("publicity", "detail_state").then((response) => {
+    this.getDicts("publicity", "application_detail_state").then((response) => {
       this.StateOption = response;
     });
   },
@@ -298,14 +297,27 @@ export default {
     changeTime() {
       goodsTime(this.queryParams.time).then((res) => {
         this.timeOption = res.goodsIndexList;
+        this.queryParams.goodsIndex = res.goodsIndex;
       });
     },
     /** 查询部门下拉树结构 */
     getTreeselect() {
+      var date = new Date();
+      this.$set(
+        this.queryParams,
+        "time",
+        date.getFullYear() +
+          "-" +
+          (date.getMonth() + 1).toString().padStart(2, "0")
+      );
       resourceTreeByUN().then((response) => {
         this.deptOptions = response.list;
         this.queryParams.unitId = response.checked;
-        this.getList();
+        goodsTime(this.queryParams.time).then((res) => {
+          this.timeOption = res.goodsIndexList;
+          this.$set(this.queryParams, "goodsIndex", res.goodsIndex);
+          this.getList();
+        });
       });
     },
     /** 查询角色列表 */
@@ -316,7 +328,7 @@ export default {
         this.simplexList = response.simplexList;
         this.flag = response.flag;
         this.loading = false;
-        this.checkerState=response.checkerState
+        this.checkerState = response.checkerState;
       });
     },
     /** 搜索按钮操作 */
@@ -359,7 +371,7 @@ export default {
   font-weight: bold;
   font-size: 18px;
 }
-.checkerState{
+.checkerState {
   position: absolute;
   right: 20px;
   color: red;
