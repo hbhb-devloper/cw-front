@@ -17,3 +17,11 @@ export function deletePrint(id) {
         method: 'delete',
     })
 }
+// 添加印刷品
+export function printToApprove(data) {
+    return request({
+        url: `${prefix}/print/to-approve`,
+        method: 'post',
+        data: data
+    })
+}

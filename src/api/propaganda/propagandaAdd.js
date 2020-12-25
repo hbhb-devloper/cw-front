@@ -35,3 +35,13 @@ export function printFileDelete(id) {
     })
 }
 
+
+// 修改印刷品
+export function printMaterials(id) {
+    return request({
+        url: `${prefix}/print/materials?uuid=${id}`,
+        method: 'get',
+    })
+}
+
+
