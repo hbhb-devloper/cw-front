@@ -163,7 +163,7 @@
 </template>
 
 <script>
-import { listStratWarn, WarnAdd, warnfile } from "@/api/relocation/warning/prompt.js";
+import { listFinalWarn, WarnAdd, warnfile } from "@/api/relocation/warning/prompt.js";
 import { prefix } from "@/api/relocation/relocation";
 
 import { exportData1 } from "@/utils/export";
@@ -322,7 +322,7 @@ export default {
     /** 查询角色列表 */
     getList() {
       this.loading = true;
-      listStratWarn(this.queryParams).then((response) => {
+      listFinalWarn(this.queryParams).then((response) => {
         this.typeList = response;
         // this.total = response.total;
         this.loading = false;

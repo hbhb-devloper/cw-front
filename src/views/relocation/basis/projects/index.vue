@@ -102,7 +102,7 @@
       </el-col>
     </el-row>
 
-    <el-table v-loading="loading" :data="typeList">
+    <el-table v-loading="loading" :data="typeList" :row-style="showColor">
       <!-- <el-table-column type="selection" width="55" align="center" /> -->
       <el-table-column
         label="区域"
@@ -1019,6 +1019,7 @@ export default {
       loadingCount: 0,
       errorMessage: [],
       codeMsgList: [],
+      colorList:['#E5EBF8','#FFFFFF','#FDF7EA','#FFEEED','#EDFAFF']
     };
   },
   created() {
@@ -1030,6 +1031,14 @@ export default {
     });
   },
   methods: {
+    showColor(row){
+      let item=row.row
+      console.log('row',item);
+      let index1=item.styleColor%5
+      console.log('第几个',index1); 
+      let color=this.colorList[item.styleColor%5]
+      return { background: color}
+    },
     reviewFile() {
       let fileItem = this.fileItem;
       if (/.(pdf|PDF)$/.test(fileItem)) {
@@ -1169,7 +1178,7 @@ export default {
     beforeRemove(file, fileList) {
       return this.$confirm(`确定移除 ${file.name}？`);
     },
-    /** 查询角色列表 */
+    /** 查询基础信息列表 */
     getList() {
       this.loading = true;
       let that = this;
@@ -1186,6 +1195,18 @@ export default {
             }
           });
         });
+        console.log('listProject',response);
+        let contractNumCompare=''
+        let styleColorIndex=0
+        response.list.map((item,index)=>{
+          if (item.contractNum==contractNumCompare) {
+            item.styleColor=styleColorIndex
+          }else{
+            contractNumCompare=item.contractNum
+             ++styleColorIndex
+             item.styleColor=styleColorIndex
+          }
+        })
         this.typeList = response.list;
         this.total = response.totalRow;
         this.loading = false;
@@ -1361,5 +1382,6 @@ export default {
 }
 .el-table /deep/ .is-hidden {
   display: table-cell !important;
+ 
 }
 </style>
