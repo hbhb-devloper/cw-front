@@ -4,48 +4,92 @@
  * @Author: CYZ
  * @Date: 2020-12-22 10:05:30
  * @LastEditors: CYZ
- * @LastEditTime: 2020-12-25 16:04:03
+ * @LastEditTime: 2020-12-25 17:29:54
 -->
 <template>
   <div class="app-container">
     <div class="proTitle">中国移动通信集团印刷品申请单</div>
     <div style="width: 80%; margin: 0 auto">
-      <el-row style="margin-bottom: 25px">
-        <el-col v-for="i in 3" :key="i" :span="8">
+      <div style="text-align: center">{{ nodeName }}</div>
+      <el-row style="margin-bottom: 25px" v-if="flowList">
+        <el-col
+          v-for="(item, index) in flowList"
+          :key="index"
+          :span="8"
+          style="height: 175px"
+        >
           <div class="flowItem">
-            <el-form>
-              <el-form-item label="印刷品申请人" label-width="110px">
+            <el-form label-width="140px">
+              <el-form-item :label="item.approverRole">
                 <el-select
-                  v-model="queryParams.state"
-                  placeholder="请选择审批状态"
+                  v-model="item.approver.value"
+                  placeholder="请选择审批人"
                   clearable
+                  :disabled="item.approver.readOnly"
+                  filterable
+                  style="width: 100%"
                 >
                   <el-option
-                    v-for="dict in statusOptions"
-                    :key="dict.dictValue"
-                    :label="dict.dictLabel"
-                    :value="dict.dictValue"
+                    v-for="dict in item.approverSelect"
+                    :key="dict.id"
+                    :label="dict.label"
+                    :value="dict.id"
                   />
                 </el-select>
               </el-form-item>
-              <el-form-item label="意见" label-width="110px">
+              <el-form-item>
+                <el-button
+                  size="small"
+                  v-if="item.controlAccess == true"
+                  :disabled="
+                    item.operation.value == 1 || info.state == 0 ? true : false
+                  "
+                  @click="handleGetDel"
+                  >自定义流程</el-button
+                >
+                <el-button
+                  size="small"
+                  v-if="!item.operation.hidden"
+                  @click="handleApprove(item, 1)"
+                  >同意</el-button
+                >
+                <el-button
+                  size="small"
+                  v-if="!item.operation.hidden"
+                  @click="handleApprove(item, 0)"
+                  >拒绝</el-button
+                >
+              </el-form-item>
+              <el-form-item label="意见">
+                <el-input
+                  v-if="item.suggestion.readOnly"
+                  :disabled="item.suggestion.readOnly"
+                  v-model="item.suggestion.value"
+                  placeholder="请输入审批意见"
+                ></el-input>
                 <el-select
-                  v-model="queryParams.state"
-                  placeholder="请选择审批状态"
+                  v-else
+                  v-model="item.suggestion.value"
+                  placeholder="请选择审批意见"
+                  filterable
+                  allow-create
+                  default-first-option
                   clearable
                 >
                   <el-option
-                    v-for="dict in statusOptions"
-                    :key="dict.dictValue"
-                    :label="dict.dictLabel"
-                    :value="dict.dictValue"
+                    v-for="dict in opinionList"
+                    :key="dict.id"
+                    :label="dict.suggestion"
+                    :value="dict.suggestion"
                   />
                 </el-select>
               </el-form-item>
-              <div class="flowItemDown">
-                <div>李华 2020/4/28 14:05:11</div>
-                <i class="el-icon-success" v-if="true"></i>
-                <i class="el-icon-error" v-if="false"></i>
+              <div class="flowItemDown" v-if="item.operation.value != 2">
+                <div>
+                  {{ item.nickName }} ({{ item.updateTime | filterTime }})
+                </div>
+                <i class="el-icon-success" v-if="item.operation.value == 1"></i>
+                <i class="el-icon-error" v-if="item.operation.value == 0"></i>
               </div>
             </el-form>
           </div>
@@ -290,9 +334,9 @@
                 prop="deliveryDate"
                 width="120"
               >
-              <template slot-scope="scope">{{
-                scope.row.deliveryDate | dataFormat
-              }}</template>
+                <template slot-scope="scope">{{
+                  scope.row.deliveryDate | dataFormat
+                }}</template>
               </el-table-column>
               <el-table-column
                 align="center"
@@ -321,13 +365,12 @@
         <!-- <el-button @click="cancel">取 消</el-button> -->
       </div>
     </div>
-
-    
   </div>
 </template>
 <script>
 import { getToken } from "@/utils/auth";
 import { exportData1 } from "@/utils/export";
+import { getList } from "@/api/flow/opinion.js";
 import { prefix } from "@/api/propaganda/propaganda";
 import {
   printAdd,
@@ -335,6 +378,8 @@ import {
   printDetail,
   printFileDelete,
   printMaterials,
+  printFlowList,
+  printFlowApprove,
 } from "@/api/propaganda/propagandaAdd";
 export default {
   name: "Role",
@@ -369,7 +414,7 @@ export default {
         { dictValue: 2, dictLabel: "宣传单页" },
       ],
       form: {
-        files:[]
+        files: [],
       },
       ActionUrl: process.env.VUE_APP_GATEWAY_API + `${prefix}/print/upload`, // 上传的图片服务器地址
       ActionUrl1: process.env.VUE_APP_GATEWAY_API + `${prefix}/print/import`, // 上传的图片服务器地址
@@ -382,7 +427,13 @@ export default {
       tableData: [],
       printId: undefined,
       importantList: [],
-      importDateId:undefined
+      importDateId: undefined,
+      //流程列表
+      flowList: [],
+      // 意见下拉框
+      opinionList:[],
+      // 流程名称
+      nodeName:undefined
     };
   },
   //定义私用局部过滤器。只能在当前 vue 对象中使用
@@ -398,6 +449,33 @@ export default {
     }
   },
   methods: {
+    //提交审批
+    handleApprove(item, type) {
+      if (!item.suggestion.value) {
+        this.$message.warning("请输入你的审批意见");
+        return;
+      }
+      let programObj = {};
+      programObj.approvers = [];
+      for (let key of this.flowList) {
+        programObj.approvers.push({
+          flowNodeId: key.flowNodeId,
+          id: key.id,
+          userId: key.approver.value,
+        });
+      }
+      programObj.suggestion = item.suggestion.value;
+      programObj.operation = type;
+      programObj.id = item.id;
+      printFlowApprove(programObj).then((res) => {
+        this.$message.success("提交成功");
+        printFlowList(this.printId).then((res) => {
+          console.log("printFlowList", res);
+          this.nodeName = res.name;
+          this.flowList = res.nodes;
+        });
+      });
+    },
     //   删除上传文件
     deleteFile(row) {
       printFileDelete(row.id).then((res) => {
@@ -415,12 +493,22 @@ export default {
         }
         this.form = res;
       });
+
+      // 获取意见下拉框
+      getList().then((res) => {
+        this.opinionList = res;
+        printFlowList(this.printId).then((res) => {
+          console.log("printFlowList", res);
+          this.nodeName = res.name;
+          this.flowList = res.nodes;
+        });
+      });
     },
     submitSettingForm() {
       this.$refs["form"].validate((valid) => {
         if (valid) {
           if (this.importDateId) {
-            this.form.importDateId=this.importDateId
+            this.form.importDateId = this.importDateId;
           }
           if (this.fileList.length > 0) {
             this.fileList.map((item) => {
@@ -469,7 +557,7 @@ export default {
       );
     },
     handleSuccess(res) {
-        this.fileList = [];
+      this.fileList = [];
       this.loadingoption.close();
       if (res.code == "00000") {
         this.$message.success("导入成功");
@@ -493,7 +581,7 @@ export default {
       this.loadingoption.close();
       if (res.code == "00000") {
         this.$message.success("导入成功");
-        this.importDateId=res.data
+        this.importDateId = res.data;
         printMaterials(res.data).then((response) => {
           this.importantList = response;
         });
@@ -538,6 +626,7 @@ export default {
 .flowItem {
   padding-right: 10px;
   border-right: 1px solid #e6e6e6;
+  height: 100%;
   .flowItemDown {
     display: flex;
     flex-direction: row;
