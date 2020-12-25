@@ -21,14 +21,14 @@ export function listUnit(query) {
     })
 }
 
-// 旧·查询角色详细
+// 旧·查询部门详细
 // export function getUnit(unitId) {
 //     return request({
 //         url: '/unit/' + unitId,
 //         method: 'get'
 //     })
 // }
-// 新·查询角色详细
+// 新·查询部门详细
 export function getUnit(unitId) {
     return request1({
         url: `${prefix}/unit/` + unitId,
@@ -36,7 +36,7 @@ export function getUnit(unitId) {
     })
 }
 
-// 旧·新增角色
+// 旧·新增部门
 // export function addUnit(data) {
 //     return request({
 //         url: '/unit',
@@ -44,7 +44,7 @@ export function getUnit(unitId) {
 //         data: data
 //     })
 // }
-// 新·新增角色
+// 新·新增部门
 export function addUnit(data) {
     return request1({
         url: `${prefix}/unit`,
@@ -85,14 +85,14 @@ export function delarr(unitId) {
     })
 }
 
-// 旧·查询角色详细
+// 旧·查询部门详细
 // export function UNroleMenuTreeselect(roleId) {
 //     return request({
 //         url: '/unit/role/' + roleId,
 //         method: 'get'
 //     })
 // }
-// 新·查询角色详细
+// 新·查询部门详细
 export function UNroleMenuTreeselect(roleId) {
     return request1({
         url: `${prefix}/unit/role/` + roleId,

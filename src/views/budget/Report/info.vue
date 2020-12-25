@@ -121,7 +121,7 @@
               allow-create
               style="width: 150px"
               default-first-option
-              placeholder="请输入审批意见"
+              placeholder="请选择审批意见"
             >
               <el-option
                 v-for="items in opinion"
