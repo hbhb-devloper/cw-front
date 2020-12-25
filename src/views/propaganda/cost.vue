@@ -172,11 +172,11 @@
         <el-table-column align="center" label="单位" prop="unitName" />
         <el-table-column align="center" label="物料名称" prop="goodsName" />
         <el-table-column align="center" label="计量单位" prop="unit" />
-        <el-table-column
+        <!-- <el-table-column
           align="center"
           label="业务单式申请数量"
           prop="simplexAmount"
-        />
+        /> -->
         <el-table-column
           align="center"
           label="宣传单页申请数量"
@@ -194,11 +194,11 @@
           label="业务单式申请数量"
           prop="simplexAmount"
         />
-        <el-table-column
+        <!-- <el-table-column
           align="center"
           label="宣传单页申请数量"
           prop="singleAmount"
-        />
+        /> -->
       </el-table>
     </el-dialog>
 
