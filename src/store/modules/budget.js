@@ -21,6 +21,7 @@ const budget ={
       state.projectId = id;
     },
     setBudgetSelect: (state, data) => {
+      console.log('setBudgetSelect',data);
       state.budgetSelect = data;
     },
     setNotice: (state) => {

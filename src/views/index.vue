@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-07-20 18:22:09
  * @LastEditors: CYZ
- * @LastEditTime: 2020-11-19 20:34:46
+ * @LastEditTime: 2020-12-25 18:01:03
 -->
 <template>
   <div class="dashboard-editor-container">
@@ -261,13 +261,13 @@
             align="center"
           />
         </el-table>
-         <pagination
-        v-show="total1 > 0"
-        :total="total1"
-        :page.sync="queryParams1.pageNum"
-        :limit.sync="queryParams1.pageSize"
-        @pagination="getWarnList"
-      />
+        <pagination
+          v-show="total1 > 0"
+          :total="total1"
+          :page.sync="queryParams1.pageNum"
+          :limit.sync="queryParams1.pageSize"
+          @pagination="getWarnList"
+        />
       </el-card>
     </el-dialog>
     <!-- 更多待办事项对话框 -->
@@ -429,8 +429,6 @@ import { getToken } from "@/utils/auth";
 import {
   getNoticeList,
   updateNotice,
-  getFileList,
-  delFileList,
   getWorkList,
   getWorkDetailList,
   updateFund,
@@ -438,6 +436,8 @@ import {
 } from "@/api/workbench/workbench";
 import PanelGroup from "./dashboard/PanelGroup";
 
+import { prefix } from "@/api/system/system";
+import { getFileList, delFileList } from "@/api/system/file";
 export default {
   name: "Index",
   components: {
@@ -448,7 +448,8 @@ export default {
     return {
       module1: undefined,
       centerDialogVisible: false,
-      ActionUrl: process.env.VUE_APP_BASE_API + "/file/system", // 上传的图片服务器地址
+      ActionUrl:
+        process.env.VUE_APP_GATEWAY_API + `${prefix}/file/upload?bizType=10`, // 上传的图片服务器地址
       headers: {
         Authorization: getToken(),
       },
@@ -457,7 +458,7 @@ export default {
       NoticetableData: [],
       // client: Stomp.client("ws://mq.yeexun.com.cn:15674/ws"),
       total: 0,
-      total1:0,
+      total1: 0,
       moduleTitle: "",
       open: false,
       open1: false,
@@ -476,10 +477,9 @@ export default {
         firstNum: undefined,
         twoNum: undefined,
       },
-       queryParams1: {
+      queryParams1: {
         pageNum: 1,
         pageSize: 10,
-        
       },
       tableData: [],
       noticelists: [],
@@ -503,9 +503,13 @@ export default {
     // this.connect();
   },
   methods: {
-    gotoWarn() {
-      console.log('clickRow');
-      this.$router.push(`relocation/warning/prompt`);
+    gotoWarn(row) {
+      console.log("clickRow", row);
+      if (row.type == 0) {
+        this.$router.push(`relocation/warning/prompt`);
+      } else {
+        this.$router.push(`relocation/warning/mature`);
+      }
     },
     gotoDetail(row) {
       let that = this;
@@ -666,7 +670,7 @@ export default {
     // },
     getFileList() {
       this.loading2 = true;
-      getFileList().then((response) => {
+      getFileList(10).then((response) => {
         this.FiletableData = response;
         this.loading2 = false;
       });

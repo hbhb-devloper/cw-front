@@ -1,3 +1,11 @@
+<!--
+ * @Descripttion: 
+ * @version: 
+ * @Author: CYZ
+ * @Date: 2020-12-07 11:36:21
+ * @LastEditors: CYZ
+ * @LastEditTime: 2020-12-16 16:35:10
+-->
 <template>
   <div class="containers">
     <el-form
@@ -221,6 +229,9 @@
           >导入数据</el-button
         >
       </el-upload>
+      <el-table :data="tableData1">
+        <el-table-column label="数据导入检查结果" prop="date" />
+      </el-table>
     </el-dialog>
   </div>
 </template>
@@ -250,6 +261,7 @@ export default {
       open: false,
       ActionUrl: process.env.VUE_APP_BASE_API + "/invoice/account/run/import",
       morenUnit: undefined,
+      tableData1: [],
     };
   },
   components: {
@@ -268,8 +280,8 @@ export default {
     //获取部门列表
     getUnitId() {
       resourceTreeByUN().then((res) => {
-        this.queryParams.unitId = res.checked[0];
-        this.morenUnit = res.checked[0];
+        this.queryParams.unitId = res.checked;
+        this.morenUnit = res.checked;
         this.deptOptions = res.list;
       });
     },
@@ -296,13 +308,12 @@ export default {
           this.queryParams.endTime = this.queryParams.itime[1];
         }
       }
-      console.log('this.queryParams',this.queryParams);
+      console.log("this.queryParams", this.queryParams);
       let query = this.deepClone(this.queryParams);
       query.itime = undefined;
       this.getUpdateTimes(query);
       GetList(query)
         .then((res) => {
-          console.log(res);
           this.total = res.count;
           this.tableData = res.list;
           this.loading = false;
@@ -321,10 +332,13 @@ export default {
     resetQuery() {
       this.resetForm("queryForm");
       this.queryParams.unitId = this.morenUnit;
-      this.query={}
+      // this.query={}
+      this.queryParams.beginTime = undefined;
+      this.queryParams.endTime = undefined;
       this.handleQuery();
     },
     handleImport() {
+      this.tableData1 = [];
       this.open = true;
     },
     UploadFile(param) {
@@ -349,13 +363,20 @@ export default {
         .then((res) => {
           loading.close();
           if (res.data.status == 1000) {
-            this.$message.success("数据导入成功");
-            this.getList();
-            this.getUpdateTimes();
+            if (res.data.data == "") {
+              this.$message.success("数据导入成功");
+              this.open = false;
+              this.getUpdateTimes();
+              this.getList();
+            } else {
+              this.tableData1 = [];
+              for (let item in res.data.data) {
+                this.tableData1.push({ date: res.data.data[item] });
+              }
+            }
           } else {
             this.msgError("数据导入失败");
           }
-          this.open = false;
         })
         .catch((err) => {
           loading.close();

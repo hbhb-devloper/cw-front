@@ -4,7 +4,7 @@ import {prefix} from '../system'
 // 查询字典数据列表
 export function listData(query) {
   return request({
-    url: `${prefix}/dict/data/list`,
+    url: `${prefix}/dict/list`,
     method: 'get',
     params: query
   })
@@ -13,7 +13,7 @@ export function listData(query) {
 // 查询字典数据详细
 export function getData(dictCode) {
   return request({
-    url: `${prefix}/dict/data/` + dictCode,
+    url: `${prefix}/dict/` + dictCode,
     method: 'get'
   })
 }
@@ -29,7 +29,7 @@ export function getDicts(Type,Code) {
 // 新增字典数据
 export function addData(data) {
   return request({
-    url: `${prefix}/dict/data`,
+    url: `${prefix}/dict`,
     method: 'post',
     data: data
   })
@@ -38,7 +38,7 @@ export function addData(data) {
 // 修改字典数据
 export function updateData(data) {
   return request({
-    url: `${prefix}/dict/data`,
+    url: `${prefix}/dict`,
     method: 'put',
     data: data
   })
@@ -47,7 +47,7 @@ export function updateData(data) {
 // 删除字典数据
 export function delData(dictCode) {
   return request({
-    url: `${prefix}/dict/data/` + dictCode,
+    url: `${prefix}/dict/` + dictCode,
     method: 'delete'
   })
 }

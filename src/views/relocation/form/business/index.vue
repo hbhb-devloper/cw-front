@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-10-10 14:45:48
  * @LastEditors: CYZ
- * @LastEditTime: 2020-11-27 10:28:34
+ * @LastEditTime: 2020-12-17 09:43:18
 -->
 <template>
   <div class="app-container">
@@ -153,6 +153,18 @@
         <el-table-column
           label="当年收款金额（万元）"
           prop="thisYearReceivable"
+          width="150"
+          align="center"
+        />
+        <el-table-column
+          label="当年已开票在途待收（万元）"
+          prop="thisYearDueIn"
+          width="150"
+          align="center"
+        />
+        <el-table-column
+          label="当年开票回款比"
+          prop="thisYearCostProportion"
           width="150"
           align="center"
         />
@@ -381,7 +393,7 @@ export default {
       let that = this;
       resourceTreeByUN().then((response) => {
         that.deptOptions = response.list;
-        that.morenUnit = response.checked[0];
+        that.morenUnit = response.checked;
         that.queryParams.unitId = that.morenUnit;
         that.getList();
       });

@@ -217,7 +217,7 @@ import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 import { getListData } from "@/api/fund/fundStaticstics";
 import { getBusiness } from "@/api/fund/fundSelect/info";
-import { getCompany } from "@/api/fund/management/index";
+import { resourceTreeByUN } from "@/api/system/unit";
 import { exportData } from "../../../utils/export";
 import { getToken } from "@/utils/auth";
 
@@ -265,15 +265,15 @@ export default {
   methods: {
     handleGetBusiness() {
       this.getDicts("fund", "business_type").then((response) => {
-      // getBusiness().then((res) => {
+        // getBusiness().then((res) => {
         this.busTypeOptions = response;
       });
     },
     //获取部门列表
     getUnitId() {
-      getCompany().then((res) => {
-        this.queryParams.dptId = res.checked[0];
-        this.morenUnit = res.checked[0];
+      resourceTreeByUN().then((res) => {
+        this.queryParams.dptId = res.checked;
+        this.morenUnit = res.checked;
         this.deptOptions = res.list;
         this.getList();
       });

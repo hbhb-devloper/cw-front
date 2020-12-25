@@ -102,7 +102,7 @@
       </el-col>
     </el-row>
 
-    <el-table v-loading="loading" :data="typeList">
+    <el-table v-loading="loading" :data="typeList" :row-style="showColor">
       <!-- <el-table-column type="selection" width="55" align="center" /> -->
       <el-table-column
         label="区域"
@@ -137,12 +137,12 @@
         width="150"
         align="center"
       />
-      <el-table-column
+      <!-- <el-table-column
         label="EOMS光缆割接流程工单号"
         prop="eomsCutNum"
         width="150"
         align="center"
-      />
+      /> -->
       <el-table-column
         label="计划施工时间"
         prop="planStartTime"
@@ -338,6 +338,12 @@
       <el-table-column
         label="合同类型"
         prop="contractType"
+        width="150"
+        align="center"
+      />
+       <el-table-column
+        label="是否包含附件"
+        prop="isFile"
         width="150"
         align="center"
       />
@@ -771,7 +777,7 @@
     <el-dialog
       title="项目信息导入"
       :visible.sync="centerDialogVisible"
-      width="500px"
+      width="700px"
     >
       <div style="margin-bottom: 10px">
         <el-button type="primary" @click="downTemplate">
@@ -796,6 +802,9 @@
       >
         <el-button size="small" type="primary">点击上传</el-button>
       </el-upload>
+      <el-table :data="codeMsgList">
+        <el-table-column label="错误信息" prop="codeMsg" />
+      </el-table>
     </el-dialog>
     <el-dialog title="合同导入" :visible.sync="ContractVisible" width="500px">
       <el-upload
@@ -818,7 +827,6 @@
     </el-dialog>
     <el-dialog title="查看合同" :visible.sync="fileDialog" width="500px">
       <el-button type="primary" @click="reviewFile"> 预览 </el-button>
-
       <el-button type="primary" @click="downFile">下载</el-button>
     </el-dialog>
   </div>
@@ -892,13 +900,13 @@ export default {
             trigger: "blur",
           },
         ],
-        eomsCutNum: [
-          {
-            required: true,
-            message: "请输入EOMS光缆割接流程工单号",
-            trigger: "blur",
-          },
-        ],
+        // eomsCutNum: [
+        //   {
+        //     required: true,
+        //     message: "请输入EOMS光缆割接流程工单号",
+        //     trigger: "blur",
+        //   },
+        // ],
         planStartTime: [
           { required: true, message: "请选择计划施工时间", trigger: "blur" },
         ],
@@ -1009,6 +1017,9 @@ export default {
       fileItem: {},
       loadingoption: undefined,
       loadingCount: 0,
+      errorMessage: [],
+      codeMsgList: [],
+      colorList:['#E5EBF8','#FFFFFF','#FDF7EA','#FFEEED','#EDFAFF']
     };
   },
   created() {
@@ -1020,6 +1031,14 @@ export default {
     });
   },
   methods: {
+    showColor(row){
+      let item=row.row
+      console.log('row',item);
+      let index1=item.styleColor%5
+      console.log('第几个',index1); 
+      let color=this.colorList[item.styleColor%5]
+      return { background: color}
+    },
     reviewFile() {
       let fileItem = this.fileItem;
       if (/.(pdf|PDF)$/.test(fileItem)) {
@@ -1069,6 +1088,7 @@ export default {
     },
     opencenterDialogVisible() {
       this.fileList = [];
+      this.codeMsgList=[]
       this.$nextTick(() => {
         this.centerDialogVisible = true;
       });
@@ -1080,36 +1100,36 @@ export default {
       });
     },
     handleupload() {
-      if (this.loadingCount === 0) {
-        let loading = this.$loading({
-          lock: true,
-          text: "正在导入表格",
-          spinner: "el-icon-loading",
-          background: "rgba(0, 0, 0, 0.7)",
-        });
-        this.loadingoption = loading;
-      }
-      this.loadingCount += 1;
-      console.log("handleuploadCount", this.loadingCount);
+      // if (this.loadingCount === 0) {
+      let loading = this.$loading({
+        lock: true,
+        text: "正在导入表格",
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.7)",
+      });
+      this.loadingoption = loading;
+      // }
+      // this.loadingCount += 1;
+      // console.log("handleuploadCount", this.loadingCount);
     },
     handleFail(err, file, fileList) {
-      console.log("handleFail", err);
-      console.log("handleFailloadingCount", this.loadingCount);
-      console.log("loadingoption", this.loadingoption);
-      if (this.loadingCount <= 0) {
-        return;
-      }
-      this.loadingCount -= 1;
-      if (this.loadingCount === 0) {
-        this.loadingoption.close();
-        this.$message.error("上传失败");
-      }
+      // console.log("handleFail", err);
+      // console.log("handleFailloadingCount", this.loadingCount);
+      // console.log("loadingoption", this.loadingoption);
+      // if (this.loadingCount <= 0) {
+      //   return;
+      // }
+      // this.loadingCount -= 1;
+      // if (this.loadingCount === 0) {
+      //   this.loadingoption.close();
+      //   this.$message.error("上传失败");
+      // }
     },
     handleRemove(file, fileList) {},
     handlePreview(file) {},
     handleExceed(files, fileList) {
       this.$message.warning(
-        `当前限制选择 10 个文件，本次选择了 ${files.length} 个文件，共选择了 ${
+        `当前限制选择 1 个文件，本次选择了 ${files.length} 个文件，共选择了 ${
           files.length + fileList.length
         } 个文件`
       );
@@ -1117,28 +1137,48 @@ export default {
     handleSuccess(res, file, fileList) {
       // this.fileList = [];
 
-      this.loadingCount -= 1;
-      if (this.loadingCount === 0) {
-        this.loadingoption.close();
-        // this.loadingoption = undefined;
-      }
-      this.centerDialogVisible = false;
-      this.ContractVisible = false;
+      // this.loadingCount -= 1;
+      // if (this.loadingCount === 0) {
+      //   this.loadingoption.close();
+      //   // this.loadingoption = undefined;
+      // }
+      this.loadingoption.close();
       if (res.code == "00000") {
-        this.$message.success("导入上传成功");
-        this.getList();
+        if (res.data == "") {
+          this.$message.success("导入上传成功");
+          this.getList();
+          this.centerDialogVisible = false;
+        this.ContractVisible = false;
+        } else {
+          this.codeMsgList=[]
+          for (let i in res.data) {
+            var j = {};
+            j.codeMsg = res.data[i];
+            this.codeMsgList.push(j);
+          }
+        }
+      } else if (res.code == "80898") {
+        res.message = res.message.substr(1, res.message.length - 2);
+        this.errorMessage = res.message.split(",");
+        for (let i in this.errorMessage) {
+          var j = {};
+          j.codeMsg = this.errorMessage[i];
+          this.codeMsgList.push(j);
+        }
       } else {
         this.$message({
           message: res.message,
           type: "error",
         });
         this.getList();
+        this.centerDialogVisible = false;
+        this.ContractVisible = false;
       }
     },
     beforeRemove(file, fileList) {
       return this.$confirm(`确定移除 ${file.name}？`);
     },
-    /** 查询角色列表 */
+    /** 查询基础信息列表 */
     getList() {
       this.loading = true;
       let that = this;
@@ -1155,6 +1195,18 @@ export default {
             }
           });
         });
+        console.log('listProject',response);
+        let contractNumCompare=''
+        let styleColorIndex=0
+        response.list.map((item,index)=>{
+          if (item.contractNum==contractNumCompare) {
+            item.styleColor=styleColorIndex
+          }else{
+            contractNumCompare=item.contractNum
+             ++styleColorIndex
+             item.styleColor=styleColorIndex
+          }
+        })
         this.typeList = response.list;
         this.total = response.totalRow;
         this.loading = false;
@@ -1165,7 +1217,7 @@ export default {
       resourceTreeByUN().then((response) => {
         console.log(response);
         that.deptOptions = response.list;
-        that.morenUnit = response.checked[0];
+        that.morenUnit = response.checked;
         that.queryParams.unitId = that.morenUnit;
         that.getList();
       });
@@ -1230,16 +1282,17 @@ export default {
       this.inputAble = false;
       const typeId = row.id || this.ids;
       //   getRole(typeId).then(response => {
-      console.log(row);
-      this.compensationOptions.map((item) => {
-        if (item.label == row.compensationSate) {
-          row.compensationSate = item.value;
-        }
+      ProjectDetail(typeId).then((response) => {
+        // console.log(row);
+        // this.compensationOptions.map((item) => {
+        //   if (item.label == row.compensationSate) {
+        //     row.compensationSate = item.value;
+        //   }
+        // });
+        this.form = response;
+        this.open = true;
+        this.title = "修改迁改项目管理信息";
       });
-      this.form = row;
-      this.open = true;
-      this.title = "修改迁改项目管理信息";
-      //   });
     },
 
     /** 提交按钮 */
@@ -1329,5 +1382,6 @@ export default {
 }
 .el-table /deep/ .is-hidden {
   display: table-cell !important;
+ 
 }
 </style>

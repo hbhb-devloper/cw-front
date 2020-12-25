@@ -154,7 +154,6 @@
 </template>
 
 <script>
-import { treeselect, DeptList } from "@/api/system/dept";
 import { resourceTreeByUN } from "@/api/system/unit";
 import { getBudget } from "@/api/budget/metaphase";
 import Treeselect from "@riophae/vue-treeselect";
@@ -281,7 +280,7 @@ export default {
       let that = this;
       resourceTreeByUN().then((response) => {
         that.deptOptions = response.list;
-        that.morenUnit = response.checked[0];
+        that.morenUnit = response.checked;
         that.queryParams.unitId = that.morenUnit;
         that.getList();
       });

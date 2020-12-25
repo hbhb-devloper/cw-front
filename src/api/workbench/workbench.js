@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-08-01 18:28:36
  * @LastEditors: CYZ
- * @LastEditTime: 2020-10-09 16:58:51
+ * @LastEditTime: 2020-12-02 16:38:49
  */
 import request from '@/utils/request'
 // 查询提醒列表
@@ -37,21 +37,7 @@ export function updateFund(id) {
         method: 'PUT'
     })
 }
-// 查询文件列表
-export function getFileList(query) {
-    return request({
-        url: '/file/list',
-        method: 'get',
-        params: query
-    })
-}
-// 查询文件列表
-export function delFileList(id) {
-    return request({
-        url: '/file/delete/'+id,
-        method: 'DELETE',
-    })
-}
+
 
 // 查询文件列表
 export function getWorkList() {

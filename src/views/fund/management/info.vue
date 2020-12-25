@@ -15,7 +15,7 @@
           <span v-if="flowList[0]">{{ flowList[0].projectFlowName }}</span>
         </div>
         <div class="program" v-if="flowList">
-          <div v-for="(item, index) in flowList" class="programList">
+          <div v-for="(item, index) in flowList" :key="index" class="programList">
             <i class="el-icon-close" v-if="item.isDelete"></i>
             <div class="programList-div">
               <span style="max-width: 160px; line-height: 40px">
@@ -34,6 +34,7 @@
                   v-for="items in item.approverSelect"
                   :value="items.userId"
                   :label="items.nickName"
+                  :key="items.userId"
                 >
                 </el-option>
               </el-select>
@@ -49,6 +50,7 @@
                   v-for="items in item.approverSelect"
                   :value="items.userId"
                   :label="items.nickName"
+                  :key="items.userId"
                 >
                 </el-option>
               </el-select>
@@ -97,7 +99,7 @@
                 placeholder="请输入审批意见"
               >
                 <el-option
-                  v-for="(items, indexs) in opinion"
+                  v-for="items in opinion"
                   :key="items.id"
                   :label="items.suggestion"
                   :value="items.suggestion"

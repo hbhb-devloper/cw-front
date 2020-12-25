@@ -363,7 +363,6 @@
 
 <script>
 import {
-  getCompany,
   getDataList,
   addDate,
   getTypeList,
@@ -375,7 +374,9 @@ import { getVatRate } from "@/api/budget/report/report.js";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 import { getToken } from "@/utils/auth";
+import {resourceTreeByUN} from "@/api/system/unit";
 import { exportData, exportWord } from "@/utils/export.js";
+import { prefix } from "@/api/system/system";
 import axios from "axios";
 
 export default {
@@ -391,7 +392,7 @@ export default {
   },
   data() {
     return {
-      ActionUrl: process.env.VUE_APP_BASE_API + "/file/upload", // 上传的图片服务器地址
+      ActionUrl: process.env.VUE_APP_GATEWAY_API + `${prefix}/file/upload?bizType=20`, // 上传的图片服务器地址
       radio: 3, //单选项
       obj: {
         date: undefined,
@@ -453,9 +454,9 @@ export default {
   methods: {
     //获取单位
     getUnitList() {
-      getCompany().then((res) => {
-        this.obj.unitId = res.checked[0];
-        this.morenUnit= res.checked[0];
+      resourceTreeByUN().then((res) => {
+        this.obj.unitId = res.checked;
+        this.morenUnit= res.checked;
         this.deptOptions = res.list;
       });
       //获取增值税下拉

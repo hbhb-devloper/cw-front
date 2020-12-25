@@ -27,6 +27,7 @@
             v-model="queryParams.invoiceTimeFrom"
             type="date"
             placeholder="选择开票时间"
+            format="yyyy-MM-dd"
           ></el-date-picker>
         </el-form-item>
         <el-form-item label="至" prop="invoiceTimeTo" label-width="25px">
@@ -34,6 +35,7 @@
             v-model="queryParams.invoiceTimeTo"
             type="date"
             placeholder="选择开票时间"
+            format="yyyy-MM-dd"
           ></el-date-picker>
         </el-form-item>
 
@@ -46,11 +48,7 @@
         </el-form-item>
 
         <el-form-item>
-          <el-button
-            type="primary"
-            icon="el-icon-search"
-            size="mini"
-            @click="handleQuery"
+          <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery"
             >搜索</el-button
           >
           <el-button icon="el-icon-refresh" size="mini" @click="resetQuery"
@@ -62,11 +60,7 @@
 
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
-        <el-button
-          type="primary"
-          icon="el-icon-plus"
-          size="mini"
-          @click="handleAdd"
+        <el-button type="primary" icon="el-icon-plus" size="mini" @click="handleAdd"
           >新增</el-button
         >
       </el-col>
@@ -75,7 +69,7 @@
           type="success"
           icon="el-icon-download"
           size="mini"
-          @click="centerDialogVisible = true"
+          @click="openCenterDialogVisible"
           >导入</el-button
         >
       </el-col>
@@ -96,121 +90,53 @@
       <el-table-column label="序号" type="index" align="center" width="50">
       </el-table-column>
       <!-- <el-table-column label="类型名称" prop="flowTypeName" width="150" align="center" /> -->
-      <el-table-column
-        label="地区"
-        prop="district"
-        width="150"
-        align="center"
-      />
+      <el-table-column label="地区" prop="district" width="150" align="center" />
       <el-table-column label="县市" prop="unit" width="150" align="center" />
-      <el-table-column
-        label="发票代码"
-        prop="invoiceCode"
-        width="150"
-        align="center"
-      />
-      <el-table-column
-        label="发票号码"
-        prop="invoiceNumber"
-        width="150"
-        align="center"
-      />
+      <el-table-column label="发票代码" prop="invoiceCode" width="150" align="center" />
+      <el-table-column label="发票号码" prop="invoiceNumber" width="150" align="center" />
       <!-- <el-table-column label="开票点"
                        prop="invoiceSite"
                        width="150"
                        align="center" /> -->
-      <el-table-column
-        label="业务类型"
-        prop="businessType"
-        width="150"
-        align="center"
-      />
-      <el-table-column
-        label="发票类型"
-        prop="invoiceType"
-        width="150"
-        align="center"
-      />
-      <el-table-column
-        label="购方税号"
-        prop="buyerTax"
-        width="150"
-        align="center"
-      />
-      <el-table-column
-        label="购方名称"
-        prop="buyerName"
-        width="150"
-        align="center"
-      />
+      <el-table-column label="业务类型" prop="businessType" width="150" align="center" />
+      <el-table-column label="发票类型" prop="invoiceType" width="150" align="center" />
+      <el-table-column label="购方税号" prop="buyerTax" width="150" align="center" />
+      <el-table-column label="购方名称" prop="buyerName" width="150" align="center" />
       <el-table-column
         label="开票项目"
         prop="invoiceProject"
         width="150"
         align="center"
       />
-      <el-table-column
-        label="开票日期"
-        prop="invoiceTime"
-        width="170"
-        align="center"
-      />
+      <el-table-column label="开票日期" prop="invoiceTime" width="170" align="center" />
       <el-table-column label="金额" prop="amount" width="150" align="center" />
       <el-table-column label="税率" prop="taxRate" width="150" align="center" />
-      <el-table-column
-        label="税额"
-        prop="taxAmount"
-        width="150"
-        align="center"
-      />
+      <el-table-column label="税额" prop="taxAmount" width="150" align="center" />
       <el-table-column
         label="价税合计"
         prop="taxIncludeAmount"
         width="150"
         align="center"
       />
+      <el-table-column label="收款情况" prop="isReceived" width="150" align="center" />
+      <el-table-column label="已收" prop="received" width="150" align="center" />
       <el-table-column
         label="备注格式：合同号；区县；款项性质；项目信息"
         prop="remake"
         width="350"
         align="center"
       />
-      <el-table-column
-        label="申请人"
-        prop="applicant"
-        width="150"
-        align="center"
-      />
-      <el-table-column
-        label="开票人"
-        prop="issuer"
-        width="150"
-        align="center"
-      />
-      <el-table-column
-        label="票据状态"
-        prop="state"
-        width="150"
-        align="center"
-      />
+      <el-table-column label="申请人" prop="applicant" width="150" align="center" />
+      <el-table-column label="开票人" prop="issuer" width="150" align="center" />
+      <el-table-column label="票据状态" prop="state" width="150" align="center" />
       <el-table-column
         label="是否为自定义菜单开票"
         prop="isImport"
         width="150"
         align="center"
       />
-      <el-table-column
-        label="客户经理"
-        prop="manager"
-        width="150"
-        align="center"
-      />
-      <el-table-column
-        label="描述"
-        prop="describe"
-        width="150"
-        align="center"
-      />
+      <el-table-column label="客户经理" prop="manager" width="150" align="center" />
+      <el-table-column label="描述" prop="describe" width="150" align="center" />
       <el-table-column
         label="操作"
         align="center"
@@ -262,18 +188,12 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="发票代码" prop="invoiceCode">
-              <el-input
-                v-model="form.invoiceCode"
-                placeholder="请输入发票代码"
-              />
+              <el-input v-model="form.invoiceCode" placeholder="请输入发票代码" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="发票号码" prop="invoiceNumber">
-              <el-input
-                v-model="form.invoiceNumber"
-                placeholder="请输入发票号码"
-              />
+              <el-input v-model="form.invoiceNumber" placeholder="请输入发票号码" />
             </el-form-item>
           </el-col>
           <!-- <el-col :span="12">
@@ -283,10 +203,7 @@
           </el-col> -->
           <el-col :span="12">
             <el-form-item label="业务类型" prop="businessType">
-              <el-input
-                v-model="form.businessType"
-                placeholder="选择业务类型"
-              ></el-input>
+              <el-input v-model="form.businessType" placeholder="选择业务类型"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -297,8 +214,12 @@
                 clearable
                 style="width: 220px"
               >
-                <el-option :key="0" label="增值税专用发票" :value="0" />
-                <el-option :key="1" label="增值税普通发票" :value="1" />
+                <el-option
+                  v-for="item in invoiceTypeOption"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
               </el-select>
             </el-form-item>
           </el-col>
@@ -314,10 +235,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="开票项目" prop="invoiceProject">
-              <el-input
-                v-model="form.invoiceProject"
-                placeholder="请输入开票项目"
-              />
+              <el-input v-model="form.invoiceProject" placeholder="请输入开票项目" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -332,29 +250,17 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="金额" prop="amount">
-              <el-input
-                v-model="form.amount"
-                type="number"
-                placeholder="请输入金额"
-              />
+              <el-input v-model="form.amount" type="number" placeholder="请输入金额" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="税率" prop="taxRate">
-              <el-input
-                v-model="form.taxRate"
-                type="number"
-                placeholder="请输入税率"
-              />
+              <el-input v-model="form.taxRate" type="number" placeholder="请输入税率" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="税额" prop="taxAmount">
-              <el-input
-                v-model="form.taxAmount"
-                disabled
-                placeholder="请输入税额"
-              />
+              <el-input v-model="form.taxAmount" disabled placeholder="请输入税额" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -427,7 +333,7 @@
       </div>
     </el-dialog>
 
-    <el-dialog title="导入" :visible.sync="centerDialogVisible" width="500px">
+    <el-dialog title="导入" :visible.sync="centerDialogVisible" width="700px">
       <div style="margin-bottom: 10px">
         <el-button type="primary" @click="downTemplate">
           <i class="el-icon-download"></i>下载导入模板
@@ -450,6 +356,9 @@
       >
         <el-button size="small" type="primary">点击上传</el-button>
       </el-upload>
+      <el-table :data="codeMsgList">
+        <el-table-column label="错误信息" prop="codeMsg" />
+      </el-table>
     </el-dialog>
   </div>
 </template>
@@ -473,6 +382,18 @@ export default {
   name: "Flowtype",
   components: { Treeselect },
   data() {
+    const validateInvoiceNumber = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error("发票编号不能为空"));
+      } else {
+        var reg = /^[A-Za-z0-9]{1,30}$/;
+        if (!reg.test(value)) {
+          callback(new Error("发票编号不能输入中文"));
+        }
+
+        callback();
+      }
+    };
     return {
       // 遮罩层
       loading: true,
@@ -512,47 +433,27 @@ export default {
       },
       // 表单校验
       rules: {
-        flowTypeName: [
-          { required: true, message: "类型名称不能为空", trigger: "blur" },
-        ],
-        invoiceCode: [
-          { required: true, message: "发票代码不能为空", trigger: "blur" },
-        ],
+        flowTypeName: [{ required: true, message: "类型名称不能为空", trigger: "blur" }],
+        invoiceCode: [{ required: true, message: "发票代码不能为空", trigger: "blur" }],
         invoiceNumber: [
-          { required: true, message: "发票号码不能为空", trigger: "blur" },
+          { required: true, validator: validateInvoiceNumber, trigger: "blur" },
         ],
-        invoiceType: [
-          { required: true, message: "发票类型不能为空", trigger: "blur" },
-        ],
-        buyerTax: [
-          { required: true, message: "购方税号不能为空", trigger: "blur" },
-        ],
-        buyerName: [
-          { required: true, message: "购方名称不能为空", trigger: "blur" },
-        ],
+        invoiceType: [{ required: true, message: "发票类型不能为空", trigger: "blur" }],
+        buyerTax: [{ required: true, message: "购方税号不能为空", trigger: "blur" }],
+        buyerName: [{ required: true, message: "购方名称不能为空", trigger: "blur" }],
         invoiceProject: [
           { required: true, message: "开票项目不能为空", trigger: "blur" },
         ],
-        invoiceTime: [
-          { required: true, message: "开票日期不能为空", trigger: "blur" },
-        ],
+        invoiceTime: [{ required: true, message: "开票日期不能为空", trigger: "blur" }],
         amount: [{ required: true, message: "金额不能为空", trigger: "blur" }],
         taxRate: [{ required: true, message: "税率不能为空", trigger: "blur" }],
-        taxAmount: [
-          { required: true, message: "税额不能为空", trigger: "blur" },
-        ],
+        taxAmount: [{ required: true, message: "税额不能为空", trigger: "blur" }],
         taxIncludeAmount: [
           { required: true, message: "价税合计不能为空", trigger: "blur" },
         ],
-        applicant: [
-          { required: true, message: "申请人不能为空", trigger: "blur" },
-        ],
-        issuer: [
-          { required: true, message: "开票人不能为空", trigger: "blur" },
-        ],
-        state: [
-          { required: true, message: "票据状态不能为空", trigger: "blur" },
-        ],
+        applicant: [{ required: true, message: "申请人不能为空", trigger: "blur" }],
+        issuer: [{ required: true, message: "开票人不能为空", trigger: "blur" }],
+        state: [{ required: true, message: "票据状态不能为空", trigger: "blur" }],
         isImport: [
           {
             required: true,
@@ -575,6 +476,9 @@ export default {
       headers: {
         Authorization: getToken(),
       },
+      invoiceTypeOption: [],
+      errorMessage: [],
+      codeMsgList: [],
     };
   },
   watch: {
@@ -588,16 +492,20 @@ export default {
   },
   created() {
     // this.getList();
-    this.getTreeselect();
+    // this.getTreeselect();
+    this.getDicts("relocation", "invoice_type").then((response) => {
+      this.invoiceTypeOption = response;
+
+      this.getTreeselect();
+    });
   },
   methods: {
+    openCenterDialogVisible(){
+      this.centerDialogVisible=true
+      this.codeMsgList=[]
+    },
     downTemplate() {
-      exportData1(
-        getToken(),
-        "",
-        `${prefix}/invoice/exportTemplate`,
-        "发票管理"
-      );
+      exportData1(getToken(), "", `${prefix}/invoice/export/template`, "发票管理");
     },
     handleupload() {
       const loading = this.$loading({
@@ -624,10 +532,28 @@ export default {
     handleSuccess(res) {
       this.fileList = [];
       this.loadingoption.close();
-      this.centerDialogVisible = false;
       if (res.code == "00000") {
-        this.$message.success("导入成功");
-        this.getList();
+        if (res.data == "") {
+          this.$message.success("导入上传成功");
+          this.getList();
+          this.centerDialogVisible = false;
+        } else {
+          this.codeMsgList=[]
+          for (let i in res.data) {
+            var j = {};
+            j.codeMsg = res.data[i];
+            this.codeMsgList.push(j);
+          }
+          console.log("this.codeMsgList", this.codeMsgList);
+        }
+      } else if (res.code == "80898") {
+        res.message = res.message.substr(1, res.message.length - 2);
+        this.errorMessage = res.message.split(",");
+        for (let i in this.errorMessage) {
+          var j = {};
+          j.codeMsg = this.errorMessage[i];
+          this.codeMsgList.push(j);
+        }
       } else {
         this.$message({
           message: res.message,
@@ -652,7 +578,7 @@ export default {
       let that = this;
       resourceTreeByUN().then((response) => {
         that.deptOptions = response.list;
-        that.morenUnit = response.checked[0];
+        that.morenUnit = response.checked;
         that.queryParams.unitId = that.morenUnit;
         that.getList();
       });

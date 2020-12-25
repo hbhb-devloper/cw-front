@@ -15,7 +15,7 @@
           <el-option
             v-for="dict in roleOptions"
             :key="dict.id"
-            :label="dict.roleName"
+            :label="dict.label"
             :value="dict.id"
           />
         </el-select>
@@ -69,14 +69,15 @@
 </template>
 
 <script>
-import { listFlow, addFlow, updateFlow, delarr } from "@/api/flow/list";
+import { addFlow, updateFlow, delarr } from "@/api/flow/list";
 import { listFlowRole, listFlowRoles, delRoleUser } from "@/api/flow/flowrole";
 import { listType } from "@/api/flow/type";
 import { listUnit } from "@/api/system/unit";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
-import { exportData } from "@/utils/export";
 import { getToken } from "@/utils/auth";
+import {prefix} from '@/api/flow/flow'
+import { exportData1 } from "@/utils/export";
 export default {
   name: "Flowtype",
   components: { Treeselect },
@@ -181,7 +182,7 @@ export default {
       this.loading = true;
       listFlowRole(this.queryParams).then((response) => {
         this.flowList = response.list;
-        this.total = response.count;
+        this.total = response.totalRow;
         this.loading = false;
       });
     },
@@ -266,7 +267,7 @@ export default {
 
     /** 删除按钮操作 */
     handleDelete(row) {
-      const flowRoleUserId = row.flowRoleUserId;
+      const flowRoleUserId = row.id;
       this.$confirm("是否确认删除该关联关系的数据项?", "删除", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -290,10 +291,10 @@ export default {
         type: "warning",
       })
         .then(function () {
-          return exportData(
+          return exportData1(
             getToken(),
             queryParams,
-            "/flow/role/export",
+            `${prefix}/role/user/export`,
             "流程角色列表"
           );
           // exportRole(queryParams);

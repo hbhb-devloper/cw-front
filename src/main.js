@@ -16,6 +16,7 @@ import store from './store'
 import router from './router'
 import permission from './directive/permission'
 import { download } from '@/utils/request'
+import { deepClone } from '@/utils/index'
 
 import './assets/icons' // icon
 import './permission' // permission control
@@ -32,6 +33,7 @@ Vue.prototype.resetForm = resetForm
 Vue.prototype.addDateRange = addDateRange
 Vue.prototype.selectDictLabel = selectDictLabel
 Vue.prototype.download = download
+Vue.prototype.deepClone = deepClone
 Vue.prototype.handleTree = handleTree
 Vue.prototype.downPath = 'https://file.yeexun.com.cn/template/';
 Vue.prototype.msgSuccess = function(msg) {

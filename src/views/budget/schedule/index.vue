@@ -8,7 +8,7 @@
         <el-input placeholder="请输入项目类型" v-model="queryParams.projectItem" size="small" />
       </el-form-item>
       <el-form-item label="时间" prop="year">
-        <el-date-picker v-model="queryParams.year" type="month" placeholder="选择月份"></el-date-picker>
+        <el-date-picker v-model="queryParams.year" value-format="yyyy-MM" type="month" placeholder="选择月份"></el-date-picker>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
@@ -237,12 +237,17 @@ export default {
   },
   methods: {
     gotodetail(row) {
-      GetProjectInfo(row.projectNum).then((res) => {
+      if (row.id) {
+         GetProjectInfo(row.projectNum).then((res) => {
       // GetInfo(row.id).then((res) => {
         res.vatRate=String(Number(res.vatRate)*100) 
         this.innerVisible = true;
         this.obj2 = res;
       });
+      }else{
+        this.$message.error("该项目无详细信息")
+      }
+     
     },
     Showproject(row) {
       this.outerVisible = true;
@@ -304,20 +309,20 @@ export default {
       let that = this;
       resourceTreeByUN().then((response) => {
         that.deptOptions = response.list;
-        that.morenUnit = response.checked[0];
-        that.queryParams.unitId = response.checked[0];
+        that.morenUnit = response.checked;
+        that.queryParams.unitId = response.checked;
         that.getList();
       });
     },
     handleQuery() {
-      if (this.queryParams.year) {
-        this.queryParams.date =
-          this.queryParams.year.getFullYear() +
-          "-" +
-          (this.queryParams.year.getMonth() + 1);
-      } else {
-        this.queryParams.date = undefined;
-      }
+      // if (this.queryParams.year) {
+      //   this.queryParams.date =
+      //     this.queryParams.year.getFullYear() +
+      //     "-" +
+      //     (this.queryParams.year.getMonth() + 1);
+      // } else {
+      //   this.queryParams.date = undefined;
+      // }
       this.getList();
     },
     /** 重置按钮操作 */

@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-09-23 14:42:03
  * @LastEditors: CYZ
- * @LastEditTime: 2020-11-11 17:53:32
+ * @LastEditTime: 2020-12-03 13:45:52
  */
 
 import request from '@/utils/request1'
@@ -43,5 +43,15 @@ export function updateReceipt(data) {
         url: `${prefix}/receipt`,
         method: 'put',
         data: data
+    })
+}
+
+
+
+// 跟据收据编号查看收据详情
+export function receiptByreceiptNum(receiptNum) {
+    return request({
+        url: `${prefix}/receipt/info?receiptNum=${receiptNum}`,
+        method: 'get',
     })
 }

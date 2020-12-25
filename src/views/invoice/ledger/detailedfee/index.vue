@@ -69,7 +69,6 @@
           @click="handleImport"
           >导入</el-button
         >
-        
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -194,6 +193,9 @@
           >导入数据</el-button
         >
       </el-upload>
+      <el-table :data="tableData1">
+        <el-table-column label="数据导入检查结果" prop="date" />
+      </el-table>
     </el-dialog>
   </div>
 </template>
@@ -223,7 +225,8 @@ export default {
       deptOptions: [], //单位下拉
       tableData: [], //表格数据
       loading: false, //表格加载动画
-      morenUnit:undefined
+      morenUnit: undefined,
+      tableData1: [],
     };
   },
   components: {
@@ -237,8 +240,8 @@ export default {
     //获取部门列表
     getUnitId() {
       resourceTreeByUN().then((res) => {
-        this.queryParams.unitId = res.checked[0];
-        this.morenUnit= res.checked[0];
+        this.queryParams.unitId = res.checked;
+        this.morenUnit = res.checked;
         this.deptOptions = res.list;
       });
     },
@@ -301,6 +304,7 @@ export default {
       });
     },
     handleImport() {
+      this.tableData1 = [];
       this.open = true;
     },
     //导入
@@ -327,12 +331,19 @@ export default {
         .then((res) => {
           loading.close();
           if (res.data.status == 1000) {
-            this.$message.success("导入成功！");
-            this.getList();
+            if (res.data.data == "") {
+              this.$message.success("导入成功！");
+              this.open = false;
+              this.getList();
+            } else {
+              this.tableData1 = [];
+              for (let item in res.data.data) {
+                this.tableData1.push({ date: res.data.data[item] });
+              }
+            }
           } else {
             this.msgError(res.data.message);
           }
-          this.open = false;
         })
         .catch((err) => {
           loading.close();

@@ -1,7 +1,9 @@
 import request1 from '@/utils/request1'
 import request from '@/utils/request'
-import {Encrypt} from '@/utils/AESCrypt'
-
+import { Encrypt } from '@/utils/AESCrypt'
+import { prefix } from './auth'
+import axios from 'axios'
+import { Notification, MessageBox, Message } from 'element-ui'
 const grant_type = 'password'
 const client_id = 'zhcw'
 const client_secret = '123456'
@@ -24,15 +26,15 @@ export function getCodeImg() {
 
 // 验证码校验
 export function check(data) {
-    let info ={
-        captcha:data.captcha,
-        captchaKey:data.captchaKey
+    let info = {
+        captcha: data.captcha,
+        captchaKey: data.captchaKey
     }
-  return request1({
-    url: '/auth/captcha/check',
-    method: 'get',
-    params: info
-  })
+    return request1({
+        url: `${prefix}/captcha/check`,
+        method: 'get',
+        params: info
+    })
 }
 
 // 新-登录方法
@@ -46,7 +48,7 @@ export function check(data) {
 //                 } else {
 //                     result[key] = obj[key]; //如果对象的属性值不为object的时候，直接复制参数对象的每一个键值到新的对象对应的键值对中。
 //                 }
-    
+
 //             }
 //             return result;
 //         }

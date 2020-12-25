@@ -108,7 +108,7 @@
 </template>
 
 <script>
-  import {getUnitList,UpdateUnit} from "@/api/fund/maintenance/index";
+  import {getUnitList,UpdateFund} from "@/api/fund/maintenance/index";
   import {listType} from "@/api/flow/type";
   import {listUnit} from "@/api/system/unit";
   import Treeselect from "@riophae/vue-treeselect";
@@ -266,7 +266,7 @@
 
       /** 提交按钮 */
       submitForm: function () {
-        UpdateUnit(this.queryParams1).then(res=>{
+        UpdateFund(this.queryParams1).then(res=>{
           this.$message.success('修改成功');
           this.open=false;
           this.getList();
