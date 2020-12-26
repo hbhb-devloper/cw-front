@@ -6,9 +6,9 @@
       label-width="70px"
       :inline="true"
     >
-      <el-form-item label="部门" prop="dptId">
+      <el-form-item label="部门" prop="unitId">
         <treeselect
-          v-model="queryParams.dptId"
+          v-model="queryParams.unitId"
           style="width: 200px"
           :options="deptOptions"
           placeholder="请选择部门"
@@ -61,10 +61,10 @@
           <el-option label="退款" value="3"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="编号" prop="fcCode">
+      <el-form-item label="编号" prop="code">
         <el-input
           placeholder="请输入编号"
-          v-model="queryParams.fcCode"
+          v-model="queryParams.code"
           size="small"
           style="width: 200px"
         />
@@ -80,10 +80,10 @@
         ></el-date-picker>
       </el-form-item>
 
-      <el-form-item label="录入人" prop="userName">
+      <el-form-item label="录入人" prop="createMan">
         <el-input
           placeholder="请输入录入人"
-          v-model="queryParams.userName"
+          v-model="queryParams.createMan"
           size="small"
           style="width: 200px"
         />
@@ -148,7 +148,7 @@
         label="序号"
       ></el-table-column>
       <el-table-column
-        prop="fcCode"
+        prop="code"
         width="200px"
         align="center"
         label="编号"
@@ -160,7 +160,7 @@
         label="日期"
       ></el-table-column>
       <el-table-column
-        prop="dptName"
+        prop="unitName"
         align="center"
         label="部门"
       ></el-table-column>
@@ -207,7 +207,7 @@
         label="预开金额(元)"
       ></el-table-column>
       <el-table-column
-        prop="userName"
+        prop="createMan"
         align="center"
         label="录入人"
       ></el-table-column>
@@ -258,29 +258,27 @@
 <script>
 import {
   getHistroyList,
-  getUnitList,
-  getFlowState,
 } from "@/api/fund/fundSelect";
-import { getBusiness } from "@/api/fund/fundSelect/info";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 import { resourceTreeByUN } from "@/api/system/unit";
-import { fundSelectExprot } from "@/utils/export.js";
+import { exportData1 } from "@/utils/export.js";
 import { getToken } from "@/utils/auth";
+import { prefix } from "@/api/fund/fund";
 export default {
   name: "index",
   data() {
     return {
       total: 0,
       queryParams: {
-        dptId: undefined, //部门
+        unitId: undefined, //部门
         amountType: undefined, //款项类型
         groupName: undefined, //集团信息
         busType: undefined, //办理业务
         fundFlows: undefined, //资金流向
-        fcCode: undefined, //编号
+        code: undefined, //编号
         peopleDownTime: undefined, //时间
-        userName: undefined, //录入人
+        createMan: undefined, //录入人
         state: undefined, //流程状态
         year: undefined, //年份
         pageSize: 10,
@@ -306,7 +304,7 @@ export default {
     //获取部门列表
     getUnitId() {
       resourceTreeByUN().then((res) => {
-        this.queryParams.dptId = res.checked;
+        this.queryParams.unitId = res.checked;
         this.morenUnit = res.checked;
         this.deptOptions = res.list;
         this.getList();
@@ -317,7 +315,7 @@ export default {
       this.loading = true;
       getHistroyList(this.queryParams)
         .then((res) => {
-          this.total = res.count;
+          this.total = res.totalRow;
           this.tableData = res.list;
           this.loading = false;
         })
@@ -343,7 +341,7 @@ export default {
     /** 重置按钮操作 */
     resetQuery() {
       this.resetForm("queryForm");
-      this.queryParams.dptId = this.morenUnit;
+      this.queryParams.unitId = this.morenUnit;
 
       this.handleQuery();
     },
@@ -357,10 +355,10 @@ export default {
       }).then((res) => {
         let data = JSON.parse(JSON.stringify(this.queryParams));
         data.pageSize = data.pageNum = undefined;
-        fundSelectExprot(
+        exportData1(
           getToken(),
           data,
-          "/fund/history/export",
+          `${prefix}/customer/export`,
           "客户资金查询"
         );
       });

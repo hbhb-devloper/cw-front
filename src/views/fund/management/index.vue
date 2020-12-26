@@ -214,20 +214,20 @@
       <el-table-column label="发票内容" prop="invoiceContent" align="center">
         <template slot-scope="scope">
           <span :class="scope.row.isCancellation ? 'red' : ''">{{
-            scope.row.invoiceContentLabel
+            scope.row.invoiceContent
           }}</span>
         </template>
       </el-table-column>
 
       <el-table-column
         label="办理业务"
-        prop="businessLabel"
+        prop="business"
         width="130"
         align="center"
       >
         <template slot-scope="scope">
           <span :class="scope.row.isCancellation ? 'red' : ''">{{
-            scope.row.businessLabel
+            scope.row.business
           }}</span>
         </template>
       </el-table-column>
@@ -335,11 +335,11 @@
       </el-table-column>
 
       <el-table-column
-        prop="stateLabel"
+        prop="state"
         align="center"
         label="流程状态"
         width="100"
-            fixed="right"
+        fixed="right"
       >
         <template slot-scope="scope">
           <router-link
@@ -350,7 +350,7 @@
                 ? '#'
                 : '/fund/management/info/' + scope.row.id
             "
-            >{{ scope.row.stateLabel }}</router-link
+            >{{ scope.row.state }}</router-link
           >
         </template>
       </el-table-column>
@@ -360,7 +360,7 @@
         prop="itemName"
         align="center"
         label="发起流程"
-            fixed="right"
+        fixed="right"
       >
         <template slot-scope="scope">
           <el-button
@@ -383,8 +383,14 @@
           </el-button>
         </template>
       </el-table-column>
-           
-      <el-table-column prop="itemName" align="center" width="130" label="操作"  fixed="right">
+
+      <el-table-column
+        prop="itemName"
+        align="center"
+        width="130"
+        label="操作"
+        fixed="right"
+      >
         <template slot-scope="scope">
           <el-button
             :class="scope.row.isCancellation ? 'red' : ''"
@@ -409,7 +415,12 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="编辑到账" prop="invoiceCreateTime" align="center"  fixed="right">
+      <el-table-column
+        label="编辑到账"
+        prop="invoiceCreateTime"
+        align="center"
+        fixed="right"
+      >
         <template slot-scope="scope">
           <el-button
             :class="scope.row.isCancellation ? 'red' : ''"
@@ -422,7 +433,12 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="是否作废" prop="isCancellation" align="center" fixed="right">
+      <el-table-column
+        label="是否作废"
+        prop="isCancellation"
+        align="center"
+        fixed="right"
+      >
         <template slot-scope="scope">
           <el-switch
             v-model="scope.row.isCancellation"
@@ -494,6 +510,9 @@
               filterable
               placeholder="请选择"
               style="width: 100%"
+              remote
+              :remote-method="remoteMethod"
+              :loading="loading1"
             >
               <el-option
                 v-for="item in UnitList"
@@ -513,6 +532,9 @@
               filterable
               placeholder="请选择"
               style="width: 100%"
+               remote
+              :remote-method="remoteMethod1"
+              :loading="loading1"
             >
               <el-option
                 v-for="item in UnitList"
@@ -742,10 +764,7 @@
 <script>
 import {
   getListTable,
-  getBusiness,
   getUnitList,
-  getContentList,
-  getStatusList,
   addDate,
   upaDate,
   getInfo,
@@ -754,27 +773,32 @@ import {
   approveFlow,
   updateInfo,
   cancellation,
+  fundSelect,
+  fundSelect1,
 } from "@/api/fund/management/index";
 import { resourceTreeByUN } from "@/api/system/unit";
 import { listUnit } from "@/api/system/unit";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
-import { exportData } from "@/utils/export";
+import { exportData1 } from "@/utils/export";
 import { getToken } from "@/utils/auth";
 import ElFormItem from "../../../components/customize/ElFormItem/index";
 import { mapGetters } from "vuex";
 import axios from "axios";
 import { prefix } from "@/api/system/system";
 import { FlowTypeList } from "@/api/flow/list.js";
+import { prefix1 } from "@/api/fund/fund";
 
 export default {
   name: "Flowtype",
   components: { ElFormItem, Treeselect },
   data() {
     return {
-      ActionUrl: process.env.VUE_APP_GATEWAY_API + `${prefix}/file/upload?bizType=30`,
+      ActionUrl:
+        process.env.VUE_APP_GATEWAY_API + `${prefix}/file/upload?bizType=30`,
       fileList: [],
       // 遮罩层
+      loading1:true,
       loading: true,
       // 非多个禁用
       multiple: true,
@@ -817,6 +841,7 @@ export default {
           { required: true, message: "显示顺序不能为空", trigger: "blur" },
         ],
       },
+      morenUnit:undefined,
       StateOptions: [],
       InvoiceContentList: [],
       invoiceDisabel: false,
@@ -828,7 +853,7 @@ export default {
       CancellationOptions: [
         {
           label: "全部",
-          value: "",
+          value: undefined,
         },
         {
           label: "作废",
@@ -851,16 +876,52 @@ export default {
     this.handleGetStatusList();
   },
   methods: {
+    deBounce(fn, delay)  {
+        let timer = null;
+        return function() {
+            if (timer) {
+                clearTimeout(timer);
+
+            }
+            timer = setTimeout(function() {
+                fn();
+            }, delay)
+        }
+    },
+    getUnitList(query) {
+      this.loading1 = true;
+      fundSelect(query).then((res) => {
+        console.log("fundSelect", res);
+        this.UnitList=res
+        this.loading1 = false;
+      });
+    },
+    getUnitList1(query) {
+      this.loading1 = true;
+      fundSelect1(query).then((res) => {
+        console.log("fundSelect1", res);
+        this.UnitList=res
+        this.loading1 = false;
+      });
+    },
+    remoteMethod(query) {
+      console.log("query", query);
+      this.deBounce(this.getUnitList(query), 500);
+    },
+    remoteMethod1(query) {
+      console.log("query", query);
+      this.deBounce(this.getUnitList1(query), 500);
+    },
     getMenuTreeselect() {
       resourceTreeByUN().then((response) => {
         this.queryParams.unitId = response.checked;
+        this.morenUnit=response.checked
         this.deptOptions = response.list;
         this.getList();
       });
     },
     handleGetBusiness() {
       this.getDicts("fund", "business").then((response) => {
-        // getBusiness().then(res => {
         this.typeList = response;
         this.formTypeList = response;
       });
@@ -880,7 +941,7 @@ export default {
       this.loading = true;
       getListTable(this.queryParams).then((response) => {
         this.tableData = response.list;
-        this.total = response.count;
+        this.total = response.totalRow;
         this.loading = false;
       });
     },
@@ -935,12 +996,10 @@ export default {
       this.resetForm("queryForm");
 
       this.queryParams = {
-        unitId: this.queryParams.unitId,
+        unitId: this.morenUnit,
         pageNum: 1,
         pageSize: 20,
-        isCancellation: false,
       };
-      // this.queryParams.isCancellation = false
       this.handleQuery();
     },
     // 单位筛选
@@ -973,7 +1032,7 @@ export default {
           Authorization: getToken(),
         },
       }).then((res) => {
-        console.log('UploadFile',res);
+        console.log("UploadFile", res);
         this.fileList.push({
           fileId: res.data.data.id,
           fileName: res.data.data.fileName,
@@ -1018,20 +1077,20 @@ export default {
     handleAdd() {
       this.reset();
       // this.getMenuTreeselect();
-      getUnitList().then((res) => {
-        this.UnitList = res;
-        this.open = true;
-        this.title = "添加";
-        this.form.clientManager = this.nickName;
-        this.formTypeList.map((item) => {
-          if (parseInt(item.value) == 10 || parseInt(item.value) == 20) {
-            item.disabled = false;
-          }
-        });
-        this.invoiceDisabel = false;
-        this.fileList = [];
-        this.form.file = [];
+      // getUnitList().then((res) => {
+      //   this.UnitList = res;
+      this.open = true;
+      this.title = "添加";
+      this.form.clientManager = this.nickName;
+      this.formTypeList.map((item) => {
+        if (parseInt(item.value) == 10 || parseInt(item.value) == 20) {
+          item.disabled = false;
+        }
       });
+      this.invoiceDisabel = false;
+      this.fileList = [];
+      this.form.file = [];
+      // });
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
@@ -1234,10 +1293,10 @@ export default {
         type: "warning",
       })
         .then(function () {
-          return exportData(
+          return exportData1(
             getToken(),
             queryParams,
-            "/fund/advance/export",
+            `${prefix1}/invoice/export`,
             "发票预开管理"
           );
         })

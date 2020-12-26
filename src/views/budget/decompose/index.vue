@@ -2,10 +2,18 @@
   <div class="container">
     <el-form :model="queryParams" ref="queryForm" :inline="true">
       <el-form-item label="单位" prop="unitId">
-        <treeselect v-model="queryParams.unitId" :options="deptOptions" placeholder="请选择单位" />
+        <treeselect
+          v-model="queryParams.unitId"
+          :options="deptOptions"
+          placeholder="请选择单位"
+        />
       </el-form-item>
       <el-form-item label="项目类型" prop="projectItem">
-        <el-input placeholder="请输入项目类型" v-model="queryParams.projectItem" size="small" />
+        <el-input
+          placeholder="请输入项目类型"
+          v-model="queryParams.projectItem"
+          size="small"
+        />
       </el-form-item>
       <el-form-item label="年份" prop="importDate">
         <el-date-picker
@@ -17,8 +25,16 @@
         ></el-date-picker>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+        <el-button
+          type="primary"
+          icon="el-icon-search"
+          size="mini"
+          @click="handleQuery"
+          >搜索</el-button
+        >
+        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery"
+          >重置</el-button
+        >
       </el-form-item>
     </el-form>
     <el-row :gutter="10" class="mb8">
@@ -27,9 +43,10 @@
           type="success"
           icon="el-icon-download"
           size="mini"
-          @click="centerDialogVisible=true"
+          @click="centerDialogVisible = true"
           v-hasPermi="['budget:split:import']"
-        >导入</el-button>
+          >导入</el-button
+        >
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -38,32 +55,59 @@
           size="mini"
           @click="handleExport"
           v-hasPermi="['budget:split:export']"
-        >导出</el-button>
+          >导出</el-button
+        >
       </el-col>
     </el-row>
     <el-table
       :data="tableData"
-      style="width: 100%;margin-bottom: 20px;"
+      style="width: 100%; margin-bottom: 20px"
       row-key="id"
       :border="false"
       default-expand-all
-      :tree-props="{children: 'children', hasChildren: 'hasChildren1'}"
+      :tree-props="{ children: 'children', hasChildren: 'hasChildren1' }"
       @selection-change="handleSelectionChange"
       v-loading="loading"
       header-cell-class-name="is-center"
     >
-      <el-table-column prop="itemName" label="项目类型" width="400"></el-table-column>
-      <el-table-column prop="lastYearBalance" align="center" label="去年预算值(万元)"></el-table-column>
-      <el-table-column prop="lastYearFinishedBalance" align="center" label="去年完成值(万元)"></el-table-column>
-      <el-table-column prop="balance" align="center" label="本年预算值(万元)"></el-table-column>
-      <el-table-column prop="remark" align="center" label="备注"></el-table-column>
+      <el-table-column
+        prop="itemName"
+        label="项目类型"
+        width="400"
+      ></el-table-column>
+      <el-table-column
+        prop="lastYearBalance"
+        align="center"
+        label="去年预算值(万元)"
+      ></el-table-column>
+      <el-table-column
+        prop="lastYearFinishedBalance"
+        align="center"
+        label="去年完成值(万元)"
+      ></el-table-column>
+      <el-table-column
+        prop="balance"
+        align="center"
+        label="本年预算值(万元)"
+      ></el-table-column>
+      <el-table-column
+        prop="remark"
+        align="center"
+        label="备注"
+      ></el-table-column>
     </el-table>
 
     <!-- 添加或修改角色配置对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px">
       <el-form ref="form" :model="form" label-width="80px">
         <el-form-item label="预算科目：" prop="itemName">
-          <el-input placeholder="请输入关键词" v-model="form.itemName" disabled clearable size="small" />
+          <el-input
+            placeholder="请输入关键词"
+            v-model="form.itemName"
+            disabled
+            clearable
+            size="small"
+          />
         </el-form-item>
         <el-form-item label="去年预算值：" prop="lastYearBalance">
           <el-input
@@ -75,13 +119,28 @@
           />
         </el-form-item>
         <el-form-item label="本年预算值：" prop="balance">
-          <el-input placeholder="请输入关键词" v-model="form.balance" clearable size="small" />
+          <el-input
+            placeholder="请输入关键词"
+            v-model="form.balance"
+            clearable
+            size="small"
+          />
         </el-form-item>
         <el-form-item label="金额阀值：" prop="threshold">
-          <el-input placeholder="请输入关键词" v-model="form.threshold" clearable size="small" />
+          <el-input
+            placeholder="请输入关键词"
+            v-model="form.threshold"
+            clearable
+            size="small"
+          />
         </el-form-item>
         <el-form-item label="备注：" prop="remark">
-          <el-input placeholder="请输入关键词" v-model="form.remark" clearable size="small" />
+          <el-input
+            placeholder="请输入关键词"
+            v-model="form.remark"
+            clearable
+            size="small"
+          />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -100,8 +159,11 @@
           format="yyyy"
           value-format="yyyy"
         ></el-date-picker>
-        <el-button type="primary" style="margin-botton:10px;">
-          <a download="预算分解导入模板示例" :href="downPath+'预算分解导入模板示例.xlsx'">
+        <el-button type="primary" style="margin-botton: 10px">
+          <a
+            download="预算分解导入模板示例"
+            :href="downPath + '预算分解导入模板示例.xlsx'"
+          >
             <i class="el-icon-download"></i>下载导入模板
           </a>
         </el-button>
@@ -223,7 +285,11 @@ export default {
     /** 查询角色列表 */
     getList() {
       this.loading = true;
+      this.tableData = [];
       listBudget(this.queryParams).then((response) => {
+        response.map(item=>{
+          item.BudgetId=String(item.id)
+        })
         this.tableData = response;
         // this.total = response.count;
         this.loading = false;
@@ -265,13 +331,7 @@ export default {
       };
       this.resetForm("form");
     },
-    //修改
-    handleEdit(row) {
-      this.reset();
-      this.form = row;
-      this.open = true;
-      this.title = "预算调整";
-    },
+
     /** 提交按钮 */
     submitForm: function () {
       updateBudget(this.form)

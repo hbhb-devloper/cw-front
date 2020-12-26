@@ -6,9 +6,9 @@
       label-width="70px"
       :inline="true"
     >
-      <el-form-item label="部门" prop="dptId">
+      <el-form-item label="部门" prop="unitId">
         <treeselect
-          v-model="queryParams.dptId"
+          v-model="queryParams.unitId"
           style="width: 200px"
           :options="deptOptions"
           placeholder="请选择部门"
@@ -120,7 +120,7 @@
         label="期间"
       ></el-table-column>
       <el-table-column
-        prop="dptName"
+        prop="unitName"
         align="center"
         label="部门"
       ></el-table-column>
@@ -216,10 +216,10 @@
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 import { getListData } from "@/api/fund/fundStaticstics";
-import { getBusiness } from "@/api/fund/fundSelect/info";
 import { resourceTreeByUN } from "@/api/system/unit";
-import { exportData } from "../../../utils/export";
+import { exportData1 } from "../../../utils/export";
 import { getToken } from "@/utils/auth";
+import { prefix } from "@/api/fund/fund";
 
 export default {
   data() {
@@ -265,14 +265,13 @@ export default {
   methods: {
     handleGetBusiness() {
       this.getDicts("fund", "business_type").then((response) => {
-        // getBusiness().then((res) => {
         this.busTypeOptions = response;
       });
     },
     //获取部门列表
     getUnitId() {
       resourceTreeByUN().then((res) => {
-        this.queryParams.dptId = res.checked;
+        this.queryParams.unitId = res.checked;
         this.morenUnit = res.checked;
         this.deptOptions = res.list;
         this.getList();
@@ -293,7 +292,7 @@ export default {
       }
       getListData(data)
         .then((res) => {
-          this.total = res.count;
+          this.total = res.totalRow;
           this.tableData = res.list;
           this.loading = false;
         })
@@ -346,7 +345,7 @@ export default {
       this.queryParams.startTime = this.getCurrentMonthFirst();
       this.queryParams.endTime = this.getCurrentMonthLast();
       this.queryParams.isBalanceZero = false;
-      this.queryParams.dptId = this.morenUnit;
+      this.queryParams.unitId = this.morenUnit;
       this.handleQuery();
     },
 
@@ -364,7 +363,7 @@ export default {
         }
         delete data.pageSize;
         delete data.pageNum;
-        exportData(getToken(), data, "/fund/stat/export", "客户资金统计");
+        exportData1(getToken(), data, `${prefix}/stat/export`, "客户资金统计");
       });
     },
   },
