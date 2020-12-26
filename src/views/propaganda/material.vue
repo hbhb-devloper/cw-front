@@ -136,7 +136,7 @@
             size="mini"
             placeholder="选择日期时间"
             value-format="yyyy-MM-dd HH"
-            format="yyyy-MM-dd HH"
+            format="dd日HH时"
           >
           </el-date-picker>
           <el-button
