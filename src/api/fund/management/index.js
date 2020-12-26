@@ -43,7 +43,7 @@ export function getInfo(id) {
 //记录修改
 export function upaDate(data) {
   return request1({
-    url: `${prefix}/invoice/update`,
+    url: `${prefix}/invoice`,
     method: 'put',
     data
   })
