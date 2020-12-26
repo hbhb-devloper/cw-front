@@ -1,34 +1,25 @@
 import request from '@/utils/request'
+import request1 from '@/utils/request1'
+import { prefix } from '../fund'
+import { prefix1 } from '../../flow/flow'
 
-export function getInfo(id) {
-  return request({
-    url:`/fund/advance/info/${id}`,
-    method:'get'
-  })
-}
-export function getFlowList(id) {
-  return request({
-    url:`/fund/invoice/flow/list/${id}`,
-    method:'get'
-  })
-}
+
 export function advanceApprove(data) {
-  return request({
-    url:'/fund/advance/approve',
-    method:'post',
+  return request1({
+    url: `${prefix}/invoice/approve`,
+    method: 'post',
     data
   })
 }
 export function getOpinionList() {
-  return request({
-    url:'/flow/suggestion/list',
-    method:'get'
+  return request1({
+    url: `${prefix1}/suggestion/list`,
+    method: 'get'
   })
 }
-export function upDateInvoice(data) {
-  return request({
-    url:'/fund/advance/update-info',
-    method:'put',
-    data
+export function getFlowList(id) {
+  return request1({
+    url: `${prefix}/invoice/${id}/flow`,
+    method: 'get'
   })
 }

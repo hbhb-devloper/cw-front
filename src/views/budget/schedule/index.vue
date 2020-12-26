@@ -8,7 +8,7 @@
         <el-input placeholder="请输入项目类型" v-model="queryParams.projectItem" size="small" />
       </el-form-item>
       <el-form-item label="时间" prop="year">
-        <el-date-picker v-model="queryParams.year" value-format="yyyy-MM" type="month" placeholder="选择月份"></el-date-picker>
+        <el-date-picker v-model="queryParams.year" value-format="yyyy" type="year" placeholder="选择年份"></el-date-picker>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
@@ -40,7 +40,7 @@
     >
       <el-table-column prop="itemName" label="项目类别名称" width="300"></el-table-column>
       <el-table-column prop="balance" label="本年预算值(万元)" align="center" width="150"></el-table-column>
-      <el-table-column prop="amount" align="center" label="已立项值(万元)" width="150">
+      <el-table-column prop="amount" align="center" label="已立项值(万元)" width="150"> 
         <template slot-scope="scope">
           <el-button
             size="mini"
@@ -51,7 +51,7 @@
         </template>
       </el-table-column>
       <el-table-column prop="surplus" label="本年结余(万元)" align="center" width="150"></el-table-column>
-      <el-table-column prop="percentage" align="center" label="预算进度百分比">
+      <el-table-column prop="percentage" align="center" label="预算进度百分比" >
         <template slot-scope="scope">
           <el-progress :percentage="scope.row.percentage" v-if="scope.row.percentage"></el-progress>
         </template>

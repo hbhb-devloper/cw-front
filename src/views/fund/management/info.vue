@@ -12,7 +12,7 @@
       <div class="program-box">
         <div style="width: 100%; position: relative"></div>
         <div style="width: 100%; text-align: center; font-weight: 900">
-          <span v-if="flowList[0]">{{ flowList[0].projectFlowName }}</span>
+          <span v-if="flowName">{{ flowName }}</span>
         </div>
         <div class="program" v-if="flowList">
           <div v-for="(item, index) in flowList" :key="index" class="programList">
@@ -21,10 +21,10 @@
               <span style="max-width: 160px; line-height: 40px">
                 <i class="el-icon-success" v-if="item.operation.value == 1"></i>
                 <i class="el-icon-error" v-if="item.operation.value == 0"></i>
-                {{ item.approverRole }}：
+                {{ item.roleDesc }}：
               </span>
               <el-select
-                v-if="item.operation.value == 2"
+                v-if="!item.approver.readOnly"
                 placeholder="请选择"
                 v-model="item.form.id"
                 style="width: 120px"
@@ -38,9 +38,16 @@
                 >
                 </el-option>
               </el-select>
-
-              <el-select
+              <el-input
                 v-else
+                disabled
+                v-model="item.nickName"
+                style="width: 180px"
+              ></el-input>
+              
+
+              <!-- <el-select
+                
                 placeholder="请选择"
                 v-model="item.nickName"
                 style="width: 120px"
@@ -53,7 +60,7 @@
                   :key="items.userId"
                 >
                 </el-option>
-              </el-select>
+              </el-select> -->
             </div>
             <div class="programList-div" style="height: 32px">
               <el-button
@@ -110,7 +117,7 @@
             <div style="height: 32px">
               <div v-if="item.operation.value != 2">
                 <span style="opacity: 0.7">{{ item.nickName }}</span
-                >({{ item.updateTime | filterTime }})
+                >({{ item.approveTime | filterTime }})
               </div>
             </div>
           </div>
@@ -290,16 +297,18 @@
 
 <script>
 import {
-  getInfo,
-  getFlowList,
   advanceApprove,
-  getOpinionList,
-  upDateInvoice,
+  getFlowList
 } from "@/api/fund/management/info";
+
+import {getList} from "@/api/flow/opinion";
+//  import {getFlowList} from '@/api/fund/fundSelect/info'
+import {getInfo ,updateInfo} from "@/api/fund/management/index";
 
 export default {
   data() {
     return {
+      flowName:undefined,
       flowList: [],
       info: {},
       fileTable: [],
@@ -364,6 +373,9 @@ export default {
     },
     getFlowLists(id) {
       getFlowList(id).then((res) => {
+        console.log('res',res);
+        this.flowName=res.name
+        res=res.nodes
         for (let key of res) {
           key.form = {
             id: key.approver.value || undefined,
@@ -377,7 +389,7 @@ export default {
       });
     },
     getOpinionLists() {
-      getOpinionList().then((res) => {
+      getList().then((res) => {
         this.opinion = res;
       });
     },
@@ -402,7 +414,7 @@ export default {
           return;
         }
         this.form2.id = this.$route.params.id;
-        upDateInvoice(this.form2).then((res) => {
+        updateInfo(this.form2).then((res) => {
           advanceApprove(this.programObj).then((res1) => {
             this.getFlowLists(this.$route.params.id);
             this.getDateInfo(this.$route.params.id);

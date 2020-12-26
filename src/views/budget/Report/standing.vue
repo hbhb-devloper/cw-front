@@ -3,7 +3,7 @@
     <div class="top-control">
       <el-col :span="24">
         <el-form ref="queryForm" :model="obj" :inline="true" label-width="100px">
-          <el-form-item label="单位：">
+          <el-form-item label="单位：" prop="unitId">
             <treeselect
               v-model="obj.unitId"
               :options="deptOptions"
@@ -23,6 +23,7 @@
               type="year"
               placeholder="请选择"
               style="width: 200px; margin-left: -25px"
+               prop="createTime"
             >
             </el-date-picker>
             <el-date-picker
@@ -50,7 +51,7 @@
               ></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="项目名称：" prop="userName">
+          <el-form-item label="项目名称：" prop="projectName">
             <el-input
               placeholder="请输入关键词"
               v-model="obj.projectName"
@@ -495,8 +496,10 @@ export default {
     },
     /** 重置按钮操作 */
     handleRest() {
+      let times = new Date();
       this.resetForm("queryForm");
       this.obj.unitId=this.morenUnit
+      this.obj.projectYear=times.getFullYear().toString()
       this.handleQuery();
     },
 

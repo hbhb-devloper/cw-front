@@ -21,26 +21,27 @@
 <!--        <div style="text-align: center;"><span>{{item.userId}}</span><span>({{item.createTime}})</span></div>-->
 <!--      </div>-->
       <div class="program" >
-        <div v-for="(item,index) in approvalData" class="programList">
+        <div v-for="(item,index) in approvalData" class="programList" :key="index">
           <div class="programList-div">
             <span style="max-width: 160px;line-height: 19px;">
-              <i class="el-icon-success" v-if="item.operation==1"></i>
-              <i class="el-icon-error" v-if="item.operation==0"></i>
+              <i class="el-icon-success" v-if="item.operation.value==1"></i>
+              <i class="el-icon-error" v-if="item.operation.value==0"></i>
               {{item.roleDesc}}：
             </span>
-            <el-select placeholder="请选择" v-model="item.userId" style="width:120px;" disabled>
+            <el-input disabled v-model="item.nickName" style="width:180px" :placeholder="'请输入'+item.roleDesc"></el-input>
+            <!-- <el-select placeholder="请选择" v-model="item.userId" style="width:120px;" disabled>
               <el-option> </el-option>
-            </el-select>
+            </el-select> -->
           </div>
 
           <div class="programList-div">
             <span style="display: inline-block;">意见：</span>
 
-            <el-input disabled v-model="item.suggestion" style="width:180px" placeholder="请输入审批意见"></el-input>
+            <el-input disabled v-model="item.suggestion.value" style="width:180px" placeholder="请输入审批意见"></el-input>
             <!--            <el-input :disabled="item.suggestion.readOnly" v-model="programObj.suggestion" :placeholder="'请输入审批意见'"></el-input>-->
           </div>
           <div style="height:32px">
-            <div ><span style="opacity: 0.7;">{{item.userId}}</span>({{item.createTime}})
+            <div ><span style="opacity: 0.7;">{{item.nickName}}</span>({{item.approveTime}})
             </div>
           </div>
         </div>
@@ -56,7 +57,7 @@
             <el-input v-model="info.fcCode" placeholder="请输入编号" disabled style="width: 200px"/>
           </el-form-item>
           <el-form-item label="部门" :required="true">
-            <el-input v-model="info.dptName" placeholder="请输入部门" disabled style="width: 120px"/>
+            <el-input v-model="info.unitName" placeholder="请输入部门" disabled style="width: 120px"/>
             <el-checkbox disabled v-model="info.directSelling">是否核销</el-checkbox>
           </el-form-item>
           <el-form-item label="金额(元)"  :required="true">
@@ -81,6 +82,7 @@
                 v-for="dict in typeList"
                 :label="dict.label"
                 :value="dict.value"
+                :key="dict.value"
               />
             </el-select>
           </el-form-item>
@@ -142,7 +144,7 @@
     <section class="statistics-box">
       <el-table :data="tableData" v-loading="loading">
         <el-table-column align="center" type="index" label="序号"></el-table-column>
-        <el-table-column prop="dptName" align="center" label="部门"></el-table-column>
+        <el-table-column prop="unitName" align="center" label="部门"></el-table-column>
         <el-table-column prop="groupName" width="180" align="center" label="集团信息"></el-table-column>
         <el-table-column prop="beginAmount" width="120" align="center" label="初期余额(元)"></el-table-column>
         <el-table-column prop="addAmount" width="120" align="center" label="本期增加(元)"></el-table-column>
@@ -162,7 +164,7 @@
 
 <script>
   import ElFormItem from '@/components/customize/ElFormItem';
-  import {getInfo,getFlowList,getBusiness,getStateDetail} from '@/api/fund/fundSelect/info'
+  import {getInfo,getFlowList,getStateDetail} from '@/api/fund/fundSelect/info'
 
   export default {
     components: {
@@ -192,7 +194,7 @@
         getInfo(parseInt(id)).then(res=>{
           this.info=res;
           this.Filetable=[];
-          this.Filetable.push(res.sysFile);
+          this.Filetable.push(res.files);
 
         })
       },
@@ -202,8 +204,8 @@
         })
       },
       handleGetBusiness() {
-        getBusiness().then(res => {
-          this.typeList = res;
+      this.getDicts("fund", "business_type").then((response) => {
+          this.typeList = response;
         })
       },
       //返回
