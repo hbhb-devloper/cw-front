@@ -427,12 +427,12 @@ import { treeListWarn } from "@/api/relocation/warning/prompt.js";
 import Stomp from "stompjs";
 import { getToken } from "@/utils/auth";
 import {
-  getNoticeList,
-  updateNotice,
   getWorkList,
+  getBudgetNotice,
+  updateBudgetNotice,
+  getFundNotice,
+  updateFundNotice,
   getWorkDetailList,
-  updateFund,
-  getFundList,
 } from "@/api/workbench/workbench";
 import PanelGroup from "./dashboard/PanelGroup";
 
@@ -496,7 +496,7 @@ export default {
     },
   },
   created() {
-    // this.getNoticeList();
+
     this.getFileList();
     this.getWorkList();
 
@@ -632,12 +632,12 @@ export default {
     handleUpdate(row) {
       let that = this;
       if (this.module1 == 100) {
-        updateNotice(row.id).then((response) => {
+        updateBudgetNotice(row.id).then((response) => {
           that.getWorkDetailList(this.module1);
           that.getWorkList();
         });
       } else if (this.module1 == 101) {
-        updateFund(row.id).then((response) => {
+        updateFundNotice(row.id).then((response) => {
           that.getWorkDetailList(this.module1);
           that.getWorkList();
         });
@@ -646,7 +646,7 @@ export default {
     /** 预算执行列表 */
     getList1() {
       this.loading1 = true;
-      getNoticeList(this.queryParams).then((response) => {
+      getBudgetNotice().then((response) => {
         this.total = response.count; //Math.ceil(response.count/this.queryParams.pageSize);
         this.NoticeMoreData = response.list;
         this.loading1 = false;
@@ -655,19 +655,12 @@ export default {
     /** 用户资金列表 */
     getList2() {
       this.loading1 = true;
-      getFundList(this.queryParams).then((response) => {
+      getFundNotice().then((response) => {
         this.total = response.count; //Math.ceil(response.count/this.queryParams.pageSize);
         this.NoticeMoreData = response.list;
         this.loading1 = false;
       });
     },
-    // getNoticeList() {
-    //   this.loading = true;
-    //   getNoticeList().then((response) => {
-    //     this.NoticetableData = response.list;
-    //     this.loading = false;
-    //   });
-    // },
     getFileList() {
       this.loading2 = true;
       getFileList(10).then((response) => {
