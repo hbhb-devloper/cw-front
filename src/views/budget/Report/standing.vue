@@ -347,7 +347,8 @@ import {
   LaunchApprove,
   RevokeRevert,
 } from "@/api/budget/report/report.js";
-import { exportData } from "@/utils/export.js";
+import { exportData1 } from "@/utils/export.js";
+import { prefix } from "@/api/budget/budget";
 import { getToken } from "@/utils/auth";
 import { dateTimes } from "@/utils/date.js";
 import Treeselect from "@riophae/vue-treeselect";
@@ -614,7 +615,7 @@ export default {
         cancelButtonText: "取消",
         type: "warning",
       }).then(() => {
-        exportData(getToken(), queryForm, "/budget/project/export", "项目签报");
+        exportData1(getToken(), queryForm, `${prefix}/project/export`, "项目签报");
       });
     },
   },

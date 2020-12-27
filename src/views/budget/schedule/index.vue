@@ -189,7 +189,8 @@ import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 import { updateBudget } from "@/api/budget/decompose/decompose";
 import { getProgressList, getProjectList } from "@/api/budget/schedule";
 import { getToken } from "@/utils/auth";
-import { exportData } from "@/utils/export";
+import { exportData1 } from "@/utils/export";
+import { prefix } from "@/api/budget/budget";
 import { GetInfo , GetProjectInfo} from "@/api/budget/report/report";
 
 export default {
@@ -380,10 +381,10 @@ export default {
         type: "warning",
       })
         .then(function () {
-          return exportData(
+          return exportData1(
             getToken(),
             that.queryParams,
-            "/budget/progress/export",
+            `${prefix}/progress/export`,
             "预算目标与进度"
           );
         })

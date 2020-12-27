@@ -9,10 +9,10 @@ import {prefix} from '../fund'
     method:'get'
   })
  }
- // todo
+ 
 export function getStateDetail(id){
   return request({
-    url:`/fund/stat/statDetail/${id}`,
+    url:`${prefix}/stat/detail/${id}`,
     method:'get'
   })
 }

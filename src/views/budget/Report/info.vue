@@ -1131,14 +1131,14 @@ export default {
         exportWord(
           getToken(),
           exportData,
-          `/budget/project/info/export`,
+          `${predix}/project/info/export`,
           this.info.projectName
         );
       });
     },
     GotoHistory() {
       console.log("this.projectId", this.projectId);
-      this.$router.push(`/budget/infohistory/${this.projectId}`);
+      this.$router.push(`${predix}/infohistory/${this.projectId}`);
     },
   },
 };

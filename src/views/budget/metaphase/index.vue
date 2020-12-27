@@ -159,8 +159,9 @@ import { getBudget } from "@/api/budget/metaphase";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 import { updateBudget } from "@/api/budget/decompose/decompose";
-import { exportData } from "@/utils/export";
+import { exportData1 } from "@/utils/export";
 import { getToken } from "@/utils/auth";
+import { prefix } from "@/api/budget/budget";
 export default {
   components: { Treeselect },
   data() {
@@ -348,10 +349,10 @@ export default {
         type: "warning",
       })
         .then(function () {
-          return exportData(
+          return exportData1(
             getToken(),
             queryParams,
-            "/budget/history/export",
+            `${prefix}/history/export`,
             "中期预算调整"
           );
         })
