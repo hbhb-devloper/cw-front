@@ -374,8 +374,8 @@ import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 import { getToken } from "@/utils/auth";
 import {resourceTreeByUN} from "@/api/system/unit";
 import { exportData1, exportWord } from "@/utils/export.js";
-import { prefix1 } from "@/api/budget/budget";
-import { prefix } from "@/api/system/system";
+import { prefix as budgetPrefix } from "@/api/budget/budget";
+import { prefix as systemPrefix } from "@/api/system/system";
 import axios from "axios";
 
 export default {
@@ -391,7 +391,7 @@ export default {
   },
   data() {
     return {
-      ActionUrl: process.env.VUE_APP_GATEWAY_API + `${prefix}/file/upload?bizType=20`, // 上传的图片服务器地址
+      ActionUrl: process.env.VUE_APP_GATEWAY_API + `${systemPrefix}/file/upload?bizType=20`, // 上传的图片服务器地址
       radio: 3, //单选项
       obj: {
         date: undefined,
@@ -488,7 +488,7 @@ export default {
       this.radio = 3;
       this.handleQuery();
     },
-    
+
     //新增
     handleAdd() {
       this.open = true;
@@ -517,7 +517,7 @@ export default {
         exportWord(
           getToken(),
           this.info,
-          `${prefix1}/agile/info/export`,
+          `${budgetPrefix}/agile/info/export`,
           `${this.info.projectName}`
         );
       });
@@ -535,7 +535,7 @@ export default {
         exportData1(
           getToken(),
           queryForm,
-          `${prefix1}/agile/export/subsidy`,
+          `${budgetPrefix}/agile/export/subsidy`,
           "日常性费用申报"
         );
       });
