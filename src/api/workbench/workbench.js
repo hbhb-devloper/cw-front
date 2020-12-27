@@ -23,7 +23,7 @@ export function getWorkList() {
 
 // 预算提醒
 export function getBudgetSummary() {
-  return request({
+  return request1({
     url: `${budgetPrefix}/notice/summary`,
     method: 'get'
   })
@@ -31,7 +31,7 @@ export function getBudgetSummary() {
 
 // 更多-预算列表
 export function getBudgetNotice(query) {
-    return request({
+    return request1({
         url: `${budgetPrefix}/notice/list`,
         method: 'get',
         params: query
@@ -40,7 +40,7 @@ export function getBudgetNotice(query) {
 
 // 更新预算提醒状态
 export function updateBudgetNotice(id) {
-  return request({
+  return request1({
     url: `${budgetPrefix}/notice/` + id,
     method: 'PUT'
   })
@@ -48,7 +48,7 @@ export function updateBudgetNotice(id) {
 
 // 客户资金提醒
 export function getFundSummary() {
-  return request({
+  return request1({
     url: `${fundPrefix}/notice/summary`,
     method: 'get'
   })
@@ -56,7 +56,7 @@ export function getFundSummary() {
 
 // 更多-客户资金列表
 export function getFundNotice(query) {
-    return request({
+    return request1({
         url: `${fundPrefix}/notice/list`,
         method: 'get',
         params: query
@@ -65,15 +65,8 @@ export function getFundNotice(query) {
 
 // 更新客户资金提醒状态
 export function updateFundNotice(id) {
-  return request({
+  return request1({
     url: `${fundPrefix}/notice/` + id,
     method: 'PUT'
   })
-}
-
-export function getWorkDetailList(module) {
-    return request({
-        url: '/work/list/'+module,
-        method: 'get',
-    })
 }
