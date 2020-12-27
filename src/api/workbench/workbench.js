@@ -9,23 +9,32 @@
 import request from '@/utils/request'
 
 import request1 from '@/utils/request1'
-import { prefix as sustemPrefix } from '../system/system'
+import { prefix as systemPrefix } from '../system/system'
 import { prefix as budgetPrefix } from '../budget/budget'
 import { prefix as fundPrefix } from '../fund/fund'
 
 // 工作台模块统计
 export function getWorkList() {
   return request1({
-    url: `${sustemPrefix}/home/module`,
+    url: `${systemPrefix}/home/module`,
     method: 'get',
   })
 }
 
 // 预算提醒
-export function getBudgetNotice() {
+export function getBudgetSummary() {
+  return request({
+    url: `${budgetPrefix}/notice/summary`,
+    method: 'get'
+  })
+}
+
+// 更多-预算列表
+export function getBudgetNotice(query) {
     return request({
-        url: `${budgetPrefix}/notice/summary`,
-        method: 'get'
+        url: `${budgetPrefix}/notice/list`,
+        method: 'get',
+        params: query
     })
 }
 
@@ -38,10 +47,19 @@ export function updateBudgetNotice(id) {
 }
 
 // 客户资金提醒
-export function getFundNotice() {
+export function getFundSummary() {
+  return request({
+    url: `${fundPrefix}/notice/summary`,
+    method: 'get'
+  })
+}
+
+// 更多-客户资金列表
+export function getFundNotice(query) {
     return request({
-        url: `${fundPrefix}/notice/summary`,
-        method: 'get'
+        url: `${fundPrefix}/notice/list`,
+        method: 'get',
+        params: query
     })
 }
 

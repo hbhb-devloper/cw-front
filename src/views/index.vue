@@ -423,8 +423,6 @@
 
 <script>
 import { treeListWarn } from "@/api/relocation/warning/prompt.js";
-
-import Stomp from "stompjs";
 import { getToken } from "@/utils/auth";
 import {
   getWorkList,
@@ -433,6 +431,8 @@ import {
   getFundNotice,
   updateFundNotice,
   getWorkDetailList,
+  getBudgetSummary,
+  getFundSummary
 } from "@/api/workbench/workbench";
 import PanelGroup from "./dashboard/PanelGroup";
 
@@ -538,9 +538,12 @@ export default {
       if (moduleName == "迁改预警") {
         this.open2 = true;
         this.getWarnList(module1);
-      } else {
+      } else if (module1 === 100) {
         this.open1 = true;
-        this.getWorkDetailList(module1);
+        this.getBudgetSummary();
+      } else if (module1 === 101) {
+        this.open1 = true;
+        this.getFundSummary();
       }
     },
     getWarnList() {
@@ -551,10 +554,18 @@ export default {
         this.loading = false;
       });
     },
-    getWorkDetailList(module1) {
+    getBudgetSummary() {
       let that = this;
       this.loading = true;
-      getWorkDetailList(module1).then((response) => {
+      getBudgetSummary().then((response) => {
+        that.NoticetableData = response;
+        that.loading = false;
+      });
+    },
+    getFundSummary() {
+      let that = this;
+      this.loading = true;
+      getFundSummary().then((response) => {
         that.NoticetableData = response;
         that.loading = false;
       });
@@ -631,14 +642,14 @@ export default {
     /** 修改按钮操作 */
     handleUpdate(row) {
       let that = this;
-      if (this.module1 == 100) {
+      if (this.module1 === 100) {
         updateBudgetNotice(row.id).then((response) => {
-          that.getWorkDetailList(this.module1);
+          that.getBudgetSummary(this.module1);
           that.getWorkList();
         });
-      } else if (this.module1 == 101) {
+      } else if (this.module1 === 101) {
         updateFundNotice(row.id).then((response) => {
-          that.getWorkDetailList(this.module1);
+          that.getFundSummary(this.module1);
           that.getWorkList();
         });
       }
@@ -646,7 +657,7 @@ export default {
     /** 预算执行列表 */
     getList1() {
       this.loading1 = true;
-      getBudgetNotice().then((response) => {
+      getBudgetNotice(this.queryParams).then((response) => {
         this.total = response.count; //Math.ceil(response.count/this.queryParams.pageSize);
         this.NoticeMoreData = response.list;
         this.loading1 = false;
@@ -655,7 +666,7 @@ export default {
     /** 用户资金列表 */
     getList2() {
       this.loading1 = true;
-      getFundNotice().then((response) => {
+      getFundNotice(this.queryParams).then((response) => {
         this.total = response.count; //Math.ceil(response.count/this.queryParams.pageSize);
         this.NoticeMoreData = response.list;
         this.loading1 = false;
