@@ -11,10 +11,11 @@ import request1 from '@/utils/request1'
 import {prefix} from './flow'
 
 
-export function FlowTypeList(){
+export function FlowTypeList(query){
   return request1({
     url:`${prefix}/type/select`,
     method:'get',
+    params: query
   })
 }
 // 查询流程类型列表

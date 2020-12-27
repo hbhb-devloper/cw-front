@@ -350,7 +350,7 @@
                 ? '#'
                 : '/fund/management/info/' + scope.row.id
             "
-            >{{ scope.row.state }}</router-link
+            >{{ scope.row.stateLabel }}</router-link
           >
         </template>
       </el-table-column>
