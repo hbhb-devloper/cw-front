@@ -209,7 +209,8 @@
 
 <script>
 import { getList } from "@/api/invoice/grant_table/index";
-import { exportData } from "@/utils/export";
+import { exportData1 } from "@/utils/export";
+import { prefix } from "@/api/invoice/invoice";
 import { getToken } from "@/utils/auth";
 import {resourceTreeByUN} from "@/api/system/unit";
 
@@ -285,13 +286,13 @@ export default {
       let url = undefined,
         fileName = undefined;
       if (type == 0) {
-        url = "/invoice/remuneration/export/subsidy";
+        url = `${prefix}/remuneration/export/subsidy`;
         fileName = "支付明细";
       } else if (type == 1) {
-        url = "/invoice/remuneration/export/month";
+        url = `${prefix}/remuneration/export/month`;
         fileName = "酬金月份";
       } else if (type == 2) {
-        url = "/invoice/remuneration/export/check";
+        url = `${prefix}/remuneration/export/check`;
         fileName = "查验结果";
       }
       this.$confirm(`是否确认导出${fileName}数据?`, "数据导出", {
@@ -299,7 +300,7 @@ export default {
         cancelButtonText: "取消",
         type: "warning",
       }).then(() => {
-        exportData(getToken(), this.queryParams, url, fileName);
+        exportData1(getToken(), this.queryParams, url, fileName);
       });
     },
   },

@@ -1078,7 +1078,7 @@ export default {
         exportWord(
           getToken(),
           exportData,
-          `/budget/project/info/export`,
+          `${prefix}/project/info/export`,
           this.info.projectName
         );
       });

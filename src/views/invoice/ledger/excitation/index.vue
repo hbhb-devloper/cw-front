@@ -132,8 +132,9 @@ import Treeselect from "@riophae/vue-treeselect";
 import { getLists } from "@/api/invoice/excitation/index";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 import { resourceTreeByUN } from "@/api/system/unit";
-import { fundSelectExprot,exportData } from "@/utils/export.js";
+import { fundSelectExprot,exportData1 } from "@/utils/export.js";
 import { getToken } from "@/utils/auth";
+import { prefix } from "@/api/invoice/invoice";
 import axios from "axios";
 export default {
   name: "index",
@@ -219,10 +220,10 @@ export default {
         type: "warning",
       }).then((res) => {
         let data = {}
-        exportData(
+        exportData1(
           getToken(),
           data,
-          "/invoice/incentive/export/template",
+          `${prefix}/incentive/export/template`,
           "综合激励导入模板"
         );
       });
@@ -240,7 +241,7 @@ export default {
         background: "rgba(0, 0, 0, 0.7)",
       });
       axios({
-        url: process.env.VUE_APP_BASE_API + "/invoice/incentive/import ",
+        url: process.env.VUE_APP_GATEWAY_API + `${prefix}/incentive/import`,
         method: "post",
         data: params,
         headers: {

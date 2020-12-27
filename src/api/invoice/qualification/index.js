@@ -1,15 +1,11 @@
-import request from '@/utils/request'
+import request from '@/utils/request1'
+import { prefix } from '../invoice'
 
 export function GetList(params){
   return request({
-    url:'/invoice/taxpayer/list',
+    url:`${prefix}/taxpayer/list`,
     method:'get',
     params
   })
 }
-export function GetTaxpayerDict(){
-  return request({
-    url:'/dict/invoice/invoice-taxpayer',
-    method:'get',
-  })
-}
+

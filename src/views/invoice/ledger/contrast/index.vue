@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-10-26 10:25:07
  * @LastEditors: CYZ
- * @LastEditTime: 2020-11-13 14:41:53
+ * @LastEditTime: 2020-12-27 16:45:26
 -->
 <template>
   <div class="containers">
@@ -158,8 +158,9 @@ import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 import { resourceTreeByUN } from "@/api/system/unit";
 import { getContrastList } from "@/api/invoice/contrast";
-import { exportData } from "@/utils/export.js";
+import { exportData1 } from "@/utils/export.js";
 import { getToken } from "@/utils/auth";
+import { prefix } from "@/api/invoice/invoice";
 export default {
   name: "index",
   data() {
@@ -225,10 +226,10 @@ export default {
       }).then((res) => {
         let data = JSON.parse(JSON.stringify(this.queryParams));
         data.pageSize = data.pageNum = undefined;
-        exportData(
+        exportData1(
           getToken(),
           data,
-          "/invoice/contrast/export/contrast",
+          `${prefix}/contrast/export/contrast`,
           "渠道发票对比表"
         );
       });

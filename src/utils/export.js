@@ -59,7 +59,7 @@ export function BatchExport(tokens, data, url, fileName) {
   axios({
     method: 'post',
     responseType: 'blob',
-    url: process.env.VUE_APP_BASE_API + url,
+    url: process.env.VUE_APP_GATEWAY_API + url,
     data: data,
     headers: {
       'Authorization':tokens
@@ -88,7 +88,7 @@ export function exportWord(tokens, data, url,fileName) {
   axios({
     method: 'post',
     responseType: 'blob',
-    url: process.env.VUE_APP_BASE_API + url,
+    url: process.env.VUE_APP_GATEWAY_API + url,
     data: data,
     headers: {
       'Authorization':tokens
@@ -118,7 +118,7 @@ export function fundSelectExprot(tokens, data, url,fileName) {
   axios({
     method: 'post',
     responseType: 'blob',
-    url: process.env.VUE_APP_BASE_API + url,
+    url: process.env.VUE_APP_GATEWAY_API + url,
     data: data,
     headers: {
       'Authorization':tokens

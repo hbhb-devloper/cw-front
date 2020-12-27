@@ -327,7 +327,6 @@ import {
   getQuota,
   DeleteFile,
   LaunchApprove,
-  getVatRate,
 } from "@/api/budget/report/report.js";
 import { getToken } from "@/utils/auth";
 import { dateTimes } from "@/utils/date.js";
@@ -407,7 +406,6 @@ export default {
       });
       //获取增值税下拉
       this.getDicts("budget", "project_vat_rate").then((response) => {
-        // getVatRate().then(res1 => {
         this.VatRateOption = response;
         if (this.stutic == "eidt") {
           this.fileList = [];

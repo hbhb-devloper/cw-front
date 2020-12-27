@@ -396,7 +396,8 @@ import {
   delarr,
   getInfo,
 } from "@/api/invoice/general_vat/general_vat.js";
-import { exportData, BatchExport } from "@/utils/export";
+import { exportData1, BatchExport } from "@/utils/export";
+import { prefix } from "@/api/invoice/invoice";
 import { getToken } from "@/utils/auth";
 import { dateTimes } from "@/utils/date.js";
 
@@ -667,10 +668,10 @@ export default {
         this.$message.warning("请勾选出需要导出的记录！");
         return;
       }
-      exportData(
+      exportData1(
         getToken(),
         this.delarrs,
-        "/invoice/invoice_vat/export",
+        `${prefix}/invoice_vat/export`,
         "增值税普票"
       );
     },

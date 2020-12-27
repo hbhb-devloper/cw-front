@@ -370,8 +370,9 @@ import {
   delarr,
   getInfo,
 } from "@/api/invoice/pro_vat/3vat.js";
-import { exportData, BatchExport } from "@/utils/export";
+import { exportData1, BatchExport } from "@/utils/export";
 import { getToken } from "@/utils/auth";
+import { prefix } from "@/api/invoice/invoice";
 import { dateTimes } from "@/utils/date.js";
 
 export default {
@@ -623,10 +624,10 @@ export default {
         this.$message.warning("请勾选出需要导出的记录！");
         return;
       }
-      exportData(
+      exportData1(
         getToken(),
         this.delarrs,
-        "/invoice/invoice_3vat/export",
+        `${prefix}/invoice_3vat/export`,
         "增值税3%专票"
       );
     },

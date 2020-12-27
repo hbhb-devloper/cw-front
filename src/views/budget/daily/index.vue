@@ -365,17 +365,16 @@
 import {
   getDataList,
   addDate,
-  getTypeList,
   getInfoDate,
   deleteDate,
   DeleteFile,
 } from "@/api/budget/daily/index";
-import { getVatRate } from "@/api/budget/report/report.js";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 import { getToken } from "@/utils/auth";
 import {resourceTreeByUN} from "@/api/system/unit";
-import { exportData, exportWord } from "@/utils/export.js";
+import { exportData1, exportWord } from "@/utils/export.js";
+import { prefix1 } from "@/api/budget/budget";
 import { prefix } from "@/api/system/system";
 import axios from "axios";
 
@@ -460,7 +459,6 @@ export default {
         this.deptOptions = res.list;
       });
       //获取增值税下拉
-      // getVatRate().then((res) => {
       this.getDicts("budget", "project_vat_rate").then((response) => {
         this.VatRateOption = response;
       });
@@ -519,7 +517,7 @@ export default {
         exportWord(
           getToken(),
           this.info,
-          "/budget/agile/info/export",
+          `${prefix1}/agile/info/export`,
           `${this.info.projectName}`
         );
       });
@@ -534,10 +532,10 @@ export default {
         cancelButtonText: "取消",
         type: "warning",
       }).then(() => {
-        exportData(
+        exportData1(
           getToken(),
           queryForm,
-          "/budget/agile/export/subsidy",
+          `${prefix1}/agile/export/subsidy`,
           "日常性费用申报"
         );
       });

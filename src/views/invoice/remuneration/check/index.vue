@@ -198,12 +198,13 @@
 </template>
 
 <script>
-import {  getList } from "@/api/invoice/check/index";
-import {resourceTreeByUN} from "@/api/system/unit";
+import { getList } from "@/api/invoice/check/index";
+import { resourceTreeByUN } from "@/api/system/unit";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
-import { exportData } from "@/utils/export.js";
+import { exportData1 } from "@/utils/export.js";
 import { getToken } from "@/utils/auth";
+import { prefix } from "@/api/invoice/invoice";
 export default {
   components: {
     Treeselect,
@@ -227,8 +228,7 @@ export default {
       tableData: [],
       total: undefined,
       deptOptions: [],
-      morenUnit:undefined
-
+      morenUnit: undefined,
     };
   },
   created() {
@@ -239,7 +239,7 @@ export default {
       resourceTreeByUN().then((res) => {
         console.log(res);
         this.queryParams.unitId = res.checked;
-        this.morenUnit=res.checked;
+        this.morenUnit = res.checked;
         this.deptOptions = res.list;
         this.getLists();
       });
@@ -262,10 +262,10 @@ export default {
         cancelButtonText: "取消",
         type: "warning",
       }).then(() => {
-        exportData(
+        exportData1(
           getToken(),
           data,
-          "/invoice/inspection/export",
+          `${prefix}/inspection/export`,
           "增值税发票查验"
         );
       });

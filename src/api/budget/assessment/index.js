@@ -4,13 +4,14 @@
  * @Author: CYZ
  * @Date: 2020-07-07 17:50:31
  * @LastEditors: CYZ
- * @LastEditTime: 2020-07-14 14:32:57
+ * @LastEditTime: 2020-12-27 23:48:27
  */
-import request from '@/utils/request'
+import request from '@/utils/request1'
+import {prefix} from '../budget'
 // 查询流程类型列表
 export function listMonth(query) {
     return request({
-        url: '/month/check/list',
+        url: `${prefix}/check/list`,
         method: 'get',
         params: query
     })
@@ -19,7 +20,7 @@ export function listMonth(query) {
 // 修改岗位
 export function updateBudget(data) {
     return request({
-        url: '/budget/adjust',
+        url: `${prefix}/adjust`,
         method: 'put',
         data: data
     })
@@ -28,7 +29,7 @@ export function updateBudget(data) {
 // 新增流程类型
 export function BudgetExport(data) {
     return request({
-        url: '/budget/export',
+        url: `${prefix}/export`,
         method: 'post',
         data: data
     })

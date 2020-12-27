@@ -450,12 +450,12 @@
       <el-table-column
         label="是否含文件"
         width="130"
-        prop="isFile"
+        prop="hasFile"
         align="center"
       >
         <template slot-scope="scope">
           <span :class="scope.row.isCancellation ? 'red' : ''">{{
-            scope.row.isFile == 1 ? "是" : "否"
+            scope.row.hasFile == 1 ? "是" : "否"
           }}</span>
         </template>
       </el-table-column>
@@ -921,7 +921,7 @@ export default {
       });
     },
     handleGetBusiness() {
-      this.getDicts("fund", "business").then((response) => {
+      this.getDicts("fund", "business_type").then((response) => {
         this.typeList = response;
         this.formTypeList = response;
       });
@@ -1055,7 +1055,7 @@ export default {
         this.typeState = res;
         this.open1 = true;
         this.title = "发起审批";
-        this.flow.invoiceId = row.id;
+        this.flow.businessId = row.id;
       });
     },
     handleEdits(row) {
@@ -1228,7 +1228,7 @@ export default {
         this.getList();
         this.msgSuccess("流程发起成功！");
         this.$router.push({
-          path: `/fund/management/info/${this.flow.invoiceId}`,
+          path: `/fund/management/info/${this.flow.businessId}`,
         });
         this.flow = {};
       });

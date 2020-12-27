@@ -194,9 +194,10 @@
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 import { resourceTreeByUN } from "@/api/system/unit";
-import { GetList, GetTaxpayerDict } from "@/api/invoice/qualification/index";
-import { fundSelectExprot, exportData } from "@/utils/export.js";
+import { GetList } from "@/api/invoice/qualification/index";
+import { fundSelectExprot, exportData1 } from "@/utils/export.js";
 import { getToken } from "@/utils/auth";
+import { prefix } from "@/api/invoice/invoice";
 import axios from "axios";
 export default {
   name: "index",
@@ -320,10 +321,10 @@ export default {
         type: "warning",
       }).then((res) => {
         let data = {};
-        exportData(
+        exportData1(
           getToken(),
           data,
-          "/invoice/taxpayer/export/template",
+          `${prefix}/taxpayer/export/template`,
           "渠道纳税人资质库导入模板"
         );
       });

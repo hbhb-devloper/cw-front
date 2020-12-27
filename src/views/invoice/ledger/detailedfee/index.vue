@@ -204,9 +204,10 @@
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 import { resourceTreeByUN } from "@/api/system/unit";
-import { exportData } from "@/utils/export.js";
+import { exportData1 } from "@/utils/export.js";
 import { getToken } from "@/utils/auth";
 import { getLists } from "@/api/invoice/detailedfee/index";
+import { prefix } from "@/api/invoice/invoice";
 import axios from "axios";
 export default {
   name: "index",
@@ -279,10 +280,10 @@ export default {
       }).then((res) => {
         let data = JSON.parse(JSON.stringify(this.queryParams));
         data.pageSize = data.pageNum = undefined;
-        exportData(
+        exportData1(
           getToken(),
           data,
-          "/invoice/detailed/export",
+          `${prefix}/detailed/export`,
           "酬金计提明细"
         );
       });
@@ -295,10 +296,10 @@ export default {
         type: "warning",
       }).then((res) => {
         let data = {};
-        exportData(
+        exportData1(
           getToken(),
           data,
-          "/invoice/detailed/export/template",
+          `${prefix}/detailed/export/template`,
           "酬金计提明细导入模板"
         );
       });
@@ -320,7 +321,7 @@ export default {
         background: "rgba(0, 0, 0, 0.7)",
       });
       axios({
-        url: process.env.VUE_APP_BASE_API + "/invoice/detailed/import",
+        url: process.env.VUE_APP_GATEWAY_API + `${prefix}/detailed/import`,
         method: "post",
         data: params,
         headers: {

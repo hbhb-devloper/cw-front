@@ -1,41 +1,37 @@
-import request from '@/utils/request'
+import request from '@/utils/request1'
+import {prefix} from '../budget'
 
 
 export function getDataList(params) {
   return request({
-    url:'/budget/agile/list',
+    url:`${prefix}/agile/list`,
     method:'get',
     params
   })
 }
-export function getTypeList() {
-  return request({
-    url:'/dict/fund/budget-type',
-    method:'get'
-  })
-}
+
 export function addDate(data) {
   return request({
-    url:'/budget/agile',
+    url:`${prefix}/agile`,
     method:'post',
     data
   })
 }
 export function getInfoDate(id) {
   return request({
-    url:`/budget/agile/info/${id}`,
+    url:`${prefix}/agile/info/${id}`,
     method:'get'
   })
 }
 export function deleteDate(id) {
   return request({
-    url:`/budget/agile/delete/${id}`,
+    url:`${prefix}/agile/delete/${id}`,
     method:'delete'
   })
 }
 export function DeleteFile(id) {
   return request({
-    url:`/budget/agile/delete/file/${id}`,
+    url:`${prefix}/agile/delete/file/${id}`,
     method:'delete'
   })
 }
