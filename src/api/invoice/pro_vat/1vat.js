@@ -1,10 +1,9 @@
-import request from '@/utils/request'
-import axios from 'axios'
-
+import request from '@/utils/request1'
+import { prefix } from '../invoice'
 // 查询记录列表
 export function getList(query) {
   return request({
-    url: '/invoice/invoice_1vat/list',
+    url: `${prefix}/invoice_1vat/list`,
     method: 'get',
     params: query
   })
@@ -13,7 +12,7 @@ export function getList(query) {
 // 新增记录
 export function adddata(data) {
   return request({
-    url: '/invoice/invoice_1vat',
+    url: `${prefix}/invoice_1vat`,
     method: 'post',
     data: data
   })
@@ -22,7 +21,7 @@ export function adddata(data) {
 // 修改记录
 export function update(data) {
   return request({
-    url: '/invoice/invoice_1vat',
+    url: `${prefix}/invoice_1vat`,
     method: 'put',
     data: data
   })
@@ -31,7 +30,7 @@ export function update(data) {
 // 删除记录
 export function delData(userId) {
   return request({
-    url: `/invoice/invoice_1vat/${userId}`,
+    url: `${prefix}/invoice_1vat/${userId}`,
     method: 'delete'
   })
 }
@@ -39,7 +38,7 @@ export function delData(userId) {
 // 批量删除
 export function delarr(userId) {
   return request({
-    url: '/invoice/invoice_1vat/batch',
+    url: `${prefix}/invoice_1vat/batch`,
     method: 'delete',
     data: userId
   })
@@ -47,7 +46,7 @@ export function delarr(userId) {
 // 查询详情
 export function getInfo(id){
  return request({
-    url:`/invoice/invoice_1vat/info/${id}`,
+    url:`${prefix}/invoice_1vat/info/${id}`,
     method:'get'
   })
 }

@@ -450,12 +450,12 @@
       <el-table-column
         label="是否含文件"
         width="130"
-        prop="isFile"
+        prop="hasFile"
         align="center"
       >
         <template slot-scope="scope">
           <span :class="scope.row.isCancellation ? 'red' : ''">{{
-            scope.row.isFile == 1 ? "是" : "否"
+            scope.row.hasFile == 1 ? "是" : "否"
           }}</span>
         </template>
       </el-table-column>

@@ -3,7 +3,12 @@
     <div class="app-top">
       <div>
         <el-col :span="24" :xs="24">
-          <el-form ref="queryForm" :model="obj2" :inline="true" label-width="100px">
+          <el-form
+            ref="queryForm"
+            :model="obj2"
+            :inline="true"
+            label-width="100px"
+          >
             <el-form-item label="发票代码：" prop="invoiceCode">
               <el-input
                 placeholder="请输入关键词"
@@ -267,7 +272,7 @@
       </div>
       <div class="updatas">
         <el-dialog :visible.sync="centerDialogVisible">
-          <el-form  :inline="true" label-width="200px">
+          <el-form :inline="true" label-width="200px">
             <el-form-item label="发票种类代码：" :required="true">
               <el-select v-model="obj.invoiceType" placeholder="请选择关键词">
                 <el-option label="增值税专用发票" value="01"></el-option>
@@ -365,8 +370,9 @@ import {
   delarr,
   getInfo,
 } from "@/api/invoice/pro_vat/6vat.js";
-import { exportData, BatchExport } from "@/utils/export";
+import { exportData1, BatchExport } from "@/utils/export";
 import { getToken } from "@/utils/auth";
+import { prefix } from "@/api/invoice/invoice";
 import { dateTimes } from "@/utils/date.js";
 
 export default {
@@ -633,10 +639,10 @@ export default {
         this.$message.warning("请勾选出需要导出的记录！");
         return;
       }
-      exportData(
+      exportData1(
         getToken(),
         this.delarrs,
-        "/invoice/invoice_6vat/export",
+        `${prefix}/invoice_6vat/export`,
         "增值税6%专票"
       );
     },
@@ -661,11 +667,11 @@ export default {
 </script>
 <style scoped>
 body {
-  background: #F4F4F4;
+  background: #f4f4f4;
 }
 
 .app-container {
-  background: #F4F4F4;
+  background: #f4f4f4;
   display: flex;
   flex-direction: column;
 }

@@ -241,9 +241,10 @@
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 import Treeselect from "@riophae/vue-treeselect";
 import { resourceTreeByUN } from "@/api/system/unit";
-import { fundSelectExprot,exportData } from "@/utils/export.js";
+import { fundSelectExprot,exportData1 } from "@/utils/export.js";
 import { getToken } from "@/utils/auth";
 import { getLists } from "@/api/invoice/standingbook/index";
+import { prefix } from "@/api/invoice/invoice";
 import axios from "axios";
 export default {
   name: "index",
@@ -327,10 +328,10 @@ export default {
         type: "warning",
       }).then((res) => {
         let data = {}
-        exportData(
+        exportData1(
           getToken(),
           data,
-          "/invoice/focus/export/template",
+          `${prefix}/focus/export/template`,
           "集中化应付台账导入模板"
         );
       });
@@ -352,7 +353,7 @@ export default {
         background: "rgba(0, 0, 0, 0.7)",
       });
       axios({
-        url: process.env.VUE_APP_BASE_API + "/invoice/focus/import",
+        url: process.env.VUE_APP_GATEWAY_API + `${prefix}/focus/import`,
         method: "post",
         data: params,
         headers: {

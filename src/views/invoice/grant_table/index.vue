@@ -235,13 +235,13 @@
 import axios from "axios";
 import { getToken } from "@/utils/auth";
 import {
-  getTaxtype,
   getList,
   DeleteSerialNumber,
 } from "@/api/invoice/grant_table/index";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
-import { exportData } from "../../../utils/export";
+import { exportData1 } from "../../../utils/export";
+import { prefix } from "@/api/invoice/invoice";
 
 export default {
   components: {
@@ -281,9 +281,8 @@ export default {
       });
     },
     getListUnit() {
-      
-      getTaxtype().then((res) => {
-        this.typeOptions = res;
+        this.getDicts("invoice", "tax_type").then((response) => {
+        this.typeOptions = response;
       });
     },
     handleOpen(type) {
@@ -291,18 +290,18 @@ export default {
       this.tax = undefined;
       if (type == 0) {
         this.ActionUrl =
-          process.env.VUE_APP_BASE_API + "/invoice/remuneration/import/reward";
+          process.env.VUE_APP_GATEWAY_API + `${prefix}/remuneration/import/reward`;
         this.title = "酬金发放表导入";
-        getTaxtype().then((res) => {
-          this.taxrate = res;
+        this.getDicts("invoice", "tax_type").then((response) => {
+          this.taxrate = response;
           this.open1 = true;
         });
       } else if (type == 1) {
         this.ActionUrl =
-          process.env.VUE_APP_BASE_API + "/invoice/remuneration/import/subsidy";
+          process.env.VUE_APP_GATEWAY_API + `${prefix}/remuneration/import/subsidy`;
       } else if (type == 2) {
         this.ActionUrl =
-          process.env.VUE_APP_BASE_API + "/invoice/remuneration/import/account";
+          process.env.VUE_APP_GATEWAY_API + `${prefix}/remuneration/import/account`;
       }
     },
     resetQuery() {
@@ -370,16 +369,16 @@ export default {
       let url = undefined,
         excelName = undefined;
       if (type == 0) {
-        url = "/invoice/remuneration/export/reward/template";
+        url = `${prefix}/remuneration/export/reward/template`;
         excelName = "酬金发放表模板";
       } else if (type == 1) {
-        url = "/invoice/remuneration/export/subsidy/template";
+        url = `${prefix}/remuneration/export/subsidy/template`;
         excelName = "综合补贴模板";
       } else {
-        url = "/invoice/remuneration/export/account/template";
+        url = `${prefix}/remuneration/export/account/template`;
         excelName = "往来账模板";
       }
-      exportData(getToken(), undefined, url, excelName);
+      exportData1(getToken(), undefined, url, excelName);
     },
   },
 };

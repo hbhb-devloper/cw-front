@@ -4,9 +4,12 @@
  * @Author: CYZ
  * @Date: 2020-08-01 18:28:36
  * @LastEditors: CYZ
- * @LastEditTime: 2020-12-02 16:38:49
+ * @LastEditTime: 2020-12-27 16:22:25
  */
 import request from '@/utils/request'
+
+import request1 from '@/utils/request1'
+import { prefix } from '../system/system'
 // 查询提醒列表
 export function getNoticeList(query) {
     return request({
@@ -41,8 +44,8 @@ export function updateFund(id) {
 
 // 查询文件列表
 export function getWorkList() {
-    return request({
-        url: '/work/module',
+    return request1({
+        url: `${prefix}/home/module`,
         method: 'get',
     })
 }

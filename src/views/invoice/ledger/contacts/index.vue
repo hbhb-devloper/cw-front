@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-12-07 11:36:21
  * @LastEditors: CYZ
- * @LastEditTime: 2020-12-16 16:35:10
+ * @LastEditTime: 2020-12-27 16:44:32
 -->
 <template>
   <div class="containers">
@@ -241,8 +241,9 @@ import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 import { resourceTreeByUN } from "@/api/system/unit";
 import { GetList, getUpdateTime } from "@/api/invoice/contacts/index";
-import { exportData } from "@/utils/export.js";
+import { exportData1 } from "@/utils/export.js";
 import { getToken } from "@/utils/auth";
+import { prefix } from "@/api/invoice/invoice";
 import axios from "axios";
 export default {
   name: "index",
@@ -259,7 +260,7 @@ export default {
       deptOptions: [],
       updateTime: undefined,
       open: false,
-      ActionUrl: process.env.VUE_APP_BASE_API + "/invoice/account/run/import",
+      ActionUrl: process.env.VUE_APP_GATEWAY_API + `${prefix}/account/run/import`,
       morenUnit: undefined,
       tableData1: [],
     };
@@ -390,10 +391,10 @@ export default {
         type: "warning",
       }).then((res) => {
         let data = {};
-        exportData(
+        exportData1(
           getToken(),
           data,
-          "/invoice/account/run/export/template",
+          `${prefix}/account/run/export/template`,
           "往来账导入模板"
         );
       });
@@ -407,7 +408,7 @@ export default {
       }).then((res) => {
         let data = JSON.parse(JSON.stringify(this.queryParams));
         data.pageSize = data.pageNum = undefined;
-        exportData(getToken(), data, "/invoice/account/run/export", "往来账");
+        exportData1(getToken(), data, `${prefix}/account/run/export`, "往来账");
       });
     },
   },

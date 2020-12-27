@@ -56,6 +56,7 @@
 <script>
 import axios from "axios";
 import { getImportTime } from "@/api/invoice/library/index";
+import { prefix } from "@/api/invoice/invoice";
 import { getToken } from "@/utils/auth";
 export default {
   data() {
@@ -63,7 +64,7 @@ export default {
       fileList: [],
       tableData: [],
       open: false,
-      ActionUrl: process.env.VUE_APP_BASE_API + "/invoice/library/import",
+      ActionUrl: process.env.VUE_APP_GATEWAY_API + `${prefix}/library/import`,
       updateTime: undefined,
       tableData1: [],
     };
