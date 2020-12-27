@@ -20,8 +20,12 @@
           style="width: 200px"
           placeholder="请选择"
         >
-          <el-option label="现金" value="1"></el-option>
-          <el-option label="支票" value="2"></el-option>
+          <el-option
+            v-for="item in amountTypeOptions"
+            :key="item.label"
+            :label="item.label"
+            :value="item.value"
+          ></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="集团信息" prop="groupName">
@@ -56,9 +60,12 @@
           placeholder="请选择"
         >
           <el-option label="--全部--" value="undefined"></el-option>
-          <el-option label="使用" value="1"></el-option>
-          <el-option label="收款" value="2"></el-option>
-          <el-option label="退款" value="3"></el-option>
+          <el-option
+            v-for="item in fundFlowsOptions"
+            :key="item.label"
+            :label="item.label"
+            :value="item.value"
+          ></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="编号" prop="code">
@@ -285,7 +292,9 @@ export default {
         pageNum: 1,
       }, //条件搜索表单
       deptOptions: [], //单位下拉
-      busTypeOptions: [], //业务下拉类
+      amountTypeOptions: [], //款项类型下拉类
+      busTypeOptions: [], //办理业务下拉类
+      fundFlowsOptions: [], //资金流向下拉类
       tableData: [], //表格数据
       loading: true, //表格加载动画
       flowState: [],
@@ -298,6 +307,8 @@ export default {
   created() {
     this.getUnitId();
     this.handleGetBusiness();
+    this.handleGetAmountType();
+    this.handleGetFundFlows();
     this.getFlowStates();
   },
   methods: {
@@ -331,6 +342,16 @@ export default {
     handleGetBusiness() {
       this.getDicts("fund", "business_type").then((response) => {
         this.busTypeOptions = response;
+      });
+    },
+    handleGetAmountType() {
+      this.getDicts("fund", "amount_type").then((response) => {
+        this.amountTypeOptions = response;
+      });
+    },
+    handleGetFundFlows() {
+      this.getDicts("fund", "fund_flows").then((response) => {
+        this.fundFlowsOptions = response;
       });
     },
     /** 搜索按钮操作 */

@@ -9,7 +9,7 @@ import {prefix} from '../fund'
     method:'get'
   })
  }
- 
+
 export function getStateDetail(id){
   return request({
     url:`${prefix}/stat/detail/${id}`,

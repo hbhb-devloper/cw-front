@@ -164,7 +164,7 @@
 
 <script>
   import ElFormItem from '@/components/customize/ElFormItem';
-  import {getInfo,getFlowList,getStateDetail} from '@/api/fund/fundSelect/info'
+  import {getInfo,getFlowList,getStatDetail} from '@/api/fund/fundSelect/info'
 
   export default {
     components: {
@@ -185,7 +185,7 @@
     },
     created() {
       this.handleGetStatistics(this.$route.params.id);
-      this.getStateDetails(this.$route.params.id);
+      this.getStatDetail(this.$route.params.id);
       this.getFlowLists(this.$route.params.id);
       this.handleGetBusiness();
     },
@@ -212,10 +212,10 @@
       handleBack() {
         this.$router.go(-1);
       },
-      getStateDetails(id){
+      getStatDetail(id){
         this.loading=true;
         this.tableData=[];
-        getStateDetail(id).then(res=>{
+        getStatDetail(id).then(res=>{
           this.tableData.push(res);
           this.loading=false;
         })
