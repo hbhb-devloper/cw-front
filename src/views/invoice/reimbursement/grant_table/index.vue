@@ -354,6 +354,7 @@ export default {
             if (res.data.data == "") {
               this.$message.success("导入成功！");
               this.open1 = false;
+              this.getLists()
             } else {
               this.tableData1 = [];
               for (let item in res.data.data) {

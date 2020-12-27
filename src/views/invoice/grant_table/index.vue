@@ -340,6 +340,7 @@ export default {
                 this.tableData1.push({ date: res.data.data[item] });
               }
             }
+            this.getLists()
           } else {
             this.msgError(res.data.message);
           }
