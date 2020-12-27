@@ -54,17 +54,15 @@ export function login(data) {
         }
         return obj;
     }
-    let userInfo=deepClone(data)
-    userInfo.password=Encrypt(userInfo.password)
-    userInfo.grant_type =grant_type
-    userInfo.client_id =client_id
-    userInfo.client_secret  =client_secret
-    userInfo.captcha  =undefined
-    userInfo.captchaKey  =undefined
+    let userInfo = deepClone(data)
     return request1({
-        url: '/auth/oauth/token',
-        method: 'post',
-        params: userInfo
+      method: 'post',
+      url: `${process.env.VUE_APP_GATEWAY_API}${prefix}/oauth/token`,
+      data: "grant_type=" + grant_type + "&username=" + userInfo.username + "&password=" + Encrypt(userInfo.password),
+      headers: {
+        'Authorization': 'Basic ' + window.btoa(client_id + ":" + client_secret),
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
     })
 }
 
@@ -79,7 +77,7 @@ export function login(data) {
 //                 } else {
 //                     result[key] = obj[key]; //如果对象的属性值不为object的时候，直接复制参数对象的每一个键值到新的对象对应的键值对中。
 //                 }
-    
+
 //             }
 //             return result;
 //         }
