@@ -32,9 +32,9 @@
               >
                 <el-option
                   v-for="items in item.approverSelect"
-                  :value="items.userId"
-                  :label="items.nickName"
-                  :key="items.userId"
+                  :value="items.id"
+                  :label="items.label"
+                  :key="items.id"
                 >
                 </el-option>
               </el-select>
