@@ -1,11 +1,12 @@
-import request from '@/utils/request'
+import request from '@/utils/request1'
+import {prefix} from '../budget'
 
 
 //查询table列表
 export function getList(data){
 
   return request({
-    url:`/budget/project/list`,
+    url:`${prefix}/project/list`,
     method:'get',
     params:data
   })
@@ -13,7 +14,7 @@ export function getList(data){
 //查询项目类型
 export function getProejctType(){
   return request({
-    url:`/budget/project-type/list`,
+    url:`${prefix}/project-type/list`,
     method:'get'
   })
 }
@@ -21,22 +22,16 @@ export function getProejctType(){
 //删除记录
 export function deleteData(id){
   return request({
-    url:`/budget/project/delete/${id}`,
+    url:`${prefix}/project/delete/${id}`,
     method:'delete'
   })
 }
-//查询预算科目类型
-export function getTypeList(id){
-  return request({
-    url:`/budget/project/Item/${id}`,
-    method:'get'
-  })
-}
+
 
 //查询增值税率
 export function getRate(){
   return request({
-    url:'/budget/project/rate',
+    url:`${prefix}/project/rate`,
     method:'get'
   })
 }
@@ -44,7 +39,7 @@ export function getRate(){
 //新增记录
 export function addData(data) {
   return request({
-    url:'/budget/project',
+    url:`${prefix}/project`,
     method:'post',
     data:data
   })
@@ -53,7 +48,7 @@ export function addData(data) {
 //查询详情
 export function GetInfo(id){
   return request({
-    url:`/budget/project/info/${id}`,
+    url:`${prefix}/project/info/${id}`,
     method:'get'
   })
 }
@@ -61,7 +56,7 @@ export function GetInfo(id){
 //查询详情
 export function GetProjectInfo(id){
   return request({
-    url:`/budget/progress/project/${id}`,
+    url:`${prefix}/progress/project/${id}`,
     method:'get'
   })
 }
@@ -69,25 +64,19 @@ export function GetProjectInfo(id){
 //修改提交
 export function upData(data) {
   return request({
-    url:'/budget/project/update',
+    url:`${prefix}/project/update`,
     method:'put',
     data:data
   })
 }
-//项目状态
-export function getState() {
-  return request({
-    url:'/dict/budget/project-status',
-    method:'get',
-  })
-}
+
 
 
 
 //通过预算id获取金额阀值
 export function getQuota(id) {
   return request({
-    url:`/budget/threshold/${id}`,
+    url:`${prefix}/threshold/${id}`,
     method:'get'
   })
 }
@@ -95,7 +84,7 @@ export function getQuota(id) {
 
 export function getSubject(data){
   return request({
-    url:'/budget/progress/project/statistics',
+    url:`${prefix}/progress/project/statistics`,
     method:'get',
     params:data
   })
@@ -104,7 +93,7 @@ export function getSubject(data){
 //删除文件
 export function DeleteFile(id){
   return request({
-    url:`/budget/project/file/delete/${id}`,
+    url:`${prefix}/project/file/delete/${id}`,
     method:'delete'
   })
 }
@@ -113,24 +102,17 @@ export function DeleteFile(id){
 //发起审批
 export function LaunchApprove(data) {
   return request({
-    url:'/budget/project/to-approve',
+    url:`${prefix}/project/to-approve`,
     method:'post',
     data
   })
 }
 
-//获取增值税
-export function getVatRate(){
-  return request({
-    url:`/dict/budget/project-vat-rate`,
-    method:'get'
-  })
-}
 
 //版本回退
 export function RevokeRevert(data) {
   return request({
-    url:'/budget/project/revert',
+    url:`${prefix}/project/revert`,
     method:'post',
     data
   })
