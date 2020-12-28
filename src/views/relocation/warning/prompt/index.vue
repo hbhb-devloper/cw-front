@@ -194,6 +194,7 @@ export default {
       // 查询参数
       queryParams: {
         flowTypeName: undefined,
+        type:0
       },
       // 表单参数
       form: {},

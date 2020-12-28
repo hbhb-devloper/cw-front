@@ -22,7 +22,7 @@ import './assets/icons' // icon
 import './permission' // permission control
 import { getDicts } from "@/api/system/dict/data";
 import { getConfigKey } from "@/api/system/config";
-import { parseTime, resetForm, addDateRange, selectDictLabel, handleTree } from "@/utils/ruoyi";
+import { parseTime, resetForm, addDateRange, selectDictLabel, handleTree , download1} from "@/utils/ruoyi";
 import Pagination from "@/components/Pagination";
 
 // 全局方法挂载
@@ -33,6 +33,7 @@ Vue.prototype.resetForm = resetForm
 Vue.prototype.addDateRange = addDateRange
 Vue.prototype.selectDictLabel = selectDictLabel
 Vue.prototype.download = download
+Vue.prototype.download1 = download1
 Vue.prototype.deepClone = deepClone
 Vue.prototype.handleTree = handleTree
 Vue.prototype.downPath = 'https://file.yeexun.com.cn/template/';
