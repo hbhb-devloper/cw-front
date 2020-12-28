@@ -87,7 +87,7 @@ export function BatchExport(tokens, data, url, fileName) {
 export function exportWord(tokens, data, url,fileName) {
   axios({
     method: 'post',
-    // responseType: 'blob',
+    responseType: 'blob',
     url: process.env.VUE_APP_GATEWAY_API + url,
     data: data,
     headers: {
