@@ -94,12 +94,10 @@ export function exportWord(tokens, data, url,fileName) {
       'Authorization':tokens
     }
   }).then(res => {
-    debugger
-    console.log('res',res);
-    const content = res.data.data
-    // const blob = new Blob([content])
-    // if ('download' in document.createElement('a')) {
-    //   // 非IE下载
+    const content = res.data
+    const blob = new Blob([content])
+    if ('download' in document.createElement('a')) {
+      // 非IE下载
       const elink = document.createElement('a')
       elink.download = fileName+'.doc'  //命名下载名称
       elink.style.display = 'none'
@@ -108,10 +106,10 @@ export function exportWord(tokens, data, url,fileName) {
       elink.click()  //点击触发下载
       URL.revokeObjectURL(elink.href) // 释放URL 对象
       document.body.removeChild(elink)
-    // } else {
-    //   // IE10+下载
-    //   navigator.msSaveBlob(blob, fileName)
-    // }
+    } else {
+      // IE10+下载
+      navigator.msSaveBlob(blob, fileName)
+    }
   })
 }
 
