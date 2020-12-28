@@ -49,7 +49,7 @@ export function upaDate(data) {
   })
 }
 //文件删除
-export function fileDelete(id) {
+export function fileDelete(fileId) {
   return request1({
     url: `${prefix}/invoice/file/${fileId}`,
     method: 'delete'

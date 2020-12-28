@@ -1020,6 +1020,21 @@ export default {
         }
       });
     },
+    // handleRemove(file, fileList){
+    //   console.log('file',file);
+    //   console.log('fileList',fileList);
+    //   axios({
+    //     url: process.env.VUE_APP_GATEWAY_API + `${prefix}/invoice/file`,
+    //     method: "post",
+    //     data: params,
+    //     headers: {
+    //       "Content-Type": "multipart/form-data",
+    //       Authorization: getToken(),
+    //     },
+    //   }).then((res) => {
+    //     console.log('res',res);
+    //   })
+    // },
     //文件上传
     UploadFile(param) {
       const _file = param.file;
@@ -1125,13 +1140,14 @@ export default {
         cancelButtonText: "取消",
         type: "warning",
       }).then(() => {
-        fileDelete(row.fileId).then((res) => {
+        console.log('row',row);
+        fileDelete(row.id).then((res) => {
           this.fileList = this.fileList.filter((item) => {
             if (item.fileId != row.fileId) {
               return item;
             }
           });
-          this.form.file = this.form.file.filter((item) => {
+          this.form.files = this.form.files.filter((item) => {
             if (item.fileId != row.fileId) {
               return item;
             }

@@ -842,7 +842,7 @@ export default {
     handleLoad(id) {
       getApproveState(id).then((res) => {
         console.log("getApproveState", res);
-        this.historyAble = res;
+        this.historyAble = res=='true'?true:false;
       });
       //详情
       this.projectId = id;
@@ -1139,7 +1139,7 @@ export default {
     },
     GotoHistory() {
       console.log("this.projectId", this.projectId);
-      this.$router.push(`${prefix}/project/flow/history/${this.projectId}`);
+      this.$router.push(`/budget/infohistory/${this.projectId}`);
     },
   },
 };
