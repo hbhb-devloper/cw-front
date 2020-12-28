@@ -94,8 +94,10 @@ export function exportWord(tokens, data, url,fileName) {
       'Authorization':tokens
     }
   }).then(res => {
-    const content = res.data
-    const blob = new Blob([content])
+    debugger
+    const blob = new Blob([res.data], {
+      type: 'application/msword'
+    })
     if ('download' in document.createElement('a')) {
       // 非IE下载
       const elink = document.createElement('a')
