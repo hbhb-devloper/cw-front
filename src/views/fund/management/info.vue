@@ -401,8 +401,10 @@ export default {
       this.programObj.approvers = [];
       for (let key of this.flowList) {
         this.programObj.approvers.push({
+          id:key.id,
           flowNodeId: key.flowNodeId,
           userId: key.form.id,
+
         });
       }
 
