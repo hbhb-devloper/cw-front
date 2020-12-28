@@ -1022,7 +1022,7 @@ export default {
     UploadFile(param) {
       const _file = param.file;
       let params = new FormData();
-      params.append("file", _file);
+      params.append("files", _file);
       axios({
         url: this.ActionUrl,
         method: "post",
