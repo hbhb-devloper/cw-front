@@ -772,6 +772,7 @@ import { mapGetters } from "vuex";
 import { exportWord } from "@/utils/export.js";
 import { getToken } from "@/utils/auth";
 import ElFormItem from "@/components/customize/ElFormItem";
+import { prefix } from "@/api/budget/budget";
 
 export default {
   data() {
@@ -1131,14 +1132,14 @@ export default {
         exportWord(
           getToken(),
           exportData,
-          `${predix}/project/info/export`,
+          `${prefix}/project/info/export`,
           this.info.projectName
         );
       });
     },
     GotoHistory() {
       console.log("this.projectId", this.projectId);
-      this.$router.push(`${predix}/infohistory/${this.projectId}`);
+      this.$router.push(`${prefix}/project/flow/history/${this.projectId}`);
     },
   },
 };

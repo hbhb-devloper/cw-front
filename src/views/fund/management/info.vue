@@ -360,8 +360,8 @@ export default {
         for (let item in res.files) {
           this.fileTable.push({
             fileName: res.files[item].fileName,
-            createTime: res.files[item].createTime.substr(0, 19),
-            author: res.files[item].createBy,
+            createTime: res.files[item].uploadTime.substr(0, 19),
+            author: res.files[item].author,
             fileSize: res.files[item].fileSize,
             filePath: res.files[item].filePath,
           });
@@ -401,8 +401,10 @@ export default {
       this.programObj.approvers = [];
       for (let key of this.flowList) {
         this.programObj.approvers.push({
+          id:key.id,
           flowNodeId: key.flowNodeId,
           userId: key.form.id,
+
         });
       }
 

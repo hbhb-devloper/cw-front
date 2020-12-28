@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-11-27 19:00:38
  * @LastEditors: CYZ
- * @LastEditTime: 2020-12-16 11:47:28
+ * @LastEditTime: 2020-12-28 11:47:25
 -->
 <template>
   <div>
@@ -521,7 +521,7 @@ export default {
       }
       const _file = param.file;
       let params = new FormData();
-      params.append("files", _file);
+      params.append("file", _file);
       axios({
         url: this.ActionUrl,
         method: "post",
@@ -531,13 +531,14 @@ export default {
           Authorization: getToken(),
         },
       }).then((res) => {
-        list.fileId = res.data.data[0].id;
+        console.log('res',res);
+        list.fileId = res.data.data.id;
         this.$message.success("附件上传成功！");
         list.required = 0; //非必传
 
         this.fileList.push({
-          name: res.data.data[0].fileName,
-          id: res.data.data[0].id,
+          name: res.data.data.fileName,
+          id: res.data.data.id,
           type: list.required,
         });
         this.obj2.files.push(list);
@@ -553,7 +554,7 @@ export default {
       }
       const _file = param.file;
       let params = new FormData();
-      params.append("files", _file);
+      params.append("file", _file);
       axios({
         url: this.ActionUrl,
         method: "post",
@@ -563,12 +564,13 @@ export default {
           Authorization: getToken(),
         },
       }).then((res) => {
-        list.fileId = res.data.data[0].id;
+        console.log('res',res);
+        list.fileId = res.data.data.id;
         this.$message.success("附件上传成功！");
         list.required = 1;
         this.fileList.push({
-          name: res.data.data[0].fileName,
-          id: res.data.data[0].id,
+          name: res.data.data.fileName,
+          id: res.data.data.id,
           type: list.required,
         });
         this.obj2.files.push(list);

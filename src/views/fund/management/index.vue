@@ -508,11 +508,12 @@
               v-model="form.unitName"
               @change="handleSearchUnit(true)"
               filterable
-              placeholder="请选择"
+              placeholder="请选择单位名称"
               style="width: 100%"
               remote
               :remote-method="remoteMethod"
               :loading="loading1"
+              loading-text="请输入单位名称"
             >
               <el-option
                 v-for="item in UnitList"
@@ -530,11 +531,12 @@
               v-model="form.unitNumber"
               @change="handleSearchUnit(false)"
               filterable
-              placeholder="请选择"
+              placeholder="请选择单位编号"
               style="width: 100%"
                remote
               :remote-method="remoteMethod1"
               :loading="loading1"
+              loading-text="请输入单位编号"
             >
               <el-option
                 v-for="item in UnitList"
@@ -906,11 +908,11 @@ export default {
     },
     remoteMethod(query) {
       console.log("query", query);
-      this.deBounce(this.getUnitList(query), 500);
+      this.deBounce(this.getUnitList(query), 1000);
     },
     remoteMethod1(query) {
       console.log("query", query);
-      this.deBounce(this.getUnitList1(query), 500);
+      this.deBounce(this.getUnitList1(query), 1000);
     },
     getMenuTreeselect() {
       resourceTreeByUN().then((response) => {
@@ -921,7 +923,7 @@ export default {
       });
     },
     handleGetBusiness() {
-      this.getDicts("fund", "business_type").then((response) => {
+      this.getDicts("fund", "invoice_business").then((response) => {
         this.typeList = response;
         this.formTypeList = response;
       });
@@ -1038,11 +1040,12 @@ export default {
           fileName: res.data.data.fileName,
           fileSize: res.data.data.fileSize,
         });
-        this.form.file.push({
-          fileId: res.data.data.id,
-          fileName: res.data.data.fileName,
-          fileSize: res.data.data.fileSize,
-        });
+        this.form.files=this.fileList
+        // .push({
+        //   fileId: res.data.data.id,
+        //   fileName: res.data.data.fileName,
+        //   fileSize: res.data.data.fileSize,
+        // });
         this.$message.success("附件上传成功！");
       });
     },

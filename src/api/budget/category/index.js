@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-07-07 17:50:31
  * @LastEditors: CYZ
- * @LastEditTime: 2020-12-27 23:49:06
+ * @LastEditTime: 2020-12-28 15:26:50
  */
 import request from '@/utils/request1'
 import {prefix} from '../budget'
@@ -21,7 +21,7 @@ export function updateBudget(data) {
 // 新增项目类别
 export function AddBudget(data) {
     return request({
-        url: `${prefix}`,
+        url: `${prefix}/`,
         method: 'post',
         data: data
     })
@@ -30,7 +30,7 @@ export function AddBudget(data) {
 // 修改项目类别
 export function PutBudget(data) {
     return request({
-        url: `${prefix}`,
+        url: `${prefix}/`,
         method: 'put',
         data: data
     })
