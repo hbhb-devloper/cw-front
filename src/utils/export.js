@@ -94,25 +94,21 @@ export function exportWord(tokens, data, url,fileName) {
       'Authorization':tokens
     }
   }).then(res => {
-    debugger
     let blob = new Blob([res.data], {
       type: 'application/msword'
     })
-    // if ('download' in document.createElement('a')) {
-      // 非IE下载
-    let url = window.URL.createObjectURL(blob)
-    let link = document.createElement("a");
-    link.style.display = 'none'
-    link.href = url //表示一个指定的file对象或Blob对象
-    link.download = fileName+'.doc'  //命名下载名称
-    document.body.appendChild(link)
-    link.click()  //点击触发下载
-    document.body.removeChild(link)
-    // URL.revokeObjectURL(link.href) // 释放URL 对象
-    // } else {
-    //   // IE10+下载
-    //   navigator.msSaveBlob(blob, fileName)
-    // }
+    if (res.status === 200) {
+      let url = window.URL.createObjectURL(blob)
+      let link = document.createElement("a");
+      link.style.display = 'none'
+      link.href = url //表示一个指定的file对象或Blob对象
+      link.download = fileName+'.doc'  //命名下载名称
+      document.body.appendChild(link)
+      link.click()  //点击触发下载
+      document.body.removeChild(link)
+    } else {
+      this.$message.error('导出失败');
+    }
   })
 }
 
