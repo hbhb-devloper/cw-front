@@ -842,7 +842,7 @@ export default {
     handleLoad(id) {
       getApproveState(id).then((res) => {
         console.log("getApproveState", res);
-        this.historyAble = res;
+        this.historyAble = res=='true'?true:false;
       });
       //详情
       this.projectId = id;
