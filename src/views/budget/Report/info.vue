@@ -1124,7 +1124,7 @@ export default {
         splits: this.tableDatas,
         detail: this.info,
       };
-      this.$confirm("是否确认导出签报的详情数据数据?", "提示", {
+      this.$confirm("请确认是否导出签报的详细数据", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
