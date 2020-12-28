@@ -17,7 +17,7 @@ import router from './router'
 import permission from './directive/permission'
 import { download } from '@/utils/request'
 import { deepClone } from '@/utils/index'
-
+ 
 import './assets/icons' // icon
 import './permission' // permission control
 import { getDicts } from "@/api/system/dict/data";
