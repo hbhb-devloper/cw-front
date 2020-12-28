@@ -556,7 +556,7 @@
               clearable
               size="medium"
               style="width: 100%"
-              :disabled="form.business == 10 || form.business == 20"
+              :disabled="parseInt(form.business) == 10 || parseInt(form.business) == 20"
               @change="handleInvoiceContent"
             >
               <el-option
