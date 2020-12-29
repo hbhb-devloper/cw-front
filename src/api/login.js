@@ -58,7 +58,7 @@ export function login(data) {
     return request1({
         method: 'post',
         url: `${process.env.VUE_APP_GATEWAY_API}${prefix}/oauth/token`,
-        data: "grant_type=" + grant_type + "&username=" + userInfo.username + "&password=" + Encrypt(userInfo.password),
+        data: "grant_type=" + grant_type + "&username=" + userInfo.username + "&password=" + encodeURIComponent(Encrypt(userInfo.password)),
         headers: {
             'Authorization': 'Basic ' + window.btoa(client_id + ":" + client_secret),
             'Content-Type': 'application/x-www-form-urlencoded'
