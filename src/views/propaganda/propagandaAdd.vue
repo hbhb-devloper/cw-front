@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-12-22 10:05:30
  * @LastEditors: CYZ
- * @LastEditTime: 2020-12-25 17:29:54
+ * @LastEditTime: 2020-12-29 15:36:57
 -->
 <template>
   <div class="app-container">
@@ -25,7 +25,7 @@
                   v-model="item.approver.value"
                   placeholder="请选择审批人"
                   clearable
-                  :disabled="item.approver.readOnly"
+                  v-if="!(item.approver.readOnly)"
                   filterable
                   style="width: 100%"
                 >
@@ -36,6 +36,12 @@
                     :value="dict.id"
                   />
                 </el-select>
+                <el-input
+                  v-else
+                  disabled
+                  v-model="item.nickName"
+                  style="width: 180px"
+                ></el-input>
               </el-form-item>
               <el-form-item>
                 <el-button
@@ -86,7 +92,7 @@
               </el-form-item>
               <div class="flowItemDown" v-if="item.operation.value != 2">
                 <div>
-                  {{ item.nickName }} ({{ item.updateTime | filterTime }})
+                  {{ item.nickName }} ({{ item.approveTime | filterTime }})
                 </div>
                 <i class="el-icon-success" v-if="item.operation.value == 1"></i>
                 <i class="el-icon-error" v-if="item.operation.value == 0"></i>
@@ -431,9 +437,9 @@ export default {
       //流程列表
       flowList: [],
       // 意见下拉框
-      opinionList:[],
+      opinionList: [],
       // 流程名称
-      nodeName:undefined
+      nodeName: undefined,
     };
   },
   //定义私用局部过滤器。只能在当前 vue 对象中使用

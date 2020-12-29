@@ -28,10 +28,10 @@
           style="width: 200px"
         >
           <el-option
-            v-for="dict in statusOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
+            v-for="dict in invoiceStatue"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
           />
         </el-select>
       </el-form-item>
@@ -102,7 +102,6 @@
           <el-button
             size="mini"
             type="text"
-            icon="el-icon-edit"
             @click="gotoProAdd(scope.row)"
             >查看</el-button
           >
@@ -118,9 +117,8 @@
           <el-button
             size="mini"
             type="text"
-            icon="el-icon-edit"
             @click="gotoProAdd(scope.row)"
-            >通过</el-button
+            >{{scope.row.stateLabel}}</el-button
           >
         </template>
       </el-table-column>
@@ -133,9 +131,9 @@
           <el-button
             size="mini"
             type="text"
-            icon="el-icon-edit"
             @click="handleLaunch(scope.row)"
-            >禁止</el-button
+            :disabled="scope.row.state!=10"
+            >发起流程</el-button
           >
         </template>
       </el-table-column>
@@ -148,7 +146,6 @@
           <el-button
             size="mini"
             type="text"
-            icon="el-icon-edit"
             @click="handleDelete(scope.row)"
             >删除</el-button
           >
@@ -223,10 +220,7 @@ export default {
       // 印刷品表格数据
       printList: [],
       // 状态数据字典
-      statusOptions: [
-        { dictValue: 1, dictLabel: "正常" },
-        { dictValue: 2, dictLabel: "停用" },
-      ],
+      invoiceStatue: [],
       queryParams: {
         pageNum: 1,
         pageSize: 10,
@@ -251,11 +245,15 @@ export default {
   created() {
     this.getList();
     this.getTreeselect();
+    this.getDicts("fund", "invoice_status").then((response) => {
+        // getBusiness().then((res) => {
+        this.invoiceStatue = response;
+      });
   },
   methods: {
     // 关闭弹窗
     handleCancel() {
-      this.isLaunch = true;
+      this.isLaunch = false;
     },
     //发起审批
     SubmitLaunch() {
@@ -361,6 +359,13 @@ export default {
     getList() {
       this.loading = true;
       listPrint(this.queryParams).then((response) => {
+        response.list.map(item=>{
+          this.invoiceStatue.map(statueItem=>{
+            if (statueItem.value==item.state) {
+              item.stateLabel=statueItem.label
+            }
+          })
+        })
         this.printList = response.list;
         this.total = response.totalRow;
         this.loading = false;
