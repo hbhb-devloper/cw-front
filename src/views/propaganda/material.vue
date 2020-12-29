@@ -31,6 +31,7 @@
           type="success"
           icon="el-icon-edit"
           size="mini"
+          :disabled="!editAble"
           @click="handleUpdate"
           >修改</el-button
         >
@@ -136,7 +137,7 @@
             size="mini"
             placeholder="选择日期时间"
             value-format="yyyy-MM-dd HH"
-            format="yyyy-MM-dd HH"
+            format="dd日HH时"
           >
           </el-date-picker>
           <el-button
@@ -344,6 +345,8 @@ export default {
   components: { Treeselect },
   data() {
     return {
+      // 是否可修改
+      editAble:false,
       loading: false,
       LibraryTree: [],
       settingForm: {},
@@ -485,6 +488,7 @@ export default {
     handleNodeClick(data) {
       this.libraryId = data.id;
       this.parentId = data.id;
+      this.editAble=true
       this.getListDetail(data);
     },
     getListDetail(data) {

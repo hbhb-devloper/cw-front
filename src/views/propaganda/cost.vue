@@ -1,10 +1,10 @@
 <template>
   <div class="app-container">
     <el-row style="margin-bottom: 25px" v-if="flowList">
-      <el-col v-for="(item, index) in flowList" :key="index" :span="8">
+      <el-col v-for="(item, index) in flowList" :key="index" :span="8"  style="height:175px">
         <div class="flowItem">
-          <el-form>
-            <el-form-item :label="item.approverRole" label-width="110px">
+          <el-form label-width="140px">
+            <el-form-item :label="item.approverRole">
               <el-select
                 v-model="item.approver.value"
                 placeholder="请选择审批人"
@@ -21,7 +21,7 @@
                 />
               </el-select>
             </el-form-item>
-            <el-form-item label-width="110px">
+            <el-form-item>
               <el-button
                 size="small"
                 v-if="item.controlAccess == true"
@@ -44,7 +44,7 @@
                 >拒绝</el-button
               >
             </el-form-item>
-            <el-form-item label="意见" label-width="110px">
+            <el-form-item label="意见">
               <el-input
                 v-if="item.suggestion.readOnly"
                 :disabled="item.suggestion.readOnly"
@@ -475,6 +475,7 @@ export default {
 .flowItem {
   padding-right: 10px;
   border-right: 1px solid #e6e6e6;
+  height: 100%;
   .flowItemDown {
     display: flex;
     flex-direction: row;

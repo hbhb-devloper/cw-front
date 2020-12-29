@@ -11,7 +11,7 @@ const client_secret = '123456'
 // 新-获取验证码
 export function getCodeImg() {
     return request1({
-        url: '/auth/captcha',
+        url: `${prefix}/captcha`,
         method: 'get'
     })
 }
@@ -56,13 +56,13 @@ export function login(data) {
     }
     let userInfo = deepClone(data)
     return request1({
-      method: 'post',
-      url: `${process.env.VUE_APP_GATEWAY_API}${prefix}/oauth/token`,
-      data: "grant_type=" + grant_type + "&username=" + userInfo.username + "&password=" + Encrypt(userInfo.password),
-      headers: {
-        'Authorization': 'Basic ' + window.btoa(client_id + ":" + client_secret),
-        'Content-Type': 'application/x-www-form-urlencoded'
-      }
+        method: 'post',
+        url: `${process.env.VUE_APP_GATEWAY_API}${prefix}/oauth/token`,
+        data: "grant_type=" + grant_type + "&username=" + userInfo.username + "&password=" + encodeURIComponent(Encrypt(userInfo.password)),
+        headers: {
+            'Authorization': 'Basic ' + window.btoa(client_id + ":" + client_secret),
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }
     })
 }
 
@@ -103,7 +103,7 @@ export function getInfo() {
 // 新-退出方法
 export function logout() {
     return request1({
-        url: '/auth/oauth/logout',
+        url: `${prefix}/oauth/logout`,
         method: 'DELETE'
     })
 }

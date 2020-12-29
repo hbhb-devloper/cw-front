@@ -172,7 +172,11 @@ export default {
         this.queryParams.unitId = response.checked;
         goodsTime(this.queryParams.time).then((res) => {
           this.timeOption = res.goodsIndexList;
-          this.$set(this.queryParams, "goodsIndex", res.goodsIndex);
+          if (res.goodsIndex) {
+            this.$set(this.queryParams, "goodsIndex", res.goodsIndex);
+          } else {
+            this.msgError("当前月份已无审批批次");
+          }
           this.getList();
         });
       });

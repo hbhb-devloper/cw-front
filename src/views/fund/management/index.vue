@@ -787,9 +787,9 @@ import { getToken } from "@/utils/auth";
 import ElFormItem from "../../../components/customize/ElFormItem/index";
 import { mapGetters } from "vuex";
 import axios from "axios";
-import { prefix } from "@/api/system/system";
 import { FlowTypeList } from "@/api/flow/list.js";
-import { prefix1 } from "@/api/fund/fund";
+import { prefix as systemPrefix } from "@/api/system/system";
+import { prefix as fundPrefix } from "@/api/fund/fund";
 
 export default {
   name: "Flowtype",
@@ -797,7 +797,7 @@ export default {
   data() {
     return {
       ActionUrl:
-        process.env.VUE_APP_GATEWAY_API + `${prefix}/file/upload?bizType=30`,
+        process.env.VUE_APP_GATEWAY_API + `${systemPrefix}/file/upload?bizType=30`,
       fileList: [],
       // 遮罩层
       loading1:true,
@@ -1120,6 +1120,7 @@ export default {
       const typeId = row.id;
       getInfo(typeId).then((response) => {
         response.invoiceContent = String(response.invoiceContent);
+        response.invoiceAmount = Number(response.invoiceAmount);
         response.business = String(response.business);
         if (response.files) {
           this.fileList = response.files;
@@ -1315,7 +1316,7 @@ export default {
           return exportData1(
             getToken(),
             queryParams,
-            `${prefix1}/invoice/export`,
+            `${fundPrefix}/invoice/export`,
             "发票预开管理"
           );
         })

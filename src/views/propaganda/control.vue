@@ -6,48 +6,47 @@
           type="primary"
           icon="el-icon-plus"
           size="mini"
+          @click="save"
         >保存</el-button>
       </el-col>
     </el-row>
-    <el-table v-loading="loading" :data="roleList">
+    <el-table v-loading="loading" :data="controlList">
       <el-table-column align="center" label="序号" prop="id" />
       <el-table-column
         align="center"
         label="单位名称"
-        prop="roleName"
+        prop="unitName"
         :show-overflow-tooltip="true"
       />
       <el-table-column
         align="center"
         label="年初预算金额（元）"
-        prop="roleKey"
+        prop="budget"
         :show-overflow-tooltip="true"
-      />
-      <el-table-column align="center" label="已使用金额" prop="sortNum" />
-      <el-table-column align="center" label="备注" prop="sortNum" >
-        <template slot-scope="scope">
-          <el-input  v-model="scope.row.roleName" placeholder="请输入备注"></el-input>
+      >
+      <template slot-scope="scope">
+          <el-input  v-model="scope.row.budget" placeholder="请输入年初预算金额"></el-input>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="预算使用比例" prop="percentage" >
+      <el-table-column align="center" label="已使用金额" prop="amountPaid" />
+      <el-table-column align="center" label="备注" prop="remark" >
         <template slot-scope="scope">
-          <el-progress :percentage="scope.row.percentage" v-if="scope.row.percentage"></el-progress>
+          <el-input  v-model="scope.row.remark" placeholder="请输入备注"></el-input>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="预算使用比例" prop="proportion" >
+        <template slot-scope="scope">
+          <el-progress :percentage="scope.row.proportion" v-if="scope.row.proportion"></el-progress>
         </template>
       </el-table-column>
     </el-table>
 
-    <pagination
-      v-show="total > 0"
-      :total="total"
-      :page.sync="queryParams.pageNum"
-      :limit.sync="queryParams.pageSize"
-      @pagination="getList"
-    />
+  
   </div>
 </template>
 
 <script>
-import { listUnit, UNroleMenuTreeselect } from "@/api/system/unit";
+import { materialsList, materialsPut } from "@/api/propaganda/control";
 import { pageRole } from "@/api/system/role";
 import { resourceTree, roleMenuTreeselect } from "@/api/system/resource";
 export default {
@@ -56,10 +55,8 @@ export default {
     return {
       // 遮罩层
       loading: true,
-      // 总条数
-      total: 0,
       // 角色表格数据
-      roleList: [],
+      controlList: [],
       // 状态数据字典
       statusOptions: [
         { dictValue: 1, dictLabel: "正常" },
@@ -77,24 +74,23 @@ export default {
   },
   created() {
     this.getList();
-    this.getMenuTreeselect();
   },
   methods: {
+    save(){
+      materialsPut(this.controlList).then(res=>{
+        console.log('materialsPut',res);
+        this.message.success('保存成功')
+      })
+    },
     /** 查询角色列表 */
     getList() {
       this.loading = true;
-      pageRole(this.queryParams).then((response) => {
-        this.roleList = response.list;
-        this.total = response.count;
+      materialsList().then((response) => {
+        this.controlList = response;
         this.loading = false;
       });
     },
-    /** 查询菜单树结构 */
-    getMenuTreeselect() {
-      listUnit().then((response) => {
-        this.menuOptions = response;
-      });
-    },
+    
     /** 搜索按钮操作 */
     handleQuery() {
       this.queryParams.pageNum = 1;
