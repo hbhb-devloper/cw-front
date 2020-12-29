@@ -6,10 +6,11 @@
           type="primary"
           icon="el-icon-plus"
           size="mini"
+          @click="save"
         >保存</el-button>
       </el-col>
     </el-row>
-    <el-table v-loading="loading" :data="roleList">
+    <el-table v-loading="loading" :data="controlList">
       <el-table-column align="center" label="序号" prop="id" />
       <el-table-column
         align="center"
@@ -22,7 +23,11 @@
         label="年初预算金额（元）"
         prop="budget"
         :show-overflow-tooltip="true"
-      />
+      >
+      <template slot-scope="scope">
+          <el-input  v-model="scope.row.budget" placeholder="请输入年初预算金额"></el-input>
+        </template>
+      </el-table-column>
       <el-table-column align="center" label="已使用金额" prop="amountPaid" />
       <el-table-column align="center" label="备注" prop="remark" >
         <template slot-scope="scope">
@@ -51,7 +56,7 @@ export default {
       // 遮罩层
       loading: true,
       // 角色表格数据
-      roleList: [],
+      controlList: [],
       // 状态数据字典
       statusOptions: [
         { dictValue: 1, dictLabel: "正常" },
@@ -69,23 +74,23 @@ export default {
   },
   created() {
     this.getList();
-    this.getMenuTreeselect();
   },
   methods: {
+    save(){
+      materialsPut(this.controlList).then(res=>{
+        console.log('materialsPut',res);
+        this.message.success('保存成功')
+      })
+    },
     /** 查询角色列表 */
     getList() {
       this.loading = true;
       materialsList().then((response) => {
-        this.roleList = response;
+        this.controlList = response;
         this.loading = false;
       });
     },
-    /** 查询菜单树结构 */
-    getMenuTreeselect() {
-      listUnit().then((response) => {
-        this.menuOptions = response;
-      });
-    },
+    
     /** 搜索按钮操作 */
     handleQuery() {
       this.queryParams.pageNum = 1;
