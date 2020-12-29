@@ -272,7 +272,24 @@ export default {
         cancelButtonText: "取消",
         type: "warning",
       }).then(function () {
-        verifySave(that.queryParams).then((res) => {
+         let changeList = [];
+        that.singleList.map((item) => {
+          changeList.push({
+            id: item.applicationDetailId,
+            modifyAmount: item.modifyAmount,
+          });
+        });
+        that.simplexList.map((item) => {
+          changeList.push({
+            id: item.applicationDetailId,
+            modifyAmount: item.modifyAmount,
+          });
+        });
+        let dataObj={
+          goodsReqVO:that.queryParams,
+          list:changeList
+        }
+        verifySave(dataObj).then((res) => {
           that.msgSuccess("保存成功");
           that.getList();
         });
@@ -287,7 +304,24 @@ export default {
         type: "warning",
       }).then(function () {
         that.queryParams.flag = that.flag;
-        verifySubmit(that.queryParams).then((res) => {
+        let changeList = [];
+        that.singleList.map((item) => {
+          changeList.push({
+            id: item.applicationDetailId,
+            modifyAmount: item.modifyAmount,
+          });
+        });
+        that.simplexList.map((item) => {
+          changeList.push({
+            id: item.applicationDetailId,
+            modifyAmount: item.modifyAmount,
+          });
+        });
+        let dataObj={
+          goodsReqVO:that.queryParams,
+          list:changeList
+        }
+        verifySubmit(dataObj).then((res) => {
           that.msgSuccess("提交成功");
           that.getList();
         });

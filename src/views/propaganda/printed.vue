@@ -28,10 +28,10 @@
           style="width: 200px"
         >
           <el-option
-            v-for="dict in statusOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
+            v-for="dict in invoiceStatue"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
           />
         </el-select>
       </el-form-item>
@@ -102,7 +102,6 @@
           <el-button
             size="mini"
             type="text"
-            icon="el-icon-edit"
             @click="gotoProAdd(scope.row)"
             >查看</el-button
           >
@@ -118,9 +117,8 @@
           <el-button
             size="mini"
             type="text"
-            icon="el-icon-edit"
             @click="gotoProAdd(scope.row)"
-            >通过</el-button
+            >{{scope.row.stateLabel}}</el-button
           >
         </template>
       </el-table-column>
@@ -133,9 +131,9 @@
           <el-button
             size="mini"
             type="text"
-            icon="el-icon-edit"
-            @click="gotoProAdd(scope.row)"
-            >禁止</el-button
+            @click="handleLaunch(scope.row)"
+            :disabled="scope.row.state!=10"
+            >发起流程</el-button
           >
         </template>
       </el-table-column>
@@ -148,7 +146,6 @@
           <el-button
             size="mini"
             type="text"
-            icon="el-icon-edit"
             @click="handleDelete(scope.row)"
             >删除</el-button
           >
@@ -163,221 +160,44 @@
       :limit.sync="queryParams.pageSize"
       @pagination="getList"
     />
-    <!-- <el-dialog
-      title="中国移动通信集团印刷品申请单"
-      :visible.sync="SetVisible"
-      width="1000px"
-    >
-      <el-row style="margin-bottom: 25px">
-        <el-col v-for="i in 3" :key="i" :span="8">
-          <div class="flowItem">
-            <el-form>
-              <el-form-item label="印刷品申请人" label-width="110px">
-                <el-select
-                  v-model="queryParams.state"
-                  placeholder="请选择审批状态"
-                  clearable
-                >
-                  <el-option
-                    v-for="dict in statusOptions"
-                    :key="dict.dictValue"
-                    :label="dict.dictLabel"
-                    :value="dict.dictValue"
-                  />
-                </el-select>
-              </el-form-item>
-              <el-form-item label="意见" label-width="110px">
-                <el-select
-                  v-model="queryParams.state"
-                  placeholder="请选择审批状态"
-                  clearable
-                >
-                  <el-option
-                    v-for="dict in statusOptions"
-                    :key="dict.dictValue"
-                    :label="dict.dictLabel"
-                    :value="dict.dictValue"
-                  />
-                </el-select>
-              </el-form-item>
-              <div class="flowItemDown">
-                <div>李华 2020/4/28 14:05:11</div>
-                <i class="el-icon-success" v-if="true"></i>
-                <i class="el-icon-error" v-if="false"></i>
-              </div>
-            </el-form>
-          </div>
-        </el-col>
-      </el-row>
-      <el-form ref="form" :model="form" :rules="rules" label-width="100px">
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="申请单名称" prop="unitId">
-              <el-input
-                v-model="queryParams.unitId"
-                placeholder="请输入申请单名称"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="申请部门" prop="unitId">
-              <el-input
-                v-model="queryParams.unitId"
-                placeholder="请输入申请部门"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="申请单人" prop="unitId">
-              <el-input
-                v-model="queryParams.unitId"
-                placeholder="请输入申请单人"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="申请时间" prop="unitId">
-              <el-input
-                v-model="queryParams.unitId"
-                placeholder="请输入申请时间"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="材料类型" prop="unitId">
-              <el-select
-                v-model="queryParams.state"
-                placeholder="请选择材料类型"
-                style="width: 100%"
-                clearable
-              >
-                <el-option
-                  v-for="dict in statusOptions"
-                  :key="dict.dictValue"
-                  :label="dict.dictLabel"
-                  :value="dict.dictValue"
-                />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="市场部审核员" prop="unitId">
-              <el-select
-                v-model="queryParams.state"
-                placeholder="请选择市场部审核员"
-                style="width: 100%"
-                clearable
-              >
-                <el-option
-                  v-for="dict in statusOptions"
-                  :key="dict.dictValue"
-                  :label="dict.dictLabel"
-                  :value="dict.dictValue"
-                />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="预估金额" prop="unitId">
-              <el-input
-                v-model="queryParams.unitId"
-                placeholder="请输入预估金额"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="备注" prop="unitId">
-              <el-input
-                type="textarea"
-                v-model="queryParams.unitId"
-                placeholder="请输入备注"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col :span="24">
-            <el-form-item label="附件" prop="unitId">
-              <el-upload
-                class="upload-demo"
-                :action="ActionUrl"
-                :file-list="fileList"
-                :on-preview="handlePreview"
-                :on-remove="handleRemove"
-                :before-remove="beforeRemove"
-                :limit="1"
-                :on-exceed="handleExceed"
-                :headers="headers"
-                :on-success="handleSuccess"
-                :on-progress="handleupload"
-                :on-error="handleFail"
-              >
-                <el-button
-                  type="primary"
-                  icon="el-icon-plus"
-                  size="mini"
-                  @click="handleAdd"
-                  >添加附件</el-button
-                >
-              </el-upload>
-              <el-table :data="tableData" style="width: 100%">
-                <el-table-column prop="date" label="标题" width="180">
-                </el-table-column>
-                <el-table-column prop="name" label="作者" width="180">
-                </el-table-column>
-                <el-table-column prop="address" label="时间"> </el-table-column>
-                <el-table-column prop="address" label="大小"> </el-table-column>
-                <el-table-column prop="address" label="操作">
-                  <template slot-scope="scope">
-                    <el-button
-                      size="mini"
-                      type="text"
-                      icon="el-icon-edit"
-                      @click="handleUpdate(scope.row)"
-                      >修改</el-button
-                    >
-                  </template>
-                </el-table-column>
-              </el-table>
-            </el-form-item>
-          </el-col>
-          <el-col :span="24">
-            <el-form-item>
-              <el-upload
-                class="upload-demo"
-                :action="ActionUrl1"
-                :file-list="fileList"
-                :on-preview="handlePreview"
-                :on-remove="handleRemove"
-                :before-remove="beforeRemove"
-                :limit="1"
-                :on-exceed="handleExceed"
-                :headers="headers"
-                :on-success="handleSuccess"
-                :on-progress="handleupload"
-                :on-error="handleFail"
-                :data="importObj"
-              >
-                <el-button size="small" type="primary">点击上传</el-button>
-
-                <div slot="tip" class="el-upload__tip">
-                  只能上传jpg/png文件，且不超过500kb
-                </div>
-              </el-upload>
-              <el-button size="small" type="text" @click="publicitydown"
-                >业务单式模板下载</el-button
-              >
-              <el-button size="small" type="text" @click="businessdown"
-                >宣传单页模板下载</el-button
-              >
-            </el-form-item>
-          </el-col>
-        </el-row>
+<!-- 发起审批弹窗 -->
+    <el-dialog title="发起审批" :visible.sync="isLaunch" width="500px">
+      <el-form>
+        <el-form-item label="选择流程">
+          <el-select
+            v-model="LaunchId"
+            filterable
+            :placeholder="
+              LaunchOption.length == 0 ? '该单位没有流程类型' : '请选择'
+            "
+          >
+            <el-option
+              v-for="item in LaunchOption"
+              :key="item.id"
+              :label="item.label"
+              :value="item.id"
+            ></el-option>
+          </el-select>
+        </el-form-item>
       </el-form>
-    </el-dialog> -->
+
+      <div style="width: 100%; text-align: center">
+        <el-button
+          type="primary"
+          @click="handleCancel"
+          style="margin-right: 50px"
+          >取消</el-button
+        >
+        <el-button type="primary" @click="SubmitLaunch">提交</el-button>
+      </div>
+    </el-dialog>
+    
   </div>
 </template>
 
 <script>
-import { listPrint } from "@/api/propaganda/printed";
+import { FlowTypeList } from "@/api/flow/list.js";
+import { listPrint ,printToApprove} from "@/api/propaganda/printed";
 import { getToken } from "@/utils/auth";
 import { exportData1 } from "@/utils/export";
 import { prefix } from "@/api/propaganda/propaganda";
@@ -400,10 +220,7 @@ export default {
       // 印刷品表格数据
       printList: [],
       // 状态数据字典
-      statusOptions: [
-        { dictValue: 1, dictLabel: "正常" },
-        { dictValue: 2, dictLabel: "停用" },
-      ],
+      invoiceStatue: [],
       queryParams: {
         pageNum: 1,
         pageSize: 10,
@@ -415,16 +232,60 @@ export default {
       headers: {
         Authorization: getToken(),
       },
+      // 流程弹窗判断
+      isLaunch:false,
+      // 流程下拉框
+      LaunchOption:[],
+      // 流程状态
+      LaunchId:undefined,
+      printId:undefined,
+      userId:undefined
     };
   },
   created() {
     this.getList();
     this.getTreeselect();
+    this.getDicts("fund", "invoice_status").then((response) => {
+        // getBusiness().then((res) => {
+        this.invoiceStatue = response;
+      });
   },
   methods: {
+    // 关闭弹窗
+    handleCancel() {
+      this.isLaunch = false;
+    },
+    //发起审批
+    SubmitLaunch() {
+      if (!this.LaunchId) {
+        this.$message.warning("请选择流程");
+        return;
+      }
+      let dataObj = {
+        userId: this.userId,
+        printId: this.printId,
+        flowTypeId: this.LaunchId,
+      };
+      printToApprove(dataObj).then((res) => {
+        console.log("printToApprove", res);
+        this.isLaunch = false;
+        this.LaunchId = undefined;
+        this.$router.push(`/propaganda/propagandaAdd?id=${this.printId}`);
+        this.$message.success("流程发起成功！");
+      });
+    },
+    //打开发起审批流程
+    handleLaunch(row) {
+      console.log('row',row);
+      this.userId=row.userId
+      this.printId=row.id
+      FlowTypeList().then((response) => {
+        this.LaunchOption = response;
+        this.isLaunch = true;
+        this.LaunchId = 37;
+      });
+    },
     gotoProAdd(row) {
-      console.log("row", row);
-
       this.$router.push(`/propaganda/propagandaAdd?id=${row.id}`);
     },
     /** 查询部门下拉树结构 */
@@ -498,6 +359,13 @@ export default {
     getList() {
       this.loading = true;
       listPrint(this.queryParams).then((response) => {
+        response.list.map(item=>{
+          this.invoiceStatue.map(statueItem=>{
+            if (statueItem.value==item.state) {
+              item.stateLabel=statueItem.label
+            }
+          })
+        })
         this.printList = response.list;
         this.total = response.totalRow;
         this.loading = false;

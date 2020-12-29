@@ -35,3 +35,30 @@ export function printFileDelete(id) {
     })
 }
 
+
+// 修改印刷品
+export function printMaterials(id) {
+    return request({
+        url: `${prefix}/print/materials?uuid=${id}`,
+        method: 'get',
+    })
+}
+
+// 获取宣传印刷用品流程详情
+export function printFlowList(printId) {
+    return request({
+        url: `${prefix}/print/flow/list/${printId}`,
+        method: 'get',
+    })
+}
+
+
+// 获取宣传印刷用品流程详情
+export function printFlowApprove(data) {
+    return request({
+        url: `${prefix}/print/flow/approve`,
+        method: 'post',
+        data:data
+    })
+}
+
