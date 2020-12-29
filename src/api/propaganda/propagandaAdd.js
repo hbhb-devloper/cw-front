@@ -62,3 +62,11 @@ export function printFlowApprove(data) {
     })
 }
 
+//  获取市场部审核员下拉列表
+export function printRoleUser() {
+    return request({
+        url: `${prefix}/print/role-user`,
+        method: 'get',
+    })
+}
+

@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-12-22 10:05:30
  * @LastEditors: CYZ
- * @LastEditTime: 2020-12-29 15:36:57
+ * @LastEditTime: 2020-12-29 17:53:45
 -->
 <template>
   <div class="app-container">
@@ -16,7 +16,7 @@
           v-for="(item, index) in flowList"
           :key="index"
           :span="8"
-          style="height: 175px"
+          style="height: 190px; border: 1px solid red; border-radius: 10px"
         >
           <div class="flowItem">
             <el-form label-width="140px">
@@ -25,7 +25,7 @@
                   v-model="item.approver.value"
                   placeholder="请选择审批人"
                   clearable
-                  v-if="!(item.approver.readOnly)"
+                  v-if="!item.approver.readOnly"
                   filterable
                   style="width: 100%"
                 >
@@ -40,7 +40,7 @@
                   v-else
                   disabled
                   v-model="item.nickName"
-                  style="width: 180px"
+                  style="width: 100%"
                 ></el-input>
               </el-form-item>
               <el-form-item>
@@ -113,18 +113,18 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="申请部门" prop="unitId">
+            <el-form-item label="申请部门" prop="unitName">
               <el-input
-                v-model="form.unitId"
+                v-model="form.unitName"
                 placeholder="请输入申请部门"
                 disabled
               />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="申请人" prop="unitId">
+            <el-form-item label="申请人" prop="nickName">
               <el-input
-                v-model="form.unitId"
+                v-model="form.nickName"
                 placeholder="请输入申请人"
                 disabled
               />
@@ -146,9 +146,10 @@
                 placeholder="请选择材料类型"
                 style="width: 100%"
                 clearable
+                :disabled="form.state != 10"
               >
                 <el-option
-                  v-for="dict in statusOptions"
+                  v-for="dict in typrOptions"
                   :key="dict.dictValue"
                   :label="dict.dictLabel"
                   :value="dict.dictValue"
@@ -163,12 +164,13 @@
                 placeholder="请选择市场部审核员"
                 style="width: 100%"
                 clearable
+                :disabled="form.state != 10"
               >
                 <el-option
-                  v-for="dict in statusOptions"
-                  :key="dict.dictValue"
-                  :label="dict.dictLabel"
-                  :value="dict.dictValue"
+                  v-for="dict in roleOptions"
+                  :key="dict.id"
+                  :label="dict.label"
+                  :value="dict.id"
                 />
               </el-select>
             </el-form-item>
@@ -179,6 +181,7 @@
                 v-model="form.predictAmount"
                 type="number"
                 placeholder="请输入预估金额"
+                :disabled="form.state != 10"
               />
             </el-form-item>
           </el-col>
@@ -188,6 +191,7 @@
                 type="textarea"
                 v-model="form.remark"
                 placeholder="请输入备注"
+                :disabled="form.state != 10"
               />
             </el-form-item>
           </el-col>
@@ -207,7 +211,11 @@
                 :on-error="handleFail"
                 :multiple="false"
               >
-                <el-button type="primary" icon="el-icon-plus" size="mini"
+                <el-button
+                  type="primary"
+                  icon="el-icon-plus"
+                  size="mini"
+                  v-if="form.state == 10"
                   >添加附件</el-button
                 >
               </el-upload>
@@ -280,7 +288,9 @@
                     :value="dict.dictValue"
                   />
                 </el-select>
-                <el-button size="small" type="primary">点击上传</el-button>
+                <el-button size="small" type="primary" v-if="form.state == 10"
+                  >点击上传</el-button
+                >
               </el-upload>
               <el-button size="small" type="text" @click="publicitydown"
                 >业务单式模板下载</el-button
@@ -386,6 +396,7 @@ import {
   printMaterials,
   printFlowList,
   printFlowApprove,
+  printRoleUser,
 } from "@/api/propaganda/propagandaAdd";
 export default {
   name: "Role",
@@ -408,17 +419,13 @@ export default {
         files: [],
       },
       queryParams: {},
-      // 状态数据字典
-      statusOptions: [
-        { dictValue: 1, dictLabel: "正常" },
-        { dictValue: 2, dictLabel: "停用" },
-      ],
-
       // 业务类型字典
       typrOptions: [
         { dictValue: 1, dictLabel: "业务单式" },
         { dictValue: 2, dictLabel: "宣传单页" },
       ],
+      // 市场部审核员
+      roleOptions: [],
       form: {
         files: [],
       },
@@ -453,8 +460,15 @@ export default {
     if (this.printId) {
       this.showinfo();
     }
+    this.getRoleList();
   },
   methods: {
+    // 获取市场审核员下拉框
+    getRoleList() {
+      printRoleUser().then((res) => {
+        this.roleOptions = res;
+      });
+    },
     //提交审批
     handleApprove(item, type) {
       if (!item.suggestion.value) {
@@ -498,16 +512,17 @@ export default {
           this.importantList = res.printMaterials;
         }
         this.form = res;
-      });
-
-      // 获取意见下拉框
-      getList().then((res) => {
-        this.opinionList = res;
-        printFlowList(this.printId).then((res) => {
-          console.log("printFlowList", res);
-          this.nodeName = res.name;
-          this.flowList = res.nodes;
-        });
+        if (res.state != 10) {
+          // 获取意见下拉框
+          getList().then((opinionRes) => {
+            this.opinionList = opinionRes;
+            printFlowList(this.printId).then((FlowRes) => {
+              console.log("printFlowList", FlowRes);
+              this.nodeName = res.name;
+              this.flowList = res.nodes;
+            });
+          });
+        }
       });
     },
     submitSettingForm() {
@@ -630,9 +645,11 @@ export default {
   margin-bottom: 15px;
 }
 .flowItem {
+  margin: 10px;
   padding-right: 10px;
-  border-right: 1px solid #e6e6e6;
+  // border-right: 1px solid #e6e6e6;
   height: 100%;
+  padding-bottom: 10px;
   .flowItemDown {
     display: flex;
     flex-direction: row;
