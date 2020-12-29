@@ -1120,6 +1120,7 @@ export default {
       const typeId = row.id;
       getInfo(typeId).then((response) => {
         response.invoiceContent = String(response.invoiceContent);
+        response.invoiceAmount = Number(response.invoiceAmount);
         response.business = String(response.business);
         if (response.files) {
           this.fileList = response.files;
