@@ -13,7 +13,7 @@ export function Encrypt(word) {
   const encrypted = CryptoJS.AES.encrypt(srcs, KEY, {
     iv: IV,
     mode: CryptoJS.mode.CBC,
-    padding: CryptoJS.pad.Pkcs7,
+    padding: CryptoJS.pad.ZeroPadding,
   });
   return CryptoJS.enc.Base64.stringify(encrypted.ciphertext);
 }
