@@ -253,10 +253,6 @@ export default {
     },
 
     viewattachment(row) {
-      let obj = {
-        warnId: row.id,
-      };
-
       if (/.(pdf|PDF)$/.test(row)) {
         window.open(row.filepath);
       } else if (/.(zip|ZIP)$/.test(row)) {
