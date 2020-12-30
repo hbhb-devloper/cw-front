@@ -157,7 +157,7 @@ export default {
   data() {
     return {
       tableData: [],
-      ActionUrl: process.env.VUE_APP_BASE_API + `${prefix}/unit/import`,
+      ActionUrl: process.env.VUE_APP_GATEWAY_API + `${prefix}/unit/import`,
       fileList: [],
       // 遮罩层
       loading: true,

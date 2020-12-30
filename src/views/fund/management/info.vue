@@ -15,7 +15,11 @@
           <span v-if="flowName">{{ flowName }}</span>
         </div>
         <div class="program" v-if="flowList">
-          <div v-for="(item, index) in flowList" :key="index" class="programList">
+          <div
+            v-for="(item, index) in flowList"
+            :key="index"
+            class="programList"
+          >
             <i class="el-icon-close" v-if="item.isDelete"></i>
             <div class="programList-div">
               <span style="max-width: 160px; line-height: 40px">
@@ -29,6 +33,7 @@
                 v-model="item.form.id"
                 style="width: 120px"
                 :disabled="item.approver.readOnly"
+                filterable
               >
                 <el-option
                   v-for="items in item.approverSelect"
@@ -44,7 +49,6 @@
                 v-model="item.nickName"
                 style="width: 180px"
               ></el-input>
-              
 
               <!-- <el-select
                 
@@ -175,23 +179,23 @@
           }}</el-col>
         </el-col>
         <el-col :span="12">
+          <el-col :span="8" class="label-text">计号费：</el-col>
+          <el-col :span="12" class="label-content">{{
+            info.billingNumber
+          }}</el-col>
+        </el-col>
+      </el-row>
+      <el-row :span="24" v-if="parseInt(info.business) == 20">
+        <el-col :span="12">
           <el-col :span="8" class="label-text">欠费时间：</el-col>
           <el-col :span="12" class="label-content">{{
             info.arrearageMonth
           }}</el-col>
         </el-col>
-      </el-row>
-      <el-row :span="24" class="info-row">
-        <el-col :span="12">
+        <el-col :span="12" class="info-row">
           <el-col :span="8" class="label-text">欠费金额：</el-col>
           <el-col :span="12" class="label-content">{{
             info.arrearageMoney
-          }}</el-col>
-        </el-col>
-        <el-col :span="12">
-          <el-col :span="8" class="label-text">计号费：</el-col>
-          <el-col :span="12" class="label-content">{{
-            info.billingNumber
           }}</el-col>
         </el-col>
       </el-row>
@@ -296,19 +300,16 @@
 </template>
 
 <script>
-import {
-  advanceApprove,
-  getFlowList
-} from "@/api/fund/management/info";
+import { advanceApprove, getFlowList } from "@/api/fund/management/info";
 
-import {getList} from "@/api/flow/opinion";
+import { getList } from "@/api/flow/opinion";
 //  import {getFlowList} from '@/api/fund/fundSelect/info'
-import {getInfo ,updateInfo} from "@/api/fund/management/index";
+import { getInfo, updateInfo } from "@/api/fund/management/index";
 
 export default {
   data() {
     return {
-      flowName:undefined,
+      flowName: undefined,
       flowList: [],
       info: {},
       fileTable: [],
@@ -373,9 +374,9 @@ export default {
     },
     getFlowLists(id) {
       getFlowList(id).then((res) => {
-        console.log('res',res);
-        this.flowName=res.name
-        res=res.nodes
+        console.log("res", res);
+        this.flowName = res.name;
+        res = res.nodes;
         for (let key of res) {
           key.form = {
             id: key.approver.value || undefined,
@@ -401,10 +402,9 @@ export default {
       this.programObj.approvers = [];
       for (let key of this.flowList) {
         this.programObj.approvers.push({
-          id:key.id,
+          id: key.id,
           flowNodeId: key.flowNodeId,
           userId: key.form.id,
-
         });
       }
 
@@ -416,12 +416,19 @@ export default {
           return;
         }
         this.form2.id = this.$route.params.id;
-        updateInfo(this.form2).then((res) => {
+        if (type == 1) {
+          updateInfo(this.form2).then((res) => {
+            advanceApprove(this.programObj).then((res1) => {
+              this.getFlowLists(this.$route.params.id);
+              this.getDateInfo(this.$route.params.id);
+            });
+          });
+        } else {
           advanceApprove(this.programObj).then((res1) => {
             this.getFlowLists(this.$route.params.id);
             this.getDateInfo(this.$route.params.id);
           });
-        });
+        }
       } else {
         advanceApprove(this.programObj).then((res) => {
           this.getFlowLists(this.$route.params.id);

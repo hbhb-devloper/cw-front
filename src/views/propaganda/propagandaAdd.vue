@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-12-22 10:05:30
  * @LastEditors: CYZ
- * @LastEditTime: 2020-12-29 17:53:45
+ * @LastEditTime: 2020-12-30 17:15:12
 -->
 <template>
   <div class="app-container">
@@ -91,9 +91,7 @@
                 </el-select>
               </el-form-item>
               <div class="flowItemDown" v-if="item.operation.value != 2">
-                <div>
-                  {{ item.nickName }} ({{ item.approveTime | filterTime }})
-                </div>
+                <div>{{ item.nickName }} ({{ item.approveTime }})</div>
                 <i class="el-icon-success" v-if="item.operation.value == 1"></i>
                 <i class="el-icon-error" v-if="item.operation.value == 0"></i>
               </div>
@@ -103,10 +101,28 @@
       </el-row>
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">
         <el-row>
-          <el-col :span="12">
+          <el-col :span="12" v-if="type == 'printed'">
             <el-form-item label="申请单名称" prop="printName">
               <el-input
                 v-model="form.printName"
+                placeholder="请输入申请单名称"
+                disabled
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12" v-if="type == 'design'">
+            <el-form-item label="申请单名称" prop="pictureName">
+              <el-input
+                v-model="form.pictureName"
+                placeholder="请输入申请单名称"
+                disabled
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12" v-if="type == 'poster'">
+            <el-form-item label="申请单名称" prop="materialsName">
+              <el-input
+                v-model="form.materialsName"
                 placeholder="请输入申请单名称"
                 disabled
               />
@@ -139,14 +155,33 @@
               />
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col :span="12" v-if="type != 'printed'">
+            <el-form-item label="是否为宽带" prop="wideBand">
+              <el-radio v-model="form.wideBand" :disabled="editAble" :label="0"
+                >否</el-radio
+              >
+              <el-radio v-model="form.wideBand" :disabled="editAble" :label="1"
+                >是</el-radio
+              >
+            </el-form-item>
+          </el-col>
+          <el-col :span="12" v-if="type != 'printed'">
+            <el-form-item label="制作商" prop="producers">
+              <el-input
+                v-model="form.producers"
+                placeholder="请输入制作商"
+                :disabled="editAble"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12" v-if="type == 'printed'">
             <el-form-item label="材料类型" prop="materialType">
               <el-select
                 v-model="form.materialType"
                 placeholder="请选择材料类型"
                 style="width: 100%"
                 clearable
-                :disabled="form.state != 10"
+                :disabled="editAble"
               >
                 <el-option
                   v-for="dict in typrOptions"
@@ -157,14 +192,14 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col :span="12" v-if="type == 'printed'">
             <el-form-item label="市场部审核员" prop="roleUserId">
               <el-select
                 v-model="form.roleUserId"
                 placeholder="请选择市场部审核员"
                 style="width: 100%"
                 clearable
-                :disabled="form.state != 10"
+                :disabled="editAble"
               >
                 <el-option
                   v-for="dict in roleOptions"
@@ -181,7 +216,7 @@
                 v-model="form.predictAmount"
                 type="number"
                 placeholder="请输入预估金额"
-                :disabled="form.state != 10"
+                :disabled="editAble"
               />
             </el-form-item>
           </el-col>
@@ -191,7 +226,16 @@
                 type="textarea"
                 v-model="form.remark"
                 placeholder="请输入备注"
-                :disabled="form.state != 10"
+                :disabled="editAble"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12" v-if="type == 'design'">
+            <el-form-item label="原因" prop="reason">
+              <el-input
+                v-model="form.reason"
+                placeholder="请输入原因"
+                :disabled="editAble"
               />
             </el-form-item>
           </el-col>
@@ -199,12 +243,13 @@
             <el-form-item label="附件" prop="files">
               <el-upload
                 class="upload-demo"
-                :action="ActionUrl"
+                :action="UploadUrl()"
                 :file-list="fileList"
                 :on-preview="handlePreview"
                 :on-remove="handleRemove"
                 :before-remove="beforeRemove"
                 :on-exceed="handleExceed"
+                :limit="1"
                 :headers="headers"
                 :on-success="handleSuccess"
                 :on-progress="handleupload"
@@ -215,7 +260,7 @@
                   type="primary"
                   icon="el-icon-plus"
                   size="mini"
-                  v-if="form.state == 10"
+                  v-if="!editAble"
                   >添加附件</el-button
                 >
               </el-upload>
@@ -261,7 +306,7 @@
             <el-form-item v-if="importantList.length < 1">
               <el-upload
                 class="upload-demo"
-                :action="ActionUrl1"
+                :action="UploadUrl1()"
                 :file-list="fileList1"
                 :on-preview="handlePreview"
                 :on-remove="handleRemove"
@@ -280,6 +325,7 @@
                   placeholder="请选择类型"
                   style="width: 150px"
                   clearable
+                  v-if="type == 'printed'"
                 >
                   <el-option
                     v-for="dict in typrOptions"
@@ -288,18 +334,48 @@
                     :value="dict.dictValue"
                   />
                 </el-select>
-                <el-button size="small" type="primary" v-if="form.state == 10"
+                <el-button size="small" type="primary" v-if="!editAble"
                   >点击上传</el-button
                 >
               </el-upload>
-              <el-button size="small" type="text" @click="publicitydown"
+              <el-button
+                size="small"
+                type="text"
+                @click="publicitydown"
+                v-if="type == 'printed'"
                 >业务单式模板下载</el-button
               >
-              <el-button size="small" type="text" @click="businessdown"
+              <el-button
+                size="small"
+                type="text"
+                @click="businessdown"
+                v-if="type == 'printed'"
                 >宣传单页模板下载</el-button
               >
+              <el-button
+                size="small"
+                type="text"
+                @click="picturedown"
+                v-if="type == 'design'"
+                >宣传画面设计模板下载</el-button
+              >
+              <el-button
+                size="small"
+                type="text"
+                @click="posterdown"
+                v-if="type == 'poster'"
+                >宣传物料设计模板下载</el-button
+              >
             </el-form-item>
-            <el-table :data="importantList" v-else>
+            <el-button
+              icon="el-icon-delete"
+              size="small"
+              type="danger"
+              v-if="importantList.length > 1"
+              @click="deleteMaterials"
+              >删除导入数据</el-button
+            >
+            <el-table :data="importantList" v-if="importantList.length > 1">
               <el-table-column
                 align="center"
                 label="物料名称"
@@ -359,12 +435,14 @@
                 label="是否有合同编号"
                 prop="isNum"
                 width="120"
+                v-if="type == 'printed'"
               />
               <el-table-column
                 align="center"
                 label="是否加盖分公司合同印章"
                 prop="isSeal"
                 width="120"
+                v-if="type == 'printed'"
               />
               <el-table-column
                 align="center"
@@ -372,6 +450,38 @@
                 prop="remark"
                 width="120"
               />
+            </el-table>
+            <el-table
+              :data="pictureFileList"
+              v-if="pictureFileList.length >= 1"
+            >
+              <el-table-column
+                align="center"
+                label="文件名称"
+                prop="fileName"
+              />
+              <el-table-column
+                label="操作"
+                align="center"
+                width=""
+                class-name="small-padding fixed-width"
+              >
+                <template slot-scope="scope">
+                  <el-button
+                    size="mini"
+                    type="text"
+                    @click="viewattachment(scope.row)"
+                    >查看附件</el-button
+                  >
+
+                  <el-button
+                    size="mini"
+                    type="text"
+                    @click="handleDownload(scope.row)"
+                    >下载附件</el-button
+                  >
+                </template>
+              </el-table-column>
             </el-table>
           </el-col>
         </el-row>
@@ -397,7 +507,26 @@ import {
   printFlowList,
   printFlowApprove,
   printRoleUser,
-} from "@/api/propaganda/propagandaAdd";
+  printDeleteMaterials,
+} from "@/api/propaganda/printed";
+import {
+  pictureAdd,
+  pictureUpdate,
+  pictureDetail,
+  pictureFileDelete,
+  pictureFlowList,
+  pictureFlowApprove,
+} from "@/api/propaganda/design";
+import {
+  materialsAdd,
+  materialsUpdate,
+  materialsDetail,
+  materialsFileDelete,
+  materialsMaterials,
+  materialsFlowList,
+  materialsFlowApprove,
+  materialsDeleteMaterials,
+} from "@/api/propaganda/poster";
 export default {
   name: "Role",
   data() {
@@ -416,6 +545,7 @@ export default {
         ],
       },
       form: {
+        wideBand: 0,
         files: [],
       },
       queryParams: {},
@@ -426,11 +556,8 @@ export default {
       ],
       // 市场部审核员
       roleOptions: [],
-      form: {
-        files: [],
-      },
-      ActionUrl: process.env.VUE_APP_GATEWAY_API + `${prefix}/print/upload`, // 上传的图片服务器地址
-      ActionUrl1: process.env.VUE_APP_GATEWAY_API + `${prefix}/print/import`, // 上传的图片服务器地址
+      ActionUrl: undefined,
+      ActionUrl1: undefined,
       fileList: [],
       fileList1: [],
       importObj: {},
@@ -447,6 +574,14 @@ export default {
       opinionList: [],
       // 流程名称
       nodeName: undefined,
+      // 进入页面类型
+      type: undefined,
+      // 是否可修改
+      editAble: false,
+      // 文件id
+      fileId: undefined,
+      // 宣传画面文件列表
+      pictureFileList: [],
     };
   },
   //定义私用局部过滤器。只能在当前 vue 对象中使用
@@ -457,12 +592,60 @@ export default {
   },
   created() {
     this.printId = this.$route.query.id;
+    this.type = this.$route.query.type;
+    console.log("type", this.type);
     if (this.printId) {
       this.showinfo();
     }
-    this.getRoleList();
+    if (this.type == "printed") {
+      this.getRoleList();
+    }
   },
   methods: {
+    // 下载预览文件
+    handleDownload(row) {
+      this.$confirm("是否下载" + row.fileName + "？", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      }).then(() => {
+        let link = document.createElement("a");
+        link.style.display = "none";
+        link.href = row.filePath;
+        link.download = row.fileName;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      });
+    },
+    // 预览上传文件
+    viewattachment(row) {
+      if (/.(pdf|PDF)$/.test(row)) {
+        window.open(row.filePath);
+      } else if (/.(zip|ZIP)$/.test(row)) {
+        this.$message({
+          showClose: true,
+          message: "该文件格式无法预览",
+          type: "error",
+        });
+      } else {
+        window.open(
+          "https://view.officeapps.live.com/op/view.aspx?src=" + row.filePath
+        );
+      }
+    },
+    // 删除导入数据
+    deleteMaterials() {
+      if (this.type == "print") {
+        printDeleteMaterials(this.printId).then((res) => {
+          this.showinfo();
+        });
+      } else {
+        materialsDeleteMaterials(this.printId).then((res) => {
+          this.showinfo();
+        });
+      }
+    },
     // 获取市场审核员下拉框
     getRoleList() {
       printRoleUser().then((res) => {
@@ -487,43 +670,134 @@ export default {
       programObj.suggestion = item.suggestion.value;
       programObj.operation = type;
       programObj.id = item.id;
-      printFlowApprove(programObj).then((res) => {
-        this.$message.success("提交成功");
-        printFlowList(this.printId).then((res) => {
-          console.log("printFlowList", res);
-          this.nodeName = res.name;
-          this.flowList = res.nodes;
+      if (this.type == "printed") {
+        printFlowApprove(programObj).then((res) => {
+          this.$message.success("提交成功");
+          printFlowList(this.printId).then((res) => {
+            this.nodeName = res.name;
+            this.flowList = res.nodes;
+          });
         });
-      });
+      } else if (this.type == "design") {
+        pictureFlowApprove(programObj).then((res) => {
+          this.$message.success("提交成功");
+          pictureFlowList(this.printId)
+            .then((res) => {
+              this.nodeName = res.name;
+              this.flowList = res.nodes;
+            })
+            .catch((err) => {
+              console.log("err", err);
+            });
+        });
+      } else if (this.type == "poster") {
+        materialsFlowApprove(programObj).then((res) => {
+          this.$message.success("提交成功");
+          materialsFlowList(this.printId)
+            .then((res) => {
+              console.log("materialsFlowApprove", res);
+              this.nodeName = res.name;
+              this.flowList = res.nodes;
+            })
+            .catch((err) => {
+              console.log("err", err);
+            });
+        });
+      }
     },
     //   删除上传文件
     deleteFile(row) {
-      printFileDelete(row.id).then((res) => {
-        console.log("printFileDelete", res);
-        this.showinfo();
-      });
+      if (this.type == "printed") {
+        printFileDelete(row.id).then((res) => {
+          this.showinfo();
+        });
+      } else if (this.type == "design") {
+        pictureFileDelete(row.id).then((res) => {
+          this.showinfo();
+        });
+      } else if (this.type == "poster") {
+        materialsFileDelete(row.id).then((res) => {
+          this.showinfo();
+        });
+      }
     },
     showinfo() {
-      printDetail(this.printId).then((res) => {
-        if (!res.files) {
-          res.files = [];
-        }
-        if (res.printMaterials) {
-          this.importantList = res.printMaterials;
-        }
-        this.form = res;
-        if (res.state != 10) {
-          // 获取意见下拉框
-          getList().then((opinionRes) => {
-            this.opinionList = opinionRes;
-            printFlowList(this.printId).then((FlowRes) => {
-              console.log("printFlowList", FlowRes);
-              this.nodeName = res.name;
-              this.flowList = res.nodes;
+      if (this.type == "printed") {
+        printDetail(this.printId).then((res) => {
+          if (!res.files) {
+            res.files = [];
+          }
+          if (res.printMaterials) {
+            this.importantList = res.printMaterials;
+          }
+          this.form = res;
+          if (this.form.state != 10) {
+            this.editAble = true;
+          }
+          if (res.state != 10) {
+            // 获取意见下拉框
+            getList().then((opinionRes) => {
+              this.opinionList = opinionRes;
+              printFlowList(this.printId).then((FlowRes) => {
+                this.nodeName = FlowRes.name;
+                this.flowList = FlowRes.nodes;
+              });
             });
-          });
-        }
-      });
+          }
+        });
+      } else if (this.type == "design") {
+        pictureDetail(this.printId).then((res) => {
+          if (!res.files) {
+            res.files = [];
+          }
+          if (res.fileName) {
+            this.pictureFileList = [
+              {
+                fileName: res.fileName,
+                filePath: res.filePath,
+                fileId: res.fileId,
+              },
+            ];
+          }
+          this.form = res;
+          if (this.form.state != 10) {
+            this.editAble = true;
+          }
+          if (res.state != 10) {
+            // 获取意见下拉框
+            getList().then((opinionRes) => {
+              this.opinionList = opinionRes;
+              pictureFlowList(this.printId).then((FlowRes) => {
+                this.nodeName = FlowRes.name;
+                this.flowList = FlowRes.nodes;
+              });
+            });
+          }
+        });
+      } else if (this.type == "poster") {
+        materialsDetail(this.printId).then((res) => {
+          if (!res.files) {
+            res.files = [];
+          }
+          if (res.materialsInfo) {
+            this.importantList = res.materialsInfo;
+          }
+          this.form = res;
+          if (this.form.state != 10) {
+            this.editAble = true;
+          }
+          if (res.state != 10) {
+            // 获取意见下拉框
+            getList().then((opinionRes) => {
+              this.opinionList = opinionRes;
+              materialsFlowList(this.printId).then((FlowRes) => {
+                this.nodeName = FlowRes.name;
+                this.flowList = FlowRes.nodes;
+              });
+            });
+          }
+        });
+      }
     },
     submitSettingForm() {
       this.$refs["form"].validate((valid) => {
@@ -536,19 +810,52 @@ export default {
               this.form.files.push({ fileId: item.id });
             });
           }
+          if (this.fileId) {
+            this.form.fileId = this.fileId;
+          }
           if (this.form.id != undefined) {
-            printUpdate(this.form).then((response) => {
-              this.msgSuccess("修改成功");
-              this.open = false;
-              this.fileList = [];
-              this.showinfo();
-            });
+            if (this.type == "printed") {
+              printUpdate(this.form).then((response) => {
+                this.msgSuccess("修改成功");
+                this.open = false;
+                this.fileList = [];
+                this.showinfo();
+              });
+            } else if (this.type == "design") {
+              pictureUpdate(this.form).then((response) => {
+                this.msgSuccess("修改成功");
+                this.open = false;
+                this.fileList = [];
+                this.showinfo();
+              });
+            } else if (this.type == "poster") {
+              materialsUpdate(this.form).then((response) => {
+                this.msgSuccess("修改成功");
+                this.open = false;
+                this.fileList = [];
+                this.showinfo();
+              });
+            }
           } else {
-            printAdd(this.form).then((response) => {
-              this.msgSuccess("新增成功");
-              this.open = false;
-              this.$router.go(-1);
-            });
+            if (this.type == "printed") {
+              printAdd(this.form).then((response) => {
+                this.msgSuccess("新增成功");
+                this.open = false;
+                this.$router.go(-1);
+              });
+            } else if (this.type == "design") {
+              pictureAdd(this.form).then((response) => {
+                this.msgSuccess("新增成功");
+                this.open = false;
+                this.$router.go(-1);
+              });
+            } else if (this.type == "poster") {
+              materialsAdd(this.form).then((response) => {
+                this.msgSuccess("新增成功");
+                this.open = false;
+                this.$router.go(-1);
+              });
+            }
           }
         }
       });
@@ -567,6 +874,25 @@ export default {
     handleFail() {
       this.loadingoption.close();
       this.$message.error("上传失败");
+    },
+    // 根据type判断上传文件路径
+    UploadUrl: function () {
+      if (this.type == "printed") {
+        return process.env.VUE_APP_GATEWAY_API + `${prefix}/print/upload`;
+      } else if (this.type == "design") {
+        return process.env.VUE_APP_GATEWAY_API + `${prefix}/picture/upload`;
+      } else if (this.type == "poster") {
+        return process.env.VUE_APP_GATEWAY_API + `${prefix}/materials/upload`;
+      }
+    },
+    UploadUrl1: function () {
+      if (this.type == "printed") {
+        return process.env.VUE_APP_GATEWAY_API + `${prefix}/print/import`;
+      } else if (this.type == "design") {
+        return process.env.VUE_APP_GATEWAY_API + `${prefix}/picture/import`;
+      } else if (this.type == "poster") {
+        return process.env.VUE_APP_GATEWAY_API + `${prefix}/materials/import`;
+      }
     },
     handleRemove(file, fileList) {},
     handlePreview(file) {},
@@ -602,10 +928,19 @@ export default {
       this.loadingoption.close();
       if (res.code == "00000") {
         this.$message.success("导入成功");
-        this.importDateId = res.data;
-        printMaterials(res.data).then((response) => {
-          this.importantList = response;
-        });
+        if (this.type == "printed") {
+          this.importDateId = res.data;
+          printMaterials(res.data).then((response) => {
+            this.importantList = response;
+          });
+        } else if (this.type == "design") {
+          this.fileId = res.data.id;
+        } else if (this.type == "poster") {
+          this.importDateId = res.data;
+          materialsMaterials(res.data).then((response) => {
+            this.importantList = response;
+          });
+        }
       } else {
         this.$message({
           message: res.message,
@@ -633,6 +968,12 @@ export default {
         `${prefix}/print/export/business`,
         "业务单式模板"
       );
+    },
+    picturedown() {
+      exportData1(getToken(), "", `${prefix}/picture/export`, "宣传画面模板");
+    },
+    posterdown() {
+      exportData1(getToken(), "", `${prefix}/materials/export`, "宣传物料模板");
     },
   },
 };

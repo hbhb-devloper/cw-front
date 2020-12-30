@@ -798,6 +798,7 @@ export default {
       const userId = row.id || this.ids;
 
       getUser(userId).then((response) => {
+        response.pwd=undefined
         this.form = response;
         this.checkedRsRoleIds = this.form.checkedRsRoleIds;
         this.checkedUnRoleIds = this.form.checkedUnRoleIds;
