@@ -9,13 +9,15 @@
           style="width: 240px"
         />
       </el-form-item>
-      <el-form-item label="日期" prop="roleName">
+      <el-form-item label="日期" prop="applyTime">
         <el-date-picker
-          v-model="queryParams.value1"
-          type="datetime"
+          v-model="queryParams.applyTime"
+          type="month"
           placeholder="选择日期时间"
           size="small"
           style="width: 200px"
+          format="yyyy-MM"
+          value-format="yyyy-MM"
         >
         </el-date-picker>
       </el-form-item>
@@ -197,10 +199,7 @@
 
 <script>
 import { FlowTypeList } from "@/api/flow/list.js";
-import { listPrint ,printToApprove} from "@/api/propaganda/printed";
-import { getToken } from "@/utils/auth";
-import { exportData1 } from "@/utils/export";
-import { prefix } from "@/api/propaganda/propaganda";
+import { listPrint , printToApprove , deletePrint} from "@/api/propaganda/printed";
 import { resourceTreeByUN } from "@/api/system/unit";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
@@ -224,13 +223,6 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-      },
-      ActionUrl: process.env.VUE_APP_GATEWAY_API + `${prefix}/print/upload`, // 上传的图片服务器地址
-      ActionUrl1: process.env.VUE_APP_GATEWAY_API + `${prefix}/print/import`, // 上传的图片服务器地址
-      fileList: [],
-      importObj: {},
-      headers: {
-        Authorization: getToken(),
       },
       // 流程弹窗判断
       isLaunch:false,
@@ -270,7 +262,7 @@ export default {
         console.log("printToApprove", res);
         this.isLaunch = false;
         this.LaunchId = undefined;
-        this.$router.push(`/propaganda/propagandaAdd?id=${this.printId}`);
+        this.$router.push(`/propaganda/propagandaAdd?id=${this.printId}&type=design`);
         this.$message.success("流程发起成功！");
       });
     },
@@ -286,7 +278,7 @@ export default {
       });
     },
     gotoProAdd(row) {
-      this.$router.push(`/propaganda/propagandaAdd?id=${row.id}`);
+      this.$router.push(`/propaganda/propagandaAdd?id=${row.id}&type=printed`);
     },
     /** 查询部门下拉树结构 */
     getTreeselect() {
@@ -294,66 +286,8 @@ export default {
         this.deptOptions = response.list;
       });
     },
-    // 文件上传模块
-    handleupload() {
-      const loading = this.$loading({
-        lock: true,
-        text: "正在导入表格",
-        spinner: "el-icon-loading",
-        background: "rgba(0, 0, 0, 0.7)",
-      });
-      this.loadingoption = loading;
-      // this.importObj.printId=
-    },
-    handleFail() {
-      this.loadingoption.close();
-      this.$message.error("上传失败");
-    },
-    handleRemove(file, fileList) {},
-    handlePreview(file) {},
-    handleExceed(files, fileList) {
-      this.$message.warning(
-        `当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${
-          files.length + fileList.length
-        } 个文件`
-      );
-    },
-    handleSuccess(res) {
-      this.fileList = [];
-      this.loadingoption.close();
-      this.centerDialogVisible = false;
-      if (res.code == "00000") {
-        this.$message.success("导入成功");
-        this.getList();
-      } else {
-        this.$message({
-          message: res.message,
-          type: "error",
-        });
-        this.getList();
-      }
-    },
-    beforeRemove(file, fileList) {
-      return this.$confirm(`确定移除 ${file.name}？`);
-    },
-    publicitydown() {
-      exportData1(
-        getToken(),
-        "",
-        `${prefix}/print/export/publicity`,
-        "宣传单页模板"
-      );
-    },
-    businessdown() {
-      exportData1(
-        getToken(),
-        "",
-        `${prefix}/print/export/business`,
-        "业务单式模板"
-      );
-    },
     handleAdd() {
-      this.$router.push(`/propaganda/propagandaAdd`);
+      this.$router.push(`/propaganda/propagandaAdd?type=printed`);
     },
     /** 查询角色列表 */
     getList() {
@@ -412,7 +346,7 @@ export default {
         }
       )
         .then(function () {
-          return delarr(printId);
+          return deletePrint(printId);
         })
         .then(() => {
           this.getList();
@@ -423,31 +357,3 @@ export default {
   },
 };
 </script>
-<style lang="scss" scoped>
-.tips {
-  width: 100%;
-  text-align: center;
-  display: flex;
-  align-items: start;
-  justify-content: center;
-  margin-bottom: 10px;
-}
-.flowItem {
-  padding-right: 10px;
-  border-right: 1px solid #e6e6e6;
-  .flowItemDown {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-    .el-icon-success {
-      color: #67c23a;
-      font-size: 27px;
-    }
-
-    .el-icon-error {
-      color: #f56c6c;
-      font-size: 27px;
-    }
-  }
-}
-</style>
