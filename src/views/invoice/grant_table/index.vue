@@ -332,7 +332,7 @@ export default {
         },
       })
         .then((res) => {
-          if (res.data.status == 1000) {
+          if (res.data.code == '00000') {
             this.$message.success("导入成功！");
             if (this.importType == 0) {
               this.tableData1 = [];

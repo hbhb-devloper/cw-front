@@ -211,7 +211,7 @@ export default {
       tableData: [], //表格数据
       loading: true, //表格加载动画
       open: false,
-      ActionUrl: process.env.VUE_APP_BASE_API + "/invoice/taxpayer/import",
+      ActionUrl: process.env.VUE_APP_GATEWAY_API + `${prefix}/taxpayer/import`,
       morenUnit: undefined,
       TaxpayerDict: [],
       tableData1: [],
@@ -294,7 +294,7 @@ export default {
       })
         .then((res) => {
           loading.close();
-          if (res.data.status == 1000) {
+          if (res.data.code == '00000') {
             if (res.data.data == "") {
               this.$message.success("数据导入成功");
               this.open = false;

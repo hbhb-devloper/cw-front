@@ -217,7 +217,6 @@ export default {
     };
   },
   created() {
-    this.getList();
     this.getTreeselect();
     this.getDicts("fund", "invoice_status").then((response) => {
         // getBusiness().then((res) => {
@@ -265,6 +264,8 @@ export default {
     getTreeselect() {
       resourceTreeByUN().then((response) => {
         this.deptOptions = response.list;
+        this.queryParams.unitId=response.checked
+        this.getList();
       });
     },
     
