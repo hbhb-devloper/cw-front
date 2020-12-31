@@ -28,10 +28,11 @@ export function getLibraryDetail(id) {
 }
 
 // 物料活动产品树
-export function getLibraryTree() {
+export function getLibraryTree(query) {
     return request({
         url: `${prefix}/library/tree`,
         method: 'get',
+        params: query
     })
 }
 

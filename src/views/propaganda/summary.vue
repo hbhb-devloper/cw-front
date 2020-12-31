@@ -77,13 +77,6 @@
           :disabled="!flag"
           >保存</el-button
         >
-        <el-button
-          icon="el-icon-refresh"
-          size="mini"
-          @click="changer"
-          :disabled="!flag"
-          >修改</el-button
-        >
       </el-form-item>
     </el-form>
 

@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-12-22 10:05:30
  * @LastEditors: CYZ
- * @LastEditTime: 2020-12-30 17:15:12
+ * @LastEditTime: 2020-12-31 11:54:03
 -->
 <template>
   <div class="app-container">
@@ -820,6 +820,7 @@ export default {
                 this.open = false;
                 this.fileList = [];
                 this.showinfo();
+                this.$router.go(-1);
               });
             } else if (this.type == "design") {
               pictureUpdate(this.form).then((response) => {
@@ -827,6 +828,7 @@ export default {
                 this.open = false;
                 this.fileList = [];
                 this.showinfo();
+                this.$router.go(-1);
               });
             } else if (this.type == "poster") {
               materialsUpdate(this.form).then((response) => {
@@ -834,6 +836,7 @@ export default {
                 this.open = false;
                 this.fileList = [];
                 this.showinfo();
+                this.$router.go(-1);
               });
             }
           } else {

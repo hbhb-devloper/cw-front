@@ -12,7 +12,15 @@
           :options="deptOptions"
           placeholder="请选择归属部门"
           style="width: 240px"
-        />
+        /> </el-form-item
+      ><el-form-item>
+        <el-button
+          type="primary"
+          icon="el-icon-search"
+          size="mini"
+          @click="getList"
+          >搜索</el-button
+        >
       </el-form-item>
     </el-form>
 
@@ -145,6 +153,7 @@
             icon="el-icon-delete"
             size="mini"
             @click="DelLine(index)"
+            :disabled="applicationList.length = 1"
             >删除</el-button
           >
         </el-form-item>
@@ -346,7 +355,7 @@ export default {
   data() {
     return {
       // 是否可修改
-      editAble:false,
+      editAble: false,
       loading: false,
       LibraryTree: [],
       settingForm: {},
@@ -430,7 +439,6 @@ export default {
   },
   created() {
     this.getTreeselect();
-    this.getList();
   },
   methods: {
     // 删除行
@@ -488,7 +496,7 @@ export default {
     handleNodeClick(data) {
       this.libraryId = data.id;
       this.parentId = data.id;
-      this.editAble=true
+      this.editAble = true;
       this.getListDetail(data);
     },
     getListDetail(data) {
@@ -571,6 +579,8 @@ export default {
     getTreeselect() {
       resourceTreeByUN().then((response) => {
         this.deptOptions = response.list;
+        this.queryParams.unitId = response.checked;
+        this.getList();
       });
     },
     handleRemove(file, fileList) {
