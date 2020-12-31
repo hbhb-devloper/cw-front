@@ -100,11 +100,6 @@
             >导出</el-button
           >
         </el-col>
-        <el-col :span="1.5">
-          <el-button type="success" icon="el-icon-edit" size="mini"
-            >查看审核信息</el-button
-          >
-        </el-col>
       </div>
       <div class="summarytitle checkerState">{{ checkerState }}</div>
     </el-row>
