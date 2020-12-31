@@ -1,13 +1,10 @@
 <template>
   <div class="app-container">
-      <el-row :gutter="10" class="mb8">
+    <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
-        <el-button
-          type="primary"
-          icon="el-icon-plus"
-          size="mini"
-          @click="save"
-        >保存</el-button>
+        <el-button type="primary" icon="el-icon-plus" size="mini" @click="save"
+          >保存</el-button
+        >
       </el-col>
     </el-row>
     <el-table v-loading="loading" :data="controlList">
@@ -24,24 +21,31 @@
         prop="budget"
         :show-overflow-tooltip="true"
       >
-      <template slot-scope="scope">
-          <el-input  v-model="scope.row.budget" placeholder="请输入年初预算金额"></el-input>
+        <template slot-scope="scope">
+          <el-input
+            v-model="scope.row.budget"
+            placeholder="请输入年初预算金额"
+          ></el-input>
         </template>
       </el-table-column>
       <el-table-column align="center" label="已使用金额" prop="amountPaid" />
-      <el-table-column align="center" label="备注" prop="remark" >
+      <el-table-column align="center" label="备注" prop="remark">
         <template slot-scope="scope">
-          <el-input  v-model="scope.row.remark" placeholder="请输入备注"></el-input>
+          <el-input
+            v-model="scope.row.remark"
+            placeholder="请输入备注"
+          ></el-input>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="预算使用比例" prop="proportion" >
+      <el-table-column align="center" label="预算使用比例" prop="proportion">
         <template slot-scope="scope">
-          <el-progress :percentage="scope.row.proportion" v-if="scope.row.proportion"></el-progress>
+          <el-progress
+            :percentage="scope.row.proportion"
+            v-if="scope.row.proportion"
+          ></el-progress>
         </template>
       </el-table-column>
     </el-table>
-
-  
   </div>
 </template>
 
@@ -76,21 +80,26 @@ export default {
     this.getList();
   },
   methods: {
-    save(){
-      materialsPut(this.controlList).then(res=>{
-        console.log('materialsPut',res);
-        this.message.success('保存成功')
-      })
+    save() {
+      materialsPut(this.controlList).then((res) => {
+        console.log("materialsPut", res);
+        this.$message.success("保存成功");
+      });
     },
     /** 查询角色列表 */
     getList() {
       this.loading = true;
       materialsList().then((response) => {
+        response.map((item) => {
+          if (item.proportion) {
+            item.proportion = item.proportion * 100;
+          }
+        });
         this.controlList = response;
         this.loading = false;
       });
     },
-    
+
     /** 搜索按钮操作 */
     handleQuery() {
       this.queryParams.pageNum = 1;
@@ -122,7 +131,7 @@ export default {
 };
 </script>
 <style scoped>
-.tips{
+.tips {
   width: 100%;
   text-align: center;
   display: flex;

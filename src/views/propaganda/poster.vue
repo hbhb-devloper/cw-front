@@ -130,6 +130,7 @@
             size="mini"
             type="text"
             @click="handleDelete(scope.row)"
+            :disabled="scope.row.state != 10"
             >删除</el-button
           >
         </template>
@@ -299,7 +300,7 @@ export default {
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      const printname = row.printName;
+      const printname = row.materialsName;
       const pictureId = row.id;
       this.$confirm(
         '是否确认删除流程名称为"' + printname + '"的数据项?',

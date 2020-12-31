@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-07-20 18:22:09
  * @LastEditors: CYZ
- * @LastEditTime: 2020-12-25 18:01:03
+ * @LastEditTime: 2020-12-31 16:47:27
 -->
 <template>
   <div class="dashboard-editor-container">
@@ -658,7 +658,7 @@ export default {
     getList1() {
       this.loading1 = true;
       getBudgetNotice(this.queryParams).then((response) => {
-        this.total = response.count; //Math.ceil(response.count/this.queryParams.pageSize);
+        this.total = response.totalRow; //Math.ceil(response.count/this.queryParams.pageSize);
         this.NoticeMoreData = response.list;
         this.loading1 = false;
       });
@@ -667,7 +667,7 @@ export default {
     getList2() {
       this.loading1 = true;
       getFundNotice(this.queryParams).then((response) => {
-        this.total = response.count; //Math.ceil(response.count/this.queryParams.pageSize);
+        this.total = response.totalRow; //Math.ceil(response.count/this.queryParams.pageSize);
         this.NoticeMoreData = response.list;
         this.loading1 = false;
       });

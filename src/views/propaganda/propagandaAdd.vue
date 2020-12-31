@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-12-22 10:05:30
  * @LastEditors: CYZ
- * @LastEditTime: 2020-12-31 11:54:03
+ * @LastEditTime: 2020-12-31 15:05:28
 -->
 <template>
   <div class="app-container">
@@ -295,6 +295,7 @@
                       type="text"
                       icon="el-icon-edit"
                       @click="deleteFile(scope.row)"
+                      :disabled="!editAble"
                       >删除</el-button
                     >
                   </template>
@@ -709,14 +710,17 @@ export default {
     deleteFile(row) {
       if (this.type == "printed") {
         printFileDelete(row.id).then((res) => {
+          this.msgSuccess("删除成功");
           this.showinfo();
         });
       } else if (this.type == "design") {
         pictureFileDelete(row.id).then((res) => {
+          this.msgSuccess("删除成功");
           this.showinfo();
         });
       } else if (this.type == "poster") {
         materialsFileDelete(row.id).then((res) => {
+          this.msgSuccess("删除成功");
           this.showinfo();
         });
       }

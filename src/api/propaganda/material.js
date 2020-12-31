@@ -52,3 +52,12 @@ export function getSetting() {
         method: 'get',
     })
 }
+
+// 修改活动或产品
+export function putLibraryBatch(data) {
+    return request({
+        url: `${prefix}/library/batch`,
+        method: 'put',
+        data: data
+    })
+}

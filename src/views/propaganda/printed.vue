@@ -160,6 +160,7 @@
       >
         <template slot-scope="scope">
           <el-button size="mini" type="text" @click="handleDelete(scope.row)"
+            :disabled="scope.row.state != 10"
             >删除</el-button
           >
         </template>
