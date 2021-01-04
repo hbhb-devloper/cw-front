@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-12-22 10:05:30
  * @LastEditors: CYZ
- * @LastEditTime: 2021-01-04 17:41:37
+ * @LastEditTime: 2021-01-04 20:22:06
 -->
 <template>
   <div class="app-container">
@@ -580,6 +580,7 @@ import {
   materialsDeleteMaterials,
   materialsStatistics,
 } from "@/api/propaganda/poster";
+import { resourceTreeByUN } from "@/api/system/unit";
 export default {
   name: "Role",
   data() {
