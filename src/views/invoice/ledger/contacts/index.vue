@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-12-07 11:36:21
  * @LastEditors: CYZ
- * @LastEditTime: 2020-12-27 16:44:32
+ * @LastEditTime: 2020-12-31 18:07:06
 -->
 <template>
   <div class="containers">
@@ -363,7 +363,7 @@ export default {
       })
         .then((res) => {
           loading.close();
-          if (res.data.status == 1000) {
+          if (res.data.code == '00000') {
             if (res.data.data == "") {
               this.$message.success("数据导入成功");
               this.open = false;

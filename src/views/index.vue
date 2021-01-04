@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-07-20 18:22:09
  * @LastEditors: CYZ
- * @LastEditTime: 2020-12-25 18:01:03
+ * @LastEditTime: 2021-01-04 14:32:31
 -->
 <template>
   <div class="dashboard-editor-container">
@@ -161,7 +161,10 @@
           <el-table-column prop="content" label="待办内容" align="center">
             <!--  class-name="ellipsis2" -->
             <template style="color: #409eff" slot-scope="scope">
-              <div style="color: #409eff" @click="gotoDetail(scope.row)">
+              <div
+                style="color: #409eff; cursor: pointer"
+                @click="gotoDetail(scope.row)"
+              >
                 {{ scope.row.content }}
               </div>
             </template>
@@ -282,6 +285,15 @@
             style="width: 240px"
           />
         </el-form-item>
+        <el-form-item label="编号查询" prop="num" v-if="module1 == 103">
+          <el-input
+            v-model="queryParams.num"
+            placeholder="请输入编号"
+            clearable
+            size="small"
+            style="width: 240px"
+          />
+        </el-form-item>
         <el-form-item label="单位编号" prop="unitNum" v-if="module1 == 101">
           <el-input
             v-model="queryParams.unitNum"
@@ -291,7 +303,7 @@
             style="width: 240px"
           />
         </el-form-item>
-        <el-form-item label="金额介于" prop="firstNum">
+        <el-form-item label="金额介于" prop="firstNum" v-if="module1 != 103">
           <el-input
             v-model="queryParams.firstNum"
             placeholder="请输入金额"
@@ -300,9 +312,27 @@
             style="width: 150px"
           />
         </el-form-item>
-        <el-form-item label="和" prop="twoNum">
+        <el-form-item label="和" prop="twoNum" v-if="module1 != 103">
           <el-input
             v-model="queryParams.twoNum"
+            placeholder="请输入金额"
+            clearable
+            size="small"
+            style="width: 150px"
+          />
+        </el-form-item>
+        <el-form-item label="金额介于" prop="amountMin" v-if="module1 == 103">
+          <el-input
+            v-model="queryParams.amountMin"
+            placeholder="请输入金额"
+            clearable
+            size="small"
+            style="width: 150px"
+          />
+        </el-form-item>
+        <el-form-item label="和" prop="amountMax" v-if="module1 == 103">
+          <el-input
+            v-model="queryParams.amountMax"
             placeholder="请输入金额"
             clearable
             size="small"
@@ -432,7 +462,14 @@ import {
   updateFundNotice,
   getWorkDetailList,
   getBudgetSummary,
-  getFundSummary
+  getFundSummary,
+  getMaterialsSummary,
+  getPictureSummary,
+  getPrintSummary,
+  updatePictureNotice,
+  updateMaterialsNotice,
+  updatePrintNotice,
+  getPrintList,
 } from "@/api/workbench/workbench";
 import PanelGroup from "./dashboard/PanelGroup";
 
@@ -496,7 +533,6 @@ export default {
     },
   },
   created() {
-
     this.getFileList();
     this.getWorkList();
 
@@ -513,18 +549,48 @@ export default {
     },
     gotoDetail(row) {
       let that = this;
+      console.log("row", row);
       if (this.module1 == 100) {
         this.$router.push(`/budget/info/${row.projectId}`);
       } else if (this.module1 == 101) {
         this.$router.push(`/fund/management/info/${row.projectId}`);
+      } else if (this.module1 == 103) {
+        if (row.noticeType == "印刷品") {
+          this.$router.push(
+            `/propaganda/propagandaAdd?id=${row.businessId}&type=printed`
+          );
+        } else if (row.noticeType == "画面设计") {
+          this.$router.push(
+            `/propaganda/propagandaAdd?id=${row.businessId}&type=design`
+          );
+        } else if (row.noticeType == "物料制作") {
+          this.$router.push(
+            `/propaganda/propagandaAdd?id=${row.businessId}&type=poster`
+          );
+        }
       }
     },
     gotoDetail1(row) {
       let that = this;
+      console.log("row", row);
       if (this.module1 == 100) {
         this.$router.push(`/budget/info/${row.projectId}`);
       } else if (this.module1 == 101) {
         this.$router.push(`/fund/management/info/${row.invoiceId}`);
+      } else if (this.module1 == 103) {
+        if (row.flowType == "印刷品申请流程") {
+          this.$router.push(
+            `/propaganda/propagandaAdd?id=${row.businessId}&type=printed`
+          );
+        } else if (row.flowType == "画面设计制作流程") {
+          this.$router.push(
+            `/propaganda/propagandaAdd?id=${row.businessId}&type=design`
+          );
+        } else if (row.flowType == "物料设计制作流程") {
+          this.$router.push(
+            `/propaganda/propagandaAdd?id=${row.businessId}&type=poster`
+          );
+        }
       }
     },
     getWorkList() {
@@ -544,7 +610,25 @@ export default {
       } else if (module1 === 101) {
         this.open1 = true;
         this.getFundSummary();
+      } else if (module1 === 103) {
+        this.open1 = true;
+        this.getPropagandaSummary();
       }
+    },
+    getPropagandaSummary() {
+      let that = this;
+      this.loading = true;
+      that.NoticetableData = [];
+      getMaterialsSummary().then((Materialsresponse) => {
+        that.NoticetableData = that.NoticetableData.concat(Materialsresponse);
+        getPictureSummary().then((Pictureresponse) => {
+          that.NoticetableData = that.NoticetableData.concat(Pictureresponse);
+          getPrintSummary().then((Printresponse) => {
+            that.NoticetableData = that.NoticetableData.concat(Printresponse);
+            that.loading = false;
+          });
+        });
+      });
     },
     getWarnList() {
       this.loading = true;
@@ -637,6 +721,8 @@ export default {
         this.getList1();
       } else if (this.module1 == 101) {
         this.getList2();
+      }else if (this.module1 == 103) {
+        this.getList3();
       }
     },
     /** 修改按钮操作 */
@@ -644,21 +730,38 @@ export default {
       let that = this;
       if (this.module1 === 100) {
         updateBudgetNotice(row.id).then((response) => {
-          that.getBudgetSummary(this.module1);
+          that.getBudgetSummary();
           that.getWorkList();
         });
       } else if (this.module1 === 101) {
         updateFundNotice(row.id).then((response) => {
-          that.getFundSummary(this.module1);
+          that.getFundSummary();
           that.getWorkList();
         });
+      } else if (this.module1 === 103) {
+        if (row.noticeType == "印刷品") {
+          updatePrintNotice(row.id).then((response) => {
+            that.getPropagandaSummary();
+            that.getWorkList();
+          });
+        } else if (row.noticeType == "画面设计") {
+          updatePictureNotice(row.id).then((response) => {
+            that.getPropagandaSummary();
+            that.getWorkList();
+          });
+        } else if (row.noticeType == "物料制作") {
+          updateMaterialsNotice(row.id).then((response) => {
+            that.getPropagandaSummary();
+            that.getWorkList();
+          });
+        }
       }
     },
     /** 预算执行列表 */
     getList1() {
       this.loading1 = true;
       getBudgetNotice(this.queryParams).then((response) => {
-        this.total = response.count; //Math.ceil(response.count/this.queryParams.pageSize);
+        this.total = response.totalRow; //Math.ceil(response.count/this.queryParams.pageSize);
         this.NoticeMoreData = response.list;
         this.loading1 = false;
       });
@@ -667,11 +770,21 @@ export default {
     getList2() {
       this.loading1 = true;
       getFundNotice(this.queryParams).then((response) => {
-        this.total = response.count; //Math.ceil(response.count/this.queryParams.pageSize);
+        this.total = response.totalRow; //Math.ceil(response.count/this.queryParams.pageSize);
         this.NoticeMoreData = response.list;
         this.loading1 = false;
       });
     },
+    /** 宣传用品更多列表 */
+    getList3() {
+      this.loading1 = true;
+      getPrintList(this.queryParams).then((response) => {
+        this.total = response.totalRow; //Math.ceil(response.count/this.queryParams.pageSize);
+        this.NoticeMoreData = response.list;
+        this.loading1 = false;
+      });
+    },
+    
     getFileList() {
       this.loading2 = true;
       getFileList(10).then((response) => {
@@ -686,6 +799,8 @@ export default {
         this.getList1();
       } else if (this.module1 == 101) {
         this.getList2();
+      }else if (this.module1 == 103) {
+        this.getList3();
       }
     },
     /** 重置按钮操作 */

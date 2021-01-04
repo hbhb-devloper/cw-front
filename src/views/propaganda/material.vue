@@ -12,7 +12,15 @@
           :options="deptOptions"
           placeholder="请选择归属部门"
           style="width: 240px"
-        />
+        /> </el-form-item
+      ><el-form-item>
+        <el-button
+          type="primary"
+          icon="el-icon-search"
+          size="mini"
+          @click="getList"
+          >搜索</el-button
+        >
       </el-form-item>
     </el-form>
 
@@ -43,6 +51,15 @@
           size="mini"
           @click="OpenSetVisible"
           >相关设定</el-button
+        >
+      </el-col>
+      <el-col :span="1.5">
+        <el-button
+          type="danger"
+          icon="el-icon-download"
+          size="mini"
+          @click="OpenSetChecker"
+          >批量修改物料审核员</el-button
         >
       </el-col>
     </el-row>
@@ -124,6 +141,7 @@
               </div> -->
       </el-col>
     </el-row>
+    <!-- 相关设定弹窗 -->
     <el-dialog title="相关设定" :visible.sync="SetVisible" width="600px">
       <el-form label-width="160px" :model="settingForm">
         <el-form-item
@@ -145,6 +163,7 @@
             icon="el-icon-delete"
             size="mini"
             @click="DelLine(index)"
+            :disabled="applicationList.length == 1"
             >删除</el-button
           >
         </el-form-item>
@@ -162,7 +181,49 @@
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
-
+    <!-- 批量修改物料审核员弹窗 -->
+    <el-dialog
+      title="量修改物料审核员"
+      :visible.sync="CheckerVisible"
+      width="600px"
+    >
+      <div class="checkerdialog">
+        <div class="block">
+          <span class="demonstration">修改前物料审核员</span>
+          <el-select
+            v-model="CheckerObj.beforeId"
+            placeholder="请选择修改前物料审核员"
+            clearable
+          >
+            <el-option
+              v-for="dict in materialRoleList"
+              :key="dict.id"
+              :label="dict.nickName"
+              :value="dict.id"
+            />
+          </el-select>
+        </div>
+        <div class="block">
+          <span class="demonstration">修改后物料审核员</span>
+          <el-select
+            v-model="CheckerObj.afterId"
+            placeholder="请选择修改后物料审核员"
+            clearable
+          >
+            <el-option
+              v-for="dict in materialRoleList"
+              :key="dict.id"
+              :label="dict.nickName"
+              :value="dict.id"
+            />
+          </el-select>
+        </div>
+      </div>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="submitCheckerObj">确 定</el-button>
+        <el-button @click="cancel">取 消</el-button>
+      </div>
+    </el-dialog>
     <!-- 添加或修改活动对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="800px">
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">
@@ -228,11 +289,19 @@
           </el-col> -->
           <el-col :span="12" v-if="isMold != 1">
             <el-form-item label="物料审核人" prop="checker">
-              <el-input
+              <el-select
                 v-model="form.checker"
-                placeholder="请输入物料审核人"
-                type="number"
-              ></el-input>
+                placeholder="请选择物料审核人"
+                clearable
+                style="width: 100%"
+              >
+                <el-option
+                  v-for="dict in materialRoleList"
+                  :key="dict.id"
+                  :label="dict.nickName"
+                  :value="dict.id"
+                />
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12" v-if="isMold != 1">
@@ -335,7 +404,9 @@ import {
   getLibraryTree,
   addSetting,
   getSetting,
+  putLibraryBatch,
 } from "@/api/propaganda/material";
+import { listFlowRole } from "@/api/flow/flowrole";
 import { resourceTreeByUN } from "@/api/system/unit";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
@@ -345,8 +416,10 @@ export default {
   components: { Treeselect },
   data() {
     return {
+      // 审核员实体类
+      CheckerObj: {},
       // 是否可修改
-      editAble:false,
+      editAble: false,
       loading: false,
       LibraryTree: [],
       settingForm: {},
@@ -366,6 +439,8 @@ export default {
       dialogVisible: false,
       //相关设定弹窗
       SetVisible: false,
+      // 批量修改物料审核员
+      CheckerVisible: false,
       Isdisable: true,
       isMold: 1,
       form: {
@@ -386,6 +461,8 @@ export default {
       open: false,
       libraryId: undefined,
       parentId: undefined,
+      // 物料审核员下拉框
+      materialRoleList: [],
       // 表单校验
       rules: {
         goodsName: [
@@ -430,9 +507,26 @@ export default {
   },
   created() {
     this.getTreeselect();
-    this.getList();
+    this.getmaterialRole();
   },
   methods: {
+    submitCheckerObj() {
+      putLibraryBatch(this.CheckerObj).then((res) => {
+        console.log('putLibraryBatch',res);
+        this.msgSuccess("批量修改物料审核员成功");
+      this.CheckerVisible = false;
+      });
+    },
+    getmaterialRole() {
+      listFlowRole({ flowRoleId: 13, pageSize: 1000 }).then((res) => {
+        this.materialRoleList = res.list;
+      });
+    },
+
+    OpenSetChecker() {
+      this.CheckerVisible = true;
+    },
+
     // 删除行
     DelLine(index) {
       this.applicationList.splice(index, 1);
@@ -488,7 +582,7 @@ export default {
     handleNodeClick(data) {
       this.libraryId = data.id;
       this.parentId = data.id;
-      this.editAble=true
+      this.editAble = true;
       this.getListDetail(data);
     },
     getListDetail(data) {
@@ -520,6 +614,7 @@ export default {
       this.form.parentId = this.parentId;
     },
     cancel() {
+      this.CheckerVisible = false;
       this.SetVisible = false;
       this.open = false;
       this.reset();
@@ -571,6 +666,8 @@ export default {
     getTreeselect() {
       resourceTreeByUN().then((response) => {
         this.deptOptions = response.list;
+        this.queryParams.unitId = response.checked;
+        this.getList();
       });
     },
     handleRemove(file, fileList) {
@@ -612,5 +709,25 @@ export default {
 }
 .colorRed {
   color: red;
+}
+.demonstration {
+    display: block;
+    color: #8492a6;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+.block {
+  padding: 30px 0;
+  text-align: center;
+  border-right: 1px solid #eff2f6;
+  flex: 1;
+}
+.checkerdialog {
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+}
+.block:last-child {
+  border-right: none;
 }
 </style>

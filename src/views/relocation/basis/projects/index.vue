@@ -1033,9 +1033,7 @@ export default {
   methods: {
     showColor(row){
       let item=row.row
-      console.log('row',item);
       let index1=item.styleColor%5
-      console.log('第几个',index1); 
       let color=this.colorList[item.styleColor%5]
       return { background: color}
     },
@@ -1195,7 +1193,6 @@ export default {
             }
           });
         });
-        console.log('listProject',response);
         let contractNumCompare=''
         let styleColorIndex=0
         response.list.map((item,index)=>{
@@ -1215,7 +1212,6 @@ export default {
     getTreeselect() {
       let that = this;
       resourceTreeByUN().then((response) => {
-        console.log(response);
         that.deptOptions = response.list;
         that.morenUnit = response.checked;
         that.queryParams.unitId = that.morenUnit;
@@ -1265,7 +1261,6 @@ export default {
       const typeId = row.id || this.ids;
       this.inputAble = true;
       ProjectDetail(typeId).then((response) => {
-        console.log("ProjectDetail", response);
         // this.compensationOptions.map((item) => {
         //   if (item.label == response.compensationSate) {
         //     row.compensationSate = item.value;
@@ -1297,9 +1292,7 @@ export default {
 
     /** 提交按钮 */
     submitForm: function () {
-      console.log("123");
       this.$refs["form"].validate((valid) => {
-        console.log("valid", valid);
         if (valid) {
           if (this.form.id != undefined) {
             updateProject(this.form)

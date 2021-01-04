@@ -1,17 +1,23 @@
 <template>
   <div class="app-container">
     <el-row style="margin-bottom: 25px" v-if="flowList">
-      <el-col v-for="(item, index) in flowList" :key="index" :span="8"  style="height:175px">
+      <el-col
+        v-for="(item, index) in flowList"
+        :key="index"
+        :span="8"
+        style="height: 175px"
+      >
         <div class="flowItem">
           <el-form label-width="140px">
-            <el-form-item :label="item.approverRole">
+            <el-form-item :label="item.roleDesc">
               <el-select
                 v-model="item.approver.value"
                 placeholder="请选择审批人"
                 clearable
                 :disabled="item.approver.readOnly"
                 filterable
-                style="width:100%;"
+                v-if="!item.approver.readOnly"
+                style="width: 100%"
               >
                 <el-option
                   v-for="dict in item.approverSelect"
@@ -20,8 +26,14 @@
                   :value="dict.id"
                 />
               </el-select>
+              <el-input
+                v-else
+                disabled
+                v-model="item.nickName"
+                style="width: 100%"
+              ></el-input>
             </el-form-item>
-            <el-form-item>
+            <el-form-item label-width="40px">
               <el-button
                 size="small"
                 v-if="item.controlAccess == true"
@@ -70,7 +82,7 @@
             </el-form-item>
             <div class="flowItemDown" v-if="item.operation.value != 2">
               <div>
-                {{ item.nickName }} ({{ item.updateTime | filterTime }})
+                {{ item.nickName }} ({{ item.approveTime | filterTime }})
               </div>
               <i class="el-icon-success" v-if="item.operation.value == 1"></i>
               <i class="el-icon-error" v-if="item.operation.value == 0"></i>
@@ -133,7 +145,7 @@
           @click="handleQuery"
           >搜索</el-button
         >
-        <el-button icon="el-icon-refresh" size="mini" @click="handleLaunch"
+        <el-button icon="el-icon-refresh" size="mini" @click="handleLaunch" :disabled="!flag"
           >发起审批</el-button
         >
       </el-form-item>
@@ -150,18 +162,19 @@
     <el-table v-loading="loading" :data="GoodsList">
       <el-table-column align="center" label="序号" prop="lineNum" />
       <el-table-column align="center" label="单位" prop="unitName" />
-      <el-table-column align="center" label="物料名称" prop="goodsName" />
+      <!-- <el-table-column align="center" label="物料名称" prop="goodsName" />
       <el-table-column align="center" label="计量单位" prop="unit" />
+      <el-table-column align="center" label="申请数量" prop="amount" /> -->
       <el-table-column
-        align="center"
-        label="业务单式申请数量"
-        prop="simplexAmount"
-      />
-      <el-table-column
-        align="center"
-        label="宣传单页申请数量"
-        prop="singleAmount"
-      />
+          align="center"
+          label="业务单式申请数量"
+          prop="simplexAmount"
+        />
+         <el-table-column
+          align="center"
+          label="宣传单页申请数量"
+          prop="singleAmount"
+        />
     </el-table>
 
     <!-- 查看明细详情弹窗 -->
@@ -177,11 +190,7 @@
           label="业务单式申请数量"
           prop="simplexAmount"
         /> -->
-        <el-table-column
-          align="center"
-          label="宣传单页申请数量"
-          prop="singleAmount"
-        />
+        <el-table-column align="center" label="申请数量" prop="amount" />
       </el-table>
       <div class="summarytitle">业务单式申请表</div>
       <el-table v-loading="loading" :data="detailSimpleList">
@@ -189,11 +198,7 @@
         <el-table-column align="center" label="单位" prop="unitName" />
         <el-table-column align="center" label="物料名称" prop="goodsName" />
         <el-table-column align="center" label="计量单位" prop="unit" />
-        <el-table-column
-          align="center"
-          label="业务单式申请数量"
-          prop="simplexAmount"
-        />
+        <el-table-column align="center" label="申请数量" prop="amount" />
         <!-- <el-table-column
           align="center"
           label="宣传单页申请数量"
@@ -255,7 +260,7 @@ import {
   applicationDetailStateList,
   applicationToApprove,
   applicationFlow,
-  SubmitApprove
+  SubmitApprove,
 } from "@/api/propaganda/cost";
 import { goodsTime } from "@/api/propaganda/flyer";
 import { FlowTypeList } from "@/api/flow/list.js";
@@ -268,6 +273,8 @@ export default {
   components: { Treeselect },
   data() {
     return {
+      // 判断条件
+      flag:true,
       // 选择列表
       chooseForm: [],
       title: "",
@@ -294,8 +301,8 @@ export default {
       flowList: [],
       // 意见下拉框
       opinionList: [],
-      LaunchId:undefined,
-      batchNum:undefined
+      LaunchId: undefined,
+      batchNum: undefined,
     };
   },
   filters: {
@@ -318,7 +325,7 @@ export default {
         this.$message.warning("请输入你的审批意见");
         return;
       }
-      let programObj={}
+      let programObj = {};
       programObj.approvers = [];
       for (let key of this.flowList) {
         programObj.approvers.push({
@@ -327,8 +334,8 @@ export default {
           userId: key.approver.value,
         });
       }
-      programObj.suggestion=item.suggestion.value
-      programObj.underUnitId=this.queryParams.unitId
+      programObj.suggestion = item.suggestion.value;
+      programObj.underUnitId = this.queryParams.unitId;
       programObj.operation = type;
       programObj.id = item.id;
       SubmitApprove(programObj).then((res) => {
@@ -339,7 +346,7 @@ export default {
       });
     },
     handleCancel() {
-      this.isLaunch = true;
+      this.isLaunch = false;
     },
     //发起审批
     SubmitLaunch() {
@@ -381,7 +388,7 @@ export default {
     openDetail() {
       applicationDetailInfoList(this.queryParams).then((res) => {
         this.detailSingleList = res.singList;
-        this.detailSimpleList = res.singList;
+        this.detailSimpleList = res.simList;
         this.detailOpen = true;
         this.title = "查看详情";
       });
@@ -410,12 +417,13 @@ export default {
     getList() {
       this.loading = true;
       applicationGoods(this.queryParams).then((response) => {
+        this.flag=response.flag
         this.GoodsList = response.list;
         this.loading = false;
-        this.batchNum=response.batchNum
+        this.batchNum = response.batchNum;
         applicationFlow(response.batchNum).then((res) => {
           console.log("applicationFlow", res);
-          this.flowList = res;
+          this.flowList = res.nodes;
           // 获取意见下拉框
           getList().then((res) => {
             this.opinionList = res;

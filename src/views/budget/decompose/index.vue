@@ -235,7 +235,7 @@ export default {
       open: false,
       // 表单参数
       form: {},
-      ActionUrl: process.env.VUE_APP_BASE_API + "/budget/import", // 上传的图片服务器地址
+      ActionUrl: process.env.VUE_APP_GATEWAY_API + `${prefix}/import`, // 上传的图片服务器地址
       morenUnit: undefined,
     };
   },
@@ -269,7 +269,7 @@ export default {
       this.fileList = [];
       this.loadingoption.close();
       this.centerDialogVisible = false;
-      if (res.status == 1000) {
+      if (res.code == '00000') {
         this.$message.success("文件上传成功");
         this.getList();
       } else {

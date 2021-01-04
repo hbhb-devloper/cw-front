@@ -205,7 +205,7 @@ export default {
       }).then((res) => {
         this.tableData = [];
 
-        if (!res.data.data && res.data.status == 1000) {
+        if ( res.data.code == '00000') {
           this.msgSuccess("数据导入成功");
           this.getList();
         } else {

@@ -331,7 +331,7 @@ export default {
       })
         .then((res) => {
           loading.close();
-          if (res.data.status == 1000) {
+          if (res.data.code == '00000') {
             if (res.data.data == "") {
               this.$message.success("导入成功！");
               this.open = false;

@@ -28,10 +28,11 @@ export function getLibraryDetail(id) {
 }
 
 // 物料活动产品树
-export function getLibraryTree() {
+export function getLibraryTree(query) {
     return request({
         url: `${prefix}/library/tree`,
         method: 'get',
+        params: query
     })
 }
 
@@ -49,5 +50,14 @@ export function getSetting() {
     return request({
         url: `${prefix}/goods/setting`,
         method: 'get',
+    })
+}
+
+// 修改活动或产品
+export function putLibraryBatch(data) {
+    return request({
+        url: `${prefix}/library/batch`,
+        method: 'put',
+        data: data
     })
 }

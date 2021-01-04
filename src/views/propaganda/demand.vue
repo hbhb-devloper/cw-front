@@ -59,7 +59,17 @@
         >
       </el-form-item>
     </el-form>
-
+    <el-row :gutter="10" class="mb8">
+      <el-col :span="1.5">
+          <el-button
+          type="warning"
+          icon="el-icon-download"
+          size="mini"
+          @click="handleExport"
+          >导出
+        </el-button>
+      </el-col>
+    </el-row>
     <el-table v-loading="loading" :data="purchaseList">
       <el-table-column align="center" label="物料名称" prop="goodsName" />
       <el-table-column align="center" label="计量单位" prop="unit" />
@@ -82,7 +92,7 @@
 </template>
 
 <script>
-import { goodsPurchase } from "@/api/propaganda/demand";
+import { goodsPurchase , goodsExport } from "@/api/propaganda/demand";
 import { goodsTime } from "@/api/propaganda/flyer";
 import { resourceTree, roleMenuTreeselect } from "@/api/system/resource";
 import { resourceTreeByUN } from "@/api/system/unit";
@@ -170,7 +180,7 @@ export default {
         type: "warning",
       })
         .then(function () {
-          return exportRole(queryParams);
+          return goodsExport(queryParams);
         })
         .then((response) => {
           this.download(response.msg);
