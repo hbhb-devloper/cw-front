@@ -9,13 +9,14 @@
       >
         <div class="flowItem">
           <el-form label-width="140px">
-            <el-form-item :label="item.approverRole">
+            <el-form-item :label="item.roleDesc">
               <el-select
                 v-model="item.approver.value"
                 placeholder="请选择审批人"
                 clearable
                 :disabled="item.approver.readOnly"
                 filterable
+                v-if="!item.approver.readOnly"
                 style="width: 100%"
               >
                 <el-option
@@ -25,6 +26,12 @@
                   :value="dict.id"
                 />
               </el-select>
+              <el-input
+                v-else
+                disabled
+                v-model="item.nickName"
+                style="width: 100%"
+              ></el-input>
             </el-form-item>
             <el-form-item>
               <el-button
@@ -75,7 +82,7 @@
             </el-form-item>
             <div class="flowItemDown" v-if="item.operation.value != 2">
               <div>
-                {{ item.nickName }} ({{ item.updateTime | filterTime }})
+                {{ item.nickName }} ({{ item.approveTime | filterTime }})
               </div>
               <i class="el-icon-success" v-if="item.operation.value == 1"></i>
               <i class="el-icon-error" v-if="item.operation.value == 0"></i>
@@ -138,7 +145,7 @@
           @click="handleQuery"
           >搜索</el-button
         >
-        <el-button icon="el-icon-refresh" size="mini" @click="handleLaunch"
+        <el-button icon="el-icon-refresh" size="mini" @click="handleLaunch" :disabled="!flag"
           >发起审批</el-button
         >
       </el-form-item>
@@ -256,6 +263,8 @@ export default {
   components: { Treeselect },
   data() {
     return {
+      // 判断条件
+      flag:true,
       // 选择列表
       chooseForm: [],
       title: "",
@@ -398,12 +407,13 @@ export default {
     getList() {
       this.loading = true;
       applicationGoods(this.queryParams).then((response) => {
+        this.flag=response.flag
         this.GoodsList = response.list;
         this.loading = false;
         this.batchNum = response.batchNum;
         applicationFlow(response.batchNum).then((res) => {
           console.log("applicationFlow", res);
-          this.flowList = res;
+          this.flowList = res.nodes;
           // 获取意见下拉框
           getList().then((res) => {
             this.opinionList = res;

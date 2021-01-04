@@ -95,3 +95,14 @@ export function materialsDeleteMaterials(printId) {
         method: 'delete',
     })
 }
+
+
+// 物料制作预算控制列表
+export function materialsStatistics(unitId) {
+    return request({
+        url:`${prefix}/materials/statistics?unitId=${unitId}`,
+        method: 'get',
+    })
+}
+
+

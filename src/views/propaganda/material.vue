@@ -163,7 +163,7 @@
             icon="el-icon-delete"
             size="mini"
             @click="DelLine(index)"
-            :disabled="(applicationList.length = 1)"
+            :disabled="applicationList.length == 1"
             >删除</el-button
           >
         </el-form-item>

@@ -4,11 +4,11 @@
  * @Author: CYZ
  * @Date: 2020-12-22 10:05:30
  * @LastEditors: CYZ
- * @LastEditTime: 2021-01-04 11:38:36
+ * @LastEditTime: 2021-01-04 16:52:40
 -->
 <template>
   <div class="app-container">
-    <div class="proTitle">中国移动通信集团{{title}}申请单</div>
+    <div class="proTitle">中国移动通信集团{{ title }}申请单</div>
     <div style="width: 80%; margin: 0 auto">
       <div style="text-align: center">{{ nodeName }}</div>
       <el-row style="margin-bottom: 25px" v-if="flowList">
@@ -99,6 +99,57 @@
           </div>
         </el-col>
       </el-row>
+      <el-table
+        :data="BudgetList"
+        v-if="BudgetList.length >= 1"
+        style="margin-bottom: 20px"
+      >
+        <!-- <el-table-column
+          align="center"
+          label="序号"
+          prop="materialsName"
+          width="180"
+        /> -->
+        <el-table-column label="序号" type="index"> </el-table-column>
+        <el-table-column
+          align="center"
+          label="单位名称"
+          prop="unitName"
+          width="180"
+        />
+        <el-table-column align="center" label="年初预算（元）" prop="budget" />
+        <el-table-column
+          align="center"
+          label="已通过"
+          prop="amountPaid"
+          width="120"
+        />
+        <el-table-column
+          align="center"
+          label="申报中"
+          prop="declaration"
+          width="120"
+        />
+        <el-table-column
+          align="center"
+          label="余额"
+          prop="balance"
+          width="120"
+        />
+        <el-table-column
+          align="center"
+          label="使用进度"
+          prop="proportion"
+          width="120"
+        >
+          <template slot-scope="scope">
+            <el-progress
+              :percentage="scope.row.proportion"
+              v-if="scope.row.proportion"
+            ></el-progress>
+          </template>
+        </el-table-column>
+      </el-table>
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">
         <el-row>
           <el-col :span="12" v-if="type == 'printed'">
@@ -372,11 +423,11 @@
               icon="el-icon-delete"
               size="small"
               type="danger"
-              v-if="importantList.length > 1"
+              v-if="importantList.length >= 1"
               @click="deleteMaterials"
               >删除导入数据</el-button
             >
-            <el-table :data="importantList" v-if="importantList.length > 1">
+            <el-table :data="importantList" v-if="importantList.length >= 1">
               <el-table-column
                 align="center"
                 label="物料名称"
@@ -487,7 +538,7 @@
           </el-col>
         </el-row>
       </el-form>
-      <div class="dialog-footer" style="float: right">
+      <div class="dialog-footer" style="float: right" v-if="!editAble">
         <el-button type="primary" @click="submitSettingForm">保 存</el-button>
         <!-- <el-button @click="cancel">取 消</el-button> -->
       </div>
@@ -496,7 +547,7 @@
 </template>
 <script>
 import { getToken } from "@/utils/auth";
-import { exportData1 } from "@/utils/export";
+import { exportData1, exportWord } from "@/utils/export";
 import { getList } from "@/api/flow/opinion.js";
 import { prefix } from "@/api/propaganda/propaganda";
 import {
@@ -527,6 +578,7 @@ import {
   materialsFlowList,
   materialsFlowApprove,
   materialsDeleteMaterials,
+  materialsStatistics,
 } from "@/api/propaganda/poster";
 export default {
   name: "Role",
@@ -584,7 +636,11 @@ export default {
       // 宣传画面文件列表
       pictureFileList: [],
       // 标题名称
-      title:undefined
+      title: undefined,
+      // 预算控制列表
+      BudgetList: [],
+      // 默认单位
+      morenUnit: undefined,
     };
   },
   //定义私用局部过滤器。只能在当前 vue 对象中使用
@@ -596,22 +652,43 @@ export default {
   created() {
     this.printId = this.$route.query.id;
     this.type = this.$route.query.type;
-    console.log("type", this.type);
-    if (this.type=="printed") {
-      this.title='印刷品'
-    }else if (this.type=="design") {
-      this.title='宣传画面'
-    }else if (this.type=="poster") {
-      this.title='物料制作'
-    }
-    if (this.printId) {
-      this.showinfo();
-    }
     if (this.type == "printed") {
+      this.title = "印刷品";
       this.getRoleList();
+      if (this.printId) {
+        this.showinfo();
+      }
+    } else if (this.type == "design") {
+      this.title = "宣传画面";
+      if (this.printId) {
+        this.showinfo();
+      }
+    } else if (this.type == "poster") {
+      this.title = "物料制作";
+      if (this.printId) {
+        this.showinfo();
+      } else {
+        this.getTreeselect();
+      }
+      // this.getBudgetList();
     }
   },
   methods: {
+    /** 查询部门下拉树结构 */
+    getTreeselect() {
+      resourceTreeByUN().then((response) => {
+        this.morenUnit = response.checked;
+        this.getBudgetList();
+      });
+    },
+    // 物料制作预算控制列表
+    getBudgetList() {
+      materialsStatistics(this.morenUnit).then((res) => {
+        console.log("materialsStatistics", res);
+        this.BudgetList = [];
+        this.BudgetList.push(res);
+      });
+    },
     // 下载预览文件
     handleDownload(row) {
       this.$confirm("是否下载" + row.fileName + "？", "提示", {
@@ -789,6 +866,8 @@ export default {
         });
       } else if (this.type == "poster") {
         materialsDetail(this.printId).then((res) => {
+          this.morenUnit = res.unitId;
+          this.getBudgetList();
           if (!res.files) {
             res.files = [];
           }
@@ -854,23 +933,35 @@ export default {
             }
           } else {
             if (this.type == "printed") {
-              printAdd(this.form).then((response) => {
-                this.msgSuccess("新增成功");
-                this.open = false;
-                this.$router.go(-1);
-              });
+              if (this.importantList.length < 1) {
+                this.$message.error("请上传附件");
+              } else {
+                printAdd(this.form).then((response) => {
+                  this.msgSuccess("新增成功");
+                  this.open = false;
+                  this.$router.go(-1);
+                });
+              }
             } else if (this.type == "design") {
-              pictureAdd(this.form).then((response) => {
-                this.msgSuccess("新增成功");
-                this.open = false;
-                this.$router.go(-1);
-              });
+              if (this.pictureFileList.length < 1) {
+                this.$message.error("请上传附件");
+              } else {
+                pictureAdd(this.form).then((response) => {
+                  this.msgSuccess("新增成功");
+                  this.open = false;
+                  this.$router.go(-1);
+                });
+              }
             } else if (this.type == "poster") {
-              materialsAdd(this.form).then((response) => {
-                this.msgSuccess("新增成功");
-                this.open = false;
-                this.$router.go(-1);
-              });
+              if (this.importantList.length < 1) {
+                this.$message.error("请上传附件");
+              } else {
+                materialsAdd(this.form).then((response) => {
+                  this.msgSuccess("新增成功");
+                  this.open = false;
+                  this.$router.go(-1);
+                });
+              }
             }
           }
         }
@@ -986,7 +1077,7 @@ export default {
       );
     },
     picturedown() {
-      exportData1(getToken(), "", `${prefix}/picture/export`, "宣传画面模板");
+      exportWord(getToken(), "", `${prefix}/picture/export`, "宣传画面模板");
     },
     posterdown() {
       exportData1(getToken(), "", `${prefix}/materials/export`, "宣传物料模板");

@@ -21,6 +21,20 @@
           @change="changeTime"
         >
         </el-date-picker>
+        <el-select
+          v-model="queryParams.goodsIndex"
+          placeholder="请选择第几次"
+          clearable
+          size="small"
+          style="width: 200px"
+        >
+          <el-option
+            v-for="(dict, index) in timeOption"
+            :key="index"
+            :label="'第' + dict + '次'"
+            :value="dict"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item>
         <el-button
@@ -146,12 +160,36 @@ export default {
         this.detailOpen = true;
       });
     },
+    // /** 查询部门下拉树结构 */
+    // getTreeselect() {
+    //   resourceTreeByUN().then((response) => {
+    //     this.deptOptions = response.list;
+    //     this.queryParams.unitId = response.checked;
+    //     this.getList();
+    //   });
+    // },
     /** 查询部门下拉树结构 */
     getTreeselect() {
+      var date = new Date();
+      this.$set(
+        this.queryParams,
+        "time",
+        date.getFullYear() +
+          "-" +
+          (date.getMonth() + 1).toString().padStart(2, "0")
+      );
       resourceTreeByUN().then((response) => {
         this.deptOptions = response.list;
         this.queryParams.unitId = response.checked;
-        this.getList();
+        goodsTime(this.queryParams.time).then((res) => {
+          this.timeOption = res.goodsIndexList;
+          if (res.goodsIndex) {
+            this.$set(this.queryParams, "goodsIndex", res.goodsIndex);
+          } else {
+            this.msgError("当前月份已无审批批次");
+          }
+          this.getList();
+        });
       });
     },
     /** 查询角色列表 */
