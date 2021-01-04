@@ -63,6 +63,12 @@
         >
       </el-form-item>
     </el-form>
+    <div class="notice">
+      <marquee  behavior="scroll"  direction="left" bgcolor="#fdf6ec" width="60%">
+            {{contents}}
+        </marquee>
+    </div>
+    
     <el-row>
       <el-col
         :span="5"
@@ -131,6 +137,8 @@ export default {
       // 次序选项
       timeOption: [],
       editAble: true,
+      // 宣传单页公告
+      contents:undefined
     };
   },
   created() {
@@ -192,6 +200,7 @@ export default {
         this.editAble = response.flag;
         this.goodsList = response.list;
         this.total = response.count;
+        this.contents=response.contents
       });
     },
     /** 搜索按钮操作 */
@@ -244,5 +253,11 @@ export default {
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: space-around;
+}
+.notice{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 15px;
 }
 </style>

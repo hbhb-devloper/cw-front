@@ -33,7 +33,7 @@
                 style="width: 100%"
               ></el-input>
             </el-form-item>
-            <el-form-item>
+            <el-form-item label-width="40px">
               <el-button
                 size="small"
                 v-if="item.controlAccess == true"
@@ -162,9 +162,19 @@
     <el-table v-loading="loading" :data="GoodsList">
       <el-table-column align="center" label="序号" prop="lineNum" />
       <el-table-column align="center" label="单位" prop="unitName" />
-      <el-table-column align="center" label="物料名称" prop="goodsName" />
+      <!-- <el-table-column align="center" label="物料名称" prop="goodsName" />
       <el-table-column align="center" label="计量单位" prop="unit" />
-      <el-table-column align="center" label="申请数量" prop="amount" />
+      <el-table-column align="center" label="申请数量" prop="amount" /> -->
+      <el-table-column
+          align="center"
+          label="业务单式申请数量"
+          prop="simplexAmount"
+        />
+         <el-table-column
+          align="center"
+          label="宣传单页申请数量"
+          prop="singleAmount"
+        />
     </el-table>
 
     <!-- 查看明细详情弹窗 -->

@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-12-22 10:05:30
  * @LastEditors: CYZ
- * @LastEditTime: 2021-01-04 16:52:40
+ * @LastEditTime: 2021-01-04 17:41:37
 -->
 <template>
   <div class="app-container">
@@ -43,7 +43,7 @@
                   style="width: 100%"
                 ></el-input>
               </el-form-item>
-              <el-form-item>
+              <el-form-item label-width="40px">
                 <el-button
                   size="small"
                   v-if="item.controlAccess == true"
@@ -595,6 +595,9 @@ export default {
         ],
         roleUserId: [
           { required: true, message: "市场审核员不能为空", trigger: "blur" },
+        ],
+        reason:[
+          { required: true, message: "申请原因不能为空", trigger: "blur" },
         ],
       },
       form: {

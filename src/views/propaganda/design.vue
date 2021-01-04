@@ -9,7 +9,7 @@
           style="width: 240px"
         />
       </el-form-item>
-     <el-form-item label="日期" prop="applyTime">
+      <el-form-item label="日期" prop="applyTime">
         <el-date-picker
           v-model="queryParams.applyTime"
           type="month"
@@ -37,7 +37,7 @@
           />
         </el-select>
       </el-form-item>
-      
+
       <el-form-item>
         <el-button
           type="primary"
@@ -47,7 +47,7 @@
           >搜索</el-button
         >
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery"
-          >保存</el-button
+          >重置</el-button
         >
       </el-form-item>
     </el-form>
@@ -65,16 +65,36 @@
     </el-row>
 
     <el-table v-loading="loading" :data="printList">
-      <el-table-column align="center" label="申请单号" prop="pictureNum"  width="180"/>
-      <el-table-column align="center" label="申请单名称" prop="pictureName" width="180"/>
+      <el-table-column
+        align="center"
+        label="申请单号"
+        prop="pictureNum"
+        width="180"
+      />
+      <el-table-column
+        align="center"
+        label="申请单名称"
+        prop="pictureName"
+        width="180"
+      />
       <el-table-column align="center" label="申请单位" prop="unitName" />
-      <el-table-column align="center" label="申请时间" prop="applyTime"  width="180"/>
-      <el-table-column align="center" label="申请人" prop="userName" width="120"/>
+      <el-table-column
+        align="center"
+        label="申请时间"
+        prop="applyTime"
+        width="180"
+      />
+      <el-table-column
+        align="center"
+        label="申请人"
+        prop="userName"
+        width="120"
+      />
       <el-table-column
         align="center"
         label="预估金额（万元）"
         prop="predictAmount"
-         width="180"
+        width="180"
       />
       <el-table-column
         label="查看"
@@ -82,30 +102,24 @@
         class-name="small-padding fixed-width"
       >
         <template slot-scope="scope">
-          <el-button
-            size="mini"
-            type="text"
-            @click="gotoProAdd(scope.row)"
+          <el-button size="mini" type="text" @click="gotoProAdd(scope.row)"
             >查看</el-button
           >
         </template>
       </el-table-column>
-      
-       <el-table-column
+
+      <el-table-column
         label="流程状态"
         align="center"
         class-name="small-padding fixed-width"
       >
         <template slot-scope="scope">
-          <el-button
-            size="mini"
-            type="text"
-            @click="gotoProAdd(scope.row)"
-            >{{scope.row.stateLabel}}</el-button
-          >
+          <el-button size="mini" type="text" @click="gotoProAdd(scope.row)">{{
+            scope.row.stateLabel
+          }}</el-button>
         </template>
       </el-table-column>
-       <el-table-column
+      <el-table-column
         label="发起流程"
         align="center"
         class-name="small-padding fixed-width"
@@ -115,12 +129,12 @@
             size="mini"
             type="text"
             @click="handleLaunch(scope.row)"
-            :disabled="scope.row.state!=10"
+            :disabled="scope.row.state != 10"
             >发起流程</el-button
           >
         </template>
       </el-table-column>
-       <el-table-column
+      <el-table-column
         label="删除"
         align="center"
         class-name="small-padding fixed-width"
@@ -144,7 +158,7 @@
       :limit.sync="queryParams.pageSize"
       @pagination="getList"
     />
-<!-- 发起审批弹窗 -->
+    <!-- 发起审批弹窗 -->
     <el-dialog title="发起审批" :visible.sync="isLaunch" width="500px">
       <el-form>
         <el-form-item label="选择流程">
@@ -175,13 +189,16 @@
         <el-button type="primary" @click="SubmitLaunch">提交</el-button>
       </div>
     </el-dialog>
-    
   </div>
 </template>
 
 <script>
 import { FlowTypeList } from "@/api/flow/list.js";
-import { listPicture , PictureToApprove , deletePicture} from "@/api/propaganda/design";
+import {
+  listPicture,
+  PictureToApprove,
+  deletePicture,
+} from "@/api/propaganda/design";
 import { getToken } from "@/utils/auth";
 import { exportData1 } from "@/utils/export";
 import { prefix } from "@/api/propaganda/propaganda";
@@ -217,21 +234,21 @@ export default {
         Authorization: getToken(),
       },
       // 流程弹窗判断
-      isLaunch:false,
+      isLaunch: false,
       // 流程下拉框
-      LaunchOption:[],
+      LaunchOption: [],
       // 流程状态
-      LaunchId:undefined,
-      pictureId:undefined,
-      userId:undefined
+      LaunchId: undefined,
+      pictureId: undefined,
+      userId: undefined,
     };
   },
   created() {
     this.getTreeselect();
     this.getDicts("fund", "invoice_status").then((response) => {
-        // getBusiness().then((res) => {
-        this.invoiceStatue = response;
-      });
+      // getBusiness().then((res) => {
+      this.invoiceStatue = response;
+    });
   },
   methods: {
     // 关闭弹窗
@@ -252,15 +269,17 @@ export default {
       PictureToApprove(dataObj).then((res) => {
         this.isLaunch = false;
         this.LaunchId = undefined;
-        this.$router.push(`/propaganda/propagandaAdd?id=${this.pictureId}&type=design`);
+        this.$router.push(
+          `/propaganda/propagandaAdd?id=${this.pictureId}&type=design`
+        );
         this.$message.success("流程发起成功！");
       });
     },
     //打开发起审批流程
     handleLaunch(row) {
-      console.log('row',row);
-      this.userId=row.userId
-      this.pictureId=row.id
+      console.log("row", row);
+      this.userId = row.userId;
+      this.pictureId = row.id;
       FlowTypeList().then((response) => {
         this.LaunchOption = response;
         this.isLaunch = true;
@@ -274,11 +293,11 @@ export default {
     getTreeselect() {
       resourceTreeByUN().then((response) => {
         this.deptOptions = response.list;
-        this.queryParams.unitId=response.checked
+        this.queryParams.unitId = response.checked;
         this.getList();
       });
     },
-    
+
     handleAdd() {
       this.$router.push(`/propaganda/propagandaAdd?type=design`);
     },
@@ -286,13 +305,13 @@ export default {
     getList() {
       this.loading = true;
       listPicture(this.queryParams).then((response) => {
-        response.list.map(item=>{
-          this.invoiceStatue.map(statueItem=>{
-            if (statueItem.value==item.state) {
-              item.stateLabel=statueItem.label
+        response.list.map((item) => {
+          this.invoiceStatue.map((statueItem) => {
+            if (statueItem.value == item.state) {
+              item.stateLabel = statueItem.label;
             }
-          })
-        })
+          });
+        });
         this.printList = response.list;
         this.total = response.totalRow;
         this.loading = false;
