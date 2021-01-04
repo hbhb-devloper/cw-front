@@ -4,11 +4,11 @@
  * @Author: CYZ
  * @Date: 2020-12-22 10:05:30
  * @LastEditors: CYZ
- * @LastEditTime: 2020-12-31 15:05:28
+ * @LastEditTime: 2021-01-04 11:38:36
 -->
 <template>
   <div class="app-container">
-    <div class="proTitle">中国移动通信集团印刷品申请单</div>
+    <div class="proTitle">中国移动通信集团{{title}}申请单</div>
     <div style="width: 80%; margin: 0 auto">
       <div style="text-align: center">{{ nodeName }}</div>
       <el-row style="margin-bottom: 25px" v-if="flowList">
@@ -583,6 +583,8 @@ export default {
       fileId: undefined,
       // 宣传画面文件列表
       pictureFileList: [],
+      // 标题名称
+      title:undefined
     };
   },
   //定义私用局部过滤器。只能在当前 vue 对象中使用
@@ -595,6 +597,13 @@ export default {
     this.printId = this.$route.query.id;
     this.type = this.$route.query.type;
     console.log("type", this.type);
+    if (this.type=="printed") {
+      this.title='印刷品'
+    }else if (this.type=="design") {
+      this.title='宣传画面'
+    }else if (this.type=="poster") {
+      this.title='物料制作'
+    }
     if (this.printId) {
       this.showinfo();
     }
