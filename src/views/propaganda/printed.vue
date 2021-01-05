@@ -159,7 +159,10 @@
         class-name="small-padding fixed-width"
       >
         <template slot-scope="scope">
-          <el-button size="mini" type="text" @click="handleDelete(scope.row)"
+          <el-button
+            size="mini"
+            type="text"
+            @click="handleDelete(scope.row)"
             :disabled="scope.row.state != 10"
             >删除</el-button
           >
@@ -300,7 +303,7 @@ export default {
     getTreeselect() {
       resourceTreeByUN().then((response) => {
         this.deptOptions = response.list;
-        this.queryParams.unitId=response.checked
+        this.queryParams.unitId = response.checked;
         this.getList();
       });
     },
@@ -311,13 +314,16 @@ export default {
     getList() {
       this.loading = true;
       listPrint(this.queryParams).then((response) => {
-        response.list.map((item) => {
-          this.invoiceStatue.map((statueItem) => {
-            if (statueItem.value == item.state) {
-              item.stateLabel = statueItem.label;
-            }
+        if (response.list) {
+          response.list.map((item) => {
+            this.invoiceStatue.map((statueItem) => {
+              if (statueItem.value == item.state) {
+                item.stateLabel = statueItem.label;
+              }
+            });
           });
-        });
+        }
+
         this.printList = response.list;
         this.total = response.totalRow;
         this.loading = false;

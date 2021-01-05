@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-12-22 10:05:30
  * @LastEditors: CYZ
- * @LastEditTime: 2021-01-04 20:22:06
+ * @LastEditTime: 2021-01-05 11:07:31
 -->
 <template>
   <div class="app-container">
@@ -117,7 +117,7 @@
           prop="unitName"
           width="180"
         />
-        <el-table-column align="center" label="年初预算（元）" prop="budget" />
+        <el-table-column align="center" label="年初预算（元）" prop="budget" width="120" />
         <el-table-column
           align="center"
           label="已通过"
@@ -140,7 +140,6 @@
           align="center"
           label="使用进度"
           prop="proportion"
-          width="120"
         >
           <template slot-scope="scope">
             <el-progress
@@ -689,8 +688,11 @@ export default {
     getBudgetList() {
       materialsStatistics(this.morenUnit).then((res) => {
         console.log("materialsStatistics", res);
-        this.BudgetList = [];
+        if (res!='') {
+          this.BudgetList = [];
         this.BudgetList.push(res);
+        }
+        
       });
     },
     // 下载预览文件
@@ -1046,6 +1048,12 @@ export default {
           });
         } else if (this.type == "design") {
           this.fileId = res.data.id;
+          this.pictureFileList = [
+              {
+                fileName: res.data.fileName,
+              },
+            ];
+
         } else if (this.type == "poster") {
           this.importDateId = res.data;
           materialsMaterials(res.data).then((response) => {

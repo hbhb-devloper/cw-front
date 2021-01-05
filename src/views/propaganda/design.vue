@@ -305,13 +305,16 @@ export default {
     getList() {
       this.loading = true;
       listPicture(this.queryParams).then((response) => {
-        response.list.map((item) => {
+        if (response.list) {
+          response.list.map((item) => {
           this.invoiceStatue.map((statueItem) => {
             if (statueItem.value == item.state) {
               item.stateLabel = statueItem.label;
             }
           });
         });
+        }
+        
         this.printList = response.list;
         this.total = response.totalRow;
         this.loading = false;

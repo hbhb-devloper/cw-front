@@ -84,17 +84,18 @@ export default {
       materialsPut(this.controlList).then((res) => {
         console.log("materialsPut", res);
         this.$message.success("保存成功");
+        this.getList();
       });
     },
     /** 查询角色列表 */
     getList() {
       this.loading = true;
       materialsList().then((response) => {
-        response.map((item) => {
-          if (item.proportion) {
-            item.proportion = item.proportion * 100;
-          }
-        });
+        // response.map((item) => {
+        //   if (item.proportion) {
+        //     item.proportion = item.proportion * 100;
+        //   }
+        // });
         this.controlList = response;
         this.loading = false;
       });
