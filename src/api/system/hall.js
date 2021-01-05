@@ -1,0 +1,47 @@
+import request from '@/utils/request1'
+import {prefix} from './system'
+
+
+// 分页获取营业厅列表
+export function listHall(query) {
+  return request({
+    url: `${prefix}/hall/list`,
+    method: 'get',
+    params: query
+  })
+}
+
+// 获取营业厅列表
+export function getHallSelect(query) {
+  return request({
+    url: `${prefix}/hall/select`,
+    method: 'get',
+    params: query
+  })
+}
+
+// 添加营业厅
+export function addHall(data) {
+  return request({
+    url: `${prefix}/hall`,
+    method: 'post',
+    data: data
+  })
+}
+
+// 修改营业厅
+export function updataHall(data) {
+  return request({
+    url: `${prefix}/hall`,
+    method: 'put',
+    data: data
+  })
+}
+
+// 获取所有的分公司列表
+export function getUnitSubList() {
+  return request({
+    url: `${prefix}/unit/sub/list`,
+    method: 'get'
+  })
+}
