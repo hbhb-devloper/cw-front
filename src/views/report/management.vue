@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2021-01-06 10:24:47
  * @LastEditors: CYZ
- * @LastEditTime: 2021-01-06 14:27:55
+ * @LastEditTime: 2021-01-06 15:12:34
 -->
 <template>
   <div class="app-container">
@@ -19,24 +19,16 @@
       <el-table-column align="center" label="序号" prop="id" />
       <el-table-column
         align="center"
-        label="单位名称"
+        label="管理内容名称"
         prop="unitName"
-        :show-overflow-tooltip="true"
-      />
-      <el-table-column
-        align="center"
-        label="年初预算金额（元）"
-        prop="budget"
-        :show-overflow-tooltip="true"
       >
-        <template slot-scope="scope">
+      <template slot-scope="scope">
           <el-input
-            v-model="scope.row.budget"
-            placeholder="请输入年初预算金额"
+            v-model="scope.row.unitName"
+            placeholder="请输入管理内容名称"
           ></el-input>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="已使用金额" prop="amountPaid" />
       <el-table-column align="center" label="备注" prop="remark">
         <template slot-scope="scope">
           <el-input
@@ -45,14 +37,48 @@
           ></el-input>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="预算使用比例" prop="proportion">
+      <el-table-column align="center" label="修改人" prop="amountPaid" />
+      <el-table-column align="center" label="修改时间" prop="proportion" />
+      <el-table-column
+        label="是否请用"
+        align="center"
+      >
         <template slot-scope="scope">
-          <el-progress
-            :percentage="scope.row.proportion"
-            v-if="scope.row.proportion"
-          ></el-progress>
+          <el-button
+            size="mini"
+            type="text"
+            @click="handleDelete(scope.row)"
+            >禁用</el-button
+          >
         </template>
       </el-table-column>
+       <el-table-column
+        label="按月打包"
+        align="center"
+      >
+        <template slot-scope="scope">
+          <el-button
+            size="mini"
+            type="text"
+            @click="handleDelete(scope.row)"
+            >启动按月打包</el-button
+          >
+        </template>
+      </el-table-column>
+       <el-table-column
+        label="操作"
+        align="center"
+      >
+        <template slot-scope="scope">
+          <el-button
+            size="mini"
+            type="text"
+            @click="handleDelete(scope.row)"
+            >保存</el-button
+          >
+        </template>
+      </el-table-column>
+      
     </el-table>
   </div>
 </template>
