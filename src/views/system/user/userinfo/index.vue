@@ -387,10 +387,9 @@
             ></el-tree>
           </el-scrollbar>
         </el-card>
-        <el-card class="box-card">
+        <!-- <el-card class="box-card">
           <div slot="header" class="clearfix">
             <span>单位权限</span>
-            <!-- <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button> -->
           </div>
           <el-scrollbar style="height: 160px">
             <el-checkbox-group v-model="checkedUnRoleIds" class="tree-box">
@@ -405,8 +404,8 @@
               </el-checkbox>
             </el-checkbox-group>
           </el-scrollbar>
-        </el-card>
-        <button
+        </el-card> -->
+        <!-- <button
           disabled="disabled"
           type="button"
           class="el-button el-button--primary is-disabled el-transfer__button"
@@ -414,7 +413,7 @@
           <span>
             <i class="el-icon-arrow-right"></i>
           </span>
-        </button>
+        </button> -->
         <el-card class="box-card">
           <div slot="header" class="clearfix">
             <span>单位权限列表</span>
@@ -428,10 +427,19 @@
               node-key="id"
               class="tree-box"
               empty-text="加载中，请稍后"
-              :props="defaultProps"
+              :props="defaultProps" 
+              @node-click="getUnit"
             ></el-tree>
           </el-scrollbar>
         </el-card>
+        <el-transfer
+          filterable
+          filter-placeholder="请输入营业厅名称"
+          v-model="value"
+          :data="hallList"
+          :props="{key:'id',label:'label'}"
+        >
+        </el-transfer>
       </div>
 
       <div slot="footer" class="dialog-footer">
@@ -497,10 +505,7 @@ import { getToken } from "@/utils/auth";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 import { listRole } from "@/api/system/role";
-import {
-  resourceTree,
-  roleMenuTreeselect,
-} from "@/api/system/resource";
+import { resourceTree, roleMenuTreeselect } from "@/api/system/resource";
 import {
   resourceTreeByUN,
   listUnit,
@@ -508,6 +513,7 @@ import {
 } from "@/api/system/unit";
 import { Encrypt } from "@/utils/AESCrypt";
 
+import { getHallSelect } from "@/api/system/hall";
 export default {
   name: "User",
   components: { Treeselect },
@@ -632,6 +638,9 @@ export default {
           },
         ],
       },
+      // 营业厅下拉框
+      hallList:[],
+      value:undefined
     };
   },
   watch: {
@@ -647,6 +656,13 @@ export default {
     this.getMenuTreeselect();
   },
   methods: {
+    // 获取单位的营业厅
+    getUnit(data){
+      console.log('data',data);
+      getHallSelect(data.id).then(res=>{
+          this.hallList=res
+        })
+    },
     changeDisabled(data, disabled) {
       for (var i = 0; i < data.length; i++) {
         var children = data[i].children;
@@ -798,7 +814,7 @@ export default {
       const userId = row.id || this.ids;
 
       getUser(userId).then((response) => {
-        response.pwd=undefined
+        response.pwd = undefined;
         this.form = response;
         this.checkedRsRoleIds = this.form.checkedRsRoleIds;
         this.checkedUnRoleIds = this.form.checkedUnRoleIds;
