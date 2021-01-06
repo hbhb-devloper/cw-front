@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-07-20 18:22:09
  * @LastEditors: CYZ
- * @LastEditTime: 2021-01-04 14:32:31
+ * @LastEditTime: 2021-01-06 16:55:21
 -->
 <template>
   <div class="dashboard-editor-container">
@@ -470,6 +470,9 @@ import {
   updateMaterialsNotice,
   updatePrintNotice,
   getPrintList,
+  getApplicationList,
+  getApplicationSummary,
+  updateApplicationNotice,
 } from "@/api/workbench/workbench";
 import PanelGroup from "./dashboard/PanelGroup";
 
@@ -625,7 +628,12 @@ export default {
           that.NoticetableData = that.NoticetableData.concat(Pictureresponse);
           getPrintSummary().then((Printresponse) => {
             that.NoticetableData = that.NoticetableData.concat(Printresponse);
-            that.loading = false;
+            getApplicationSummary().then((Applicationresponse) => {
+              that.NoticetableData = that.NoticetableData.concat(
+                Applicationresponse
+              );
+              that.loading = false;
+            });
           });
         });
       });
@@ -721,7 +729,7 @@ export default {
         this.getList1();
       } else if (this.module1 == 101) {
         this.getList2();
-      }else if (this.module1 == 103) {
+      } else if (this.module1 == 103) {
         this.getList3();
       }
     },
@@ -784,7 +792,7 @@ export default {
         this.loading1 = false;
       });
     },
-    
+
     getFileList() {
       this.loading2 = true;
       getFileList(10).then((response) => {
@@ -799,7 +807,7 @@ export default {
         this.getList1();
       } else if (this.module1 == 101) {
         this.getList2();
-      }else if (this.module1 == 103) {
+      } else if (this.module1 == 103) {
         this.getList3();
       }
     },

@@ -10,7 +10,6 @@
         <el-select
           v-model="queryParams.unitId"
           placeholder="请选择分公司"
-          clearable
           size="small"
           style="width: 240px"
         >
@@ -85,12 +84,12 @@
       <!-- <el-table-column label="创建时间" align="center" prop="createTime" /> -->
       <el-table-column label="状态" align="center" prop="state">
         <template slot-scope="scope">
-          <!-- <el-switch
+          <el-switch
             v-model="scope.row.enable"
             @change="handleChange(scope.row)"
           >
-          </el-switch> -->
-          <span>{{ scope.row.state ? "启用" : "停用" }}</span>
+          </el-switch>
+          <!-- <span>{{ scope.row.state  }}</span> -->
         </template>
       </el-table-column>
       <!--      <el-table-column label="创建者" align="center" prop="createBy" />-->
@@ -232,7 +231,7 @@ export default {
       listHall(this.queryParams)
         .then((response) => {
           response.list.map((item) => {
-            if (item.enable) {
+            if (item.enable==true) {
               item.state = "启用";
             } else {
               item.state = "停用";
@@ -280,15 +279,15 @@ export default {
       let datas = JSON.parse(JSON.stringify(row));
       delete datas.createTime;
       delete datas.createBy;
-      datas.state = datas.state ? 1 : 0;
-      updateNotice(datas).then((response) => {
-        if (datas.state) {
+      datas.enable = datas.enable ? 1 : 0;
+      updataHall(datas).then((response) => {
+        if (datas.enable) {
           this.msgSuccess("已启用");
         } else {
           this.msgSuccess("已停用");
         }
         this.getList();
-        this.$store.dispatch("SET_GETNOTICE");
+        // this.$store.dispatch("SET_GETNOTICE");
       });
     },
     /** 新增按钮操作 */

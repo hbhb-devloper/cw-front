@@ -12,11 +12,10 @@ export function listHall(query) {
 }
 
 // 获取营业厅列表
-export function getHallSelect(query) {
+export function getHallSelect(unitId) {
   return request({
-    url: `${prefix}/hall/select`,
+    url: `${prefix}/hall/select?unitId=${unitId}`,
     method: 'get',
-    params: query
   })
 }
 
