@@ -66,7 +66,7 @@
           icon="el-icon-download"
           size="mini"
           @click="handleExport"
-          >导出
+          >导出订单
         </el-button>
       </el-col>
     </el-row>
@@ -174,7 +174,7 @@ export default {
     /** 导出按钮操作 */
     handleExport() {
       const queryParams = this.queryParams;
-      this.$confirm("是否确认导出所有角色数据项?", "警告", {
+      this.$confirm("是否确认导出所有采购及需求汇总项?", "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",

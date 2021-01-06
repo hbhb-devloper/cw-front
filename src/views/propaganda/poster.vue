@@ -68,7 +68,7 @@
       <el-table-column
         align="center"
         label="申请单号"
-        prop="materialsName"
+        prop="materialsNum"
         width="180"
       />
       <el-table-column

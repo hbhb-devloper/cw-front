@@ -342,7 +342,7 @@
         align="center"
       />
        <el-table-column
-        label="是否包含附件"
+        label="是否上传合同"
         prop="isFile"
         width="150"
         align="center"
