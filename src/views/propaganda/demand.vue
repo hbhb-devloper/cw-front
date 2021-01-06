@@ -61,7 +61,7 @@
     </el-form>
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
-          <el-button
+        <el-button
           type="warning"
           icon="el-icon-download"
           size="mini"
@@ -92,7 +92,7 @@
 </template>
 
 <script>
-import { goodsPurchase , goodsExport } from "@/api/propaganda/demand";
+import { goodsPurchase, goodsExport } from "@/api/propaganda/demand";
 import { goodsTime } from "@/api/propaganda/flyer";
 import { resourceTree, roleMenuTreeselect } from "@/api/system/resource";
 import { resourceTreeByUN } from "@/api/system/unit";
@@ -104,6 +104,8 @@ export default {
   components: { Treeselect },
   data() {
     return {
+      // 次数下拉框
+      timeOption: undefined,
       // 部门树选项
       deptOptions: undefined,
       // 遮罩层
