@@ -3,8 +3,13 @@
     <!--顶部搜索-->
     <section class="search-box">
       <el-row :span="24">
-        <el-form ref="queryForm" :model="obj" :inline="true" label-width="100px">
-          <el-form-item label="单位"  prop="unitId">
+        <el-form
+          ref="queryForm"
+          :model="obj"
+          :inline="true"
+          label-width="100px"
+        >
+          <el-form-item label="单位" prop="unitId">
             <treeselect
               v-model="obj.unitId"
               :options="deptOptions"
@@ -372,7 +377,7 @@ import {
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 import { getToken } from "@/utils/auth";
-import {resourceTreeByUN} from "@/api/system/unit";
+import { resourceTreeByUN } from "@/api/system/unit";
 import { exportData1, exportWord } from "@/utils/export.js";
 import { prefix as budgetPrefix } from "@/api/budget/budget";
 import { prefix as systemPrefix } from "@/api/system/system";
@@ -391,7 +396,9 @@ export default {
   },
   data() {
     return {
-      ActionUrl: process.env.VUE_APP_GATEWAY_API + `${systemPrefix}/file/upload?bizType=20`, // 上传的图片服务器地址
+      ActionUrl:
+        process.env.VUE_APP_GATEWAY_API +
+        `${systemPrefix}/file/upload?bizType=20`, // 上传的图片服务器地址
       radio: 3, //单选项
       obj: {
         date: undefined,
@@ -414,7 +421,7 @@ export default {
       info: {},
       dowFile: process.env.FILE_DOWNLOAD_PATH,
       infoDetail: undefined,
-      morenUnit:undefined
+      morenUnit: undefined,
     };
   },
   created() {
@@ -455,7 +462,7 @@ export default {
     getUnitList() {
       resourceTreeByUN().then((res) => {
         this.obj.unitId = res.checked;
-        this.morenUnit= res.checked;
+        this.morenUnit = res.checked;
         this.deptOptions = res.list;
       });
       //获取增值税下拉
@@ -474,7 +481,7 @@ export default {
         this.tableData = res.list;
       });
     },
-     /** 搜索按钮操作 */
+    /** 搜索按钮操作 */
     handleQuery() {
       this.obj.pageNum = 1;
       this.handleGetList();
@@ -482,7 +489,7 @@ export default {
     /** 重置按钮操作 */
     handleRest() {
       this.resetForm("queryForm");
-      this.obj.unitId=this.morenUnit
+      this.obj.unitId = this.morenUnit;
       let times = new Date();
       this.obj.date = times.getFullYear().toString();
       this.radio = 3;
@@ -569,7 +576,7 @@ export default {
       let list = { isApproved: 0 };
       const _file = param.file;
       let params = new FormData();
-      params.append("files", _file);
+      params.append("file", _file);
       axios({
         url: this.ActionUrl,
         method: "post",
@@ -579,16 +586,20 @@ export default {
           Authorization: getToken(),
         },
       }).then((res) => {
-        list.fileId = res.data.data[0].id;
-        this.$message.success("附件上传成功！");
-        list.required = 0; //非必传
-        this.fileList.push({
-          name: res.data.data[0].fileName,
-          id: res.data.data[0].id,
-          type: list.required,
-        });
-        this.obj2.files.push(list);
-        console.log(this.fileList, this.obj2.files);
+        if (res.data.code == "00000") {
+          list.fileId = res.data.data.id;
+          this.$message.success("附件上传成功！");
+          list.required = 0; //非必传
+          this.fileList.push({
+            name: res.data.data.fileName,
+            id: res.data.data.id,
+            type: list.required,
+          });
+          this.obj2.files.push(list);
+          console.log(this.fileList, this.obj2.files);
+        } else {
+          this.$message.error("附件上传失败！");
+        }
       });
     },
     //文件删除

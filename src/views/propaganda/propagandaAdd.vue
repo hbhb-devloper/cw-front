@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-12-22 10:05:30
  * @LastEditors: CYZ
- * @LastEditTime: 2021-01-05 11:07:31
+ * @LastEditTime: 2021-01-07 13:36:01
 -->
 <template>
   <div class="app-container">
@@ -117,7 +117,12 @@
           prop="unitName"
           width="180"
         />
-        <el-table-column align="center" label="年初预算（元）" prop="budget" width="120" />
+        <el-table-column
+          align="center"
+          label="年初预算（元）"
+          prop="budget"
+          width="120"
+        />
         <el-table-column
           align="center"
           label="已通过"
@@ -136,11 +141,7 @@
           prop="balance"
           width="120"
         />
-        <el-table-column
-          align="center"
-          label="使用进度"
-          prop="proportion"
-        >
+        <el-table-column align="center" label="使用进度" prop="proportion">
           <template slot-scope="scope">
             <el-progress
               :percentage="scope.row.proportion"
@@ -345,7 +346,7 @@
                       type="text"
                       icon="el-icon-edit"
                       @click="deleteFile(scope.row)"
-                      :disabled="!editAble"
+                      :disabled="scope.row.fileseditAble"
                       >删除</el-button
                     >
                   </template>
@@ -596,7 +597,7 @@ export default {
         roleUserId: [
           { required: true, message: "市场审核员不能为空", trigger: "blur" },
         ],
-        reason:[
+        reason: [
           { required: true, message: "申请原因不能为空", trigger: "blur" },
         ],
       },
@@ -688,11 +689,10 @@ export default {
     getBudgetList() {
       materialsStatistics(this.morenUnit).then((res) => {
         console.log("materialsStatistics", res);
-        if (res!='') {
+        if (res != "") {
           this.BudgetList = [];
-        this.BudgetList.push(res);
+          this.BudgetList.push(res);
         }
-        
       });
     },
     // 下载预览文件
@@ -826,10 +826,14 @@ export default {
           if (res.printMaterials) {
             this.importantList = res.printMaterials;
           }
-          this.form = res;
-          if (this.form.state != 10) {
+          if (res.state != 10) {
             this.editAble = true;
+            res.files.map((item) => {
+              item.fileseditAble = true;
+            });
           }
+          this.form = res;
+
           if (res.state != 10) {
             // 获取意见下拉框
             getList().then((opinionRes) => {
@@ -855,10 +859,14 @@ export default {
               },
             ];
           }
-          this.form = res;
-          if (this.form.state != 10) {
+          if (res.state != 10) {
             this.editAble = true;
+            res.files.map((item) => {
+              item.fileseditAble = true;
+            });
           }
+          this.form = res;
+
           if (res.state != 10) {
             // 获取意见下拉框
             getList().then((opinionRes) => {
@@ -880,10 +888,13 @@ export default {
           if (res.materialsInfo) {
             this.importantList = res.materialsInfo;
           }
-          this.form = res;
-          if (this.form.state != 10) {
+          if (res.state != 10) {
             this.editAble = true;
+            res.files.map((item) => {
+              item.fileseditAble = true;
+            });
           }
+          this.form = res;
           if (res.state != 10) {
             // 获取意见下拉框
             getList().then((opinionRes) => {
@@ -1049,11 +1060,10 @@ export default {
         } else if (this.type == "design") {
           this.fileId = res.data.id;
           this.pictureFileList = [
-              {
-                fileName: res.data.fileName,
-              },
-            ];
-
+            {
+              fileName: res.data.fileName,
+            },
+          ];
         } else if (this.type == "poster") {
           this.importDateId = res.data;
           materialsMaterials(res.data).then((response) => {

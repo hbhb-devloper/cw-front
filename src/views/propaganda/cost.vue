@@ -152,7 +152,11 @@
           @click="handleQuery"
           >搜索</el-button
         >
-        <el-button icon="el-icon-refresh" size="mini" @click="handleLaunch" :disabled="!flag"
+        <el-button
+          icon="el-icon-refresh"
+          size="mini"
+          @click="handleLaunch"
+          :disabled="!flag"
           >发起审批</el-button
         >
       </el-form-item>
@@ -173,15 +177,15 @@
       <el-table-column align="center" label="计量单位" prop="unit" />
       <el-table-column align="center" label="申请数量" prop="amount" /> -->
       <el-table-column
-          align="center"
-          label="业务单式申请数量"
-          prop="simplexAmount"
-        />
-         <el-table-column
-          align="center"
-          label="宣传单页申请数量"
-          prop="singleAmount"
-        />
+        align="center"
+        label="业务单式申请数量"
+        prop="simplexAmount"
+      />
+      <el-table-column
+        align="center"
+        label="宣传单页申请数量"
+        prop="singleAmount"
+      />
     </el-table>
 
     <!-- 查看明细详情弹窗 -->
@@ -282,7 +286,7 @@ export default {
   data() {
     return {
       // 判断条件
-      flag:true,
+      flag: true,
       // 选择列表
       chooseForm: [],
       title: "",
@@ -312,7 +316,7 @@ export default {
       LaunchId: undefined,
       batchNum: undefined,
       // 营业厅下拉框
-      hallList:[]
+      hallList: [],
     };
   },
   filters: {
@@ -327,13 +331,14 @@ export default {
   created() {
     // this.getList();
     this.getTreeselect();
+    console.log("this.$route.query.batchNum", this.$route.query.batchNum);
   },
   methods: {
     // 改变unit的值
-    changeUnit(value){
-      getHallSelect(value).then(res=>{
-          this.hallList=res
-        })
+    changeUnit(value) {
+      getHallSelect(value).then((res) => {
+        this.hallList = res;
+      });
     },
     //提交审批
     handleApprove(item, type) {
@@ -412,22 +417,39 @@ export default {
     /** 查询部门下拉树结构 */
     getTreeselect() {
       var date = new Date();
-      this.$set(
-        this.queryParams,
-        "time",
-        date.getFullYear() +
+      if (this.$route.query.batchNum) {
+        let month =
+          this.$route.query.batchNum.slice(0, 4) +
           "-" +
-          (date.getMonth() + 1).toString().padStart(2, "0")
-      );
+          this.$route.query.batchNum.slice(4, 6);
+        this.$set(this.queryParams, "time", month);
+      } else {
+        this.$set(
+          this.queryParams,
+          "time",
+          date.getFullYear() +
+            "-" +
+            (date.getMonth() + 1).toString().padStart(2, "0")
+        );
+      }
       resourceTreeByUN().then((response) => {
         this.deptOptions = response.list;
-        this.queryParams.unitId = response.checked;
-        getHallSelect(response.checked).then(res=>{
-          this.hallList=res
-        })
+        if (this.$route.query.batchNum) {
+          this.queryParams.unitId =Number(this.$route.query.unitId);
+        } else {
+          this.queryParams.unitId = response.checked;
+        }
+        getHallSelect(response.checked).then((res) => {
+          this.hallList = res;
+        });
         goodsTime(this.queryParams.time).then((res) => {
           this.timeOption = res.goodsIndexList;
-          this.$set(this.queryParams, "goodsIndex", res.goodsIndex);
+          if (this.$route.query.batchNum) {
+            let index = Number(this.$route.query.batchNum.slice(6));
+            this.$set(this.queryParams, "goodsIndex", index);
+          } else {
+            this.$set(this.queryParams, "goodsIndex", res.goodsIndex);
+          }
           this.getList();
         });
       });
@@ -436,7 +458,7 @@ export default {
     getList() {
       this.loading = true;
       applicationGoods(this.queryParams).then((response) => {
-        this.flag=response.flag
+        this.flag = response.flag;
         this.GoodsList = response.list;
         this.loading = false;
         this.batchNum = response.batchNum;

@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-07-20 18:22:09
  * @LastEditors: CYZ
- * @LastEditTime: 2021-01-06 16:55:21
+ * @LastEditTime: 2021-01-07 16:58:16
 -->
 <template>
   <div class="dashboard-editor-container">
@@ -570,6 +570,10 @@ export default {
           this.$router.push(
             `/propaganda/propagandaAdd?id=${row.businessId}&type=poster`
           );
+        }else if (row.noticeType == "物料费用签报") {
+          this.$router.push(
+            `/propaganda/cost?batchNum=${row.batchNum}&unitId=${row.unitId}`
+          );
         }
       }
     },
@@ -622,16 +626,14 @@ export default {
       let that = this;
       this.loading = true;
       that.NoticetableData = [];
-      getMaterialsSummary().then((Materialsresponse) => {
-        that.NoticetableData = that.NoticetableData.concat(Materialsresponse);
-        getPictureSummary().then((Pictureresponse) => {
-          that.NoticetableData = that.NoticetableData.concat(Pictureresponse);
-          getPrintSummary().then((Printresponse) => {
-            that.NoticetableData = that.NoticetableData.concat(Printresponse);
-            getApplicationSummary().then((Applicationresponse) => {
-              that.NoticetableData = that.NoticetableData.concat(
-                Applicationresponse
-              );
+      getApplicationSummary().then((Applicationresponse) => {
+        that.NoticetableData = that.NoticetableData.concat(Applicationresponse);
+        getMaterialsSummary().then((Materialsresponse) => {
+          that.NoticetableData = that.NoticetableData.concat(Materialsresponse);
+          getPictureSummary().then((Pictureresponse) => {
+            that.NoticetableData = that.NoticetableData.concat(Pictureresponse);
+            getPrintSummary().then((Printresponse) => {
+              that.NoticetableData = that.NoticetableData.concat(Printresponse);
               that.loading = false;
             });
           });
@@ -759,6 +761,11 @@ export default {
           });
         } else if (row.noticeType == "物料制作") {
           updateMaterialsNotice(row.id).then((response) => {
+            that.getPropagandaSummary();
+            that.getWorkList();
+          });
+        } else if (row.noticeType == "物料费用签报") {
+          updateApplicationNotice(row.id).then((response) => {
             that.getPropagandaSummary();
             that.getWorkList();
           });

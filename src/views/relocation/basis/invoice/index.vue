@@ -118,8 +118,7 @@
         width="150"
         align="center"
       />
-      <el-table-column label="收款情况" prop="isReceived" width="150" align="center" />
-      <el-table-column label="已收" prop="received" width="150" align="center" />
+      
       <el-table-column
         label="备注格式：合同号；区县；款项性质；项目信息"
         prop="remake"
@@ -136,7 +135,9 @@
         align="center"
       />
       <el-table-column label="客户经理" prop="manager" width="150" align="center" />
-      <el-table-column label="描述" prop="describe" width="150" align="center" />
+      <!-- <el-table-column label="描述" prop="describe" width="150" align="center" /> -->
+      <el-table-column label="收款情况" prop="isReceived" width="150" align="center" />
+      <el-table-column label="已收" prop="received" width="150" align="center" />
       <el-table-column
         label="操作"
         align="center"
@@ -320,11 +321,11 @@
               />
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <!-- <el-col :span="12">
             <el-form-item label="描述" prop="describe">
               <el-input v-model="form.describe" placeholder="请输入描述" />
             </el-form-item>
-          </el-col>
+          </el-col> -->
         </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer">

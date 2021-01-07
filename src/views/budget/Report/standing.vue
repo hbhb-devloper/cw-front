@@ -24,6 +24,7 @@
               placeholder="请选择"
               style="width: 200px; margin-left: -25px"
                prop="createTime"
+               @change="changeYear"
             >
             </el-date-picker>
             <el-date-picker
@@ -420,6 +421,16 @@ export default {
     },
   },
   methods: {
+    // 改变年传参
+    changeYear(value){
+      this.obj.budgetId=undefined
+      console.log('value',value);
+      let year =dateTimes(this.obj.projectYear).substr(0, 4);
+      //获取项目类型下拉
+      getProejctType({year:year}).then((res) => {
+        this.options = res;
+      });
+    },
     //页面初始化加载
     handleLoad() {
       //获取单位树形

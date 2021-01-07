@@ -144,7 +144,7 @@
             size="mini"
             type="text"
             @click="handleDelete(scope.row)"
-            :disabled="scope.row.state != 10"
+            :disabled="!(scope.row.state == 10||scope.row.state == 30)"
             >删除</el-button
           >
         </template>
