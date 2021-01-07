@@ -370,7 +370,7 @@
             <i class="el-icon-arrow-right"></i>
           </span>
         </button>
-        <el-card class="box-card">
+        <el-card class="box-card" >
           <div slot="header" class="clearfix">
             <span>菜单权限列表</span>
             <!-- <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button> -->
@@ -414,12 +414,12 @@
             <i class="el-icon-arrow-right"></i>
           </span>
         </button> -->
-        <el-card class="box-card">
+        <el-card class="box-card" style="height:300px;margin-top:15px">
           <div slot="header" class="clearfix">
             <span>单位权限列表</span>
             <!-- <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button> -->
           </div>
-          <el-scrollbar style="height: 160px">
+          <el-scrollbar style="height: 260px">
             <el-tree
               :data="UnOptions"
               show-checkbox
