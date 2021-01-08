@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-08-01 18:28:36
  * @LastEditors: CYZ
- * @LastEditTime: 2021-01-06 16:53:55
+ * @LastEditTime: 2021-01-08 09:57:36
  */
 import request from '@/utils/request'
 
@@ -154,3 +154,22 @@ export function updateApplicationNotice(id) {
     method: 'PUT'
   })
 }
+
+
+
+// 物料审核提醒
+export function getVerifySummary() {
+  return request1({
+    url: `${propagandaPrefix}/verify/notice/summary`,
+    method: 'get'
+  })
+}
+
+// 物料审核提醒消息为已读
+export function updateVerifyNotice(id) {
+  return request1({
+    url: `${propagandaPrefix}/verify/notice/${id}` ,
+    method: 'PUT'
+  })
+}
+

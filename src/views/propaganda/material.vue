@@ -128,11 +128,12 @@
           <el-form-item label="备注">
             <div>{{ publicityForm.remark }}</div>
           </el-form-item>
-          <el-form-item label="图片" class="picItem">
-            <el-image style="width: 30%" :src="src"></el-image>
-            <el-image style="width: 30%" :src="src"></el-image>
-            <el-image style="width: 30%" :src="src"></el-image>
-            <el-image style="width: 30%" :src="src"></el-image>
+          <el-form-item label="图片" class="formpic">
+            <el-image
+              style="width: 50%"
+              :src="publicityForm.file.filePath"
+              fit="cover"
+            ></el-image>
           </el-form-item>
         </el-form>
         <!-- <div  style="padding-left:50px">
@@ -341,10 +342,19 @@
           </el-col>
           <el-col :span="12" v-if="isMold != 1">
             <el-form-item label="版面关联人" prop="updateBy">
-              <el-input
+              <el-select
                 v-model="form.updateBy"
-                placeholder="请输入版面关联人"
-              ></el-input>
+                placeholder="请选择物料审核人"
+                clearable
+                style="width: 100%"
+              >
+                <el-option
+                  v-for="dict in materialRoleList"
+                  :key="dict.id"
+                  :label="dict.nickName"
+                  :value="dict.id"
+                />
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -371,15 +381,26 @@
             </el-form-item>
           </el-col>
           <el-col :span="24" v-if="isMold != 1" style="height: 150px">
-            <el-form-item label="上传照片" prop="pic">
+            <el-form-item label="上传照片" prop="file">
+              <!--加类名为了隐藏上传样式 -->
               <el-upload
-                action="https://jsonplaceholder.typicode.com/posts/"
+               :class="{hide:hideUploadEdit}" 
+               :on-change="handleEditChange"
                 list-type="picture-card"
                 :on-preview="handlePictureCardPreview"
                 :on-remove="handleRemove"
+                :action="ActionUrl"
+                :on-progress="handleupload"
+                :headers="headers"
+                :on-success="handleSuccess"
+                :limit="1"
+                :on-exceed="handleExceed"
+                :file-list="fileList"
+                :before-upload="beforeAvatarUpload"
               >
-                <i class="el-icon-plus"></i>
+                <i class="el-icon-plus" ></i>
               </el-upload>
+
               <el-dialog :visible.sync="dialogVisible">
                 <img width="100%" :src="dialogImageUrl" alt="" />
               </el-dialog>
@@ -408,6 +429,8 @@ import {
 } from "@/api/propaganda/material";
 import { listFlowRole } from "@/api/flow/flowrole";
 import { resourceTreeByUN } from "@/api/system/unit";
+import { getToken } from "@/utils/auth";
+import { prefix } from "@/api/system/system";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 
@@ -416,6 +439,12 @@ export default {
   components: { Treeselect },
   data() {
     return {
+      ActionUrl:
+        process.env.VUE_APP_GATEWAY_API + `${prefix}/file/upload?bizType=61`, // 上传的图片服务器地址
+      headers: {
+        Authorization: getToken(),
+      },
+      fileList: [],
       // 审核员实体类
       CheckerObj: {},
       // 是否可修改
@@ -423,7 +452,9 @@ export default {
       loading: false,
       LibraryTree: [],
       settingForm: {},
-      publicityForm: {},
+      publicityForm: {
+        file: {},
+      },
       src:
         "https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg",
       title: "",
@@ -492,6 +523,7 @@ export default {
         //   { required: true, message: "手机号码不能为空", trigger: "blur" },
         // ],
       },
+      hideUploadEdit: false, // 隐藏'上传按钮'
     };
   },
   watch: {
@@ -512,9 +544,9 @@ export default {
   methods: {
     submitCheckerObj() {
       putLibraryBatch(this.CheckerObj).then((res) => {
-        console.log('putLibraryBatch',res);
+        console.log("putLibraryBatch", res);
         this.msgSuccess("批量修改物料审核员成功");
-      this.CheckerVisible = false;
+        this.CheckerVisible = false;
       });
     },
     getmaterialRole() {
@@ -587,7 +619,9 @@ export default {
     },
     getListDetail(data) {
       if (data.mold) {
-        this.publicityForm = {};
+        this.publicityForm = {
+          file: {},
+        };
         // this.$message.error("请点击活动");
       } else {
         getLibraryDetail(data.id).then((res) => {
@@ -625,6 +659,14 @@ export default {
       // this.getTreeselect();
       const libraryId = this.libraryId;
       getLibraryDetail(libraryId).then((response) => {
+        if (response.file) {
+           this.fileList = [{
+          id:response.file.id,
+          name: response.file.fileName,
+          url: response.file.filePath,
+        }]
+        }
+       
         this.form = response;
         this.open = true;
         this.title = "修改";
@@ -670,12 +712,73 @@ export default {
         this.getList();
       });
     },
+    // 上传图片模块
+    handleEditChange(file, fileList) {
+      this.hideUploadEdit = fileList.length >= 1;
+      console.log("this.fileList:", this.fileList);
+      console.log("this.hideUploadEdit:", this.hideUploadEdit);
+    },
+    beforeAvatarUpload(file) {
+      const isJPG = file.type === "image/jpeg";
+      const isLt2M = file.size / 1024 / 1024 < 2;
+
+      if (!isJPG) {
+        this.$message.error("上传头像图片只能是 JPG 格式!");
+      }
+      if (!isLt2M) {
+        this.$message.error("上传头像图片大小不能超过 2MB!");
+      }
+      return isJPG && isLt2M;
+    },
+    handleupload() {
+      const loading = this.$loading({
+        lock: true,
+        text: "正在上传文件",
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.7)",
+      });
+      this.loadingoption = loading;
+    },
     handleRemove(file, fileList) {
-      console.log(file, fileList);
+      if (fileList.length === 0) {
+        this.fileList = [];
+      } else {
+        let dl = this.fileList.indexOf(file);
+        this.fileList.splice(dl, 1);
+      }
+      this.hideUploadEdit = fileList.length >= 1;
+      console.log("this.fileList:", this.fileList);
+      console.log("this.hideUploadEdit:", this.hideUploadEdit);
     },
     handlePictureCardPreview(file) {
       this.dialogImageUrl = file.url;
       this.dialogVisible = true;
+    },
+    handleExceed(files, fileList) {
+      this.$message.warning(
+        `当前限制选择 1 个文件，本次选择了 ${files.length} 个文件，共选择了 ${
+          files.length + fileList.length
+        } 个文件`
+      );
+    },
+    handleFail() {
+      this.loadingoption.close();
+      this.$message.error("上传失败");
+    },
+    handleSuccess(res) {
+      console.log("res", res);
+      this.loadingoption.close();
+      if (res.code == "00000") {
+        this.$message({
+          message: "图片上传成功",
+          type: "success",
+        });
+        this.form.file = res.data;
+        this.form.file.fileId = this.form.file.id;
+        delete this.form.file.id;
+      } else {
+        this.$message.error(res.message);
+      }
     },
   },
 };
@@ -711,10 +814,10 @@ export default {
   color: red;
 }
 .demonstration {
-    display: block;
-    color: #8492a6;
-    font-size: 14px;
-    margin-bottom: 20px;
+  display: block;
+  color: #8492a6;
+  font-size: 14px;
+  margin-bottom: 20px;
 }
 .block {
   padding: 30px 0;
@@ -729,5 +832,16 @@ export default {
 }
 .block:last-child {
   border-right: none;
+}
+.formpic {
+  align-items: start !important;
+}
+/*  隐藏上传按钮 */
+.hide /deep/ .el-upload--picture-card {
+  display: none;
+}
+/*  添加/删除文件时去掉动画过渡 */
+.el-upload-list__item {
+  transition: none !important;
 }
 </style>
