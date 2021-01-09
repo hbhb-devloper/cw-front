@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-12-22 10:05:30
  * @LastEditors: CYZ
- * @LastEditTime: 2021-01-07 13:36:01
+ * @LastEditTime: 2021-01-09 15:52:40
 -->
 <template>
   <div class="app-container">
@@ -395,14 +395,14 @@
                 type="text"
                 @click="publicitydown"
                 v-if="type == 'printed'"
-                >业务单式模板下载</el-button
+                >宣传单页模板下载</el-button
               >
               <el-button
                 size="small"
                 type="text"
                 @click="businessdown"
                 v-if="type == 'printed'"
-                >宣传单页模板下载</el-button
+                >业务单式模板下载</el-button
               >
               <el-button
                 size="small"
@@ -729,14 +729,18 @@ export default {
     },
     // 删除导入数据
     deleteMaterials() {
-      if (this.type == "print") {
-        printDeleteMaterials(this.printId).then((res) => {
-          this.showinfo();
-        });
+      if (typeof this.printId =='undefined') {
+        this.importantList = [];
       } else {
-        materialsDeleteMaterials(this.printId).then((res) => {
-          this.showinfo();
-        });
+        if (this.type == "print") {
+          printDeleteMaterials(this.printId).then((res) => {
+            this.showinfo();
+          });
+        } else {
+          materialsDeleteMaterials(this.printId).then((res) => {
+            this.showinfo();
+          });
+        }
       }
     },
     // 获取市场审核员下拉框

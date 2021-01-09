@@ -250,6 +250,7 @@ export default {
       LaunchId: undefined,
       printId: undefined,
       userId: undefined,
+      morenUnit:undefined
     };
   },
   created() {
@@ -304,6 +305,7 @@ export default {
       resourceTreeByUN().then((response) => {
         this.deptOptions = response.list;
         this.queryParams.unitId = response.checked;
+        this.morenUnit=response.checked;
         this.getList();
       });
     },
@@ -336,8 +338,8 @@ export default {
     },
     /** 重置按钮操作 */
     resetQuery() {
-      this.dateRange = [];
       this.resetForm("queryForm");
+      this.queryParams.unitId = this.morenUnit;
       this.handleQuery();
     },
     /** 导出按钮操作 */

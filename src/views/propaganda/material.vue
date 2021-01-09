@@ -344,7 +344,7 @@
             <el-form-item label="版面关联人" prop="updateBy">
               <el-select
                 v-model="form.updateBy"
-                placeholder="请选择物料审核人"
+                placeholder="请选择版面关联人"
                 clearable
                 style="width: 100%"
               >
