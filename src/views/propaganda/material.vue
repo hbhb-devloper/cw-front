@@ -199,7 +199,7 @@
             <el-option
               v-for="dict in materialRoleList"
               :key="dict.id"
-              :label="dict.nickName"
+              :label="dict.label"
               :value="dict.id"
             />
           </el-select>
@@ -214,7 +214,7 @@
             <el-option
               v-for="dict in materialRoleList"
               :key="dict.id"
-              :label="dict.nickName"
+              :label="dict.label"
               :value="dict.id"
             />
           </el-select>
@@ -299,7 +299,7 @@
                 <el-option
                   v-for="dict in materialRoleList"
                   :key="dict.id"
-                  :label="dict.nickName"
+                  :label="dict.label"
                   :value="dict.id"
                 />
               </el-select>
@@ -351,7 +351,7 @@
                 <el-option
                   v-for="dict in materialRoleList"
                   :key="dict.id"
-                  :label="dict.nickName"
+                  :label="dict.label"
                   :value="dict.id"
                 />
               </el-select>
@@ -384,8 +384,8 @@
             <el-form-item label="上传照片" prop="file">
               <!--加类名为了隐藏上传样式 -->
               <el-upload
-               :class="{hide:hideUploadEdit}" 
-               :on-change="handleEditChange"
+                :class="{ hide: hideUploadEdit }"
+                :on-change="handleEditChange"
                 list-type="picture-card"
                 :on-preview="handlePictureCardPreview"
                 :on-remove="handleRemove"
@@ -398,7 +398,7 @@
                 :file-list="fileList"
                 :before-upload="beforeAvatarUpload"
               >
-                <i class="el-icon-plus" ></i>
+                <i class="el-icon-plus"></i>
               </el-upload>
 
               <el-dialog :visible.sync="dialogVisible">
@@ -427,7 +427,7 @@ import {
   getSetting,
   putLibraryBatch,
 } from "@/api/propaganda/material";
-import { listFlowRole } from "@/api/flow/flowrole";
+import { listFlowRoleUser } from "@/api/flow/flowrole";
 import { resourceTreeByUN } from "@/api/system/unit";
 import { getToken } from "@/utils/auth";
 import { prefix } from "@/api/system/system";
@@ -476,7 +476,7 @@ export default {
       isMold: 1,
       form: {
         mold: true,
-        state: false,
+        state: true,
         hasNum: false,
         hasSeal: false,
       },
@@ -539,7 +539,6 @@ export default {
   },
   created() {
     this.getTreeselect();
-    this.getmaterialRole();
   },
   methods: {
     submitCheckerObj() {
@@ -550,8 +549,14 @@ export default {
       });
     },
     getmaterialRole() {
-      listFlowRole({ flowRoleId: 13, pageSize: 1000 }).then((res) => {
-        this.materialRoleList = res.list;
+      let that = this;
+      console.log("that.queryParams.unitId", this.queryParams.unitId);
+      let params = {
+        flowRoleId: 13,
+        unitId: that.queryParams.unitId,
+      };
+      listFlowRoleUser(params).then((res) => {
+        this.materialRoleList = res;
       });
     },
 
@@ -634,10 +639,11 @@ export default {
     reset() {
       this.form = {
         mold: true,
-        state: false,
+        state: true,
         hasNum: false,
         hasSeal: false,
       };
+      this.fileList = [];
       this.resetForm("form");
     },
     /** 新增按钮操作 */
@@ -660,13 +666,15 @@ export default {
       const libraryId = this.libraryId;
       getLibraryDetail(libraryId).then((response) => {
         if (response.file) {
-           this.fileList = [{
-          id:response.file.id,
-          name: response.file.fileName,
-          url: response.file.filePath,
-        }]
+          this.fileList = [
+            {
+              id: response.file.id,
+              name: response.file.fileName,
+              url: response.file.filePath,
+            },
+          ];
         }
-       
+
         this.form = response;
         this.open = true;
         this.title = "修改";
@@ -675,24 +683,29 @@ export default {
     submitForm: function () {
       this.$refs["form"].validate((valid) => {
         if (valid) {
-          if (this.form.id != undefined) {
-            putLibrary(this.form).then((response) => {
-              this.msgSuccess("修改成功");
-              this.open = false;
-              this.getList();
-            });
-            // .catch((err) => {
-            //   this.msgError(err.message);
-            // });
-          } else {
-            addLibrary(this.form).then((response) => {
-              this.msgSuccess("新增成功");
-              this.open = false;
-              this.getList();
-            });
-            // .catch((err) => {
-            //   this.msgError(err.message);
-            // });
+          if (this.fileList.length < 1) {
+            this.$message.error("请上传图片");
+            
+          }else{
+            if (this.form.id != undefined) {
+              putLibrary(this.form).then((response) => {
+                this.msgSuccess("修改成功");
+                this.open = false;
+                this.getList();
+              });
+              // .catch((err) => {
+              //   this.msgError(err.message);
+              // });
+            } else {
+              addLibrary(this.form).then((response) => {
+                this.msgSuccess("新增成功");
+                this.open = false;
+                this.getList();
+              });
+              // .catch((err) => {
+              //   this.msgError(err.message);
+              // });
+            }
           }
         }
       });
@@ -709,13 +722,16 @@ export default {
       resourceTreeByUN().then((response) => {
         this.deptOptions = response.list;
         this.queryParams.unitId = response.checked;
+        this.getmaterialRole();
         this.getList();
       });
     },
     // 上传图片模块
     handleEditChange(file, fileList) {
       this.hideUploadEdit = fileList.length >= 1;
-      console.log("this.fileList:", this.fileList);
+        this.fileList=fileList
+
+      console.log("this.fileList:", fileList);
       console.log("this.hideUploadEdit:", this.hideUploadEdit);
     },
     beforeAvatarUpload(file) {
@@ -747,7 +763,8 @@ export default {
         this.fileList.splice(dl, 1);
       }
       this.hideUploadEdit = fileList.length >= 1;
-      console.log("this.fileList:", this.fileList);
+        this.fileList=fileList
+      console.log("this.fileList:", fileList);
       console.log("this.hideUploadEdit:", this.hideUploadEdit);
     },
     handlePictureCardPreview(file) {

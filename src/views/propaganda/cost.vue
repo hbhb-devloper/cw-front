@@ -362,7 +362,7 @@ export default {
       SubmitApprove(programObj).then((res) => {
         this.$message.success("提交成功");
         applicationFlow(this.batchNum).then((res) => {
-          this.flowList = res;
+          this.flowList = res.nodes;
         });
       });
     },
@@ -463,7 +463,6 @@ export default {
         this.loading = false;
         this.batchNum = response.batchNum;
         applicationFlow(response.batchNum).then((res) => {
-          console.log("applicationFlow", res);
           this.flowList = res.nodes;
           // 获取意见下拉框
           getList().then((res) => {
