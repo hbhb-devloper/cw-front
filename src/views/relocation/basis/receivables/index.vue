@@ -168,7 +168,7 @@
             type="text"
             icon="el-icon-edit"
             @click="handleAdd(scope.row)"
-            >添加</el-button
+            >收款</el-button
           >
         </template>
       </el-table-column>
