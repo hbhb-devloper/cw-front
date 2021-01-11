@@ -170,13 +170,13 @@
         align="center"
       />
       <el-table-column
-        label="收款情况"
+        label="回款情况"
         prop="isReceived"
         width="150"
         align="center"
       />
       <el-table-column
-        label="已收"
+        label="回款金额"
         prop="received"
         width="150"
         align="center"

@@ -144,7 +144,7 @@
     </el-row>
     <!-- 相关设定弹窗 -->
     <el-dialog title="相关设定" :visible.sync="SetVisible" width="600px">
-      <el-form label-width="160px" :model="settingForm">
+      <el-form label-width="160px">
         <el-form-item
           :label="'第' + (index + 1) + '次申请截止时间'"
           v-for="(item, index) in applicationList"
@@ -173,8 +173,12 @@
         >添加行数</el-button
       >
       <el-form label-width="160px" width="500px" :model="settingForm">
-        <el-form-item label="添加页面提示内容">
-          <el-input type="textarea" v-model="settingForm.contents"></el-input>
+        <el-form-item label="添加页面提示内容" prop="contents">
+          <el-input
+            type="textarea"
+            v-model="settingForm.contents"
+            @input="changeInput($event)"
+          ></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -541,6 +545,9 @@ export default {
     this.getTreeselect();
   },
   methods: {
+    changeInput(e) {
+      this.$forceUpdate();
+    },
     submitCheckerObj() {
       putLibraryBatch(this.CheckerObj).then((res) => {
         console.log("putLibraryBatch", res);
@@ -685,8 +692,7 @@ export default {
         if (valid) {
           if (this.fileList.length < 1) {
             this.$message.error("请上传图片");
-            
-          }else{
+          } else {
             if (this.form.id != undefined) {
               putLibrary(this.form).then((response) => {
                 this.msgSuccess("修改成功");
@@ -729,7 +735,7 @@ export default {
     // 上传图片模块
     handleEditChange(file, fileList) {
       this.hideUploadEdit = fileList.length >= 1;
-        this.fileList=fileList
+      this.fileList = fileList;
 
       console.log("this.fileList:", fileList);
       console.log("this.hideUploadEdit:", this.hideUploadEdit);
@@ -763,7 +769,7 @@ export default {
         this.fileList.splice(dl, 1);
       }
       this.hideUploadEdit = fileList.length >= 1;
-        this.fileList=fileList
+      this.fileList = fileList;
       console.log("this.fileList:", fileList);
       console.log("this.hideUploadEdit:", this.hideUploadEdit);
     },

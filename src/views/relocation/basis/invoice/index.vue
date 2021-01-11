@@ -136,8 +136,8 @@
       />
       <el-table-column label="客户经理" prop="manager" width="150" align="center" />
       <!-- <el-table-column label="描述" prop="describe" width="150" align="center" /> -->
-      <el-table-column label="收款情况" prop="isReceived" width="150" align="center" />
-      <el-table-column label="已收" prop="received" width="150" align="center" />
+      <el-table-column label="回款情况" prop="isReceived" width="150" align="center" />
+      <el-table-column label="回款金额" prop="received" width="150" align="center" />
       <el-table-column
         label="操作"
         align="center"
