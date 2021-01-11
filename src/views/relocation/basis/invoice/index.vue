@@ -70,6 +70,7 @@
           icon="el-icon-download"
           size="mini"
           @click="openCenterDialogVisible"
+          v-hasPermi="['relocation:invoice:important']"
           >导入</el-button
         >
       </el-col>
