@@ -156,6 +156,7 @@
             ref="menu"
             node-key="id"
             empty-text="加载中，请稍后"
+            check-strictly
             :props="defaultProps"
           ></el-tree>
         </el-form-item>
@@ -168,43 +169,7 @@
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
-
-    <!-- 分配菜单模板数据权限对话框 -->
-    <el-dialog :title="title" :visible.sync="openDataScope" width="500px">
-      <el-form :model="form" label-width="80px">
-        <el-form-item label="菜单模板名称">
-          <el-input v-model="form.roleName" :disabled="true" />
-        </el-form-item>
-        <el-form-item label="权限字符">
-          <el-input v-model="form.roleKey" :disabled="true" />
-        </el-form-item>
-        <el-form-item label="权限范围">
-          <el-select v-model="form.dataScope">
-            <el-option
-              v-for="item in dataScopeOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="数据权限" v-show="form.dataScope == 2">
-          <el-tree
-            :data="deptOptions"
-            show-checkbox
-            default-expand-all
-            ref="dept"
-            node-key="id"
-            empty-text="加载中，请稍后"
-            :props="defaultProps"
-          ></el-tree>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitDataScope">确 定</el-button>
-        <el-button @click="cancelDataScope">取 消</el-button>
-      </div>
-    </el-dialog>
+    
   </div>
 </template>
 
@@ -240,8 +205,6 @@ export default {
       title: "",
       // 是否显示弹出层
       open: false,
-      // 是否显示弹出层（数据权限）
-      openDataScope: false,
       // 日期范围
       dateRange: [],
       // 状态数据字典
@@ -337,6 +300,8 @@ export default {
       let checkedKeys = this.$refs.menu.getCheckedKeys();
       // 半选中的菜单节点
       let halfCheckedKeys = this.$refs.menu.getHalfCheckedKeys();
+      console.log("checkedKeys", checkedKeys);
+      console.log("halfCheckedKeys", halfCheckedKeys);
       let checkList = [];
       checkedKeys.map((checkItem) => {
         let checked = {
@@ -368,6 +333,7 @@ export default {
     getRoleMenuTreeselect(roleId) {
       roleMenuTreeselect(roleId).then((response) => {
         // this.menuOptions = response.menus;
+        console.log('roleMenuTreeselect',response);
         this.$refs.menu.setCheckedKeys(response);
       });
     },
@@ -401,11 +367,7 @@ export default {
       this.open = false;
       this.reset();
     },
-    // 取消按钮（数据权限）
-    cancelDataScope() {
-      this.openDataScope = false;
-      this.reset();
-    },
+    
     // 表单重置
     reset() {
       if (this.$refs.menu != undefined) {
@@ -451,13 +413,14 @@ export default {
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
+      let that=this
       const roleId = row.id || this.ids;
       getRole(roleId).then((response) => {
-        this.form = response;
-        this.open = true;
-        this.title = "修改菜单模板";
-        this.$nextTick(() => {
-          this.getRoleMenuTreeselect(roleId);
+        that.form = response;
+        that.open = true;
+        that.title = "修改菜单模板";
+        that.$nextTick(() => {
+          that.getRoleMenuTreeselect(roleId);
         });
       });
     },
@@ -491,21 +454,7 @@ export default {
         }
       });
     },
-    /** 提交按钮（数据权限） */
-    submitDataScope: function () {
-      if (this.form.roleId != undefined) {
-        this.form.deptIds = this.getDeptAllCheckedKeys();
-        dataScope(this.form).then((response) => {
-          if (response.code === 200) {
-            this.msgSuccess("修改成功");
-            this.openDataScope = false;
-            this.getList();
-          } else {
-            this.msgError(response.msg);
-          }
-        });
-      }
-    },
+    
     /** 删除按钮操作 */
     handleDelete(row) {
       const roleIds = row.id || this.ids;
