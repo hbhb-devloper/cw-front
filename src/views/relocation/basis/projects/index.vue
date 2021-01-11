@@ -342,7 +342,7 @@
         align="center"
       />
        <el-table-column
-        label="是否包含附件"
+        label="是否上传合同"
         prop="isFile"
         width="150"
         align="center"
@@ -360,6 +360,7 @@
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
+            v-hasPermi="['relocation:projects:updata']"
             >修改</el-button
           >
           <el-button

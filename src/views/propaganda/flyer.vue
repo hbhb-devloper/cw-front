@@ -64,11 +64,11 @@
       </el-form-item>
     </el-form>
     <div class="notice">
-      <marquee  behavior="scroll"  direction="left" bgcolor="#fdf6ec" width="60%">
-            {{contents}}
-        </marquee>
+      <marquee behavior="scroll" direction="left" bgcolor="#fdf6ec" width="60%">
+        {{ contents }}
+      </marquee>
     </div>
-    
+
     <el-row>
       <el-col
         :span="5"
@@ -78,10 +78,11 @@
         :offset="1"
       >
         <el-card :body-style="{ padding: '0px' }">
-          <img
-            src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png"
-            class="image"
-            @click="showPic"
+          <el-image
+            :src="item.pic.filePath"
+            @click="showPic(item.pic.filePath)"
+            style="width: 100%; height: 280px"
+            fit="fill"
           />
           <div style="padding: 14px">
             <div>{{ item.goodsName }}</div>
@@ -138,7 +139,7 @@ export default {
       timeOption: [],
       editAble: true,
       // 宣传单页公告
-      contents:undefined
+      contents: undefined,
     };
   },
   created() {
@@ -189,9 +190,8 @@ export default {
         });
       });
     },
-    showPic() {
-      this.dialogImageUrl =
-        "https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png";
+    showPic(pathUrl) {
+      this.dialogImageUrl = pathUrl;
       this.dialogVisible = true;
     },
     /** 查询商品列表 */
@@ -200,7 +200,7 @@ export default {
         this.editAble = response.flag;
         this.goodsList = response.list;
         this.total = response.count;
-        this.contents=response.contents
+        this.contents = response.contents;
       });
     },
     /** 搜索按钮操作 */
@@ -254,7 +254,7 @@ export default {
   flex-wrap: wrap;
   justify-content: space-around;
 }
-.notice{
+.notice {
   display: flex;
   align-items: center;
   justify-content: center;

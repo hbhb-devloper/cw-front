@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-07-24 18:29:57
  * @LastEditors: CYZ
- * @LastEditTime: 2020-12-17 16:57:35
+ * @LastEditTime: 2021-01-09 10:32:53
  */
 import request from '@/utils/request'
 import request1 from '@/utils/request1'
@@ -51,5 +51,15 @@ export function delRoleUser(id) {
     return request1({
         url: `${prefix}/role/user/${id}`,
         method: 'delete',
+    })
+}
+
+
+// /role/user/select
+export function listFlowRoleUser(query) {
+    return request1({
+        url: `${prefix}/role/user/select`,
+        method: 'get',
+        params: query
     })
 }

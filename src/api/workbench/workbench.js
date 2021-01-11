@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-08-01 18:28:36
  * @LastEditors: CYZ
- * @LastEditTime: 2021-01-04 13:53:34
+ * @LastEditTime: 2021-01-08 09:57:36
  */
 import request from '@/utils/request'
 
@@ -130,3 +130,46 @@ export function getPrintList(query) {
     params:query
   })
 }
+// 物料提醒更多提醒
+export function getApplicationList(query) {
+  return request1({
+    url: `${propagandaPrefix}/application/notice/list`,
+    method: 'get',
+    params:query
+  })
+}
+
+// 物料印刷品提醒
+export function getApplicationSummary() {
+  return request1({
+    url: `${propagandaPrefix}/application/notice/summary`,
+    method: 'get'
+  })
+}
+
+// 印刷品更新提醒消息为已读
+export function updateApplicationNotice(id) {
+  return request1({
+    url: `${propagandaPrefix}/application/notice/${id}` ,
+    method: 'PUT'
+  })
+}
+
+
+
+// 物料审核提醒
+export function getVerifySummary() {
+  return request1({
+    url: `${propagandaPrefix}/verify/notice/summary`,
+    method: 'get'
+  })
+}
+
+// 物料审核提醒消息为已读
+export function updateVerifyNotice(id) {
+  return request1({
+    url: `${propagandaPrefix}/verify/notice/${id}` ,
+    method: 'PUT'
+  })
+}
+

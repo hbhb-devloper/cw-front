@@ -19,6 +19,7 @@
           value-format="yyyy-MM"
           format="yyyy-MM"
           @change="changeTime"
+          disabled
         >
         </el-date-picker>
         <el-select
@@ -27,6 +28,7 @@
           clearable
           size="small"
           style="width: 200px"
+          disabled
         >
           <el-option
             v-for="(dict, index) in timeOption"

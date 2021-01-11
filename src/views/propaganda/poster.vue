@@ -68,7 +68,7 @@
       <el-table-column
         align="center"
         label="申请单号"
-        prop="materialsName"
+        prop="materialsNum"
         width="180"
       />
       <el-table-column
@@ -144,7 +144,7 @@
             size="mini"
             type="text"
             @click="handleDelete(scope.row)"
-            :disabled="scope.row.state != 10"
+            :disabled="!(scope.row.state == 10||scope.row.state == 30)"
             >删除</el-button
           >
         </template>
@@ -231,7 +231,7 @@ export default {
       LaunchId: undefined,
       pictureId: undefined,
       userId: undefined,
-      
+      morenUnit:undefined
     };
   },
   created() {
@@ -285,6 +285,7 @@ export default {
       resourceTreeByUN().then((response) => {
         this.deptOptions = response.list;
         this.queryParams.unitId = response.checked;
+        this.morenUnit=response.checked;
         this.getList();
       });
     },
@@ -296,13 +297,15 @@ export default {
     getList() {
       this.loading = true;
       listMaterials(this.queryParams).then((response) => {
-        response.list.map((item) => {
+        if (response.list) {
+          response.list.map((item) => {
           this.invoiceStatue.map((statueItem) => {
             if (statueItem.value == item.state) {
               item.stateLabel = statueItem.label;
             }
           });
         });
+        }
         this.printList = response.list;
         this.total = response.totalRow;
         this.loading = false;
@@ -315,8 +318,8 @@ export default {
     },
     /** 重置按钮操作 */
     resetQuery() {
-      this.dateRange = [];
       this.resetForm("queryForm");
+      this.queryParams.unitId = this.morenUnit;
       this.handleQuery();
     },
     /** 删除按钮操作 */

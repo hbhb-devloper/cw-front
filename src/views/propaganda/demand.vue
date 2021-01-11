@@ -61,12 +61,12 @@
     </el-form>
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
-          <el-button
+        <el-button
           type="warning"
           icon="el-icon-download"
           size="mini"
           @click="handleExport"
-          >导出
+          >导出订单
         </el-button>
       </el-col>
     </el-row>
@@ -92,7 +92,7 @@
 </template>
 
 <script>
-import { goodsPurchase , goodsExport } from "@/api/propaganda/demand";
+import { goodsPurchase, goodsExport } from "@/api/propaganda/demand";
 import { goodsTime } from "@/api/propaganda/flyer";
 import { resourceTree, roleMenuTreeselect } from "@/api/system/resource";
 import { resourceTreeByUN } from "@/api/system/unit";
@@ -104,6 +104,8 @@ export default {
   components: { Treeselect },
   data() {
     return {
+      // 次数下拉框
+      timeOption: undefined,
       // 部门树选项
       deptOptions: undefined,
       // 遮罩层
@@ -174,7 +176,7 @@ export default {
     /** 导出按钮操作 */
     handleExport() {
       const queryParams = this.queryParams;
-      this.$confirm("是否确认导出所有角色数据项?", "警告", {
+      this.$confirm("是否确认导出所有采购及需求汇总项?", "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",

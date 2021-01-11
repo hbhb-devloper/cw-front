@@ -255,6 +255,7 @@ export default {
       this.loading1 = true;
       let qParams = {};
       qParams.unitId = this.queryParams.unitId;
+      qParams.year = this.queryParams.year;
       qParams.budgetId = row.id;
       getProjectList(qParams).then((res) => {
         this.loading1 = false;

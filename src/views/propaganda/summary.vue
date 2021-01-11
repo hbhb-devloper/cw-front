@@ -296,12 +296,14 @@ export default {
         that.singleList.map((item) => {
           changeList.push({
             id: item.applicationDetailId,
+            goodsId:item.goodsId,
             modifyAmount: item.modifyAmount,
           });
         });
         that.simplexList.map((item) => {
           changeList.push({
             id: item.applicationDetailId,
+            goodsId:item.goodsId,
             modifyAmount: item.modifyAmount,
           });
         });
@@ -367,7 +369,7 @@ export default {
     handleExport() {
       const queryParams = this.queryParams;
 
-      this.$confirm("是否确认导出发票管理的数据项?", "导出表格", {
+      this.$confirm("是否确认导出分公司汇总的数据项?", "导出表格", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
@@ -377,7 +379,7 @@ export default {
             getToken(),
             queryParams,
             `${prefix}/verify/export`,
-            "发票管理"
+            "分公司汇总"
           );
         })
         .then((response) => {

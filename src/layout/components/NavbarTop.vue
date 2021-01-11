@@ -110,7 +110,7 @@ export default {
     this.handleNotice();
   },
   mounted() {
-    this.handleInfo();
+    this.name =this.$store.getters.name
     this.startMove();
   },
   methods: {
@@ -127,11 +127,6 @@ export default {
       getNotice().then(res=>{
         this.textArr=res;
       })
-    },
-    handleInfo() {
-      getInfo().then((res) => {
-        this.name = res.userInfo.userName;
-      });
     },
     async logout() {
       this.$confirm("确定注销并退出系统吗？", "提示", {

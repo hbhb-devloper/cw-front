@@ -45,7 +45,11 @@
           />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery"
+          <el-button
+            type="primary"
+            icon="el-icon-search"
+            size="mini"
+            @click="handleQuery"
             >搜索</el-button
           >
           <el-button icon="el-icon-refresh" size="mini" @click="resetQuery"
@@ -57,7 +61,11 @@
 
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
-        <el-button type="primary" icon="el-icon-plus" size="mini" @click="handleAdd"
+        <el-button
+          type="primary"
+          icon="el-icon-plus"
+          size="mini"
+          @click="handleAdd"
           >新增</el-button
         >
       </el-col>
@@ -67,6 +75,7 @@
           icon="el-icon-download"
           size="mini"
           @click="openCenterDialogVisible"
+          v-hasPermi="['relocation:receipt:important']"
           >导入</el-button
         >
       </el-col>
@@ -84,8 +93,18 @@
 
     <el-table v-loading="loading" :data="typeList">
       <!-- <el-table-column type="selection" width="55" align="center" /> -->
-      <el-table-column label="类别" prop="category" width="120" align="center" />
-      <el-table-column label="区域" prop="unitName" width="150" align="center" />
+      <el-table-column
+        label="类别"
+        prop="category"
+        width="120"
+        align="center"
+      />
+      <el-table-column
+        label="区域"
+        prop="unitName"
+        width="150"
+        align="center"
+      />
       <el-table-column
         label="赔补金额"
         prop="compensationAmount"
@@ -104,10 +123,19 @@
         width="150"
         align="center"
       />
-      <el-table-column label="合同编号" prop="contractNum" width="150" align="center" />
-      <el-table-column label="收据编号" prop="receiptNum" width="150" align="center" />
-      <el-table-column label="收款情况" prop="isReceived" width="150" align="center" />
-      <el-table-column label="已收" prop="received" width="150" align="center" />
+      <el-table-column
+        label="合同编号"
+        prop="contractNum"
+        width="150"
+        align="center"
+      />
+      <el-table-column
+        label="收据编号"
+        prop="receiptNum"
+        width="150"
+        align="center"
+      />
+
       <el-table-column
         label="赔补金额到账情况说明"
         prop="paymentDesc"
@@ -120,8 +148,15 @@
         width="150"
         align="center"
       />
-      <el-table-column label="开收据时间" prop="receiptTime" width="150" align="center">
-        <template slot-scope="scope">{{ scope.row.receiptTime | dataFormat }}</template>
+      <el-table-column
+        label="开收据时间"
+        prop="receiptTime"
+        width="150"
+        align="center"
+      >
+        <template slot-scope="scope">{{
+          scope.row.receiptTime | dataFormat
+        }}</template>
       </el-table-column>
       <el-table-column
         label="备注格式：合同号；区县；款项性质；项目信息"
@@ -129,8 +164,24 @@
         width="150"
         align="center"
       />
-      <el-table-column label="供应商信息" prop="supplier" width="150" align="center" />
-
+      <el-table-column
+        label="供应商信息"
+        prop="supplier"
+        width="150"
+        align="center"
+      />
+      <el-table-column
+        label="回款情况"
+        prop="isReceived"
+        width="150"
+        align="center"
+      />
+      <el-table-column
+        label="回款金额"
+        prop="received"
+        width="150"
+        align="center"
+      />
       <el-table-column
         label="操作"
         align="center"
@@ -246,12 +297,18 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="合同编号" prop="contractNum">
-              <el-input v-model="form.contractNum" placeholder="选择合同编号"></el-input>
+              <el-input
+                v-model="form.contractNum"
+                placeholder="选择合同编号"
+              ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="收据编号" prop="receiptNum">
-              <el-input v-model="form.receiptNum" placeholder="选择收据编号"></el-input>
+              <el-input
+                v-model="form.receiptNum"
+                placeholder="选择收据编号"
+              ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -294,7 +351,10 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="供应商信息" prop="supplier">
-              <el-input v-model="form.supplier" placeholder="请输入供应商信息" />
+              <el-input
+                v-model="form.supplier"
+                placeholder="请输入供应商信息"
+              />
             </el-form-item>
           </el-col>
         </el-row>
@@ -372,7 +432,9 @@ export default {
       },
       // 表单校验
       rules: {
-        category: [{ required: true, message: "类别不能为空", trigger: "blur" }],
+        category: [
+          { required: true, message: "类别不能为空", trigger: "blur" },
+        ],
         unitId: [{ required: true, message: "区域不能为空", trigger: "blur" }],
         compensationAmount: [
           { required: true, message: "赔补金额不能为空", trigger: "blur" },
@@ -383,8 +445,12 @@ export default {
         contractName: [
           { required: true, message: "赔补合同名不能为空", trigger: "blur" },
         ],
-        contractNum: [{ required: true, message: "合同编号不能为空", trigger: "blur" }],
-        receiptNum: [{ required: true, validator: validateReceiptNum, trigger: "blur" }],
+        contractNum: [
+          { required: true, message: "合同编号不能为空", trigger: "blur" },
+        ],
+        receiptNum: [
+          { required: true, validator: validateReceiptNum, trigger: "blur" },
+        ],
         paymentDesc: [
           {
             required: true,
@@ -395,9 +461,13 @@ export default {
         receiptAmount: [
           { required: true, message: "本年开收据不能为空", trigger: "blur" },
         ],
-        receiptTime: [{ required: true, message: "开收据时间不能为空", trigger: "blur" }],
+        receiptTime: [
+          { required: true, message: "开收据时间不能为空", trigger: "blur" },
+        ],
         remake: [{ required: true, message: "备注不能为空", trigger: "blur" }],
-        supplier: [{ required: true, message: "供应商不能为空", trigger: "blur" }],
+        supplier: [
+          { required: true, message: "供应商不能为空", trigger: "blur" },
+        ],
       },
       centerDialogVisible: false,
       ActionUrl: process.env.VUE_APP_GATEWAY_API + `${prefix}/receipt/import`, // 上传的图片服务器地址
@@ -422,9 +492,9 @@ export default {
     this.getTreeselect();
   },
   methods: {
-    openCenterDialogVisible(){
-      this.centerDialogVisible=true
-      this.codeMsgList=[]
+    openCenterDialogVisible() {
+      this.centerDialogVisible = true;
+      this.codeMsgList = [];
     },
     downTemplate() {
       //exportData1(getToken(),"", `${prefix}/receipt​/export/template`,"收据管理导入模板");
@@ -434,7 +504,6 @@ export default {
         `${prefix}/receipt/export/template`,
         "收据管理导入模板"
       );
-
     },
     getTreeselect() {
       let that = this;
@@ -477,13 +546,13 @@ export default {
           this.getList();
           this.centerDialogVisible = false;
         } else {
-          this.codeMsgList=[]
+          this.codeMsgList = [];
           for (let i in res.data) {
             var j = {};
             j.codeMsg = res.data[i];
             this.codeMsgList.push(j);
           }
-          console.log('this.codeMsgList',this.codeMsgList);
+          console.log("this.codeMsgList", this.codeMsgList);
         }
       } else if (res.code == "80898") {
         res.message = res.message.substr(1, res.message.length - 2);
@@ -604,11 +673,15 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const typeIds = row.id;
-      this.$confirm('是否确认删除合同编号为"' + row.contractNum + '"的数据项?', "警告", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
-      })
+      this.$confirm(
+        '是否确认删除合同编号为"' + row.contractNum + '"的数据项?',
+        "警告",
+        {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning",
+        }
+      )
         .then(function () {
           return delarr(typeIds);
         })

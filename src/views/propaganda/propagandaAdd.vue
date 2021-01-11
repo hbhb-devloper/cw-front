@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-12-22 10:05:30
  * @LastEditors: CYZ
- * @LastEditTime: 2021-01-04 17:41:37
+ * @LastEditTime: 2021-01-09 15:52:40
 -->
 <template>
   <div class="app-container">
@@ -117,7 +117,12 @@
           prop="unitName"
           width="180"
         />
-        <el-table-column align="center" label="年初预算（元）" prop="budget" />
+        <el-table-column
+          align="center"
+          label="年初预算（元）"
+          prop="budget"
+          width="120"
+        />
         <el-table-column
           align="center"
           label="已通过"
@@ -136,12 +141,7 @@
           prop="balance"
           width="120"
         />
-        <el-table-column
-          align="center"
-          label="使用进度"
-          prop="proportion"
-          width="120"
-        >
+        <el-table-column align="center" label="使用进度" prop="proportion">
           <template slot-scope="scope">
             <el-progress
               :percentage="scope.row.proportion"
@@ -346,7 +346,7 @@
                       type="text"
                       icon="el-icon-edit"
                       @click="deleteFile(scope.row)"
-                      :disabled="!editAble"
+                      :disabled="scope.row.fileseditAble"
                       >删除</el-button
                     >
                   </template>
@@ -395,14 +395,14 @@
                 type="text"
                 @click="publicitydown"
                 v-if="type == 'printed'"
-                >业务单式模板下载</el-button
+                >宣传单页模板下载</el-button
               >
               <el-button
                 size="small"
                 type="text"
                 @click="businessdown"
                 v-if="type == 'printed'"
-                >宣传单页模板下载</el-button
+                >业务单式模板下载</el-button
               >
               <el-button
                 size="small"
@@ -580,6 +580,7 @@ import {
   materialsDeleteMaterials,
   materialsStatistics,
 } from "@/api/propaganda/poster";
+import { resourceTreeByUN } from "@/api/system/unit";
 export default {
   name: "Role",
   data() {
@@ -596,7 +597,7 @@ export default {
         roleUserId: [
           { required: true, message: "市场审核员不能为空", trigger: "blur" },
         ],
-        reason:[
+        reason: [
           { required: true, message: "申请原因不能为空", trigger: "blur" },
         ],
       },
@@ -688,8 +689,10 @@ export default {
     getBudgetList() {
       materialsStatistics(this.morenUnit).then((res) => {
         console.log("materialsStatistics", res);
-        this.BudgetList = [];
-        this.BudgetList.push(res);
+        if (res != "") {
+          this.BudgetList = [];
+          this.BudgetList.push(res);
+        }
       });
     },
     // 下载预览文件
@@ -726,14 +729,18 @@ export default {
     },
     // 删除导入数据
     deleteMaterials() {
-      if (this.type == "print") {
-        printDeleteMaterials(this.printId).then((res) => {
-          this.showinfo();
-        });
+      if (typeof this.printId =='undefined') {
+        this.importantList = [];
       } else {
-        materialsDeleteMaterials(this.printId).then((res) => {
-          this.showinfo();
-        });
+        if (this.type == "print") {
+          printDeleteMaterials(this.printId).then((res) => {
+            this.showinfo();
+          });
+        } else {
+          materialsDeleteMaterials(this.printId).then((res) => {
+            this.showinfo();
+          });
+        }
       }
     },
     // 获取市场审核员下拉框
@@ -823,10 +830,14 @@ export default {
           if (res.printMaterials) {
             this.importantList = res.printMaterials;
           }
-          this.form = res;
-          if (this.form.state != 10) {
+          if (res.state != 10) {
             this.editAble = true;
+            res.files.map((item) => {
+              item.fileseditAble = true;
+            });
           }
+          this.form = res;
+
           if (res.state != 10) {
             // 获取意见下拉框
             getList().then((opinionRes) => {
@@ -852,10 +863,14 @@ export default {
               },
             ];
           }
-          this.form = res;
-          if (this.form.state != 10) {
+          if (res.state != 10) {
             this.editAble = true;
+            res.files.map((item) => {
+              item.fileseditAble = true;
+            });
           }
+          this.form = res;
+
           if (res.state != 10) {
             // 获取意见下拉框
             getList().then((opinionRes) => {
@@ -877,10 +892,13 @@ export default {
           if (res.materialsInfo) {
             this.importantList = res.materialsInfo;
           }
-          this.form = res;
-          if (this.form.state != 10) {
+          if (res.state != 10) {
             this.editAble = true;
+            res.files.map((item) => {
+              item.fileseditAble = true;
+            });
           }
+          this.form = res;
           if (res.state != 10) {
             // 获取意见下拉框
             getList().then((opinionRes) => {
@@ -1045,6 +1063,11 @@ export default {
           });
         } else if (this.type == "design") {
           this.fileId = res.data.id;
+          this.pictureFileList = [
+            {
+              fileName: res.data.fileName,
+            },
+          ];
         } else if (this.type == "poster") {
           this.importDateId = res.data;
           materialsMaterials(res.data).then((response) => {

@@ -12,10 +12,11 @@ export function getList(data){
   })
 }
 //查询项目类型
-export function getProejctType(){
+export function getProejctType(data){
   return request({
     url:`${prefix}/project-type/list`,
-    method:'get'
+    method:'get',
+    params:data
   })
 }
 
