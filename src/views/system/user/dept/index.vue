@@ -157,6 +157,7 @@
             ref="menu"
             node-key="id"
             empty-text="加载中，请稍后"
+            check-strictly
             :props="defaultProps"
           ></el-tree>
         </el-form-item>
@@ -280,7 +281,7 @@ export default {
       this.loading = true;
       pageRole(this.queryParams).then((response) => {
         this.roleList = response.list;
-        this.total = response.count;
+        this.total = response.totalRow;
         this.loading = false;
       });
     },
