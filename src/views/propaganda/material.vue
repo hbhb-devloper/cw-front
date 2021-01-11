@@ -690,7 +690,7 @@ export default {
     submitForm: function () {
       this.$refs["form"].validate((valid) => {
         if (valid) {
-          if (this.fileList.length < 1) {
+          if (this.fileList.length < 1 && this.form.mold == false) {
             this.$message.error("请上传图片");
           } else {
             if (this.form.id != undefined) {
