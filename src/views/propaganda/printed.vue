@@ -163,7 +163,7 @@
             size="mini"
             type="text"
             @click="handleDelete(scope.row)"
-            :disabled="!(scope.row.state == 10||scope.row.state == 30)"
+            :disabled="!(scope.row.state == 10 || scope.row.state == 30)"
             >删除</el-button
           >
         </template>
@@ -250,14 +250,14 @@ export default {
       LaunchId: undefined,
       printId: undefined,
       userId: undefined,
-      morenUnit:undefined
+      morenUnit: undefined,
     };
   },
   created() {
-    this.getTreeselect();
     this.getDicts("fund", "invoice_status").then((response) => {
       // getBusiness().then((res) => {
       this.invoiceStatue = response;
+      this.getTreeselect();
     });
   },
   methods: {
@@ -305,7 +305,7 @@ export default {
       resourceTreeByUN().then((response) => {
         this.deptOptions = response.list;
         this.queryParams.unitId = response.checked;
-        this.morenUnit=response.checked;
+        this.morenUnit = response.checked;
         this.getList();
       });
     },

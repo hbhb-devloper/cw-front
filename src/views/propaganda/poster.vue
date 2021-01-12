@@ -62,6 +62,15 @@
           >添加新申请</el-button
         >
       </el-col>
+      <el-col :span="1.5">
+          <el-button
+            type="success"
+            icon="el-icon-edit"
+            size="mini"
+            @click="handleExport"
+            >导出</el-button
+          >
+        </el-col>
     </el-row>
 
     <el-table v-loading="loading" :data="printList">
@@ -144,7 +153,7 @@
             size="mini"
             type="text"
             @click="handleDelete(scope.row)"
-            :disabled="!(scope.row.state == 10||scope.row.state == 30)"
+            :disabled="!(scope.row.state == 10 || scope.row.state == 30)"
             >删除</el-button
           >
         </template>
@@ -202,7 +211,9 @@ import {
 import { resourceTreeByUN } from "@/api/system/unit";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
-
+import { getToken } from "@/utils/auth";
+import { prefix } from "@/api/propaganda/propaganda";
+import { exportData1 } from "@/utils/export";
 export default {
   name: "Role",
   components: { Treeselect },
@@ -231,14 +242,14 @@ export default {
       LaunchId: undefined,
       pictureId: undefined,
       userId: undefined,
-      morenUnit:undefined
+      morenUnit: undefined,
     };
   },
   created() {
-    this.getTreeselect();
     this.getDicts("fund", "invoice_status").then((response) => {
       // getBusiness().then((res) => {
       this.invoiceStatue = response;
+      this.getTreeselect();
     });
   },
   methods: {
@@ -285,7 +296,7 @@ export default {
       resourceTreeByUN().then((response) => {
         this.deptOptions = response.list;
         this.queryParams.unitId = response.checked;
-        this.morenUnit=response.checked;
+        this.morenUnit = response.checked;
         this.getList();
       });
     },
@@ -299,12 +310,12 @@ export default {
       listMaterials(this.queryParams).then((response) => {
         if (response.list) {
           response.list.map((item) => {
-          this.invoiceStatue.map((statueItem) => {
-            if (statueItem.value == item.state) {
-              item.stateLabel = statueItem.label;
-            }
+            this.invoiceStatue.map((statueItem) => {
+              if (statueItem.value == item.state) {
+                item.stateLabel = statueItem.label;
+              }
+            });
           });
-        });
         }
         this.printList = response.list;
         this.total = response.totalRow;
@@ -341,6 +352,28 @@ export default {
         .then(() => {
           this.getList();
           this.msgSuccess("删除成功");
+        })
+        .catch(function () {});
+    },
+    /** 导出按钮操作 */
+    handleExport() {
+      const queryParams = this.queryParams;
+
+      this.$confirm("是否确认导出物料制作申请的数据项?", "导出表格", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(function () {
+          return exportData1(
+            getToken(),
+            queryParams,
+            `${prefix}/materials/export/list`,
+            "物料制作申请"
+          );
+        })
+        .then((response) => {
+          this.download(response.msg);
         })
         .catch(function () {});
     },
