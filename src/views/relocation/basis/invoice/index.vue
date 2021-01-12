@@ -293,8 +293,8 @@
                 clearable
                 style="width: 220px"
               >
-                <el-option :key="1" label="蓝字" :value="1" />
-                <el-option :key="0" label="红字" :value="0" />
+                <el-option :key="1" label="红字" :value="1" />
+                <el-option :key="2" label="蓝字" :value="2" />
               </el-select>
             </el-form-item>
           </el-col>
@@ -637,7 +637,6 @@ export default {
       this.$refs["form"].validate((valid) => {
         if (valid) {
           this.form.remake = this.form.remake.replace(/\;/g, "；");
-          console.log("this.form.remake", this.form.remake);
           if (this.form.id != undefined) {
             updateInvoice(this.form)
               .then((response) => {
