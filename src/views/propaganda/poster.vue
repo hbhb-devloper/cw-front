@@ -62,6 +62,15 @@
           >添加新申请</el-button
         >
       </el-col>
+      <el-col :span="1.5">
+          <el-button
+            type="success"
+            icon="el-icon-edit"
+            size="mini"
+            @click="handleExport"
+            >导出</el-button
+          >
+        </el-col>
     </el-row>
 
     <el-table v-loading="loading" :data="printList">
@@ -202,7 +211,9 @@ import {
 import { resourceTreeByUN } from "@/api/system/unit";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
-
+import { getToken } from "@/utils/auth";
+import { prefix } from "@/api/propaganda/propaganda";
+import { exportData1 } from "@/utils/export";
 export default {
   name: "Role",
   components: { Treeselect },
@@ -341,6 +352,28 @@ export default {
         .then(() => {
           this.getList();
           this.msgSuccess("删除成功");
+        })
+        .catch(function () {});
+    },
+    /** 导出按钮操作 */
+    handleExport() {
+      const queryParams = this.queryParams;
+
+      this.$confirm("是否确认导出物料制作申请的数据项?", "导出表格", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(function () {
+          return exportData1(
+            getToken(),
+            queryParams,
+            `${prefix}/materials/export/list`,
+            "物料制作申请"
+          );
+        })
+        .then((response) => {
+          this.download(response.msg);
         })
         .catch(function () {});
     },

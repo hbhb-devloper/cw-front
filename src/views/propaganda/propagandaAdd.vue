@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-12-22 10:05:30
  * @LastEditors: CYZ
- * @LastEditTime: 2021-01-12 11:35:42
+ * @LastEditTime: 2021-01-12 17:54:06
 -->
 <template>
   <div class="app-container">
@@ -19,6 +19,7 @@
     <div class="proTitle">中国移动通信集团{{ title }}申请单</div>
     <div style="width: 80%; margin: 0 auto">
       <div style="text-align: center">{{ nodeName }}</div>
+      <!-- 流程列表 -->
       <el-row style="margin-bottom: 25px" v-if="flowList">
         <el-col
           v-for="(item, index) in flowList"
@@ -153,7 +154,7 @@
           <template slot-scope="scope">
             <el-progress
               :percentage="scope.row.proportion"
-              v-if="scope.row.proportion"
+              v-if="scope.row.proportion || scope.row.proportion===0"
             ></el-progress>
           </template>
         </el-table-column>

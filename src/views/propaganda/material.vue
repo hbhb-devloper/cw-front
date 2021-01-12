@@ -269,7 +269,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="是否为类别 " prop="mold">
-              <el-switch v-model="form.mold" @change="changeMold"></el-switch>
+              <el-switch :disabled="title=='修改'" v-model="form.mold" @change="changeMold"></el-switch>
             </el-form-item>
           </el-col>
           <el-col :span="12" v-if="isMold != 1">
