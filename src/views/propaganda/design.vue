@@ -245,10 +245,10 @@ export default {
     };
   },
   created() {
-    this.getTreeselect();
     this.getDicts("fund", "invoice_status").then((response) => {
       // getBusiness().then((res) => {
       this.invoiceStatue = response;
+      this.getTreeselect();
     });
   },
   methods: {

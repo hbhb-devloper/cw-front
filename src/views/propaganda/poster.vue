@@ -144,7 +144,7 @@
             size="mini"
             type="text"
             @click="handleDelete(scope.row)"
-            :disabled="!(scope.row.state == 10||scope.row.state == 30)"
+            :disabled="!(scope.row.state == 10 || scope.row.state == 30)"
             >删除</el-button
           >
         </template>
@@ -231,14 +231,14 @@ export default {
       LaunchId: undefined,
       pictureId: undefined,
       userId: undefined,
-      morenUnit:undefined
+      morenUnit: undefined,
     };
   },
   created() {
-    this.getTreeselect();
     this.getDicts("fund", "invoice_status").then((response) => {
       // getBusiness().then((res) => {
       this.invoiceStatue = response;
+      this.getTreeselect();
     });
   },
   methods: {
@@ -285,7 +285,7 @@ export default {
       resourceTreeByUN().then((response) => {
         this.deptOptions = response.list;
         this.queryParams.unitId = response.checked;
-        this.morenUnit=response.checked;
+        this.morenUnit = response.checked;
         this.getList();
       });
     },
@@ -299,12 +299,12 @@ export default {
       listMaterials(this.queryParams).then((response) => {
         if (response.list) {
           response.list.map((item) => {
-          this.invoiceStatue.map((statueItem) => {
-            if (statueItem.value == item.state) {
-              item.stateLabel = statueItem.label;
-            }
+            this.invoiceStatue.map((statueItem) => {
+              if (statueItem.value == item.state) {
+                item.stateLabel = statueItem.label;
+              }
+            });
           });
-        });
         }
         this.printList = response.list;
         this.total = response.totalRow;
