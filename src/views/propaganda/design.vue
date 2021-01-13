@@ -168,6 +168,7 @@
             :placeholder="
               LaunchOption.length == 0 ? '该单位没有流程类型' : '请选择'
             "
+            disabled
           >
             <el-option
               v-for="item in LaunchOption"

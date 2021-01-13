@@ -187,6 +187,7 @@
             :placeholder="
               LaunchOption.length == 0 ? '该单位没有流程类型' : '请选择'
             "
+            disabled
           >
             <el-option
               v-for="item in LaunchOption"
@@ -281,7 +282,7 @@ export default {
         this.isLaunch = false;
         this.LaunchId = undefined;
         this.$router.push(
-          `/propaganda/propagandaAdd?id=${this.printId}&type=design`
+          `/propaganda/propagandaAdd?id=${this.printId}&type=printed`
         );
         this.$message.success("流程发起成功！");
       });
