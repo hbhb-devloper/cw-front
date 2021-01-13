@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2021-01-06 10:24:22
  * @LastEditors: CYZ
- * @LastEditTime: 2021-01-06 15:19:26
+ * @LastEditTime: 2021-01-13 16:06:31
 -->
 <!--
  * @Descripttion: 
@@ -16,18 +16,22 @@
 -->
 <template>
   <div class="app-container">
-      <el-form :model="queryParams" ref="queryForm" :inline="true">
-     
-      
-       <el-form-item label="管理内容" prop="hallId">
-        <el-input
-          v-model="queryParams.hallId"
-          placeholder="请输入管理内容"
+    <el-form :model="queryParams" ref="queryForm" :inline="true">
+      <el-form-item label="管理内容" prop="manageId">
+        <el-select
+          v-model="queryParams.manageId"
+          placeholder="请选择管理内容"
           clearable
           size="small"
           style="width: 200px"
-          @keyup.enter.native="handleQuery"
-        />
+        >
+          <el-option
+            v-for="dict in manageList"
+            :key="dict.id"
+            :label="dict.label"
+            :value="dict.id"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item>
         <el-button
@@ -37,21 +41,22 @@
           @click="handleQuery"
           >搜索</el-button
         >
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery"
+
+        <el-button
+          type="primary"
+          icon="el-icon-plus"
+          size="mini"
+          @click="handleAdd"
           >添加</el-button
         >
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery"
+        <el-button icon="el-icon-refresh" size="mini"
           >批量修改管理内容下报表起止时间</el-button
         >
       </el-form-item>
     </el-form>
     <el-table v-loading="loading" :data="controlList">
       <el-table-column align="center" label="序号" prop="id" />
-      <el-table-column
-        align="center"
-        label="管理内容名称"
-        prop="unitName"
-      />
+      <el-table-column align="center" label="管理内容名称" prop="reportName" />
       <el-table-column align="center" label="备注" prop="remark">
         <template slot-scope="scope">
           <el-input
@@ -60,87 +65,188 @@
           ></el-input>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="修改人" prop="amountPaid" />
-      <el-table-column align="center" label="修改时间" prop="proportion" />
-      <el-table-column
-        label="是否请用"
-        align="center"
-      >
+      <el-table-column align="center" label="修改人" prop="updateBy" />
+      <el-table-column align="center" label="修改时间" prop="updateTime" />
+      <el-table-column label="是否请用" align="center" prop="state">
         <template slot-scope="scope">
-          <el-button
-            size="mini"
-            type="text"
-            @click="handleDelete(scope.row)"
-            >禁用</el-button
+          <el-switch
+            v-model="scope.row.state"
+            @change="handleChange(scope.row)"
           >
+          </el-switch>
         </template>
       </el-table-column>
-      
-       <el-table-column
-        label="操作"
-        align="center"
-      >
+
+      <el-table-column label="操作" align="center">
         <template slot-scope="scope">
-          <el-button
-            size="mini"
-            type="text"
-            @click="handleDelete(scope.row)"
+          <el-button size="mini" type="text" @click="save(scope.row)"
             >修改</el-button
           >
         </template>
       </el-table-column>
-        <el-table-column
-        label="批量修改"
-        align="center"
-      >
+      <el-table-column label="批量修改" align="center">
         <template slot-scope="scope">
-          <el-button
-            size="mini"
-            type="text"
-            @click="handleDelete(scope.row)"
+          <el-button size="mini" type="text" @click="handleDelete(scope.row)"
             >修改报表起止时间</el-button
           >
         </template>
       </el-table-column>
     </el-table>
+
+    <!-- 添加或修改内容管理对话框 -->
+    <el-dialog :title="title" :visible.sync="open" width="500px">
+      <el-form ref="form" :model="form" :rules="rules" label-width="100px">
+        <el-form-item label="报表名称" prop="reportName">
+          <el-input v-model="form.reportName" placeholder="请输入报表名称" />
+        </el-form-item>
+        <el-form-item label="管理内容" prop="manageId">
+        <el-select
+          v-model="form.manageId"
+          placeholder="请选择管理内容"
+          clearable
+          size="small"
+          style="width: 200px"
+        >
+          <el-option
+            v-for="dict in manageList"
+            :key="dict.id"
+            :label="dict.label"
+            :value="dict.id"
+          />
+        </el-select>
+      </el-form-item>
+        <el-form-item label="是否启用 " prop="state">
+          <el-switch v-model="form.state"></el-switch>
+        </el-form-item>
+        <el-form-item label="备注">
+          <el-input
+            v-model="form.remark"
+            type="textarea"
+            placeholder="请输入备注"
+          ></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="submitForm">确 定</el-button>
+        <el-button @click="cancel">取 消</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { materialsList, materialsPut } from "@/api/propaganda/control";
-import { pageRole } from "@/api/system/role";
-import { resourceTree, roleMenuTreeselect } from "@/api/system/resource";
+import {
+  categoryList,
+  categoryAdd,
+  categoryEdit,
+} from "@/api/report/reportName";
+
+import { manageSelect } from "@/api/report/management";
+
 export default {
   name: "Role",
   data() {
     return {
+      // 查询条件
+      queryParams: {},
       // 遮罩层
       loading: true,
       // 角色表格数据
       controlList: [],
-      
+      // 弹出框判断
+      open: false,
+      // 弹出框名称
+      title: undefined,
+      // 表单参数
+      form: {
+        state: true,
+      },
+      // 表单校验
+      rules: {
+        reportName: [
+          { required: true, message: "报表名称不能为空", trigger: "blur" },
+        ],
+        manageId:[
+          { required: true, message: "管理内容不能为空", trigger: "blur" },
+        ],
+      },
+      // 管理内容下拉框
+      manageList: [],
     };
   },
   created() {
     this.getList();
+    this.getManageSelect();
   },
   methods: {
-    save() {
-      materialsPut(this.controlList).then((res) => {
-        console.log("materialsPut", res);
+    getManageSelect() {
+      manageSelect().then((res) => {
+        console.log('manageSelect',res);
+        this.manageList = res;
+      });
+    },
+    /** 搜索按钮操作 */
+    handleQuery() {
+      this.queryParams.pageNum = 1;
+      this.getList();
+    },
+    // 开关事件
+    handleChange(row) {
+      let datas = JSON.parse(JSON.stringify(row));
+      categoryEdit(datas).then((response) => {
+        this.msgSuccess("修改状态成功");
+        this.getList();
+      });
+    },
+    // 保存行数据
+    save(row) {
+      categoryEdit(row).then((res) => {
         this.$message.success("保存成功");
         this.getList();
       });
     },
+    /** 提交按钮 */
+    submitForm: function () {
+      this.$refs["form"].validate((valid) => {
+        if (valid) {
+          categoryAdd(this.form)
+            .then((response) => {
+              this.msgSuccess("新增成功");
+              this.open = false;
+              this.getList();
+            })
+            .catch((err) => {
+              this.msgError(err.message);
+            });
+        }
+      });
+    },
+    // 取消按钮
+    cancel() {
+      this.open = false;
+      this.reset();
+    },
+    // 表单重置
+    reset() {
+      this.form = {
+        state: true,
+      };
+      this.resetForm("form");
+    },
+    /** 新增按钮操作 */
+    handleAdd() {
+      this.reset();
+      this.open = true;
+      this.title = "添加报表名称";
+    },
     /** 查询角色列表 */
     getList() {
       this.loading = true;
-      materialsList().then((response) => {
+      categoryList().then((response) => {
         this.controlList = response;
         this.loading = false;
       });
     },
-    
   },
 };
 </script>
