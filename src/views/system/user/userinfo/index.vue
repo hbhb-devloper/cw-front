@@ -438,6 +438,7 @@
           v-model="value"
           :data="hallList"
           :props="{key:'id',label:'label'}"
+           @change="handleChange"
         >
         </el-transfer>
       </div>
@@ -513,7 +514,7 @@ import {
 } from "@/api/system/unit";
 import { Encrypt } from "@/utils/AESCrypt";
 
-import { getHallSelect } from "@/api/system/hall";
+import { getHallSelectNew } from "@/api/system/hall";
 export default {
   name: "User",
   components: { Treeselect },
@@ -656,10 +657,13 @@ export default {
     this.getMenuTreeselect();
   },
   methods: {
+    // 绑定单位和营业厅
+    handleChange(value, direction, movedKeys){
+      console.log(value, direction, movedKeys);
+    },
     // 获取单位的营业厅
     getUnit(data){
-      console.log('data',data);
-      getHallSelect(data.id).then(res=>{
+      getHallSelectNew(data.id).then(res=>{
           this.hallList=res
         })
     },
@@ -681,7 +685,7 @@ export default {
         this.menuOptions = response;
       });
       listUnit().then((response) => {
-        var Uoptiongs = that.changeDisabled(response, true);
+        // var Uoptiongs = that.changeDisabled(response, true);
 
         this.UnOptions = response;
       });

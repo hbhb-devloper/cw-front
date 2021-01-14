@@ -18,6 +18,14 @@ export function getHallSelect(unitId) {
     method: 'get',
   })
 }
+// 获取营业厅列表
+export function getHallSelectNew(unitId) {
+  return request({
+    url: `${prefix}/hall/select_new?unitId=${unitId}`,
+    method: 'get',
+  })
+}
+
 
 // 添加营业厅
 export function addHall(data) {
