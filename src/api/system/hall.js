@@ -26,7 +26,14 @@ export function getHallSelectNew(unitId) {
   })
 }
 
-
+// 绑定营业厅和单位
+export function updataHallNew(data) {
+  return request({
+    url: `${prefix}/hall/updateHallNew`,
+    method: 'put',
+    data: data
+  })
+}
 // 添加营业厅
 export function addHall(data) {
   return request({

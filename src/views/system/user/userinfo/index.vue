@@ -439,6 +439,7 @@
           :data="hallList"
           :props="{key:'id',label:'label'}"
            @change="handleChange"
+           :right-default-checked="defaultHall"
         >
         </el-transfer>
       </div>
@@ -514,7 +515,7 @@ import {
 } from "@/api/system/unit";
 import { Encrypt } from "@/utils/AESCrypt";
 
-import { getHallSelectNew } from "@/api/system/hall";
+import { getHallSelectNew ,updataHallNew} from "@/api/system/hall";
 export default {
   name: "User",
   components: { Treeselect },
@@ -641,7 +642,11 @@ export default {
       },
       // 营业厅下拉框
       hallList:[],
-      value:undefined
+      value:undefined,
+      // 当前选择单位
+      unitId:undefined,
+      // 已选营业厅
+      defaultHall:[888,889]
     };
   },
   watch: {
@@ -660,11 +665,14 @@ export default {
     // 绑定单位和营业厅
     handleChange(value, direction, movedKeys){
       console.log(value, direction, movedKeys);
+      updataHallNew({hallSelectIds:value,unitId:this.unitId})
     },
     // 获取单位的营业厅
     getUnit(data){
+      this.unitId=data.id
       getHallSelectNew(data.id).then(res=>{
-          this.hallList=res
+          this.hallList=res.halls
+          this.defaultHall=res.hallSelect
         })
     },
     changeDisabled(data, disabled) {
