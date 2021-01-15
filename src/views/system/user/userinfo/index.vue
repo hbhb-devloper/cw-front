@@ -387,10 +387,9 @@
             ></el-tree>
           </el-scrollbar>
         </el-card>
-        <el-card class="box-card">
+        <!-- <el-card class="box-card">
           <div slot="header" class="clearfix">
             <span>单位权限</span>
-            <!-- <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button> -->
           </div>
           <el-scrollbar style="height: 160px">
             <el-checkbox-group v-model="checkedUnRoleIds" class="tree-box">
@@ -405,8 +404,8 @@
               </el-checkbox>
             </el-checkbox-group>
           </el-scrollbar>
-        </el-card>
-        <button
+        </el-card> -->
+        <!-- <button
           disabled="disabled"
           type="button"
           class="el-button el-button--primary is-disabled el-transfer__button"
@@ -414,13 +413,13 @@
           <span>
             <i class="el-icon-arrow-right"></i>
           </span>
-        </button>
-        <el-card class="box-card">
+        </button> -->
+        <el-card class="box-card" style="height: 300px; margin-top: 15px">
           <div slot="header" class="clearfix">
             <span>单位权限列表</span>
             <!-- <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button> -->
           </div>
-          <el-scrollbar style="height: 160px">
+          <el-scrollbar style="height: 260px">
             <el-tree
               :data="UnOptions"
               show-checkbox
@@ -429,9 +428,21 @@
               class="tree-box"
               empty-text="加载中，请稍后"
               :props="defaultProps"
+              @node-click="getUnit"
             ></el-tree>
           </el-scrollbar>
         </el-card>
+        <el-transfer
+          filterable
+          filter-placeholder="请输入营业厅名称"
+          v-model="value"
+          :data="hallList"
+          :props="{ key: 'id', label: 'label' }"
+          :titles="['部门下营业厅', '已选营业厅']"
+          @change="handleChange"
+          :right-default-checked="defaultHall"
+        >
+        </el-transfer>
       </div>
 
       <div slot="footer" class="dialog-footer">
@@ -497,10 +508,7 @@ import { getToken } from "@/utils/auth";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 import { listRole } from "@/api/system/role";
-import {
-  resourceTree,
-  roleMenuTreeselect,
-} from "@/api/system/resource";
+import { resourceTree, roleMenuTreeselect } from "@/api/system/resource";
 import {
   resourceTreeByUN,
   listUnit,
@@ -508,6 +516,7 @@ import {
 } from "@/api/system/unit";
 import { Encrypt } from "@/utils/AESCrypt";
 
+import { getHallSelectNew, updataHallNew } from "@/api/system/hall";
 export default {
   name: "User",
   components: { Treeselect },
@@ -632,6 +641,13 @@ export default {
           },
         ],
       },
+      // 营业厅下拉框
+      hallList: [],
+      value: undefined,
+      // 当前选择单位
+      unitId: undefined,
+      // 已选营业厅
+      defaultHall: [],
     };
   },
   watch: {
@@ -647,6 +663,19 @@ export default {
     this.getMenuTreeselect();
   },
   methods: {
+    // 绑定单位和营业厅
+    handleChange(value, direction, movedKeys) {
+      console.log(value, direction, movedKeys);
+      updataHallNew({ hallSelectIds: value, unitId: this.unitId });
+    },
+    // 获取单位的营业厅
+    getUnit(data) {
+      this.unitId = data.id;
+      getHallSelectNew(data.id).then((res) => {
+        this.hallList = res.halls;
+        this.defaultHall = res.hallSelect;
+      });
+    },
     changeDisabled(data, disabled) {
       for (var i = 0; i < data.length; i++) {
         var children = data[i].children;
@@ -665,7 +694,7 @@ export default {
         this.menuOptions = response;
       });
       listUnit().then((response) => {
-        var Uoptiongs = that.changeDisabled(response, true);
+        // var Uoptiongs = that.changeDisabled(response, true);
 
         this.UnOptions = response;
       });
@@ -779,6 +808,30 @@ export default {
       this.single = selection.length != 1;
       this.multiple = !selection.length;
     },
+    // 所有菜单节点数据
+    getMenuAllCheckedKeys() {
+      // 目前被选中的菜单节点
+      let checkedKeys = this.$refs.menu1.getCheckedKeys();
+      // 半选中的菜单节点
+      let halfCheckedKeys = this.$refs.menu1.getHalfCheckedKeys();
+      // let checkList = [];
+      // checkedKeys.map((checkItem) => {
+      //   let checked = {
+      //     id: checkItem,
+      //     isHalf: 0,
+      //   };
+      //   checkList.push(checked);
+      // });
+      // halfCheckedKeys.map((halecheckItem) => {
+      //   let halfchecked = {
+      //     id: halecheckItem,
+      //     isHalf: 1,
+      //   };
+      //   checkList.push(halfchecked);
+      // });
+      // checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys);
+      return checkedKeys;
+    },
     /** 新增按钮操作 */
     handleAdd() {
       this.reset();
@@ -798,10 +851,13 @@ export default {
       const userId = row.id || this.ids;
 
       getUser(userId).then((response) => {
-        response.pwd=undefined
+        response.pwd = undefined;
         this.form = response;
         this.checkedRsRoleIds = this.form.checkedRsRoleIds;
-        this.checkedUnRoleIds = this.form.checkedUnRoleIds;
+        // this.checkedUnRoleIds = this.form.checkedUnRoleIds;
+        this.$nextTick(() => {
+          this.$refs.menu1.setCheckedKeys(response.checkedUintIds);
+        });
         // this.postOptions = response.posts;
         // this.roleOptions = response.roles;
         // this.form.postIds = response.postIds;
@@ -831,9 +887,11 @@ export default {
       this.$refs["form"].validate((valid) => {
         if (valid) {
           this.form.checkedRsRoleIds = this.checkedRsRoleIds;
-          this.form.checkedUnRoleIds = this.checkedUnRoleIds;
+          this.form.checkedUnRoleIds = this.getMenuAllCheckedKeys();
+          // this.form.checkedResourceIds = this.getMenuAllCheckedKeys();
           this.form.pwd = Encrypt(this.form.pwd);
           if (this.form.id != undefined) {
+            delete this.form.checkedUintIds;
             updateUser(this.form).then((response) => {
               this.msgSuccess("修改成功");
               this.open = false;
