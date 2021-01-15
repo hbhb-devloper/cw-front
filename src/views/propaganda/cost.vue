@@ -5,10 +5,16 @@
         v-for="(item, index) in flowList"
         :key="index"
         :span="8"
-        style="height: 175px"
+        style="
+          width: 300px;
+          margin: 10px;
+          height: 190px;
+          border: 2px solid red;
+          border-radius: 10px;
+        "
       >
         <div class="flowItem">
-          <el-form label-width="140px">
+          <el-form label-width="auto" label-position="left">
             <el-form-item :label="item.roleDesc">
               <el-select
                 v-model="item.approver.value"
@@ -435,7 +441,7 @@ export default {
       resourceTreeByUN().then((response) => {
         this.deptOptions = response.list;
         if (this.$route.query.batchNum) {
-          this.queryParams.unitId =Number(this.$route.query.unitId);
+          this.queryParams.unitId = Number(this.$route.query.unitId);
         } else {
           this.queryParams.unitId = response.checked;
         }
@@ -521,9 +527,11 @@ export default {
   font-size: 18px;
 }
 .flowItem {
+  margin: 10px;
   padding-right: 10px;
-  border-right: 1px solid #e6e6e6;
+  // border-right: 1px solid #e6e6e6;
   height: 100%;
+  padding-bottom: 10px;
   .flowItemDown {
     display: flex;
     flex-direction: row;

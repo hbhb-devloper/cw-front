@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-12-22 10:05:30
  * @LastEditors: CYZ
- * @LastEditTime: 2021-01-12 17:54:06
+ * @LastEditTime: 2021-01-15 10:52:36
 -->
 <template>
   <div class="app-container">
@@ -24,11 +24,10 @@
         <el-col
           v-for="(item, index) in flowList"
           :key="index"
-          :span="8"
-          style="height: 190px; border: 1px solid red; border-radius: 10px"
+          style="width:300px;margin:10px;height: 190px; border: 2px solid red; border-radius: 10px"
         >
           <div class="flowItem">
-            <el-form label-width="140px">
+            <el-form label-width="auto"  label-position="left">
               <el-form-item :label="item.approverRole">
                 <el-select
                   v-model="item.approver.value"
@@ -664,6 +663,9 @@ export default {
   },
   created() {
     this.printId = this.$route.query.id;
+    // if (!this.printId) {
+    //   this.form.printName=
+    // }
     this.type = this.$route.query.type;
     if (this.type == "printed") {
       this.title = "印刷品";
