@@ -138,7 +138,7 @@ export default {
       deptOptions: undefined,
       // 查询参数
       queryParams: {
-        hallId: 1,
+        hallId: undefined,
       },
       // 表单参数
       form: {},
@@ -190,6 +190,7 @@ export default {
         this.queryParams.unitId = response.checked;
         getHallSelect(response.checked).then((res) => {
           this.hallList = res;
+          this.queryParams.hallId=res[0].id
         });
         goodsTime(this.queryParams.time).then((res) => {
           this.timeOption = res.goodsIndexList;

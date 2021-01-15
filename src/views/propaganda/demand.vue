@@ -154,6 +154,7 @@ export default {
         this.deptOptions = response.list;
         this.queryParams.unitId = response.checked;
         getHallSelect(response.checked).then((res) => {
+          this.queryParams.hallId=res[0].id
           this.hallList = res;
         });
         goodsTime(this.queryParams.time).then((res) => {
