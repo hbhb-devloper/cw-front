@@ -10,14 +10,20 @@
         />
       </el-form-item>
       <el-form-item label="营业厅" prop="hallId">
-        <el-input
+        <el-select
           v-model="queryParams.hallId"
-          placeholder="请输入营业厅"
+          placeholder="请选择营业厅"
           clearable
           size="small"
           style="width: 200px"
-          @keyup.enter.native="handleQuery"
-        />
+        >
+          <el-option
+            v-for="dict in hallList"
+            :key="dict.id"
+            :label="dict.label"
+            :value="dict.id"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="日期" prop="time">
         <el-date-picker
@@ -98,6 +104,7 @@ import { resourceTree, roleMenuTreeselect } from "@/api/system/resource";
 import { resourceTreeByUN } from "@/api/system/unit";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
+import { getHallSelect } from "@/api/system/hall";
 
 export default {
   name: "Role",
@@ -118,6 +125,8 @@ export default {
         pageNum: 1,
         pageSize: 10,
       },
+      // 营业厅下拉框
+      hallList: [],
     };
   },
   created() {
@@ -144,6 +153,9 @@ export default {
       resourceTreeByUN().then((response) => {
         this.deptOptions = response.list;
         this.queryParams.unitId = response.checked;
+        getHallSelect(response.checked).then((res) => {
+          this.hallList = res;
+        });
         goodsTime(this.queryParams.time).then((res) => {
           this.timeOption = res.goodsIndexList;
           this.$set(this.queryParams, "goodsIndex", res.goodsIndex);

@@ -164,7 +164,9 @@
             icon="el-icon-delete"
             size="mini"
             @click="DelLine(index)"
-            :disabled="applicationList.length == 1"
+            :disabled="
+              applicationList.length != index + 1 || applicationList.length == 1
+            "
             >删除</el-button
           >
         </el-form-item>
@@ -269,7 +271,11 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="是否为类别 " prop="mold">
-              <el-switch :disabled="title=='修改'" v-model="form.mold" @change="changeMold"></el-switch>
+              <el-switch
+                :disabled="title == '修改'"
+                v-model="form.mold"
+                @change="changeMold"
+              ></el-switch>
             </el-form-item>
           </el-col>
           <el-col :span="12" v-if="isMold != 1">
@@ -430,6 +436,7 @@ import {
   addSetting,
   getSetting,
   putLibraryBatch,
+  getSettingMove,
 } from "@/api/propaganda/material";
 import { listFlowRoleUser } from "@/api/flow/flowrole";
 import { resourceTreeByUN } from "@/api/system/unit";
@@ -573,7 +580,10 @@ export default {
 
     // 删除行
     DelLine(index) {
-      this.applicationList.splice(index, 1);
+      getSettingMove({ goodsIndex: index + 1 }).then((res) => {
+        console.log("getSettingMove", res);
+        this.applicationList.splice(index, 1);
+      });
     },
     // 打开设置弹出框
     OpenSetVisible() {
