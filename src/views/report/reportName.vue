@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2021-01-06 10:24:22
  * @LastEditors: CYZ
- * @LastEditTime: 2021-01-13 16:06:31
+ * @LastEditTime: 2021-01-15 17:39:50
 -->
 <!--
  * @Descripttion: 
@@ -94,37 +94,150 @@
     </el-table>
 
     <!-- 添加或修改内容管理对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="500px">
+    <el-dialog :title="title" :visible.sync="open" width="900px">
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">
-        <el-form-item label="报表名称" prop="reportName">
-          <el-input v-model="form.reportName" placeholder="请输入报表名称" />
-        </el-form-item>
-        <el-form-item label="管理内容" prop="manageId">
-        <el-select
-          v-model="form.manageId"
-          placeholder="请选择管理内容"
-          clearable
-          size="small"
-          style="width: 200px"
-        >
-          <el-option
-            v-for="dict in manageList"
-            :key="dict.id"
-            :label="dict.label"
-            :value="dict.id"
-          />
-        </el-select>
-      </el-form-item>
-        <el-form-item label="是否启用 " prop="state">
-          <el-switch v-model="form.state"></el-switch>
-        </el-form-item>
-        <el-form-item label="备注">
-          <el-input
-            v-model="form.remark"
-            type="textarea"
-            placeholder="请输入备注"
-          ></el-input>
-        </el-form-item>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="报表名称" prop="reportName">
+              <el-input
+                v-model="form.reportName"
+                placeholder="请输入报表名称"
+                size="small"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="管理内容" prop="manageId">
+              <el-select
+                v-model="form.manageId"
+                placeholder="请选择管理内容"
+                clearable
+                size="small"
+                style="width: 200px"
+              >
+                <el-option
+                  v-for="dict in manageList"
+                  :key="dict.id"
+                  :label="dict.label"
+                  :value="dict.id"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="是否启用 " prop="state">
+              <el-switch v-model="form.state"></el-switch>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="备注">
+              <el-input
+                v-model="form.remark"
+                type="textarea"
+                placeholder="请输入备注"
+                size="small"
+              ></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="报表周期" prop="period">
+              <el-select
+                v-model="form.propertyList.period"
+                placeholder="请选择报表周期"
+                clearable
+                size="small"
+                style="width: 200px"
+              >
+                <el-option
+                  v-for="dict in periodOption"
+                  :key="dict.id"
+                  :label="dict.label"
+                  :value="dict.id"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="编报范围" prop="scope">
+              <el-select
+                v-model="form.propertyList.scope"
+                placeholder="请选择编报范围"
+                clearable
+                size="small"
+                style="width: 200px"
+              >
+                <el-option
+                  v-for="dict in scopeOption"
+                  :key="dict.id"
+                  :label="dict.label"
+                  :value="dict.id"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="开始时间" prop="startTime">
+              <el-date-picker
+                v-model="form.propertyList.startTime"
+                type="date"
+                placeholder="选择开始时间"
+                format="yyyy-MM-dd"
+                value-format="yyyy-MM-dd"
+                size="small"
+                style="width: 200px"
+              ></el-date-picker>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="结束时间" prop="endTime">
+              <el-date-picker
+                v-model="form.propertyList.endTime"
+                type="date"
+                placeholder="选择结束时间"
+                format="yyyy-MM-dd"
+                value-format="yyyy-MM-dd"
+                size="small"
+                style="width: 200px"
+              ></el-date-picker>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="流程类型" prop="flowTypeId">
+              <el-select
+                v-model="form.propertyList.flowTypeId"
+                placeholder="请选择流程类型"
+                clearable
+                size="small"
+                style="width: 200px"
+              >
+                <el-option
+                  v-for="dict in FlowTypeOption"
+                  :key="dict.id"
+                  :label="dict.label"
+                  :value="dict.id"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="流程名称" prop="flowId">
+              <el-select
+                v-model="form.propertyList.flowId"
+                placeholder="请选择流程名称"
+                clearable
+                size="small"
+                style="width: 200px"
+              >
+                <el-option
+                  v-for="dict in manageList"
+                  :key="dict.id"
+                  :label="dict.label"
+                  :value="dict.id"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -140,6 +253,7 @@ import {
   categoryAdd,
   categoryEdit,
 } from "@/api/report/reportName";
+import { FlowTypeList } from "@/api/flow/list.js";
 
 import { manageSelect } from "@/api/report/management";
 
@@ -160,28 +274,71 @@ export default {
       // 表单参数
       form: {
         state: true,
+        propertyList: {},
       },
       // 表单校验
       rules: {
         reportName: [
           { required: true, message: "报表名称不能为空", trigger: "blur" },
         ],
-        manageId:[
+        manageId: [
           { required: true, message: "管理内容不能为空", trigger: "blur" },
         ],
       },
       // 管理内容下拉框
       manageList: [],
+      // 周期下拉框
+      periodOption: [
+        {
+          id: 0,
+          label: "年",
+        },
+        {
+          id: 1,
+          label: "季",
+        },
+        {
+          id: 2,
+          label: "月",
+        },
+        {
+          id: 3,
+          label: "旬",
+        },
+        {
+          id: 4,
+          label: "日",
+        },
+      ],
+      // 编报范围下拉框
+      scopeOption: [
+        {
+          id: 0,
+          label: "分公司",
+        },
+        {
+          id: 1,
+          label: "营业厅",
+        },
+      ],
+      // 流程类型下拉框
+      FlowTypeOption:[]
     };
   },
   created() {
     this.getList();
     this.getManageSelect();
+    this.getFlowTypeList();
   },
   methods: {
+    getFlowTypeList() {
+      FlowTypeList().then((res) => {
+        this.FlowTypeOption = res;
+      });
+    },
     getManageSelect() {
       manageSelect().then((res) => {
-        console.log('manageSelect',res);
+        console.log("manageSelect", res);
         this.manageList = res;
       });
     },
@@ -230,6 +387,7 @@ export default {
     reset() {
       this.form = {
         state: true,
+        propertyList: {},
       };
       this.resetForm("form");
     },
