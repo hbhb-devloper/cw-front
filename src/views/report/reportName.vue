@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2021-01-06 10:24:22
  * @LastEditors: CYZ
- * @LastEditTime: 2021-01-18 13:30:54
+ * @LastEditTime: 2021-01-18 17:45:44
 -->
 <!--
  * @Descripttion: 
@@ -55,19 +55,20 @@
       </el-form-item>
     </el-form>
     <el-table v-loading="loading" :data="controlList">
-      <el-table-column align="center" label="序号" prop="id" />
-      <el-table-column align="center" label="管理内容名称" prop="reportName" />
+      <el-table-column align="center" label="序号" prop="id" width="50"/>
+      <el-table-column align="center" label="报表名称" prop="reportName" />
+      <el-table-column align="center" label="管理内容名称" prop="manageName" />
       <el-table-column align="center" label="备注" prop="remark">
-        <template slot-scope="scope">
+        <!-- <template slot-scope="scope">
           <el-input
             v-model="scope.row.remark"
             placeholder="请输入备注"
           ></el-input>
-        </template>
+        </template> -->
       </el-table-column>
       <el-table-column align="center" label="修改人" prop="updateBy" />
       <el-table-column align="center" label="修改时间" prop="updateTime" />
-      <el-table-column label="是否请用" align="center" prop="state">
+      <el-table-column label="是否启用" align="center" prop="state">
         <template slot-scope="scope">
           <el-switch
             v-model="scope.row.state"
@@ -142,11 +143,12 @@
           <el-col :span="12">
             <el-form-item label="报表周期" prop="period">
               <el-select
-                v-model="form.propertyList.period"
+                v-model="propertyFrom.period"
                 placeholder="请选择报表周期"
                 clearable
                 size="small"
                 style="width: 200px"
+                @change="changePeriod"
               >
                 <el-option
                   v-for="dict in periodOption"
@@ -160,11 +162,12 @@
           <el-col :span="12">
             <el-form-item label="编报范围" prop="scope">
               <el-select
-                v-model="form.propertyList.scope"
+                v-model="propertyFrom.scope"
                 placeholder="请选择编报范围"
                 clearable
                 size="small"
                 style="width: 200px"
+                @change="changeScope"
               >
                 <el-option
                   v-for="dict in scopeOption"
@@ -178,7 +181,7 @@
           <el-col :span="12">
             <el-form-item label="开始时间" prop="startTime">
               <el-date-picker
-                v-model="form.propertyList.startTime"
+                v-model="propertyFrom.startTime"
                 type="date"
                 placeholder="选择开始时间"
                 format="yyyy-MM-dd"
@@ -191,7 +194,7 @@
           <el-col :span="12">
             <el-form-item label="结束时间" prop="endTime">
               <el-date-picker
-                v-model="form.propertyList.endTime"
+                v-model="propertyFrom.endTime"
                 type="date"
                 placeholder="选择结束时间"
                 format="yyyy-MM-dd"
@@ -204,7 +207,7 @@
           <el-col :span="12">
             <el-form-item label="流程类型" prop="flowTypeId">
               <el-select
-                v-model="form.propertyList.flowTypeId"
+                v-model="propertyFrom.flowTypeId"
                 placeholder="请选择流程类型"
                 clearable
                 size="small"
@@ -223,11 +226,12 @@
           <el-col :span="12">
             <el-form-item label="流程名称" prop="flowId">
               <el-select
-                v-model="form.propertyList.flowId"
+                v-model="propertyFrom.flowId"
                 placeholder="请选择流程名称"
                 clearable
                 size="small"
                 style="width: 200px"
+                @change="changeFlow"
               >
                 <el-option
                   v-for="dict in typeNameOption"
@@ -239,42 +243,50 @@
             </el-form-item>
           </el-col>
           <el-col :span="24">
-            <el-form-item label="附件" prop="files">
-                <el-button
-                  type="primary"
-                  icon="el-icon-plus"
-                  size="mini"
-                  >添加</el-button
-                >
-              <el-table :data="form.files" style="width: 100%">
-                <el-table-column
-                  prop="fileName"
-                  label="序号"
-                  width="180"
-                  align="center"
-                >
+            <el-form-item label="表单启用设定" prop="files">
+              <el-button
+                type="primary"
+                icon="el-icon-plus"
+                size="mini"
+                @click="addPropertyList"
+                >添加</el-button
+              >
+              <el-table :data="form.propertyList" style="width: 100%">
+                <el-table-column label="序号" type="index" width="50">
                 </el-table-column>
                 <el-table-column
-                  prop="author"
+                  prop="periodName"
                   label="报表周期"
-                  width="180"
+                  width="80"
                   align="center"
                 >
                 </el-table-column>
                 <el-table-column
-                  prop="createTime"
+                  prop="scopeName"
                   label="编报范围"
-                  width="180"
+                  width="80"
                   align="center"
                 >
                 </el-table-column>
-                <el-table-column prop="fileSize" label="流程类型" align="center">
+                <el-table-column
+                  prop="flowTypeName"
+                  label="流程类型"
+                  align="center"
+                >
                 </el-table-column>
-                 <el-table-column prop="fileSize" label="流程名称" align="center">
+                <el-table-column
+                  prop="flowName"
+                  label="流程名称"
+                  align="center"
+                >
                 </el-table-column>
-                 <el-table-column prop="fileSize" label="开始时间" align="center">
+                <el-table-column
+                  prop="startTime"
+                  label="开始时间"
+                  align="center"
+                >
                 </el-table-column>
-                 <el-table-column prop="fileSize" label="结束时间" align="center">
+                <el-table-column prop="endTime" label="结束时间" align="center">
                 </el-table-column>
                 <el-table-column label="操作">
                   <template slot-scope="scope">
@@ -305,6 +317,7 @@ import {
   categoryList,
   categoryAdd,
   categoryEdit,
+  categoryDetail,
 } from "@/api/report/reportName";
 import { FlowTypeList } from "@/api/flow/list.js";
 import { listTypeName } from "@/api/flow/type.js";
@@ -328,7 +341,7 @@ export default {
       // 表单参数
       form: {
         state: true,
-        propertyList: {},
+        propertyList: [],
       },
       // 表单校验
       rules: {
@@ -376,9 +389,11 @@ export default {
         },
       ],
       // 流程类型下拉框
-      FlowTypeOption:[],
+      FlowTypeOption: [],
       // 流程名称下拉框
-      typeNameOption:[]
+      typeNameOption: [],
+      // 表单设定
+      propertyFrom: {},
     };
   },
   created() {
@@ -387,14 +402,40 @@ export default {
     this.getFlowTypeList();
   },
   methods: {
+    // 将表单设定添加到表格
+    addPropertyList() {
+      this.form.propertyList.push(this.propertyFrom);
+      this.propertyFrom = {};
+    },
+    // 获取周期名称
+    changePeriod(value) {
+      this.propertyFrom.periodName = this.periodOption.find(
+        (val) => val.id == this.propertyFrom.period
+      ).label;
+      console.log("this.propertyFrom.periodName", this.propertyFrom.periodName);
+    },
+    // 获取编报范围名称
+    changeScope(value) {
+      this.propertyFrom.scopeName = this.scopeOption.find(
+        (val) => val.id == this.propertyFrom.scope
+      ).label;
+      console.log("this.propertyFrom.scopeName", this.propertyFrom.scopeName);
+    },
+    // 获取流程名称
+    changeFlow(value) {
+      this.propertyFrom.flowName = this.typeNameOption.find(
+        (val) => val.id == this.propertyFrom.flowId
+      ).label;
+      console.log("this.propertyFrom.flowName", this.propertyFrom.flowName);
+    },
     // 通过流程类型获取流程名称列表
-    changeFlowType(value){
-      console.log('value',value);
-      this.form.propertyList.flowTypeName=this.FlowTypeOption.find(val=>val.id==this.form.propertyList.flowTypeId).label
-      console.log('this.form.propertyList.flowTypeName',this.form.propertyList.flowTypeName);
-      listTypeName({typeId:value}).then(res=>{
-        this.typeNameOption=res
-      })
+    changeFlowType(value) {
+      this.propertyFrom.flowTypeName = this.FlowTypeOption.find(
+        (val) => val.id == this.propertyFrom.flowTypeId
+      ).label;
+      listTypeName({ typeId: value }).then((res) => {
+        this.typeNameOption = res;
+      });
     },
     // 获取流程类型下拉框
     getFlowTypeList() {
@@ -423,9 +464,13 @@ export default {
     },
     // 保存行数据
     save(row) {
-      categoryEdit(row).then((res) => {
-        this.$message.success("保存成功");
-        this.getList();
+      this.reset();
+      console.log('row',row);
+
+      categoryDetail(row.id).then((res) => {
+        this.form = res;
+        this.open = true;
+        this.title = "修改报表名称";
       });
     },
     /** 提交按钮 */
@@ -453,7 +498,7 @@ export default {
     reset() {
       this.form = {
         state: true,
-        propertyList: {},
+        propertyList: [],
       };
       this.resetForm("form");
     },

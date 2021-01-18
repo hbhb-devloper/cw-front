@@ -27,3 +27,11 @@ export function categoryEdit(data) {
         data: data
     })
 }
+
+// 跟据管理内容获取报表名称信息详情
+export function categoryDetail(id) {
+    return request({
+        url: `${prefix}/category/${id}`,
+        method: 'get',
+    })
+}
