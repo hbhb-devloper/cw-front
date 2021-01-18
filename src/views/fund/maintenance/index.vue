@@ -206,7 +206,7 @@ export default {
         this.tableData = [];
         
         if ( res.data.code == '00000') {
-          if (res.data == "") {
+          if (res.data.data == "") {
           this.$message.success("导入上传成功");
           this.getList();
         } else {
