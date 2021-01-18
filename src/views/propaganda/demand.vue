@@ -105,7 +105,9 @@ import { resourceTreeByUN } from "@/api/system/unit";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 import { getHallSelect } from "@/api/system/hall";
-
+import { getToken } from "@/utils/auth";
+import { prefix } from "@/api/propaganda/propaganda";
+import { exportData1 } from "@/utils/export";
 export default {
   name: "Role",
   components: { Treeselect },
@@ -154,7 +156,7 @@ export default {
         this.deptOptions = response.list;
         this.queryParams.unitId = response.checked;
         getHallSelect(response.checked).then((res) => {
-          this.queryParams.hallId=res[0].id
+          // this.queryParams.hallId=res[0].id
           this.hallList = res;
         });
         goodsTime(this.queryParams.time).then((res) => {
@@ -195,7 +197,12 @@ export default {
         type: "warning",
       })
         .then(function () {
-          return goodsExport(queryParams);
+          return exportData1(
+            getToken(),
+            queryParams,
+            `${prefix}/goods/export`,
+            "采购及需求汇总项"
+          );
         })
         .then((response) => {
           this.download(response.msg);

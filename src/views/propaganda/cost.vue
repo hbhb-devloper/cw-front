@@ -343,7 +343,7 @@ export default {
     // 改变unit的值
     changeUnit(value) {
       getHallSelect(value).then((res) => {
-        this.queryParams.hallId = res[0].id;
+        // this.queryParams.hallId = res[0].id;
         this.hallList = res;
       });
     },
