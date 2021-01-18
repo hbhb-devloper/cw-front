@@ -246,6 +246,7 @@
                 v-model="form.pwd"
                 placeholder="请输入用户密码"
                 type="password"
+                clearable
               />
             </el-form-item>
           </el-col>
@@ -254,6 +255,7 @@
               v-if="form.userId == undefined"
               label="校验密码"
               prop="CheckPassword"
+              clearable
             >
               <el-input
                 v-model="form.CheckPassword"
@@ -285,7 +287,6 @@
               <treeselect
                 v-model="form.defaultUnitId"
                 :options="deptOptions"
-                :disable-branch-nodes="true"
                 :show-count="true"
                 placeholder="请选择数据部门"
               />
@@ -623,6 +624,10 @@ export default {
         defaultUnitId: [
           { required: true, message: "默认数据单位不能为空", trigger: "blur" },
         ],
+        // pwd: [{ required: true, message: "用户密码不能为空", trigger: "blur" }],
+        CheckPassword: [
+          { required: true, validator: validatePass2, trigger: "blur" }
+        ],
         jobNum: [{ required: true, message: "工号不能为空", trigger: "blur" }],
         email: [
           { required: true, message: "邮箱地址不能为空", trigger: "blur" },
@@ -858,13 +863,9 @@ export default {
         this.$nextTick(() => {
           this.$refs.menu1.setCheckedKeys(response.checkedUintIds);
         });
-        // this.postOptions = response.posts;
-        // this.roleOptions = response.roles;
-        // this.form.postIds = response.postIds;
-        // this.form.roleIds = response.roleIds;
         this.open = true;
         this.title = "修改用户";
-        this.form.pwd = "";
+        this.form.pwd = undefined;
       });
     },
     /** 重置密码按钮操作 */
@@ -889,7 +890,10 @@ export default {
           this.form.checkedRsRoleIds = this.checkedRsRoleIds;
           this.form.checkedUnRoleIds = this.getMenuAllCheckedKeys();
           // this.form.checkedResourceIds = this.getMenuAllCheckedKeys();
-          this.form.pwd = Encrypt(this.form.pwd);
+          if (typeof this.form.pwd !='undefined') {
+            console.log("this.form.pwd", this.form.pwd);
+            this.form.pwd = Encrypt(this.form.pwd);
+          }
           if (this.form.id != undefined) {
             delete this.form.checkedUintIds;
             updateUser(this.form).then((response) => {
