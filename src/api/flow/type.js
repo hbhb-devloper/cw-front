@@ -11,7 +11,14 @@ export function listType(query) {
         params: query
     })
 }
-
+// 获取流程类型名称
+export function listTypeName(query) {
+    return request1({
+        url: `${prefix}/names`,
+        method: 'get',
+        params: query
+    })
+}
 // 新增流程类型
 export function addType(data) {
     return request1({

@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2021-01-06 10:24:22
  * @LastEditors: CYZ
- * @LastEditTime: 2021-01-15 17:39:50
+ * @LastEditTime: 2021-01-18 13:30:54
 -->
 <!--
  * @Descripttion: 
@@ -209,6 +209,7 @@
                 clearable
                 size="small"
                 style="width: 200px"
+                @change="changeFlowType"
               >
                 <el-option
                   v-for="dict in FlowTypeOption"
@@ -229,12 +230,64 @@
                 style="width: 200px"
               >
                 <el-option
-                  v-for="dict in manageList"
+                  v-for="dict in typeNameOption"
                   :key="dict.id"
                   :label="dict.label"
                   :value="dict.id"
                 />
               </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="附件" prop="files">
+                <el-button
+                  type="primary"
+                  icon="el-icon-plus"
+                  size="mini"
+                  >添加</el-button
+                >
+              <el-table :data="form.files" style="width: 100%">
+                <el-table-column
+                  prop="fileName"
+                  label="序号"
+                  width="180"
+                  align="center"
+                >
+                </el-table-column>
+                <el-table-column
+                  prop="author"
+                  label="报表周期"
+                  width="180"
+                  align="center"
+                >
+                </el-table-column>
+                <el-table-column
+                  prop="createTime"
+                  label="编报范围"
+                  width="180"
+                  align="center"
+                >
+                </el-table-column>
+                <el-table-column prop="fileSize" label="流程类型" align="center">
+                </el-table-column>
+                 <el-table-column prop="fileSize" label="流程名称" align="center">
+                </el-table-column>
+                 <el-table-column prop="fileSize" label="开始时间" align="center">
+                </el-table-column>
+                 <el-table-column prop="fileSize" label="结束时间" align="center">
+                </el-table-column>
+                <el-table-column label="操作">
+                  <template slot-scope="scope">
+                    <el-button
+                      size="mini"
+                      type="text"
+                      icon="el-icon-edit"
+                      @click="deleteFile(scope.row)"
+                      >删除</el-button
+                    >
+                  </template>
+                </el-table-column>
+              </el-table>
             </el-form-item>
           </el-col>
         </el-row>
@@ -254,6 +307,7 @@ import {
   categoryEdit,
 } from "@/api/report/reportName";
 import { FlowTypeList } from "@/api/flow/list.js";
+import { listTypeName } from "@/api/flow/type.js";
 
 import { manageSelect } from "@/api/report/management";
 
@@ -322,7 +376,9 @@ export default {
         },
       ],
       // 流程类型下拉框
-      FlowTypeOption:[]
+      FlowTypeOption:[],
+      // 流程名称下拉框
+      typeNameOption:[]
     };
   },
   created() {
@@ -331,14 +387,24 @@ export default {
     this.getFlowTypeList();
   },
   methods: {
+    // 通过流程类型获取流程名称列表
+    changeFlowType(value){
+      console.log('value',value);
+      this.form.propertyList.flowTypeName=this.FlowTypeOption.find(val=>val.id==this.form.propertyList.flowTypeId).label
+      console.log('this.form.propertyList.flowTypeName',this.form.propertyList.flowTypeName);
+      listTypeName({typeId:value}).then(res=>{
+        this.typeNameOption=res
+      })
+    },
+    // 获取流程类型下拉框
     getFlowTypeList() {
       FlowTypeList().then((res) => {
         this.FlowTypeOption = res;
       });
     },
+    // 获取管理内容下拉框
     getManageSelect() {
       manageSelect().then((res) => {
-        console.log("manageSelect", res);
         this.manageList = res;
       });
     },
