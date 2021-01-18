@@ -37,3 +37,12 @@ export function delFlowType(flowTypeId) {
     })
 }
 
+// 根据流程类型id查询流程类型详情
+export function listTypeById(query) {
+    return request1({
+        url: `${prefix}/type/id`,
+        method: 'get',
+        params: query
+    })
+}
+
