@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2021-01-06 10:24:47
  * @LastEditors: CYZ
- * @LastEditTime: 2021-01-13 15:34:37
+ * @LastEditTime: 2021-01-19 14:44:18
 -->
 <template>
   <div class="app-container">
@@ -49,9 +49,9 @@
         </template>
       </el-table-column>
       <el-table-column label="按月打包" align="center">
-        <template slot-scope="scope" prop="hasPage">
+        <template slot-scope="scope" prop="hasPack">
           <el-switch
-            v-model="scope.row.hasPage"
+            v-model="scope.row.hasPack"
             @change="handleChange(scope.row)"
           >
           </el-switch>
@@ -75,8 +75,8 @@
         <el-form-item label="是否启用 " prop="hasEnable">
           <el-switch v-model="form.hasEnable"></el-switch>
         </el-form-item>
-        <el-form-item label="启用按月打包 " prop="hasPage">
-          <el-switch v-model="form.hasPage"></el-switch>
+        <el-form-item label="启用按月打包 " prop="hasPack">
+          <el-switch v-model="form.hasPack"></el-switch>
         </el-form-item>
         <el-form-item label="备注">
           <el-input
@@ -107,7 +107,7 @@ export default {
       // 表单参数
       form: {
         hasEnable: true,
-        hasPage: true,
+        hasPack: true,
       },
        // 表单校验
       rules: {
@@ -141,7 +141,7 @@ export default {
     reset() {
       this.form = {
         hasEnable: true,
-        hasPage: true,
+        hasPack: true,
       };
       this.resetForm("form");
     },
