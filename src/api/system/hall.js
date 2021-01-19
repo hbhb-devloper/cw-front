@@ -19,17 +19,18 @@ export function getHallSelect(unitId) {
   })
 }
 // 获取营业厅列表
-export function getHallSelectNew(unitId) {
+export function getHallSelectNew(query) {
   return request({
-    url: `${prefix}/hall/select_new?unitId=${unitId}`,
+    url: `${prefix}/hall/select_new`,
     method: 'get',
+    params:query
   })
 }
 
 // 绑定营业厅和单位
-export function updataHallNew(data) {
+export function updataHallNew(data,userId) {
   return request({
-    url: `${prefix}/hall/updateHallNew`,
+    url: `${prefix}/hall/updateHallNew?userId=${userId}`,
     method: 'put',
     data: data
   })

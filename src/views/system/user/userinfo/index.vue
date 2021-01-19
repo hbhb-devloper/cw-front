@@ -436,12 +436,12 @@
         <el-transfer
           filterable
           filter-placeholder="请输入营业厅名称"
-          v-model="value"
+          v-model="defaultHall"
           :data="hallList"
           :props="{ key: 'id', label: 'label' }"
           :titles="['部门下营业厅', '已选营业厅']"
           @change="handleChange"
-          :right-default-checked="defaultHall"
+          :right-default="defaultHall"
         >
         </el-transfer>
       </div>
@@ -626,7 +626,7 @@ export default {
         ],
         // pwd: [{ required: true, message: "用户密码不能为空", trigger: "blur" }],
         CheckPassword: [
-          { required: true, validator: validatePass2, trigger: "blur" }
+          { required: true, validator: validatePass2, trigger: "blur" },
         ],
         jobNum: [{ required: true, message: "工号不能为空", trigger: "blur" }],
         email: [
@@ -653,6 +653,8 @@ export default {
       unitId: undefined,
       // 已选营业厅
       defaultHall: [],
+      // 选择的用户id
+      rowUserId:undefined
     };
   },
   watch: {
@@ -671,14 +673,22 @@ export default {
     // 绑定单位和营业厅
     handleChange(value, direction, movedKeys) {
       console.log(value, direction, movedKeys);
-      updataHallNew({ hallSelectIds: value, unitId: this.unitId });
+      updataHallNew({ hallSelectIds: value, unitId: this.unitId },this.rowUserId);
     },
     // 获取单位的营业厅
     getUnit(data) {
       this.unitId = data.id;
-      getHallSelectNew(data.id).then((res) => {
+      getHallSelectNew({unitId:data.id,userId:this.rowUserId}).then((res) => {
+        if (data.id==11||data.id==429) {
+          res.halls.map(item=>{
+            item.disabled=true
+          })
+          
+        }
         this.hallList = res.halls;
-        this.defaultHall = res.hallSelect;
+        this.$nextTick(() => {
+          this.defaultHall = res.hallSelect;
+        });
       });
     },
     changeDisabled(data, disabled) {
@@ -794,6 +804,7 @@ export default {
         checkedRsRoleIds: [],
         checkedUnRoleIds: [],
       };
+      this.defaultHall=[]
       this.resetForm("form");
     },
     /** 搜索按钮操作 */
@@ -854,7 +865,7 @@ export default {
       this.reset();
       this.getTreeselect();
       const userId = row.id || this.ids;
-
+      this.rowUserId=row.id
       getUser(userId).then((response) => {
         response.pwd = undefined;
         this.form = response;
@@ -890,7 +901,7 @@ export default {
           this.form.checkedRsRoleIds = this.checkedRsRoleIds;
           this.form.checkedUnRoleIds = this.getMenuAllCheckedKeys();
           // this.form.checkedResourceIds = this.getMenuAllCheckedKeys();
-          if (typeof this.form.pwd !='undefined') {
+          if (typeof this.form.pwd != "undefined") {
             console.log("this.form.pwd", this.form.pwd);
             this.form.pwd = Encrypt(this.form.pwd);
           }

@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-12-22 10:05:30
  * @LastEditors: CYZ
- * @LastEditTime: 2021-01-15 10:52:36
+ * @LastEditTime: 2021-01-19 15:11:00
 -->
 <template>
   <div class="app-container">
@@ -24,10 +24,16 @@
         <el-col
           v-for="(item, index) in flowList"
           :key="index"
-          style="width:300px;margin:10px;height: 190px; border: 2px solid red; border-radius: 10px"
+          style="
+            width: 300px;
+            margin: 10px;
+            height: 190px;
+            border: 2px solid red;
+            border-radius: 10px;
+          "
         >
           <div class="flowItem">
-            <el-form label-width="auto"  label-position="left">
+            <el-form label-width="auto" label-position="left">
               <el-form-item :label="item.approverRole">
                 <el-select
                   v-model="item.approver.value"
@@ -153,7 +159,7 @@
           <template slot-scope="scope">
             <el-progress
               :percentage="scope.row.proportion"
-              v-if="scope.row.proportion || scope.row.proportion===0"
+              v-if="scope.row.proportion || scope.row.proportion === 0"
             ></el-progress>
           </template>
         </el-table-column>
@@ -431,7 +437,7 @@
               icon="el-icon-delete"
               size="small"
               type="danger"
-              v-if="importantList.length >= 1"
+              v-if="importantList.length >= 1 && !editAble"
               @click="deleteMaterials"
               >删除导入数据</el-button
             >
@@ -511,6 +517,14 @@
                 width="120"
               />
             </el-table>
+            <el-button
+              icon="el-icon-delete"
+              size="small"
+              type="danger"
+              v-if="pictureFileList.length >= 1 && !editAble"
+              @click="deletepictureFile"
+              >删除导入数据</el-button
+            >
             <el-table
               :data="pictureFileList"
               v-if="pictureFileList.length >= 1"
@@ -744,7 +758,7 @@ export default {
     },
     // 删除导入数据
     deleteMaterials() {
-      if (typeof this.printId =='undefined') {
+      if (typeof this.printId == "undefined") {
         this.importantList = [];
       } else {
         if (this.type == "print") {
@@ -757,6 +771,10 @@ export default {
           });
         }
       }
+    },
+    // 删除宣传画面导入信息
+    deletepictureFile() {
+      this.pictureFileList = [];
     },
     // 获取市场审核员下拉框
     getRoleList() {
@@ -1015,8 +1033,8 @@ export default {
       // this.importObj.type=this.type
     },
     handleFail(err, file, fileList) {
-      console.log('fileList',fileList);
-      fileList=[]
+      console.log("fileList", fileList);
+      fileList = [];
       this.loadingoption.close();
       this.$message.error("上传失败");
     },
