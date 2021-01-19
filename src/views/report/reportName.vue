@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2021-01-06 10:24:22
  * @LastEditors: CYZ
- * @LastEditTime: 2021-01-19 14:14:35
+ * @LastEditTime: 2021-01-19 14:21:09
 -->
 <!--
  * @Descripttion: 
@@ -320,7 +320,7 @@
         <div class="graphicTitle">图示</div>
         <div class="graphicItem" style="background: #ffcc00">未启用</div>
         <div class="graphicItem" style="background: #008aff">启用中</div>
-        <div class="graphicItem" style="background: #d6d6d6">已过期</div>
+        <div class="graphicItem" style="background: #EBEBEB">已过期</div>
       </div>
       <el-table :data="propertylist" style="width: 100%" :row-style="showColor">
         <el-table-column label="序号" type="index" width="50">
@@ -498,9 +498,9 @@ export default {
       if (item.isUsing == 0) {
         return { background: "#FFCC00" };
       } else if (item.isUsing == 1) {
-        return { background: "#008AFF" };
+        return { background: "#008AFF",color:'#fff' };
       } else {
-        return { background: "#D6D6D6" };
+        return { background: "#EBEBEB" };
       }
     },
     // 修改起止时间
