@@ -6,7 +6,7 @@ export function categoryList(query) {
     return request({
         url: `${prefix}/category/list`,
         method: 'get',
-        params:query
+        params: query
     })
 }
 
@@ -35,3 +35,22 @@ export function categoryDetail(id) {
         method: 'get',
     })
 }
+
+// 报表名称内容分页列表
+export function propertyList(query) {
+    return request({
+        url: `${prefix}/property/list`,
+        method: 'get',
+        params: query
+    })
+}
+// 报表名称内容分页列表
+export function propertyEdit(data) {
+    return request({
+        url: `${prefix}/property`,
+        method: 'put',
+        data: data
+    })
+}
+
+

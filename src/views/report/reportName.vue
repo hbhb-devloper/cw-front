@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2021-01-06 10:24:22
  * @LastEditors: CYZ
- * @LastEditTime: 2021-01-18 17:45:44
+ * @LastEditTime: 2021-01-19 14:14:35
 -->
 <!--
  * @Descripttion: 
@@ -49,13 +49,13 @@
           @click="handleAdd"
           >添加</el-button
         >
-        <el-button icon="el-icon-refresh" size="mini"
+        <el-button icon="el-icon-refresh" size="mini" @click="showProperty"
           >批量修改管理内容下报表起止时间</el-button
         >
       </el-form-item>
     </el-form>
     <el-table v-loading="loading" :data="controlList">
-      <el-table-column align="center" label="序号" prop="id" width="50"/>
+      <el-table-column align="center" label="序号" prop="id" width="50" />
       <el-table-column align="center" label="报表名称" prop="reportName" />
       <el-table-column align="center" label="管理内容名称" prop="manageName" />
       <el-table-column align="center" label="备注" prop="remark">
@@ -67,7 +67,12 @@
         </template> -->
       </el-table-column>
       <el-table-column align="center" label="修改人" prop="updateBy" />
-      <el-table-column align="center" label="修改时间" prop="updateTime" />
+      <el-table-column
+        align="center"
+        label="修改时间"
+        prop="updateTime"
+        width="160"
+      />
       <el-table-column label="是否启用" align="center" prop="state">
         <template slot-scope="scope">
           <el-switch
@@ -80,14 +85,14 @@
 
       <el-table-column label="操作" align="center">
         <template slot-scope="scope">
-          <el-button size="mini" type="text" @click="save(scope.row)"
+          <el-button size="mini" type="text" @click="handleUpdate(scope.row)"
             >修改</el-button
           >
         </template>
       </el-table-column>
       <el-table-column label="批量修改" align="center">
         <template slot-scope="scope">
-          <el-button size="mini" type="text" @click="handleDelete(scope.row)"
+          <el-button size="mini" type="text" @click="showProperty(scope.row)"
             >修改报表起止时间</el-button
           >
         </template>
@@ -309,6 +314,78 @@
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
+    <!-- 批量修改报表时间对话框 -->
+    <el-dialog :title="title" :visible.sync="PropertyVisible" width="1200px">
+      <div class="graphic">
+        <div class="graphicTitle">图示</div>
+        <div class="graphicItem" style="background: #ffcc00">未启用</div>
+        <div class="graphicItem" style="background: #008aff">启用中</div>
+        <div class="graphicItem" style="background: #d6d6d6">已过期</div>
+      </div>
+      <el-table :data="propertylist" style="width: 100%" :row-style="showColor">
+        <el-table-column label="序号" type="index" width="50">
+        </el-table-column>
+        <el-table-column
+          prop="categoryName"
+          label="报表名称"
+          width="80"
+          align="center"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="periodName"
+          label="报表周期"
+          width="80"
+          align="center"
+        >
+        </el-table-column>
+        <el-table-column prop="scopeName" label="编报范围" align="center">
+        </el-table-column>
+        <el-table-column prop="flowTypeName" label="流程类型" align="center">
+        </el-table-column>
+        <el-table-column prop="flowName" label="流程名称" align="center">
+        </el-table-column>
+        <el-table-column prop="startTime" label="开始时间" align="center">
+          <template slot-scope="scope">
+            <el-date-picker
+              v-model="scope.row.startTime"
+              type="date"
+              placeholder="选择开始时间"
+              format="yyyy-MM-dd"
+              value-format="yyyy-MM-dd"
+              size="small"
+              style="width: 80%"
+              @change="changeStartTime(scope.row)"
+            ></el-date-picker>
+          </template>
+        </el-table-column>
+        <el-table-column prop="endTime" label="结束时间" align="center">
+          <template slot-scope="scope">
+            <el-date-picker
+              v-model="scope.row.endTime"
+              type="date"
+              placeholder="选择结束时间"
+              format="yyyy-MM-dd"
+              value-format="yyyy-MM-dd"
+              size="small"
+              style="width: 80%"
+              @change="changeEndTime(scope.row)"
+            ></el-date-picker>
+          </template>
+        </el-table-column>
+      </el-table>
+      <pagination
+        v-show="total > 0"
+        :total="total"
+        :page.sync="queryParams.pageNum"
+        :limit.sync="queryParams.pageSize"
+        @pagination="getList"
+      />
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="submitProperty">确 定</el-button>
+        <el-button @click="cancel">取 消</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -318,12 +395,12 @@ import {
   categoryAdd,
   categoryEdit,
   categoryDetail,
+  propertyList,
+  propertyEdit,
 } from "@/api/report/reportName";
 import { FlowTypeList } from "@/api/flow/list.js";
 import { listTypeName } from "@/api/flow/type.js";
-
 import { manageSelect } from "@/api/report/management";
-
 export default {
   name: "Role",
   data() {
@@ -394,6 +471,19 @@ export default {
       typeNameOption: [],
       // 表单设定
       propertyFrom: {},
+      // 批量修改判定
+      PropertyVisible: false,
+      // 查询参数
+      queryParams: {
+        pageNum: 1,
+        pageSize: 10,
+      },
+      // 分页总条数
+      total: 0,
+      // 批量修改时间数组
+      propertyTimeList: [],
+      // 报表起止时间列表
+      propertylist: [],
     };
   },
   created() {
@@ -402,6 +492,99 @@ export default {
     this.getFlowTypeList();
   },
   methods: {
+    // 根据启用状态显示不同的颜色
+    showColor(row) {
+      let item = row.row;
+      if (item.isUsing == 0) {
+        return { background: "#FFCC00" };
+      } else if (item.isUsing == 1) {
+        return { background: "#008AFF" };
+      } else {
+        return { background: "#D6D6D6" };
+      }
+    },
+    // 修改起止时间
+    changeStartTime(row) {
+      let propertyIndex = this.propertyTimeList.findIndex(
+        (item) => item.id == row.id
+      );
+      if (propertyIndex != -1) {
+        this.propertyTimeList[propertyIndex].startTime = row.startTime;
+      } else {
+        let propertyObj = {
+          id: row.id,
+          startTime: row.startTime,
+          endTime: row.endTime,
+        };
+        this.propertyTimeList.push(propertyObj);
+      }
+    },
+    // 修改结束时间
+    changeEndTime(row) {
+      let propertyIndex = this.propertyTimeList.findIndex(
+        (item) => item.id == row.id
+      );
+      if (propertyIndex != -1) {
+        this.propertyTimeList[propertyIndex].endTime = row.endTime;
+      } else {
+        let propertyObj = {
+          id: row.id,
+          startTime: row.startTime,
+          endTime: row.endTime,
+        };
+        this.propertyTimeList.push(propertyObj);
+      }
+    },
+    // 提交批量修改
+    submitProperty() {
+      propertyEdit(this.propertyTimeList).then((res) => {
+        console.log("propertyEdit", res);
+        this.msgSuccess("批量修改成功");
+        this.PropertyVisible = false;
+      });
+    },
+    // 表单重置
+    reset() {
+      this.propertyTimeList = [];
+      this.queryParams = {
+        pageNum: 1,
+        pageSize: 10,
+      };
+      this.form = {
+        state: true,
+        propertyList: [],
+      };
+      this.propertyFrom = {};
+      this.resetForm("form");
+    },
+    // 显示批量修改弹窗
+    showProperty(row) {
+      if (row) {
+        this.queryParams.categoryId = row.id;
+      }
+      this.reset();
+      propertyList(this.queryParams).then((res) => {
+        res.list.map((item) => {
+          item.startTimeData = Date.parse(item.startTime.replace(/-/g, "/"));
+          item.endTimeData = Date.parse(item.endTime.replace(/-/g, "/"));
+
+          let timestamp = new Date().getTime();
+          // isUsing指该调表单是否在启用
+          if (timestamp < item.startTimeData) {
+            item.isUsing = 0;
+          } else if (
+            timestamp > item.startTimeData &&
+            timestamp < item.endTimeData
+          ) {
+            item.isUsing = 1;
+          } else item.isUsing = 2;
+        });
+        this.propertylist = res.list;
+        this.total = res.totalRow;
+        this.PropertyVisible = true;
+        this.title = "报表起止时间编辑";
+      });
+    },
     // 将表单设定添加到表格
     addPropertyList() {
       this.form.propertyList.push(this.propertyFrom);
@@ -412,21 +595,18 @@ export default {
       this.propertyFrom.periodName = this.periodOption.find(
         (val) => val.id == this.propertyFrom.period
       ).label;
-      console.log("this.propertyFrom.periodName", this.propertyFrom.periodName);
     },
     // 获取编报范围名称
     changeScope(value) {
       this.propertyFrom.scopeName = this.scopeOption.find(
         (val) => val.id == this.propertyFrom.scope
       ).label;
-      console.log("this.propertyFrom.scopeName", this.propertyFrom.scopeName);
     },
     // 获取流程名称
     changeFlow(value) {
       this.propertyFrom.flowName = this.typeNameOption.find(
         (val) => val.id == this.propertyFrom.flowId
       ).label;
-      console.log("this.propertyFrom.flowName", this.propertyFrom.flowName);
     },
     // 通过流程类型获取流程名称列表
     changeFlowType(value) {
@@ -462,11 +642,9 @@ export default {
         this.getList();
       });
     },
-    // 保存行数据
-    save(row) {
+    /** 修改按钮操作 */
+    handleUpdate(row) {
       this.reset();
-      console.log('row',row);
-
       categoryDetail(row.id).then((res) => {
         this.form = res;
         this.open = true;
@@ -491,17 +669,18 @@ export default {
     },
     // 取消按钮
     cancel() {
+      this.PropertyVisible = false;
       this.open = false;
       this.reset();
     },
     // 表单重置
-    reset() {
-      this.form = {
-        state: true,
-        propertyList: [],
-      };
-      this.resetForm("form");
-    },
+    // reset() {
+    //   this.form = {
+    //     state: true,
+    //     propertyList: [],
+    //   };
+    //   this.resetForm("form");
+    // },
     /** 新增按钮操作 */
     handleAdd() {
       this.reset();
@@ -519,3 +698,23 @@ export default {
   },
 };
 </script>
+<style scoped>
+.graphic {
+  height: 30px;
+  display: flex;
+  flex-direction: row;
+}
+.graphicTitle {
+  font-size: 15px;
+  color: #303133;
+  line-height: 30px;
+  font-weight: bolder;
+}
+.graphicItem {
+  font-size: 15px;
+  color: #303133;
+  line-height: 30px;
+  width: 100px;
+  text-align: center;
+}
+</style>
