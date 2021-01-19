@@ -12,14 +12,28 @@ export function listHall(query) {
 }
 
 // 获取营业厅列表
-export function getHallSelect(query) {
+export function getHallSelect(unitId) {
   return request({
-    url: `${prefix}/hall/select`,
+    url: `${prefix}/hall/select?unitId=${unitId}`,
     method: 'get',
-    params: query
+  })
+}
+// 获取营业厅列表
+export function getHallSelectNew(unitId) {
+  return request({
+    url: `${prefix}/hall/select_new?unitId=${unitId}`,
+    method: 'get',
   })
 }
 
+// 绑定营业厅和单位
+export function updataHallNew(data) {
+  return request({
+    url: `${prefix}/hall/updateHallNew`,
+    method: 'put',
+    data: data
+  })
+}
 // 添加营业厅
 export function addHall(data) {
   return request({

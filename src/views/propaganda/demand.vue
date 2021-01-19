@@ -10,14 +10,20 @@
         />
       </el-form-item>
       <el-form-item label="营业厅" prop="hallId">
-        <el-input
+        <el-select
           v-model="queryParams.hallId"
-          placeholder="请输入营业厅"
+          placeholder="请选择营业厅"
           clearable
           size="small"
           style="width: 200px"
-          @keyup.enter.native="handleQuery"
-        />
+        >
+          <el-option
+            v-for="dict in hallList"
+            :key="dict.id"
+            :label="dict.label"
+            :value="dict.id"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="日期" prop="time">
         <el-date-picker
@@ -61,7 +67,7 @@
     </el-form>
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
-          <el-button
+        <el-button
           type="warning"
           icon="el-icon-download"
           size="mini"
@@ -92,18 +98,23 @@
 </template>
 
 <script>
-import { goodsPurchase , goodsExport } from "@/api/propaganda/demand";
+import { goodsPurchase, goodsExport } from "@/api/propaganda/demand";
 import { goodsTime } from "@/api/propaganda/flyer";
 import { resourceTree, roleMenuTreeselect } from "@/api/system/resource";
 import { resourceTreeByUN } from "@/api/system/unit";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
-
+import { getHallSelect } from "@/api/system/hall";
+import { getToken } from "@/utils/auth";
+import { prefix } from "@/api/propaganda/propaganda";
+import { exportData1 } from "@/utils/export";
 export default {
   name: "Role",
   components: { Treeselect },
   data() {
     return {
+      // 次数下拉框
+      timeOption: undefined,
       // 部门树选项
       deptOptions: undefined,
       // 遮罩层
@@ -116,6 +127,8 @@ export default {
         pageNum: 1,
         pageSize: 10,
       },
+      // 营业厅下拉框
+      hallList: [],
     };
   },
   created() {
@@ -142,6 +155,10 @@ export default {
       resourceTreeByUN().then((response) => {
         this.deptOptions = response.list;
         this.queryParams.unitId = response.checked;
+        getHallSelect(response.checked).then((res) => {
+          // this.queryParams.hallId=res[0].id
+          this.hallList = res;
+        });
         goodsTime(this.queryParams.time).then((res) => {
           this.timeOption = res.goodsIndexList;
           this.$set(this.queryParams, "goodsIndex", res.goodsIndex);
@@ -180,7 +197,12 @@ export default {
         type: "warning",
       })
         .then(function () {
-          return goodsExport(queryParams);
+          return exportData1(
+            getToken(),
+            queryParams,
+            `${prefix}/goods/export`,
+            "采购及需求汇总项"
+          );
         })
         .then((response) => {
           this.download(response.msg);

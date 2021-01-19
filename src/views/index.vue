@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-07-20 18:22:09
  * @LastEditors: CYZ
- * @LastEditTime: 2021-01-04 14:32:31
+ * @LastEditTime: 2021-01-08 10:05:07
 -->
 <template>
   <div class="dashboard-editor-container">
@@ -470,6 +470,11 @@ import {
   updateMaterialsNotice,
   updatePrintNotice,
   getPrintList,
+  getApplicationList,
+  getApplicationSummary,
+  updateApplicationNotice,
+  getVerifySummary,
+  updateVerifyNotice,
 } from "@/api/workbench/workbench";
 import PanelGroup from "./dashboard/PanelGroup";
 
@@ -567,6 +572,12 @@ export default {
           this.$router.push(
             `/propaganda/propagandaAdd?id=${row.businessId}&type=poster`
           );
+        } else if (row.noticeType == "物料费用签报") {
+          this.$router.push(
+            `/propaganda/cost?batchNum=${row.batchNum}&unitId=${row.unitId}`
+          );
+        } else if (row.noticeType == "物料审核") {
+          this.$router.push(`/propaganda/materialconfirm`);
         }
       }
     },
@@ -619,13 +630,27 @@ export default {
       let that = this;
       this.loading = true;
       that.NoticetableData = [];
-      getMaterialsSummary().then((Materialsresponse) => {
-        that.NoticetableData = that.NoticetableData.concat(Materialsresponse);
-        getPictureSummary().then((Pictureresponse) => {
-          that.NoticetableData = that.NoticetableData.concat(Pictureresponse);
-          getPrintSummary().then((Printresponse) => {
-            that.NoticetableData = that.NoticetableData.concat(Printresponse);
-            that.loading = false;
+      getVerifySummary().then((Verifyresponse) => {
+        that.NoticetableData = that.NoticetableData.concat(Verifyresponse);
+        getApplicationSummary().then((Applicationresponse) => {
+          that.NoticetableData = that.NoticetableData.concat(
+            Applicationresponse
+          );
+          getMaterialsSummary().then((Materialsresponse) => {
+            that.NoticetableData = that.NoticetableData.concat(
+              Materialsresponse
+            );
+            getPictureSummary().then((Pictureresponse) => {
+              that.NoticetableData = that.NoticetableData.concat(
+                Pictureresponse
+              );
+              getPrintSummary().then((Printresponse) => {
+                that.NoticetableData = that.NoticetableData.concat(
+                  Printresponse
+                );
+                that.loading = false;
+              });
+            });
           });
         });
       });
@@ -721,7 +746,7 @@ export default {
         this.getList1();
       } else if (this.module1 == 101) {
         this.getList2();
-      }else if (this.module1 == 103) {
+      } else if (this.module1 == 103) {
         this.getList3();
       }
     },
@@ -751,6 +776,16 @@ export default {
           });
         } else if (row.noticeType == "物料制作") {
           updateMaterialsNotice(row.id).then((response) => {
+            that.getPropagandaSummary();
+            that.getWorkList();
+          });
+        } else if (row.noticeType == "物料费用签报") {
+          updateApplicationNotice(row.id).then((response) => {
+            that.getPropagandaSummary();
+            that.getWorkList();
+          });
+        } else if (row.noticeType == "物料审核") {
+          updateVerifyNotice(row.id).then((response) => {
             that.getPropagandaSummary();
             that.getWorkList();
           });
@@ -784,7 +819,7 @@ export default {
         this.loading1 = false;
       });
     },
-    
+
     getFileList() {
       this.loading2 = true;
       getFileList(10).then((response) => {
@@ -799,7 +834,7 @@ export default {
         this.getList1();
       } else if (this.module1 == 101) {
         this.getList2();
-      }else if (this.module1 == 103) {
+      } else if (this.module1 == 103) {
         this.getList3();
       }
     },

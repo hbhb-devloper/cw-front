@@ -4,22 +4,30 @@
  * @Author: CYZ
  * @Date: 2020-12-22 10:05:30
  * @LastEditors: CYZ
- * @LastEditTime: 2021-01-05 11:07:31
+ * @LastEditTime: 2021-01-15 10:52:36
 -->
 <template>
   <div class="app-container">
+    <el-button
+      icon="el-icon-back"
+      type="primary"
+      size="mini"
+      style="margin-bottom: 20px"
+      @click="handleBack"
+      >返回</el-button
+    >
     <div class="proTitle">中国移动通信集团{{ title }}申请单</div>
     <div style="width: 80%; margin: 0 auto">
       <div style="text-align: center">{{ nodeName }}</div>
+      <!-- 流程列表 -->
       <el-row style="margin-bottom: 25px" v-if="flowList">
         <el-col
           v-for="(item, index) in flowList"
           :key="index"
-          :span="8"
-          style="height: 190px; border: 1px solid red; border-radius: 10px"
+          style="width:300px;margin:10px;height: 190px; border: 2px solid red; border-radius: 10px"
         >
           <div class="flowItem">
-            <el-form label-width="140px">
+            <el-form label-width="auto"  label-position="left">
               <el-form-item :label="item.approverRole">
                 <el-select
                   v-model="item.approver.value"
@@ -117,7 +125,12 @@
           prop="unitName"
           width="180"
         />
-        <el-table-column align="center" label="年初预算（元）" prop="budget" width="120" />
+        <el-table-column
+          align="center"
+          label="年初预算（元）"
+          prop="budget"
+          width="120"
+        />
         <el-table-column
           align="center"
           label="已通过"
@@ -136,15 +149,11 @@
           prop="balance"
           width="120"
         />
-        <el-table-column
-          align="center"
-          label="使用进度"
-          prop="proportion"
-        >
+        <el-table-column align="center" label="使用进度" prop="proportion">
           <template slot-scope="scope">
             <el-progress
               :percentage="scope.row.proportion"
-              v-if="scope.row.proportion"
+              v-if="scope.row.proportion || scope.row.proportion===0"
             ></el-progress>
           </template>
         </el-table-column>
@@ -345,7 +354,7 @@
                       type="text"
                       icon="el-icon-edit"
                       @click="deleteFile(scope.row)"
-                      :disabled="!editAble"
+                      :disabled="scope.row.fileseditAble"
                       >删除</el-button
                     >
                   </template>
@@ -394,14 +403,14 @@
                 type="text"
                 @click="publicitydown"
                 v-if="type == 'printed'"
-                >业务单式模板下载</el-button
+                >宣传单页模板下载</el-button
               >
               <el-button
                 size="small"
                 type="text"
                 @click="businessdown"
                 v-if="type == 'printed'"
-                >宣传单页模板下载</el-button
+                >业务单式模板下载</el-button
               >
               <el-button
                 size="small"
@@ -596,7 +605,7 @@ export default {
         roleUserId: [
           { required: true, message: "市场审核员不能为空", trigger: "blur" },
         ],
-        reason:[
+        reason: [
           { required: true, message: "申请原因不能为空", trigger: "blur" },
         ],
       },
@@ -654,6 +663,9 @@ export default {
   },
   created() {
     this.printId = this.$route.query.id;
+    // if (!this.printId) {
+    //   this.form.printName=
+    // }
     this.type = this.$route.query.type;
     if (this.type == "printed") {
       this.title = "印刷品";
@@ -677,6 +689,10 @@ export default {
     }
   },
   methods: {
+    //返回
+    handleBack() {
+      this.$router.go(-1);
+    },
     /** 查询部门下拉树结构 */
     getTreeselect() {
       resourceTreeByUN().then((response) => {
@@ -688,11 +704,10 @@ export default {
     getBudgetList() {
       materialsStatistics(this.morenUnit).then((res) => {
         console.log("materialsStatistics", res);
-        if (res!='') {
+        if (res != "") {
           this.BudgetList = [];
-        this.BudgetList.push(res);
+          this.BudgetList.push(res);
         }
-        
       });
     },
     // 下载预览文件
@@ -729,14 +744,18 @@ export default {
     },
     // 删除导入数据
     deleteMaterials() {
-      if (this.type == "print") {
-        printDeleteMaterials(this.printId).then((res) => {
-          this.showinfo();
-        });
+      if (typeof this.printId =='undefined') {
+        this.importantList = [];
       } else {
-        materialsDeleteMaterials(this.printId).then((res) => {
-          this.showinfo();
-        });
+        if (this.type == "print") {
+          printDeleteMaterials(this.printId).then((res) => {
+            this.showinfo();
+          });
+        } else {
+          materialsDeleteMaterials(this.printId).then((res) => {
+            this.showinfo();
+          });
+        }
       }
     },
     // 获取市场审核员下拉框
@@ -826,10 +845,14 @@ export default {
           if (res.printMaterials) {
             this.importantList = res.printMaterials;
           }
-          this.form = res;
-          if (this.form.state != 10) {
+          if (res.state != 10) {
             this.editAble = true;
+            res.files.map((item) => {
+              item.fileseditAble = true;
+            });
           }
+          this.form = res;
+
           if (res.state != 10) {
             // 获取意见下拉框
             getList().then((opinionRes) => {
@@ -855,10 +878,14 @@ export default {
               },
             ];
           }
-          this.form = res;
-          if (this.form.state != 10) {
+          if (res.state != 10) {
             this.editAble = true;
+            res.files.map((item) => {
+              item.fileseditAble = true;
+            });
           }
+          this.form = res;
+
           if (res.state != 10) {
             // 获取意见下拉框
             getList().then((opinionRes) => {
@@ -880,10 +907,13 @@ export default {
           if (res.materialsInfo) {
             this.importantList = res.materialsInfo;
           }
-          this.form = res;
-          if (this.form.state != 10) {
+          if (res.state != 10) {
             this.editAble = true;
+            res.files.map((item) => {
+              item.fileseditAble = true;
+            });
           }
+          this.form = res;
           if (res.state != 10) {
             // 获取意见下拉框
             getList().then((opinionRes) => {
@@ -984,7 +1014,9 @@ export default {
       this.loadingoption = loading;
       // this.importObj.type=this.type
     },
-    handleFail() {
+    handleFail(err, file, fileList) {
+      console.log('fileList',fileList);
+      fileList=[]
       this.loadingoption.close();
       this.$message.error("上传失败");
     },
@@ -1049,11 +1081,10 @@ export default {
         } else if (this.type == "design") {
           this.fileId = res.data.id;
           this.pictureFileList = [
-              {
-                fileName: res.data.fileName,
-              },
-            ];
-
+            {
+              fileName: res.data.fileName,
+            },
+          ];
         } else if (this.type == "poster") {
           this.importDateId = res.data;
           materialsMaterials(res.data).then((response) => {

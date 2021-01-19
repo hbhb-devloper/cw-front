@@ -10,14 +10,20 @@
         />
       </el-form-item>
       <el-form-item label="营业厅" prop="hallId">
-        <el-input
+        <el-select
           v-model="queryParams.hallId"
-          placeholder="请输入营业厅"
+          placeholder="请选择营业厅"
           clearable
           size="small"
           style="width: 200px"
-          @keyup.enter.native="handleQuery"
-        />
+        >
+          <el-option
+            v-for="dict in hallList"
+            :key="dict.id"
+            :label="dict.label"
+            :value="dict.id"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="日期" prop="time">
         <el-date-picker
@@ -189,6 +195,7 @@ import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 import { getToken } from "@/utils/auth";
 import { prefix } from "@/api/propaganda/propaganda";
 import { exportData1 } from "@/utils/export";
+import { getHallSelect } from "@/api/system/hall";
 export default {
   name: "Role",
   components: { Treeselect },
@@ -212,6 +219,8 @@ export default {
       timeOption: [],
       flag: true,
       checkerState: "",
+      // 营业厅下拉框
+      hallList: [],
     };
   },
   created() {
@@ -260,7 +269,7 @@ export default {
         cancelButtonText: "取消",
         type: "warning",
       }).then(function () {
-         let changeList = [];
+        let changeList = [];
         that.singleList.map((item) => {
           changeList.push({
             id: item.applicationDetailId,
@@ -273,10 +282,10 @@ export default {
             modifyAmount: item.modifyAmount,
           });
         });
-        let dataObj={
-          goodsReqVO:that.queryParams,
-          list:changeList
-        }
+        let dataObj = {
+          goodsReqVO: that.queryParams,
+          list: changeList,
+        };
         verifySave(dataObj).then((res) => {
           that.msgSuccess("保存成功");
           that.getList();
@@ -296,19 +305,21 @@ export default {
         that.singleList.map((item) => {
           changeList.push({
             id: item.applicationDetailId,
+            goodsId: item.goodsId,
             modifyAmount: item.modifyAmount,
           });
         });
         that.simplexList.map((item) => {
           changeList.push({
             id: item.applicationDetailId,
+            goodsId: item.goodsId,
             modifyAmount: item.modifyAmount,
           });
         });
-        let dataObj={
-          goodsReqVO:that.queryParams,
-          list:changeList
-        }
+        let dataObj = {
+          goodsReqVO: that.queryParams,
+          list: changeList,
+        };
         verifySubmit(dataObj).then((res) => {
           that.msgSuccess("提交成功");
           that.getList();
@@ -335,6 +346,10 @@ export default {
       resourceTreeByUN().then((response) => {
         this.deptOptions = response.list;
         this.queryParams.unitId = response.checked;
+        getHallSelect(response.checked).then((res) => {
+          // this.queryParams.hallId=res[0].id
+          this.hallList = res;
+        });
         goodsTime(this.queryParams.time).then((res) => {
           this.timeOption = res.goodsIndexList;
           this.$set(this.queryParams, "goodsIndex", res.goodsIndex);
@@ -367,7 +382,7 @@ export default {
     handleExport() {
       const queryParams = this.queryParams;
 
-      this.$confirm("是否确认导出发票管理的数据项?", "导出表格", {
+      this.$confirm("是否确认导出分公司汇总的数据项?", "导出表格", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
@@ -377,7 +392,7 @@ export default {
             getToken(),
             queryParams,
             `${prefix}/verify/export`,
-            "发票管理"
+            "分公司汇总"
           );
         })
         .then((response) => {

@@ -145,7 +145,6 @@
 
     <el-table v-loading="loading" :data="tableData">
       <el-table-column label="序号" type="index" align="center" />
-
       <el-table-column
         label="发票开具部门"
         prop="invoiceUnit"
@@ -158,11 +157,10 @@
           }}</span>
         </template>
       </el-table-column>
-
       <el-table-column
         label="客户经理"
         prop="clientManager"
-        width="100"
+        width="80"
         align="center"
       >
         <template slot-scope="scope">
@@ -171,11 +169,10 @@
           }}</span>
         </template>
       </el-table-column>
-
       <el-table-column
         label="发票金额（元）"
         prop="invoiceAmount"
-        width="120"
+        width="90"
         align="center"
       >
         <template slot-scope="scope">
@@ -184,11 +181,10 @@
           }}</span>
         </template>
       </el-table-column>
-
       <el-table-column
         label="单位编号"
         prop="unitNumber"
-        width="180"
+        width="120"
         align="center"
       >
         <template slot-scope="scope">
@@ -197,11 +193,10 @@
           }}</span>
         </template>
       </el-table-column>
-
       <el-table-column
         label="单位名称"
         prop="unitName"
-        width="180"
+        width="120"
         align="center"
       >
         <template slot-scope="scope">
@@ -210,19 +205,22 @@
           }}</span>
         </template>
       </el-table-column>
-
-      <el-table-column label="发票内容" prop="invoiceContent" align="center">
+      <el-table-column
+        label="发票内容"
+        prop="invoiceContent"
+        align="center"
+        width="100"
+      >
         <template slot-scope="scope">
           <span :class="scope.row.isCancellation ? 'red' : ''">{{
             scope.row.invoiceContent
           }}</span>
         </template>
       </el-table-column>
-
       <el-table-column
         label="办理业务"
         prop="business"
-        width="130"
+        width="100"
         align="center"
       >
         <template slot-scope="scope">
@@ -231,43 +229,58 @@
           }}</span>
         </template>
       </el-table-column>
-
-      <el-table-column label="欠费月份" prop="arrearageMonth" align="center">
+      <el-table-column
+        label="欠费月份"
+        prop="arrearageMonth"
+        align="center"
+        width="100"
+      >
         <template slot-scope="scope">
           <span :class="scope.row.isCancellation ? 'red' : ''">{{
             scope.row.arrearageMonth
           }}</span>
         </template>
       </el-table-column>
-
-      <el-table-column label="欠费金额" prop="arrearageMoney" align="center">
+      <el-table-column
+        label="欠费金额"
+        prop="arrearageMoney"
+        align="center"
+        width="100"
+      >
         <template slot-scope="scope">
           <span :class="scope.row.isCancellation ? 'red' : ''">{{
             scope.row.arrearageMoney
           }}</span>
         </template>
       </el-table-column>
-
-      <el-table-column label="计费号" prop="billingNumber" align="center">
+      <el-table-column
+        label="计费号"
+        prop="billingNumber"
+        align="center"
+        width="100"
+      >
         <template slot-scope="scope">
           <span :class="scope.row.isCancellation ? 'red' : ''">{{
             scope.row.billingNumber
           }}</span>
         </template>
       </el-table-column>
-
-      <el-table-column label="发票账户" prop="invoiceAccount" align="center">
+      <el-table-column
+        label="发票账户"
+        prop="invoiceAccount"
+        align="center"
+        width="100"
+      >
         <template slot-scope="scope">
           <span :class="scope.row.isCancellation ? 'red' : ''">{{
             scope.row.invoiceAccount
           }}</span>
         </template>
       </el-table-column>
-
       <el-table-column
         label="发票版本号"
         prop="versions"
-        width="130"
+        width="90"
         align="center"
       >
         <template slot-scope="scope">
@@ -276,19 +289,22 @@
           }}</span>
         </template>
       </el-table-column>
-
-      <el-table-column label="发票编号" prop="invoiceNumber" align="center">
+      <el-table-column
+        label="发票编号"
+        prop="invoiceNumber"
+        align="center"
+        width="90"
+      >
         <template slot-scope="scope">
           <span :class="scope.row.isCancellation ? 'red' : ''">{{
             scope.row.invoiceNumber
           }}</span>
         </template>
       </el-table-column>
-
       <el-table-column
         label="到账时间"
         prop="accountTime"
-        width="180"
+        width="120"
         align="center"
       >
         <template slot-scope="scope">
@@ -297,11 +313,10 @@
           }}</span>
         </template>
       </el-table-column>
-
       <el-table-column
         label="到账金额（元）"
         prop="accountMoney"
-        width="130"
+        width="110"
         align="center"
       >
         <template slot-scope="scope">
@@ -310,8 +325,12 @@
           }}</span>
         </template>
       </el-table-column>
-
-      <el-table-column label="开票人" prop="invoiceUser" align="center">
+      <el-table-column
+        label="开票人"
+        prop="invoiceUser"
+        align="center"
+        width="90"
+      >
         <template slot-scope="scope">
           <span :class="scope.row.isCancellation ? 'red' : ''">{{
             scope.row.invoiceUser
@@ -338,7 +357,7 @@
         prop="state"
         align="center"
         label="流程状态"
-        width="100"
+        width="80"
         fixed="right"
       >
         <template slot-scope="scope">
@@ -356,7 +375,7 @@
       </el-table-column>
 
       <el-table-column
-        width="100"
+        width="80"
         prop="itemName"
         align="center"
         label="发起流程"
@@ -387,7 +406,7 @@
       <el-table-column
         prop="itemName"
         align="center"
-        width="130"
+        width="120"
         label="操作"
         fixed="right"
       >
@@ -420,6 +439,7 @@
         prop="invoiceCreateTime"
         align="center"
         fixed="right"
+        width="80"
       >
         <template slot-scope="scope">
           <el-button
@@ -438,6 +458,7 @@
         prop="isCancellation"
         align="center"
         fixed="right"
+        width="80"
       >
         <template slot-scope="scope">
           <el-switch
@@ -533,7 +554,7 @@
               filterable
               placeholder="请选择单位编号"
               style="width: 100%"
-               remote
+              remote
               :remote-method="remoteMethod1"
               :loading="loading1"
               loading-text="请输入单位编号"
@@ -556,7 +577,9 @@
               clearable
               size="medium"
               style="width: 100%"
-              :disabled="parseInt(form.business) == 10 || parseInt(form.business) == 20"
+              :disabled="
+                parseInt(form.business) == 10 || parseInt(form.business) == 20
+              "
               @change="handleInvoiceContent"
             >
               <el-option
@@ -797,10 +820,11 @@ export default {
   data() {
     return {
       ActionUrl:
-        process.env.VUE_APP_GATEWAY_API + `${systemPrefix}/file/upload?bizType=30`,
+        process.env.VUE_APP_GATEWAY_API +
+        `${systemPrefix}/file/upload?bizType=30`,
       fileList: [],
       // 遮罩层
-      loading1:true,
+      loading1: true,
       loading: true,
       // 非多个禁用
       multiple: true,
@@ -823,7 +847,7 @@ export default {
       // 查询参数
       queryParams: {
         pageNum: 1,
-        pageSize: 20,
+        pageSize: 10,
       },
 
       // 表单参数
@@ -843,7 +867,7 @@ export default {
           { required: true, message: "显示顺序不能为空", trigger: "blur" },
         ],
       },
-      morenUnit:undefined,
+      morenUnit: undefined,
       StateOptions: [],
       InvoiceContentList: [],
       invoiceDisabel: false,
@@ -878,23 +902,22 @@ export default {
     this.handleGetStatusList();
   },
   methods: {
-    deBounce(fn, delay)  {
-        let timer = null;
-        return function() {
-            if (timer) {
-                clearTimeout(timer);
-
-            }
-            timer = setTimeout(function() {
-                fn();
-            }, delay)
+    deBounce(fn, delay) {
+      let timer = null;
+      return function () {
+        if (timer) {
+          clearTimeout(timer);
         }
+        timer = setTimeout(function () {
+          fn();
+        }, delay);
+      };
     },
     getUnitList(query) {
       this.loading1 = true;
       fundSelect(query).then((res) => {
         console.log("fundSelect", res);
-        this.UnitList=res
+        this.UnitList = res;
         this.loading1 = false;
       });
     },
@@ -902,7 +925,7 @@ export default {
       this.loading1 = true;
       fundSelect1(query).then((res) => {
         console.log("fundSelect1", res);
-        this.UnitList=res
+        this.UnitList = res;
         this.loading1 = false;
       });
     },
@@ -917,7 +940,7 @@ export default {
     getMenuTreeselect() {
       resourceTreeByUN().then((response) => {
         this.queryParams.unitId = response.checked;
-        this.morenUnit=response.checked
+        this.morenUnit = response.checked;
         this.deptOptions = response.list;
         this.getList();
       });
@@ -1000,7 +1023,7 @@ export default {
       this.queryParams = {
         unitId: this.morenUnit,
         pageNum: 1,
-        pageSize: 20,
+        pageSize: 10,
       };
       this.handleQuery();
     },
@@ -1055,7 +1078,7 @@ export default {
           fileName: res.data.data.fileName,
           fileSize: res.data.data.fileSize,
         });
-        this.form.files=this.fileList
+        this.form.files = this.fileList;
         // .push({
         //   fileId: res.data.data.id,
         //   fileName: res.data.data.fileName,
@@ -1141,7 +1164,7 @@ export default {
         cancelButtonText: "取消",
         type: "warning",
       }).then(() => {
-        console.log('row',row);
+        console.log("row", row);
         fileDelete(row.id).then((res) => {
           this.fileList = this.fileList.filter((item) => {
             if (item.fileId != row.fileId) {

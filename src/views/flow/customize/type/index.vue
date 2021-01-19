@@ -128,7 +128,7 @@
 </template>
 
 <script>
-import { listType, addType, updateType, delFlowType} from "@/api/flow/type";
+import { listType, addType, updateType, delFlowType , listTypeById} from "@/api/flow/type";
 
 export default {
   name: "Flowtype",
@@ -236,11 +236,11 @@ export default {
     handleUpdate(row) {
       this.reset();
       const typeId = row.id || this.ids;
-      //   getRole(typeId).then(response => {
-      this.form = row;
+        // listTypeById({flowNodeId:typeId}).then(response => {
+      this.form =JSON.parse(JSON.stringify(row));
       this.open = true;
       this.title = "修改类型";
-      //   });
+        // });
     },
 
     /** 提交按钮 */

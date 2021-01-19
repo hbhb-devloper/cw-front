@@ -5,10 +5,16 @@
         v-for="(item, index) in flowList"
         :key="index"
         :span="8"
-        style="height: 175px"
+        style="
+          width: 300px;
+          margin: 10px;
+          height: 190px;
+          border: 2px solid red;
+          border-radius: 10px;
+        "
       >
         <div class="flowItem">
-          <el-form label-width="140px">
+          <el-form label-width="auto" label-position="left">
             <el-form-item :label="item.roleDesc">
               <el-select
                 v-model="item.approver.value"
@@ -98,17 +104,24 @@
           :options="deptOptions"
           placeholder="选择分公司"
           style="width: 200px"
+          @input="changeUnit"
         />
       </el-form-item>
       <el-form-item label="营业厅" prop="hallId">
-        <el-input
+        <el-select
           v-model="queryParams.hallId"
-          placeholder="请输入营业厅"
+          placeholder="请选择营业厅"
           clearable
           size="small"
           style="width: 200px"
-          @keyup.enter.native="handleQuery"
-        />
+        >
+          <el-option
+            v-for="dict in hallList"
+            :key="dict.id"
+            :label="dict.label"
+            :value="dict.id"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="日期" prop="time">
         <el-date-picker
@@ -145,7 +158,11 @@
           @click="handleQuery"
           >搜索</el-button
         >
-        <el-button icon="el-icon-refresh" size="mini" @click="handleLaunch" :disabled="!flag"
+        <el-button
+          icon="el-icon-refresh"
+          size="mini"
+          @click="handleLaunch"
+          :disabled="!flag"
           >发起审批</el-button
         >
       </el-form-item>
@@ -166,15 +183,15 @@
       <el-table-column align="center" label="计量单位" prop="unit" />
       <el-table-column align="center" label="申请数量" prop="amount" /> -->
       <el-table-column
-          align="center"
-          label="业务单式申请数量"
-          prop="simplexAmount"
-        />
-         <el-table-column
-          align="center"
-          label="宣传单页申请数量"
-          prop="singleAmount"
-        />
+        align="center"
+        label="业务单式申请数量"
+        prop="simplexAmount"
+      />
+      <el-table-column
+        align="center"
+        label="宣传单页申请数量"
+        prop="singleAmount"
+      />
     </el-table>
 
     <!-- 查看明细详情弹窗 -->
@@ -266,6 +283,7 @@ import { goodsTime } from "@/api/propaganda/flyer";
 import { FlowTypeList } from "@/api/flow/list.js";
 import { getList } from "@/api/flow/opinion.js";
 import { resourceTreeByUN } from "@/api/system/unit";
+import { getHallSelect } from "@/api/system/hall";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 export default {
@@ -274,7 +292,7 @@ export default {
   data() {
     return {
       // 判断条件
-      flag:true,
+      flag: true,
       // 选择列表
       chooseForm: [],
       title: "",
@@ -303,6 +321,8 @@ export default {
       opinionList: [],
       LaunchId: undefined,
       batchNum: undefined,
+      // 营业厅下拉框
+      hallList: [],
     };
   },
   filters: {
@@ -317,8 +337,16 @@ export default {
   created() {
     // this.getList();
     this.getTreeselect();
+    console.log("this.$route.query.batchNum", this.$route.query.batchNum);
   },
   methods: {
+    // 改变unit的值
+    changeUnit(value) {
+      getHallSelect(value).then((res) => {
+        // this.queryParams.hallId = res[0].id;
+        this.hallList = res;
+      });
+    },
     //提交审批
     handleApprove(item, type) {
       if (!item.suggestion.value) {
@@ -341,7 +369,7 @@ export default {
       SubmitApprove(programObj).then((res) => {
         this.$message.success("提交成功");
         applicationFlow(this.batchNum).then((res) => {
-          this.flowList = res;
+          this.flowList = res.nodes;
         });
       });
     },
@@ -396,19 +424,39 @@ export default {
     /** 查询部门下拉树结构 */
     getTreeselect() {
       var date = new Date();
-      this.$set(
-        this.queryParams,
-        "time",
-        date.getFullYear() +
+      if (this.$route.query.batchNum) {
+        let month =
+          this.$route.query.batchNum.slice(0, 4) +
           "-" +
-          (date.getMonth() + 1).toString().padStart(2, "0")
-      );
+          this.$route.query.batchNum.slice(4, 6);
+        this.$set(this.queryParams, "time", month);
+      } else {
+        this.$set(
+          this.queryParams,
+          "time",
+          date.getFullYear() +
+            "-" +
+            (date.getMonth() + 1).toString().padStart(2, "0")
+        );
+      }
       resourceTreeByUN().then((response) => {
         this.deptOptions = response.list;
-        this.queryParams.unitId = response.checked;
+        if (this.$route.query.batchNum) {
+          this.queryParams.unitId = Number(this.$route.query.unitId);
+        } else {
+          this.queryParams.unitId = response.checked;
+        }
+        getHallSelect(response.checked).then((res) => {
+          this.hallList = res;
+        });
         goodsTime(this.queryParams.time).then((res) => {
           this.timeOption = res.goodsIndexList;
-          this.$set(this.queryParams, "goodsIndex", res.goodsIndex);
+          if (this.$route.query.batchNum) {
+            let index = Number(this.$route.query.batchNum.slice(6));
+            this.$set(this.queryParams, "goodsIndex", index);
+          } else {
+            this.$set(this.queryParams, "goodsIndex", res.goodsIndex);
+          }
           this.getList();
         });
       });
@@ -417,12 +465,11 @@ export default {
     getList() {
       this.loading = true;
       applicationGoods(this.queryParams).then((response) => {
-        this.flag=response.flag
+        this.flag = response.flag;
         this.GoodsList = response.list;
         this.loading = false;
         this.batchNum = response.batchNum;
         applicationFlow(response.batchNum).then((res) => {
-          console.log("applicationFlow", res);
           this.flowList = res.nodes;
           // 获取意见下拉框
           getList().then((res) => {
@@ -481,9 +528,11 @@ export default {
   font-size: 18px;
 }
 .flowItem {
+  margin: 10px;
   padding-right: 10px;
-  border-right: 1px solid #e6e6e6;
+  // border-right: 1px solid #e6e6e6;
   height: 100%;
+  padding-bottom: 10px;
   .flowItemDown {
     display: flex;
     flex-direction: row;

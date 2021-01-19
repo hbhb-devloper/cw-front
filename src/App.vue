@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-10-30 09:20:31
  * @LastEditors: CYZ
- * @LastEditTime: 2020-11-05 17:03:53
+ * @LastEditTime: 2021-01-12 13:55:41
 -->
 <template>
   <div id="app">
@@ -27,4 +27,7 @@ export default  {
   margin: 0 auto;
   right: 0;
 }
+/* ::-webkit-scrollbar {
+  display: none;
+} */
 </style>

@@ -1,3 +1,11 @@
+<!--
+ * @Descripttion: 
+ * @version: 
+ * @Author: CYZ
+ * @Date: 2021-01-04 18:26:04
+ * @LastEditors: CYZ
+ * @LastEditTime: 2021-01-06 14:57:35
+-->
 <template>
   <div class="app-container">
     <el-row :gutter="10" class="mb8">
@@ -61,19 +69,6 @@ export default {
       loading: true,
       // 角色表格数据
       controlList: [],
-      // 状态数据字典
-      statusOptions: [
-        { dictValue: 1, dictLabel: "正常" },
-        { dictValue: 2, dictLabel: "停用" },
-      ],
-      queryParams: {
-        pageNum: 1,
-        pageSize: 10,
-        roleType: "UN",
-        roleName: undefined,
-        roleKey: undefined,
-        state: undefined,
-      },
     };
   },
   created() {
@@ -82,7 +77,6 @@ export default {
   methods: {
     save() {
       materialsPut(this.controlList).then((res) => {
-        console.log("materialsPut", res);
         this.$message.success("保存成功");
         this.getList();
       });
@@ -91,42 +85,9 @@ export default {
     getList() {
       this.loading = true;
       materialsList().then((response) => {
-        // response.map((item) => {
-        //   if (item.proportion) {
-        //     item.proportion = item.proportion * 100;
-        //   }
-        // });
         this.controlList = response;
         this.loading = false;
       });
-    },
-
-    /** 搜索按钮操作 */
-    handleQuery() {
-      this.queryParams.pageNum = 1;
-      this.getList();
-    },
-    /** 重置按钮操作 */
-    resetQuery() {
-      this.dateRange = [];
-      this.resetForm("queryForm");
-      this.handleQuery();
-    },
-    /** 导出按钮操作 */
-    handleExport() {
-      const queryParams = this.queryParams;
-      this.$confirm("是否确认导出所有角色数据项?", "警告", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
-      })
-        .then(function () {
-          return exportRole(queryParams);
-        })
-        .then((response) => {
-          this.download(response.msg);
-        })
-        .catch(function () {});
     },
   },
 };

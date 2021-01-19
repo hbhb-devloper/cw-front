@@ -163,7 +163,7 @@
             size="mini"
             type="text"
             @click="handleDelete(scope.row)"
-            :disabled="scope.row.state != 10"
+            :disabled="!(scope.row.state == 10 || scope.row.state == 30)"
             >删除</el-button
           >
         </template>
@@ -187,6 +187,7 @@
             :placeholder="
               LaunchOption.length == 0 ? '该单位没有流程类型' : '请选择'
             "
+            disabled
           >
             <el-option
               v-for="item in LaunchOption"
@@ -250,13 +251,14 @@ export default {
       LaunchId: undefined,
       printId: undefined,
       userId: undefined,
+      morenUnit: undefined,
     };
   },
   created() {
-    this.getTreeselect();
     this.getDicts("fund", "invoice_status").then((response) => {
       // getBusiness().then((res) => {
       this.invoiceStatue = response;
+      this.getTreeselect();
     });
   },
   methods: {
@@ -280,7 +282,7 @@ export default {
         this.isLaunch = false;
         this.LaunchId = undefined;
         this.$router.push(
-          `/propaganda/propagandaAdd?id=${this.printId}&type=design`
+          `/propaganda/propagandaAdd?id=${this.printId}&type=printed`
         );
         this.$message.success("流程发起成功！");
       });
@@ -304,6 +306,7 @@ export default {
       resourceTreeByUN().then((response) => {
         this.deptOptions = response.list;
         this.queryParams.unitId = response.checked;
+        this.morenUnit = response.checked;
         this.getList();
       });
     },
@@ -336,8 +339,8 @@ export default {
     },
     /** 重置按钮操作 */
     resetQuery() {
-      this.dateRange = [];
       this.resetForm("queryForm");
+      this.queryParams.unitId = this.morenUnit;
       this.handleQuery();
     },
     /** 导出按钮操作 */

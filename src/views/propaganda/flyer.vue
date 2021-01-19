@@ -10,14 +10,20 @@
         />
       </el-form-item>
       <el-form-item label="营业厅" prop="hallId">
-        <el-input
+        <el-select
           v-model="queryParams.hallId"
-          placeholder="请输入营业厅"
+          placeholder="请选择营业厅"
           clearable
           size="small"
           style="width: 200px"
-          @keyup.enter.native="handleQuery"
-        />
+        >
+          <el-option
+            v-for="dict in hallList"
+            :key="dict.id"
+            :label="dict.label"
+            :value="dict.id"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="日期" prop="time">
         <el-date-picker
@@ -64,11 +70,11 @@
       </el-form-item>
     </el-form>
     <div class="notice">
-      <marquee  behavior="scroll"  direction="left" bgcolor="#fdf6ec" width="60%">
-            {{contents}}
-        </marquee>
+      <marquee behavior="scroll" direction="left" bgcolor="#fdf6ec" width="60%">
+        {{ contents }}
+      </marquee>
     </div>
-    
+
     <el-row>
       <el-col
         :span="5"
@@ -78,10 +84,11 @@
         :offset="1"
       >
         <el-card :body-style="{ padding: '0px' }">
-          <img
-            src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png"
-            class="image"
-            @click="showPic"
+          <el-image
+            :src="item.pic.filePath"
+            @click="showPic(item.pic.filePath)"
+            style="width: 100%; height: 280px"
+            fit="fill"
           />
           <div style="padding: 14px">
             <div>{{ item.goodsName }}</div>
@@ -109,6 +116,7 @@
 import { goodsList, goodsTime, goodsApply } from "@/api/propaganda/flyer";
 import { resourceTreeByUN } from "@/api/system/unit";
 import Treeselect from "@riophae/vue-treeselect";
+import { getHallSelect } from "@/api/system/hall";
 
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 export default {
@@ -130,7 +138,7 @@ export default {
       deptOptions: undefined,
       // 查询参数
       queryParams: {
-        hallId: 1,
+        hallId: undefined,
       },
       // 表单参数
       form: {},
@@ -138,7 +146,9 @@ export default {
       timeOption: [],
       editAble: true,
       // 宣传单页公告
-      contents:undefined
+      contents: undefined,
+      // 营业厅下拉框
+      hallList: [],
     };
   },
   created() {
@@ -178,6 +188,10 @@ export default {
       resourceTreeByUN().then((response) => {
         this.deptOptions = response.list;
         this.queryParams.unitId = response.checked;
+        getHallSelect(response.checked).then((res) => {
+          this.hallList = res;
+          this.queryParams.hallId=res[0].id
+        });
         goodsTime(this.queryParams.time).then((res) => {
           this.timeOption = res.goodsIndexList;
           if (res.goodsIndex) {
@@ -189,9 +203,8 @@ export default {
         });
       });
     },
-    showPic() {
-      this.dialogImageUrl =
-        "https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png";
+    showPic(pathUrl) {
+      this.dialogImageUrl = pathUrl;
       this.dialogVisible = true;
     },
     /** 查询商品列表 */
@@ -200,7 +213,7 @@ export default {
         this.editAble = response.flag;
         this.goodsList = response.list;
         this.total = response.count;
-        this.contents=response.contents
+        this.contents = response.contents;
       });
     },
     /** 搜索按钮操作 */
@@ -254,7 +267,7 @@ export default {
   flex-wrap: wrap;
   justify-content: space-around;
 }
-.notice{
+.notice {
   display: flex;
   align-items: center;
   justify-content: center;

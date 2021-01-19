@@ -73,6 +73,7 @@
           icon="el-icon-download"
           size="mini"
           @click="openCenterDialogVisible"
+          v-hasPermi="['relocation:receivables:important']"
           >导入</el-button
         >
       </el-col>
@@ -168,7 +169,7 @@
             type="text"
             icon="el-icon-edit"
             @click="handleAdd(scope.row)"
-            >添加</el-button
+            >收款</el-button
           >
         </template>
       </el-table-column>

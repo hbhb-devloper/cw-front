@@ -70,6 +70,7 @@
           icon="el-icon-download"
           size="mini"
           @click="openCenterDialogVisible"
+          v-hasPermi="['relocation:invoice:important']"
           >导入</el-button
         >
       </el-col>
@@ -118,8 +119,7 @@
         width="150"
         align="center"
       />
-      <el-table-column label="收款情况" prop="isReceived" width="150" align="center" />
-      <el-table-column label="已收" prop="received" width="150" align="center" />
+      
       <el-table-column
         label="备注格式：合同号；区县；款项性质；项目信息"
         prop="remake"
@@ -136,7 +136,9 @@
         align="center"
       />
       <el-table-column label="客户经理" prop="manager" width="150" align="center" />
-      <el-table-column label="描述" prop="describe" width="150" align="center" />
+      <!-- <el-table-column label="描述" prop="describe" width="150" align="center" /> -->
+      <el-table-column label="回款情况" prop="isReceived" width="150" align="center" />
+      <el-table-column label="回款金额" prop="received" width="150" align="center" />
       <el-table-column
         label="操作"
         align="center"
@@ -291,8 +293,8 @@
                 clearable
                 style="width: 220px"
               >
-                <el-option :key="1" label="蓝字" :value="1" />
-                <el-option :key="0" label="红字" :value="0" />
+                <el-option :key="1" label="红字" :value="1" />
+                <el-option :key="2" label="蓝字" :value="2" />
               </el-select>
             </el-form-item>
           </el-col>
@@ -320,11 +322,11 @@
               />
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <!-- <el-col :span="12">
             <el-form-item label="描述" prop="describe">
               <el-input v-model="form.describe" placeholder="请输入描述" />
             </el-form-item>
-          </el-col>
+          </el-col> -->
         </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -635,7 +637,6 @@ export default {
       this.$refs["form"].validate((valid) => {
         if (valid) {
           this.form.remake = this.form.remake.replace(/\;/g, "；");
-          console.log("this.form.remake", this.form.remake);
           if (this.form.id != undefined) {
             updateInvoice(this.form)
               .then((response) => {
