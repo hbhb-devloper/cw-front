@@ -98,16 +98,16 @@
       </el-col>
     </el-row>
     <el-form :model="queryParams" ref="queryForm" :inline="true">
-      <el-form-item label="单位" prop="unitId">
+      <el-form-item label="归属单位" prop="unitId">
         <treeselect
           v-model="queryParams.unitId"
           :options="deptOptions"
-          placeholder="选择分公司"
+          placeholder="选择归属单位"
           style="width: 200px"
           @input="changeUnit"
         />
       </el-form-item>
-      <el-form-item label="营业厅" prop="hallId">
+      <!-- <el-form-item label="营业厅" prop="hallId">
         <el-select
           v-model="queryParams.hallId"
           placeholder="请选择营业厅"
@@ -122,7 +122,7 @@
             :value="dict.id"
           />
         </el-select>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="日期" prop="time">
         <el-date-picker
           v-model="queryParams.time"
@@ -368,7 +368,7 @@ export default {
       programObj.id = item.id;
       SubmitApprove(programObj).then((res) => {
         this.$message.success("提交成功");
-        applicationFlow(this.batchNum).then((res) => {
+        applicationFlow(this.batchNum,this.queryParams.unitId).then((res) => {
           this.flowList = res.nodes;
         });
       });
@@ -469,7 +469,7 @@ export default {
         this.GoodsList = response.list;
         this.loading = false;
         this.batchNum = response.batchNum;
-        applicationFlow(response.batchNum).then((res) => {
+        applicationFlow(response.batchNum,this.queryParams.unitId).then((res) => {
           this.flowList = res.nodes;
           // 获取意见下拉框
           getList().then((res) => {

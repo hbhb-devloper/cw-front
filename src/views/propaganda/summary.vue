@@ -138,7 +138,7 @@
             type="number"
             v-model="scope.row.modifyAmount"
             placeholder="修改后申请数量"
-            :disabled="!flag"
+            :disabled="scope.row.state == 1 || scope.row.state == 2"
           ></el-input>
         </template>
       </el-table-column>
