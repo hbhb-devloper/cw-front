@@ -35,6 +35,14 @@ export function categoryDetail(id) {
         method: 'get',
     })
 }
+// 跟据管理内容获取报表名称信息
+export function categoryName(query) {
+    return request({
+        url: `${prefix}/category/name`,
+        method: 'get',
+        params: query
+    })
+}
 
 // 报表名称内容分页列表
 export function propertyList(query) {

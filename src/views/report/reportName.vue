@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2021-01-06 10:24:22
  * @LastEditors: CYZ
- * @LastEditTime: 2021-01-19 14:55:05
+ * @LastEditTime: 2021-01-20 14:36:11
 -->
 <!--
  * @Descripttion: 
@@ -459,11 +459,11 @@ export default {
       // 编报范围下拉框
       scopeOption: [
         {
-          id: 0,
+          id: 1,
           label: "分公司",
         },
         {
-          id: 1,
+          id: 2,
           label: "营业厅",
         },
       ],
@@ -492,6 +492,9 @@ export default {
     this.getList();
     this.getManageSelect();
     this.getFlowTypeList();
+    this.getDicts("report", "report_period").then((response) => {
+      this.periodOption = response;
+    });
   },
   methods: {
     // 根据启用状态显示不同的颜色
