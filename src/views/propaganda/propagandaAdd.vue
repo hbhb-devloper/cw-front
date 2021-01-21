@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-12-22 10:05:30
  * @LastEditors: CYZ
- * @LastEditTime: 2021-01-19 15:11:00
+ * @LastEditTime: 2021-01-21 10:55:12
 -->
 <template>
   <div class="app-container">
@@ -961,34 +961,46 @@ export default {
           }
           if (this.form.id != undefined) {
             if (this.type == "printed") {
-              printUpdate(this.form).then((response) => {
-                this.msgSuccess("修改成功");
-                this.open = false;
-                this.fileList = [];
-                this.showinfo();
-                this.$router.go(-1);
-              });
+              if (this.importantList.length < 1) {
+                this.$message.error("请上传印刷品模板");
+              } else {
+                printUpdate(this.form).then((response) => {
+                  this.msgSuccess("修改成功");
+                  this.open = false;
+                  this.fileList = [];
+                  this.showinfo();
+                  this.$router.go(-1);
+                });
+              }
             } else if (this.type == "design") {
-              pictureUpdate(this.form).then((response) => {
-                this.msgSuccess("修改成功");
-                this.open = false;
-                this.fileList = [];
-                this.showinfo();
-                this.$router.go(-1);
-              });
+              if (this.pictureFileList.length < 1) {
+                this.$message.error("请上传宣传画面模板");
+              } else {
+                pictureUpdate(this.form).then((response) => {
+                  this.msgSuccess("修改成功");
+                  this.open = false;
+                  this.fileList = [];
+                  this.showinfo();
+                  this.$router.go(-1);
+                });
+              }
             } else if (this.type == "poster") {
-              materialsUpdate(this.form).then((response) => {
-                this.msgSuccess("修改成功");
-                this.open = false;
-                this.fileList = [];
-                this.showinfo();
-                this.$router.go(-1);
-              });
+              if (this.importantList.length < 1) {
+                this.$message.error("请上传物料制作模板");
+              } else {
+                materialsUpdate(this.form).then((response) => {
+                  this.msgSuccess("修改成功");
+                  this.open = false;
+                  this.fileList = [];
+                  this.showinfo();
+                  this.$router.go(-1);
+                });
+              }
             }
           } else {
             if (this.type == "printed") {
               if (this.importantList.length < 1) {
-                this.$message.error("请上传附件");
+                this.$message.error("请上传印刷品模板");
               } else {
                 printAdd(this.form).then((response) => {
                   this.msgSuccess("新增成功");
@@ -998,7 +1010,7 @@ export default {
               }
             } else if (this.type == "design") {
               if (this.pictureFileList.length < 1) {
-                this.$message.error("请上传附件");
+                this.$message.error("请上传宣传画面模板");
               } else {
                 pictureAdd(this.form).then((response) => {
                   this.msgSuccess("新增成功");
@@ -1008,7 +1020,7 @@ export default {
               }
             } else if (this.type == "poster") {
               if (this.importantList.length < 1) {
-                this.$message.error("请上传附件");
+                this.$message.error("请上传物料制作模板");
               } else {
                 materialsAdd(this.form).then((response) => {
                   this.msgSuccess("新增成功");

@@ -80,7 +80,6 @@
           icon="el-icon-refresh"
           size="mini"
           @click="save"
-          :disabled="!flag"
           >保存</el-button
         >
       </el-form-item>
