@@ -40,3 +40,11 @@ export function reportFlowApprove(data) {
         data:data
     })
 }
+// 报表管理内容详情附件列表
+export function reportInfo(query) {
+    return request({
+        url: `${prefix}/report/info`,
+        method: 'get',
+        params: query
+    })
+}

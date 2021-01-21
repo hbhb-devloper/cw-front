@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2021-01-06 10:22:55
  * @LastEditors: CYZ
- * @LastEditTime: 2021-01-20 16:29:08
+ * @LastEditTime: 2021-01-21 10:14:43
 -->
 <template>
   <div class="app-container">
@@ -126,9 +126,6 @@
           @click="handleQuery"
           >搜索</el-button
         >
-        <el-button icon="el-icon-refresh" size="mini" @click="openDialog"
-          >上报报表</el-button
-        >
       </el-form-item>
     </el-form>
     
@@ -136,10 +133,7 @@
     <el-table
       v-loading="loading"
       :data="reportList"
-      @selection-change="handleSelectionChange"
-      @row-click="showFlow"
     >
-      <el-table-column type="selection" width="50" align="center" />
       <el-table-column
         align="center"
         label="序号"
@@ -181,7 +175,9 @@
 <script>
 import { resourceTreeByUN } from "@/api/system/unit";
 import { getHallSelect } from "@/api/system/hall";
-import { reportUnitList } from "@/api/report/unitRepotr";
+import { reportUnitList } from "@/api/report/unitUpload";
+import { manageSelect } from "@/api/report/management";
+import { categoryName } from "@/api/report/reportName";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 export default {
@@ -224,6 +220,23 @@ export default {
     });
   },
   methods:{
+    /** 搜索按钮操作 */
+    handleQuery() {
+      this.queryParams.pageNum = 1;
+      this.getList();
+    },
+    /** 重置按钮操作 */
+    resetQuery() {
+      this.dateRange = [];
+      this.resetForm("queryForm");
+      this.handleQuery();
+    },
+    // 通过修改管理内容获取管理名称下拉框
+    changeManage(val) {
+      categoryName({ manageId: val }).then((res) => {
+        this.reportNameOptions = res;
+      });
+    },
       /** 查询报表列表 */
     getList() {
       this.loading = true;

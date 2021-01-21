@@ -286,6 +286,29 @@
           </div>
         </el-col>
       </el-row>
+      <el-table :data="detailFileList" v-if="flowList
+      "> <el-table-column
+      type="index"
+      width="50">
+    </el-table-column>
+          <el-table-column align="center" label="文件名称" prop="fileName" />
+          <el-table-column align="center" label="创建人" prop="createBy" />
+          <el-table-column align="center" label="创建时间" prop="createTime" />
+          <el-table-column align="center" label="文件大小" prop="fileSize" />
+          <el-table-column align="center" label="sheet数量" prop="fileName" />
+          <el-table-column
+            label="操作"
+            align="center"
+            width=""
+            class-name="small-padding fixed-width"
+          >
+            <template slot-scope="scope">
+              <el-button size="mini" type="text" @click="exportFile(scope.row)"
+                >查看</el-button
+              >
+            </template>
+          </el-table-column>
+        </el-table>
       <el-form
         v-else
         :model="form"
@@ -461,6 +484,7 @@ import {
   reportDelete,
   reportFlowList,
   reportFlowApprove,
+  reportInfo
 } from "@/api/report/unitRepotr";
 import { manageSelect } from "@/api/report/management";
 import { categoryName } from "@/api/report/reportName";
@@ -534,6 +558,8 @@ export default {
       nodeName: undefined,
       // 选中流程id
       reportId: undefined,
+      // 报表详情文件列表
+      detailFileList:[]
     };
   },
   created() {
@@ -588,6 +614,9 @@ export default {
         this.flowList = res.nodes;
         this.open = true;
         this.title = "流程查看审批";
+        reportInfo({reportId:row.id}).then(response=>{
+          this.detailFileList=response
+        })
       });
     },
     // 多选框选中数据
