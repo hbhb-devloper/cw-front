@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-08-01 18:28:36
  * @LastEditors: CYZ
- * @LastEditTime: 2021-01-08 09:57:36
+ * @LastEditTime: 2021-01-21 16:09:09
  */
 import request from '@/utils/request'
 
@@ -13,6 +13,7 @@ import { prefix as systemPrefix } from '../system/system'
 import { prefix as budgetPrefix } from '../budget/budget'
 import { prefix as fundPrefix } from '../fund/fund'
 import { prefix as propagandaPrefix } from '../propaganda/propaganda'
+import { prefix as reportPrefix } from '../report/report'
 
 // 工作台模块统计
 export function getWorkList() {
@@ -169,6 +170,23 @@ export function getVerifySummary() {
 export function updateVerifyNotice(id) {
   return request1({
     url: `${propagandaPrefix}/verify/notice/${id}` ,
+    method: 'PUT'
+  })
+}
+
+
+
+// 获取登录用户报表的待办提醒
+export function getReportSummary() {
+  return request1({
+    url: `${reportPrefix}/report/notice/summary`,
+    method: 'get'
+  })
+}
+// 物料审核提醒消息为已读
+export function updateReportNotice(id) {
+  return request1({
+    url: `${reportPrefix}/report/notice/${id}` ,
     method: 'PUT'
   })
 }

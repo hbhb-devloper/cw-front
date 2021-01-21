@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-07-20 18:22:09
  * @LastEditors: CYZ
- * @LastEditTime: 2021-01-08 10:05:07
+ * @LastEditTime: 2021-01-21 18:17:00
 -->
 <template>
   <div class="dashboard-editor-container">
@@ -475,6 +475,8 @@ import {
   updateApplicationNotice,
   getVerifySummary,
   updateVerifyNotice,
+  getReportSummary,
+  updateReportNotice
 } from "@/api/workbench/workbench";
 import PanelGroup from "./dashboard/PanelGroup";
 
@@ -579,7 +581,9 @@ export default {
         } else if (row.noticeType == "物料审核") {
           this.$router.push(`/propaganda/materialconfirm`);
         }
-      }
+      } else if (this.module1 == 104) {
+        this.$router.push(`/report/unitRepotr?reportId=${row.reportId}`);
+      } 
     },
     gotoDetail1(row) {
       let that = this;
@@ -624,7 +628,19 @@ export default {
       } else if (module1 === 103) {
         this.open1 = true;
         this.getPropagandaSummary();
+      } else if (module1 === 104) {
+        this.open1 = true;
+        this.getReportSummary();
       }
+    },
+    getReportSummary() {
+      let that = this;
+      this.loading = true;
+      that.NoticetableData = [];
+      getReportSummary().then((Reportresponse) => {
+        that.NoticetableData = that.NoticetableData.concat(Reportresponse);
+        that.loading = false;
+      });
     },
     getPropagandaSummary() {
       let that = this;
@@ -790,6 +806,11 @@ export default {
             that.getWorkList();
           });
         }
+      }else if (this.module1 === 104) {
+        updateReportNotice(row.id).then((response) => {
+          that.getReportSummary();
+          that.getWorkList();
+        });
       }
     },
     /** 预算执行列表 */

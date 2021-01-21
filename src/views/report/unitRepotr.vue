@@ -559,7 +559,9 @@ export default {
       // 选中流程id
       reportId: undefined,
       // 报表详情文件列表
-      detailFileList:[]
+      detailFileList:[],
+      // 从工作台获取的报表id
+      reportId:undefined
     };
   },
   created() {
@@ -572,6 +574,18 @@ export default {
     this.getDicts("report", "report_approver_state").then((response) => {
       this.reportStateOption = response;
     });
+    this.reportId = this.$route.query.reportId;
+    if (this.reportId) {
+      reportFlowList(this.reportId).then((res) => {
+        this.nodeName = res.name;
+        this.flowList = res.nodes;
+        this.open = true;
+        this.title = "流程查看审批";
+        reportInfo({reportId:this.reportId}).then(response=>{
+          this.detailFileList=response
+        })
+      });
+    }
   },
   methods: {
     getopinion() {
