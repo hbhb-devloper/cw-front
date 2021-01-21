@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-12-22 10:05:30
  * @LastEditors: CYZ
- * @LastEditTime: 2021-01-21 10:55:12
+ * @LastEditTime: 2021-01-21 15:09:22
 -->
 <template>
   <div class="app-container">
@@ -603,6 +603,7 @@ import {
   materialsStatistics,
 } from "@/api/propaganda/poster";
 import { resourceTreeByUN } from "@/api/system/unit";
+import { dateFormat } from "@/utils/index";
 export default {
   name: "Role",
   data() {
@@ -676,30 +677,49 @@ export default {
     },
   },
   created() {
+    // this.name = this.$store.getters.nickName;
+    let date = new Date();
+    let time = dateFormat("YYYY-mm-dd HH:MM", date);
+    console.log("time", time);
     this.printId = this.$route.query.id;
-    // if (!this.printId) {
-    //   this.form.printName=
-    // }
+
+    let name = "";
+    let unitName = this.$store.getters.unitName;
+    let nameTime = dateFormat("YYYY/mm/dd", date);
     this.type = this.$route.query.type;
     if (this.type == "printed") {
       this.title = "印刷品";
+      name = "临时申请";
       this.getRoleList();
       if (this.printId) {
         this.showinfo();
+      }else {
+        this.form.printName=`${unitName}${name}${nameTime}`
       }
     } else if (this.type == "design") {
       this.title = "宣传画面";
+      name = "画面申请";
       if (this.printId) {
         this.showinfo();
+      }else {
+        this.form.pictureName=`${unitName}${name}${nameTime}`
       }
     } else if (this.type == "poster") {
       this.title = "物料制作";
+      name = "物料申请";
       if (this.printId) {
         this.showinfo();
       } else {
         this.getTreeselect();
+        this.form.materialsName=`${unitName}${name}${nameTime}`
       }
       // this.getBudgetList();
+    }
+
+    if (!this.printId) {
+      this.form.unitName = `${unitName}`;
+      this.form.nickName = this.$store.getters.nickName;
+      this.form.applyTime = time;
     }
   },
   methods: {
@@ -761,7 +781,7 @@ export default {
       if (typeof this.printId == "undefined") {
         this.importantList = [];
       } else {
-        if (this.type == "print") {
+        if (this.type == "printed") {
           printDeleteMaterials(this.printId).then((res) => {
             this.showinfo();
           });

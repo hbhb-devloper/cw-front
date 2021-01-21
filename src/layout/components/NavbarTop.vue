@@ -110,7 +110,7 @@ export default {
     this.handleNotice();
   },
   mounted() {
-    this.name =this.$store.getters.name
+    this.name =this.$store.getters.nickName
     this.startMove();
   },
   methods: {

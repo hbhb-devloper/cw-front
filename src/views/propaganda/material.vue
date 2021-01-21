@@ -133,6 +133,7 @@
               style="width: 50%"
               :src="publicityForm.file.filePath"
               fit="cover"
+              @click.native="document.body.style.overflow = ''"
             ></el-image>
           </el-form-item>
         </el-form>
@@ -660,6 +661,7 @@ export default {
         hasNum: false,
         hasSeal: false,
       };
+      this.hideUploadEdit=false
       this.fileList = [];
       this.resetForm("form");
     },
