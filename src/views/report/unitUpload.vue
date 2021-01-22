@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2021-01-06 10:22:55
  * @LastEditors: CYZ
- * @LastEditTime: 2021-01-22 14:50:23
+ * @LastEditTime: 2021-01-22 16:22:37
 -->
 <template>
   <div class="app-container">
@@ -18,7 +18,11 @@
           @input="changeUnit"
         />
       </el-form-item>
-      <el-form-item label="营业厅" prop="hallId">
+      <el-form-item
+        label="营业厅"
+        prop="hallId"
+        v-if="typeName == 'HallUpload'"
+      >
         <el-select
           v-model="queryParams.hallId"
           placeholder="请选择营业厅"
@@ -221,13 +225,12 @@ export default {
       dataType: undefined,
       // 旬、季度、半年下拉框
       reportTheDays: [],
-      // // 季度下拉框
-      // reportSeason: [],
-      // // 半年下拉框
-      // reportHalfYear: [],
+      // 页面类型
+      typeName: undefined,
     };
   },
   created() {
+    this.typeName = this.$route.name;
     this.getTreeselect();
     // this.getDicts("report", "report_period").then((response) => {
     //   this.periodOption = response;
@@ -309,7 +312,9 @@ export default {
     // 改变unit的值
     changeUnit(value) {
       getHallSelect(value).then((res) => {
-        this.queryParams.hallId = res[0].id;
+        if (this.typeName == "HallUpload") {
+          this.queryParams.hallId = res[0].id;
+        }
         this.hallList = res;
       });
     },
@@ -319,7 +324,9 @@ export default {
         this.deptOptions = response.list;
         this.queryParams.unitId = response.checked;
         getHallSelect(response.checked).then((res) => {
-          this.queryParams.hallId = res[0].id;
+          if (this.typeName == "HallUpload") {
+            this.queryParams.hallId = res[0].id;
+          }
           this.hallList = res;
           manageSelect().then((res) => {
             this.manageOptions = res;

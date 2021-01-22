@@ -10,7 +10,7 @@
           @input="changeUnit"
         />
       </el-form-item>
-      <el-form-item label="营业厅" prop="hallId">
+      <el-form-item label="营业厅" prop="hallId" v-if="typeName=='HallRepotr'">
         <el-select
           v-model="queryParams.hallId"
           placeholder="请选择营业厅"
@@ -559,9 +559,12 @@ export default {
       detailFileList: [],
       // 从工作台获取的报表id
       reportId: undefined,
+      // 页面类型
+      typeName:undefined
     };
   },
   created() {
+    this.typeName = this.$route.name;
     this.getopinion();
     this.getTreeselect();
     this.getManageSelect();
@@ -649,7 +652,9 @@ export default {
     // 改变unit的值
     changeUnit(value) {
       getHallSelect(value).then((res) => {
-        this.queryParams.hallId = res[0].id;
+        if (this.typeName == "HallRepotr") {
+            this.queryParams.hallId = res[0].id;
+          }
         this.hallList = res;
       });
     },
@@ -763,7 +768,9 @@ export default {
         this.deptOptions = response.list;
         this.queryParams.unitId = response.checked;
         getHallSelect(response.checked).then((res) => {
-          this.queryParams.hallId = res[0].id;
+          if (this.typeName == "HallRepotr") {
+            this.queryParams.hallId = res[0].id;
+          }
           this.hallList = res;
           this.getList();
         });
