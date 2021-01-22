@@ -22,14 +22,28 @@
         </el-select>
       </el-form-item> -->
       <el-form-item>
-        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+        <el-button
+          type="primary"
+          icon="el-icon-search"
+          size="mini"
+          @click="handleQuery"
+          >搜索</el-button
+        >
+        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery"
+          >重置</el-button
+        >
       </el-form-item>
     </el-form>
 
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
-        <el-button type="primary" icon="el-icon-plus" size="mini" @click="handleAdd">新增</el-button>
+        <el-button
+          type="primary"
+          icon="el-icon-plus"
+          size="mini"
+          @click="handleAdd"
+          >新增</el-button
+        >
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -39,7 +53,8 @@
           :disabled="single"
           @click="handleUpdate"
           v-if="false"
-        >修改</el-button>
+          >修改</el-button
+        >
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -49,7 +64,8 @@
           :disabled="multiple"
           @click="handleDelete"
           v-if="false"
-        >删除</el-button>
+          >删除</el-button
+        >
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -58,13 +74,23 @@
           size="mini"
           @click="handleExport"
           v-if="false"
-        >导出</el-button>
+          >导出</el-button
+        >
       </el-col>
     </el-row>
 
-    <el-table v-loading="loading" :data="typeList" @selection-change="handleSelectionChange">
+    <el-table
+      v-loading="loading"
+      :data="typeList"
+      @selection-change="handleSelectionChange"
+    >
       <!-- <el-table-column type="selection" width="55" align="center" /> -->
-      <el-table-column label="类型标识号" prop="id" width="120" align="center" />
+      <el-table-column
+        label="类型标识号"
+        prop="id"
+        width="120"
+        align="center"
+      />
       <el-table-column
         label="类型名称"
         prop="flowTypeName"
@@ -72,24 +98,50 @@
         width="150"
         align="center"
       />
-      <el-table-column label="显示顺序" prop="sortNum" width="100" align="center" />
-      <el-table-column label="功能模块" prop="module" width="100" align="center" />
-      <el-table-column label="备注" prop="remark" :show-overflow-tooltip="true" align="center" />
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column
+        label="显示顺序"
+        prop="sortNum"
+        width="100"
+        align="center"
+      />
+      <el-table-column
+        label="功能模块"
+        prop="moduleName"
+        width="100"
+        align="center"
+      />
+      <el-table-column
+        label="备注"
+        prop="remark"
+        :show-overflow-tooltip="true"
+        align="center"
+      />
+      <el-table-column
+        label="操作"
+        align="center"
+        class-name="small-padding fixed-width"
+      >
         <template slot-scope="scope">
-          <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)">修改</el-button>
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-edit"
+            @click="handleUpdate(scope.row)"
+            >修改</el-button
+          >
           <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
-          >删除</el-button>
+            >删除</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
 
     <pagination
-      v-show="total>0"
+      v-show="total > 0"
       :total="total"
       :page.sync="queryParams.pageNum"
       :limit.sync="queryParams.pageSize"
@@ -104,19 +156,28 @@
         </el-form-item>
         <el-form-item label="功能模块" prop="module">
           <el-select v-model="form.module" placeholder="请选择功能模块" style>
-          <el-option
-            v-for="item in moduleOptions"
-            :value="item.value"
-            :label="item.label"
-            :key="item.value"
-          ></el-option>
-        </el-select>
+            <el-option
+              v-for="item in moduleOptions"
+              :value="item.value"
+              :label="item.label"
+              :key="item.value"
+            ></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="显示顺序" prop="sortNum">
-          <el-input-number v-model="form.sortNum" controls-position="right" :min="0" :max="9999" />
+          <el-input-number
+            v-model="form.sortNum"
+            controls-position="right"
+            :min="0"
+            :max="9999"
+          />
         </el-form-item>
         <el-form-item label="备注">
-          <el-input v-model="form.remark" type="textarea" placeholder="请输入内容"></el-input>
+          <el-input
+            v-model="form.remark"
+            type="textarea"
+            placeholder="请输入内容"
+          ></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -128,7 +189,13 @@
 </template>
 
 <script>
-import { listType, addType, updateType, delFlowType , listTypeById} from "@/api/flow/type";
+import {
+  listType,
+  addType,
+  updateType,
+  delFlowType,
+  listTypeById,
+} from "@/api/flow/type";
 
 export default {
   name: "Flowtype",
@@ -173,14 +240,13 @@ export default {
           { required: true, message: "显示顺序不能为空", trigger: "blur" },
         ],
       },
-      moduleOptions:[]
+      moduleOptions: [],
     };
   },
   created() {
-    this.getList();
-      this.getDicts("module", "module").then((response) => {
-      
+    this.getDicts("module", "module").then((response) => {
       this.moduleOptions = response;
+      this.getList();
     });
   },
   methods: {
@@ -188,6 +254,13 @@ export default {
     getList() {
       this.loading = true;
       listType(this.queryParams).then((response) => {
+        response.list.map((item) => {
+          if (this.moduleOptions.find((val) => val.value == item.module)) {
+            item.moduleName = this.moduleOptions.find(
+              (val) => val.value == item.module
+            ).label;
+          }
+        });
         this.typeList = response.list;
         this.total = response.totalRow;
         this.loading = false;
@@ -236,11 +309,11 @@ export default {
     handleUpdate(row) {
       this.reset();
       const typeId = row.id || this.ids;
-        // listTypeById({flowNodeId:typeId}).then(response => {
-      this.form =JSON.parse(JSON.stringify(row));
+      // listTypeById({flowNodeId:typeId}).then(response => {
+      this.form = JSON.parse(JSON.stringify(row));
       this.open = true;
       this.title = "修改类型";
-        // });
+      // });
     },
 
     /** 提交按钮 */

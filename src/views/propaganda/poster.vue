@@ -101,7 +101,7 @@
       />
       <el-table-column
         align="center"
-        label="预估金额（万元）"
+        label="预估金额（元）"
         prop="predictAmount"
         width="180"
       />

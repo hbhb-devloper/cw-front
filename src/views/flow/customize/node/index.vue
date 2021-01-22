@@ -15,6 +15,7 @@
           clearable
           size="medium"
           style="width: 230px"
+          filterable
         >
           <el-option
             v-for="dict in flowOptions"
