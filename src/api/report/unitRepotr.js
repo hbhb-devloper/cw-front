@@ -48,3 +48,11 @@ export function reportInfo(query) {
         params: query
     })
 }
+// 报表管理内容详情附件列表
+export function reportExport(data) {
+    return request({
+        url: `${prefix}/report/export`,
+        method: 'post',
+        data: data
+    })
+}

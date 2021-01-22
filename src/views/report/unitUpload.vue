@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2021-01-06 10:22:55
  * @LastEditors: CYZ
- * @LastEditTime: 2021-01-21 10:14:43
+ * @LastEditTime: 2021-01-22 14:50:23
 -->
 <template>
   <div class="app-container">
@@ -37,7 +37,6 @@
         <el-select
           v-model="queryParams.manageId"
           placeholder="请选择管理内容"
-          clearable
           size="small"
           style="width: 200px"
           @change="changeManage"
@@ -54,9 +53,9 @@
         <el-select
           v-model="queryParams.categoryId"
           placeholder="请选择管理内容"
-          clearable
           size="small"
           style="width: 200px"
+          @change="changeCategory"
         >
           <el-option
             v-for="dict in reportNameOptions"
@@ -92,14 +91,14 @@
         >
           <el-option
             v-for="dict in periodOption"
-            :key="dict.value"
+            :key="dict.id"
             :label="dict.label"
-            :value="dict.value"
+            :value="dict.id"
           />
         </el-select>
         <el-date-picker
           v-model="queryParams.launchTime"
-          type="month"
+          :type="dataType"
           placeholder="选择报表周期"
           size="small"
           style="width: 200px"
@@ -107,6 +106,25 @@
           format="yyyy-MM"
         >
         </el-date-picker>
+        <el-select
+          v-model="queryParams.periodInfo"
+          placeholder="请选择"
+          clearable
+          size="small"
+          style="width: 200px"
+          v-if="
+            queryParams.period == '1' ||
+            queryParams.period == '3' ||
+            queryParams.period == '4'
+          "
+        >
+          <el-option
+            v-for="dict in reportTheDays"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="关联单名称" prop="relationName">
         <el-input
@@ -126,40 +144,30 @@
           @click="handleQuery"
           >搜索</el-button
         >
+        <el-button
+          type="warning"
+          icon="el-icon-download"
+          size="mini"
+          @click="handleExport"
+          >导出
+        </el-button>
       </el-form-item>
     </el-form>
-    
+
     <!-- 报表表单 -->
-    <el-table
-      v-loading="loading"
-      :data="reportList"
-    >
+    <el-table v-loading="loading" :data="reportList">
       <el-table-column
         align="center"
         label="序号"
         prop="lineNumber"
         width="50"
       />
-      <el-table-column align="center" label="关联单名称" prop="relationName" />
-      <el-table-column align="center" label="有无业务" prop="hasBizName" />
+      <el-table-column align="center" label="营业厅名称" prop="hallName" />
       <el-table-column align="center" label="管理内容" prop="manageName" />
       <el-table-column align="center" label="报表名称" prop="reportName" />
       <el-table-column align="center" label="报表周期" prop="periodName" />
-      <el-table-column align="center" label="创建人" prop="founderName" />
-      <el-table-column align="center" label="创建时间" prop="createTime" />
-      <el-table-column align="center" label="流程状态" prop="stateName" />
-      <el-table-column
-        label="操作"
-        align="center"
-        width=""
-        class-name="small-padding fixed-width"
-      >
-        <template slot-scope="scope">
-          <el-button size="mini" type="text" @click="deleteReport(scope.row)"
-            >删除</el-button
-          >
-        </template>
-      </el-table-column>
+      <el-table-column align="center" label="报表时间" prop="createTime" />
+      <el-table-column align="center" label="报表状态" prop="stateName" />
     </el-table>
 
     <pagination
@@ -169,7 +177,6 @@
       :limit.sync="queryParams.pageSize"
       @pagination="getList"
     />
-    
   </div>
 </template>
 <script>
@@ -177,9 +184,12 @@ import { resourceTreeByUN } from "@/api/system/unit";
 import { getHallSelect } from "@/api/system/hall";
 import { reportUnitList } from "@/api/report/unitUpload";
 import { manageSelect } from "@/api/report/management";
-import { categoryName } from "@/api/report/reportName";
+import { categoryName, propertyPeriod } from "@/api/report/reportName";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
+import { getToken } from "@/utils/auth";
+import { prefix } from "@/api/report/report";
+import { exportData1 } from "@/utils/export";
 export default {
   name: "Role",
   components: { Treeselect },
@@ -197,7 +207,7 @@ export default {
         pageNum: 1,
         pageSize: 10,
       },
-       // 管理内容下拉框
+      // 管理内容下拉框
       manageOptions: [],
       // 周期下拉框
       periodOption: [],
@@ -207,19 +217,26 @@ export default {
       reportNameOptions: [],
       // 营业厅下拉框
       hallList: [],
+      // 日期选择类型
+      dataType: undefined,
+      // 旬、季度、半年下拉框
+      reportTheDays: [],
+      // // 季度下拉框
+      // reportSeason: [],
+      // // 半年下拉框
+      // reportHalfYear: [],
     };
   },
   created() {
     this.getTreeselect();
-    this.getManageSelect();
-    this.getDicts("report", "report_period").then((response) => {
-      this.periodOption = response;
-    });
+    // this.getDicts("report", "report_period").then((response) => {
+    //   this.periodOption = response;
+    // });
     this.getDicts("report", "report_approver_state").then((response) => {
       this.reportStateOption = response;
     });
   },
-  methods:{
+  methods: {
     /** 搜索按钮操作 */
     handleQuery() {
       this.queryParams.pageNum = 1;
@@ -235,31 +252,68 @@ export default {
     changeManage(val) {
       categoryName({ manageId: val }).then((res) => {
         this.reportNameOptions = res;
+        this.queryParams.categoryId = res[0].id;
+        this.getPropertyPeriod(res[0].id);
       });
     },
-      /** 查询报表列表 */
+    // 通过修改报表名称获取报表周期
+    changeCategory(val) {
+      this.getPropertyPeriod(val);
+    },
+    // 报表名称变换
+    getPropertyPeriod(categoryId) {
+      propertyPeriod({ categoryId: categoryId }).then((res) => {
+        this.periodOption = res;
+        if (res.length > 0) {
+          this.queryParams.period = res[0].id;
+          if (res[0].id == "0") {
+            this.dataType = "date";
+          } else if (res[0].id == "1") {
+            this.dataType = "month";
+            this.getDicts("report", "report_the_days").then((response) => {
+              this.reportTheDays = response;
+            });
+          } else if (res[0].id == "2") {
+            this.dataType = "month";
+          } else if (res[0].id == "3") {
+            this.dataType = "year";
+            this.getDicts("report", "report_season").then((response) => {
+              this.reportTheDays = response;
+            });
+          } else if (res[0].id == "4") {
+            this.dataType = "year";
+            this.getDicts("report", "report_half_year").then((response) => {
+              this.reportTheDays = response;
+            });
+          } else if (res[0].id == "5") {
+            this.dataType = "year";
+          }
+        } else {
+          this.queryParams.period = undefined;
+          this.queryParams.launchTime = undefined;
+          this.queryParams.periodInfo = undefined;
+        }
+        this.getList();
+      });
+    },
+    /** 查询报表列表 */
     getList() {
       this.loading = true;
       reportUnitList(this.queryParams).then((response) => {
         this.reportList = response.list;
-        this.total = response.totalRow;
+        this.total = response.total;
         this.loading = false;
       });
     },
-      // 获取管理内容下拉框
-    getManageSelect() {
-      manageSelect().then((res) => {
-        this.manageOptions = res;
-      });
-    },
-      // 改变unit的值
+
+    // 改变unit的值
     changeUnit(value) {
       getHallSelect(value).then((res) => {
         this.queryParams.hallId = res[0].id;
         this.hallList = res;
       });
     },
-       /** 查询部门下拉树结构 */
+    /** 查询部门下拉树结构 */
     getTreeselect() {
       resourceTreeByUN().then((response) => {
         this.deptOptions = response.list;
@@ -267,10 +321,39 @@ export default {
         getHallSelect(response.checked).then((res) => {
           this.queryParams.hallId = res[0].id;
           this.hallList = res;
-          this.getList();
+          manageSelect().then((res) => {
+            this.manageOptions = res;
+            this.queryParams.manageId = res[0].id;
+            categoryName({ manageId: res[0].id }).then((res) => {
+              this.reportNameOptions = res;
+              this.queryParams.categoryId = res[0].id;
+              this.getPropertyPeriod(res[0].id);
+            });
+          });
         });
       });
     },
-  }
-}
+    /** 导出按钮操作 */
+    handleExport() {
+      const queryParams = this.queryParams;
+      this.$confirm("是否确认导出上传情况汇总项?", "警告", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(function () {
+          return exportData1(
+            getToken(),
+            queryParams,
+            `${prefix}/report/count/export`,
+            "上传情况汇总项"
+          );
+        })
+        .then((response) => {
+          this.download(response.msg);
+        })
+        .catch(function () {});
+    },
+  },
+};
 </script>

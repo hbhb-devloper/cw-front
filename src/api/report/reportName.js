@@ -62,3 +62,11 @@ export function propertyEdit(data) {
 }
 
 
+// 跟据报表名称id获取周期
+export function propertyPeriod(query) {
+    return request({
+        url: `${prefix}/property/period`,
+        method: 'get',
+        params: query
+    })
+}

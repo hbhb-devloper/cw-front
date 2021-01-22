@@ -276,9 +276,7 @@
                 </el-select>
               </el-form-item>
               <div class="flowItemDown" v-if="item.operation.value != 2">
-                <div>
-                  {{ item.nickName }} ({{ item.approveTime | filterTime }})
-                </div>
+                <div>{{ item.nickName }} ({{ item.approveTime }})</div>
                 <i class="el-icon-success" v-if="item.operation.value == 1"></i>
                 <i class="el-icon-error" v-if="item.operation.value == 0"></i>
               </div>
@@ -286,29 +284,26 @@
           </div>
         </el-col>
       </el-row>
-      <el-table :data="detailFileList" v-if="flowList
-      "> <el-table-column
-      type="index"
-      width="50">
-    </el-table-column>
-          <el-table-column align="center" label="文件名称" prop="fileName" />
-          <el-table-column align="center" label="创建人" prop="createBy" />
-          <el-table-column align="center" label="创建时间" prop="createTime" />
-          <el-table-column align="center" label="文件大小" prop="fileSize" />
-          <el-table-column align="center" label="sheet数量" prop="fileName" />
-          <el-table-column
-            label="操作"
-            align="center"
-            width=""
-            class-name="small-padding fixed-width"
-          >
-            <template slot-scope="scope">
-              <el-button size="mini" type="text" @click="exportFile(scope.row)"
-                >查看</el-button
-              >
-            </template>
-          </el-table-column>
-        </el-table>
+      <el-table :data="detailFileList" v-if="flowList">
+        <el-table-column type="index" width="50"> </el-table-column>
+        <el-table-column align="center" label="文件名称" prop="fileName" />
+        <el-table-column align="center" label="创建人" prop="author" />
+        <el-table-column align="center" label="创建时间" prop="createTime" />
+        <el-table-column align="center" label="文件大小" prop="fileSize" />
+        <el-table-column align="center" label="sheet数量" prop="fileName" />
+        <el-table-column
+          label="操作"
+          align="center"
+          width=""
+          class-name="small-padding fixed-width"
+        >
+          <template slot-scope="scope">
+            <el-button size="mini" type="text" @click="exportFile(scope.row)"
+              >下载</el-button
+            >
+          </template>
+        </el-table-column>
+      </el-table>
       <el-form
         v-else
         :model="form"
@@ -484,7 +479,8 @@ import {
   reportDelete,
   reportFlowList,
   reportFlowApprove,
-  reportInfo
+  reportInfo,
+  reportExport,
 } from "@/api/report/unitRepotr";
 import { manageSelect } from "@/api/report/management";
 import { categoryName } from "@/api/report/reportName";
@@ -492,10 +488,11 @@ import { resourceTreeByUN } from "@/api/system/unit";
 import { getHallSelect } from "@/api/system/hall";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
-import { prefix } from "@/api/system/system";
+import { prefix as systemPrefix } from "@/api/system/system";
+import { prefix as reportPrefix } from "@/api/report/report";
 import { getToken } from "@/utils/auth";
 import { getList as getOpinion } from "@/api/flow/opinion.js";
-
+import { exportData1 } from "@/utils/export";
 export default {
   name: "Role",
   components: { Treeselect },
@@ -537,7 +534,7 @@ export default {
       open: false,
       // 上传附件模块
       ActionUrl:
-        process.env.VUE_APP_GATEWAY_API + `${prefix}/file/upload?bizType=70`, // 上传的图片服务器地址
+        process.env.VUE_APP_GATEWAY_API + `${systemPrefix}/file/upload?bizType=70`, // 上传的图片服务器地址
       fileList: [],
       headers: {
         Authorization: getToken(),
@@ -559,9 +556,9 @@ export default {
       // 选中流程id
       reportId: undefined,
       // 报表详情文件列表
-      detailFileList:[],
+      detailFileList: [],
       // 从工作台获取的报表id
-      reportId:undefined
+      reportId: undefined,
     };
   },
   created() {
@@ -581,13 +578,25 @@ export default {
         this.flowList = res.nodes;
         this.open = true;
         this.title = "流程查看审批";
-        reportInfo({reportId:this.reportId}).then(response=>{
-          this.detailFileList=response
-        })
+        reportInfo({ reportId: this.reportId }).then((response) => {
+          this.detailFileList = response;
+        });
       });
     }
   },
   methods: {
+    // 下载详情文件
+    exportFile(row) {
+      exportData1(
+        getToken(),
+        { fileId: row.fileId, reportId: row.reportId },
+        `${reportPrefix}/report/export`,
+        row.fileName
+      ).then((response) => {
+        this.download(response.msg);
+      });
+    },
+    // 获取意见拉下框
     getopinion() {
       getOpinion().then((res) => {
         this.opinionList = res;
@@ -628,9 +637,9 @@ export default {
         this.flowList = res.nodes;
         this.open = true;
         this.title = "流程查看审批";
-        reportInfo({reportId:row.id}).then(response=>{
-          this.detailFileList=response
-        })
+        reportInfo({ reportId: row.id }).then((response) => {
+          this.detailFileList = response;
+        });
       });
     },
     // 多选框选中数据

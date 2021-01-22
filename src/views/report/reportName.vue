@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2021-01-06 10:24:22
  * @LastEditors: CYZ
- * @LastEditTime: 2021-01-20 14:36:11
+ * @LastEditTime: 2021-01-22 10:23:04
 -->
 <!--
  * @Descripttion: 
@@ -157,9 +157,9 @@
               >
                 <el-option
                   v-for="dict in periodOption"
-                  :key="dict.id"
+                  :key="dict.value"
                   :label="dict.label"
-                  :value="dict.id"
+                  :value="dict.value"
                 />
               </el-select>
             </el-form-item>
