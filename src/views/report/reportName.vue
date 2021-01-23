@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2021-01-06 10:24:22
  * @LastEditors: CYZ
- * @LastEditTime: 2021-01-23 10:40:31
+ * @LastEditTime: 2021-01-23 11:05:40
 -->
 <!--
  * @Descripttion: 
@@ -408,7 +408,7 @@ import {
   categoryDetail,
   propertyList,
   propertyEdit,
-  propertyDeleteById 
+  propertyDeleteById,
 } from "@/api/report/reportName";
 import { FlowTypeList } from "@/api/flow/list.js";
 import { listTypeName } from "@/api/flow/type.js";
@@ -675,7 +675,7 @@ export default {
     },
     // 获取流程类型下拉框
     getFlowTypeList() {
-      FlowTypeList().then((res) => {
+      FlowTypeList({module:104}).then((res) => {
         this.FlowTypeOption = res;
       });
     },
@@ -703,6 +703,9 @@ export default {
       this.reset();
       this.reportNameId = row.id;
       categoryDetail(row.id).then((res) => {
+        if (!res.propertyList) {
+          res.propertyList = [];
+        }
         this.form = res;
         this.open = true;
         this.title = "修改报表名称";
@@ -712,15 +715,30 @@ export default {
     submitForm: function () {
       this.$refs["form"].validate((valid) => {
         if (valid) {
-          categoryAdd(this.form)
-            .then((response) => {
-              this.msgSuccess("新增成功");
-              this.open = false;
-              this.getList();
-            })
-            .catch((err) => {
-              this.msgError(err.message);
-            });
+          if (this.form.propertyList.length < 1) {
+            this.$message.error("请请新增表单列表");
+          }else{
+          if (this.form.id == undefined) {
+            categoryAdd(this.form)
+              .then((response) => {
+                this.msgSuccess("新增成功");
+                this.open = false;
+                this.getList();
+              })
+              .catch((err) => {
+                this.msgError(err.message);
+              });
+          } else {
+            categoryEdit(this.form)
+              .then((response) => {
+                this.msgSuccess("修改成功");
+                this.open = false;
+                this.getList();
+              })
+              .catch((err) => {
+                this.msgError(err.message);
+              });
+          }}
         }
       });
     },
