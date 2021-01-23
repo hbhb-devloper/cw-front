@@ -10,7 +10,11 @@
           @input="changeUnit"
         />
       </el-form-item>
-      <el-form-item label="营业厅" prop="hallId" v-if="typeName=='HallRepotr'">
+      <el-form-item
+        label="营业厅"
+        prop="hallId"
+        v-if="typeName == 'HallRepotr'"
+      >
         <el-select
           v-model="queryParams.hallId"
           placeholder="请选择营业厅"
@@ -154,7 +158,7 @@
       <el-table-column align="center" label="报表名称" prop="reportName" />
       <el-table-column align="center" label="报表周期" prop="periodName" />
       <el-table-column align="center" label="创建人" prop="founderName" />
-      <el-table-column align="center" label="创建时间" prop="createTime" />
+      <el-table-column align="center" label="创建时间" prop="launchTime" />
       <el-table-column align="center" label="流程状态" prop="stateName" />
       <el-table-column
         label="操作"
@@ -189,7 +193,7 @@
       >
         {{ nodeName }}
       </div>
-      <el-row style="margin-bottom: 25px" v-if="flowList">
+      <el-row style="margin-bottom: 25px" v-if="flowList.length > 0">
         <el-col
           v-for="(item, index) in flowList"
           :key="index"
@@ -284,7 +288,7 @@
           </div>
         </el-col>
       </el-row>
-      <el-table :data="detailFileList" v-if="flowList">
+      <el-table :data="detailFileList" v-if="flowList.length > 0">
         <el-table-column type="index" width="50"> </el-table-column>
         <el-table-column align="center" label="文件名称" prop="fileName" />
         <el-table-column align="center" label="创建人" prop="author" />
@@ -426,6 +430,9 @@
           >
           </el-date-picker>
         </el-form-item>
+        <el-form-item label="文件名称" prop="fileName">
+          <el-input v-model="form.fileName"></el-input>
+        </el-form-item>
         <el-row>
           <el-form-item label="上传附件">
             <el-upload
@@ -464,10 +471,10 @@
           </el-table-column>
         </el-table>
       </el-form>
-      <!-- <div slot="footer" class="dialog-footer">
+      <div slot="footer" class="dialog-footer" v-if="flowList.length <= 0">
         <el-button type="primary" @click="submitForm">确 定</el-button>
         <el-button @click="cancel">取 消</el-button>
-      </div> -->
+      </div>
     </el-dialog>
   </div>
 </template>
@@ -534,7 +541,8 @@ export default {
       open: false,
       // 上传附件模块
       ActionUrl:
-        process.env.VUE_APP_GATEWAY_API + `${systemPrefix}/file/upload?bizType=70`, // 上传的图片服务器地址
+        process.env.VUE_APP_GATEWAY_API +
+        `${systemPrefix}/file/upload?bizType=70`, // 上传的图片服务器地址
       fileList: [],
       headers: {
         Authorization: getToken(),
@@ -560,7 +568,7 @@ export default {
       // 从工作台获取的报表id
       reportId: undefined,
       // 页面类型
-      typeName:undefined
+      typeName: undefined,
     };
   },
   created() {
@@ -653,8 +661,8 @@ export default {
     changeUnit(value) {
       getHallSelect(value).then((res) => {
         if (this.typeName == "HallRepotr") {
-            this.queryParams.hallId = res[0].id;
-          }
+          this.queryParams.hallId = res[0].id;
+        }
         this.hallList = res;
       });
     },
@@ -712,6 +720,7 @@ export default {
       if (res.code == "00000") {
         res.data.fileId = res.data.id;
         this.form.files.push(res.data);
+        this.form.fileName=res.data.fileName
         this.fileList = [];
         this.loadingoption.close();
         this.$message.success("文件上传成功");
