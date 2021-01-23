@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2021-01-06 10:22:55
  * @LastEditors: CYZ
- * @LastEditTime: 2021-01-22 16:22:37
+ * @LastEditTime: 2021-01-23 17:48:08
 -->
 <template>
   <div class="app-container">
@@ -28,6 +28,7 @@
           placeholder="请选择营业厅"
           size="small"
           style="width: 200px"
+          v-if="typeName == 'HallUpload'"
         >
           <el-option
             v-for="dict in hallList"

@@ -1,3 +1,11 @@
+<!--
+ * @Descripttion: 
+ * @version: 
+ * @Author: CYZ
+ * @Date: 2021-01-23 16:33:29
+ * @LastEditors: CYZ
+ * @LastEditTime: 2021-01-23 18:13:25
+-->
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true">
@@ -53,6 +61,7 @@
           clearable
           size="small"
           style="width: 200px"
+          @change="changeCategory"
         >
           <el-option
             v-for="dict in reportNameOptions"
@@ -88,9 +97,9 @@
         >
           <el-option
             v-for="dict in periodOption"
-            :key="dict.value"
+            :key="dict.id"
             :label="dict.label"
-            :value="dict.value"
+            :value="dict.id"
           />
         </el-select>
         <el-date-picker
@@ -103,6 +112,25 @@
           format="yyyy-MM"
         >
         </el-date-picker>
+        <el-select
+          v-model="queryParams.periodInfo"
+          placeholder="请选择"
+          clearable
+          size="small"
+          style="width: 200px"
+          v-if="
+            queryParams.period == '1' ||
+            queryParams.period == '3' ||
+            queryParams.period == '4'
+          "
+        >
+          <el-option
+            v-for="dict in reportTheDays"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="关联单名称" prop="relationName">
         <el-input
@@ -193,7 +221,7 @@
       >
         {{ nodeName }}
       </div>
-      <el-row style="margin-bottom: 25px" v-if="flowList.length > 0">
+      <el-row style="margin-bottom: 25px" v-if="detailFileList.length > 0">
         <el-col
           v-for="(item, index) in flowList"
           :key="index"
@@ -288,7 +316,7 @@
           </div>
         </el-col>
       </el-row>
-      <el-table :data="detailFileList" v-if="flowList.length > 0">
+      <el-table :data="detailFileList" v-if="detailFileList.length > 0">
         <el-table-column type="index" width="50"> </el-table-column>
         <el-table-column align="center" label="文件名称" prop="fileName" />
         <el-table-column align="center" label="创建人" prop="author" />
@@ -324,7 +352,11 @@
             @input="changeUnit"
           />
         </el-form-item>
-        <el-form-item label="营业厅" prop="hallId">
+        <el-form-item
+          label="营业厅"
+          prop="hallId"
+          v-if="typeName == 'HallRepotr'"
+        >
           <el-select
             v-model="form.hallId"
             placeholder="请选择营业厅"
@@ -363,6 +395,7 @@
             clearable
             size="small"
             style="width: 200px"
+            @change="changeCategory"
           >
             <el-option
               v-for="dict in reportNameOptions"
@@ -414,9 +447,9 @@
           >
             <el-option
               v-for="dict in periodOption"
-              :key="dict.value"
+              :key="dict.id"
               :label="dict.label"
-              :value="dict.value"
+              :value="dict.id"
             />
           </el-select>
           <el-date-picker
@@ -429,10 +462,25 @@
             format="yyyy-MM"
           >
           </el-date-picker>
+          <el-select
+            v-model="form.periodInfo"
+            placeholder="请选择"
+            clearable
+            size="small"
+            style="width: 200px"
+            v-if="
+              form.period == '1' || form.period == '3' || form.period == '4'
+            "
+          >
+            <el-option
+              v-for="dict in reportTheDays"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            />
+          </el-select>
         </el-form-item>
-        <el-form-item label="文件名称" prop="fileName">
-          <el-input v-model="form.fileName"></el-input>
-        </el-form-item>
+
         <el-row>
           <el-form-item label="上传附件">
             <el-upload
@@ -453,6 +501,9 @@
               <el-button size="small" type="primary">点击上传</el-button>
             </el-upload>
           </el-form-item>
+          <el-form-item label="文件名称" prop="fileName">
+            <el-input v-model="form.fileName"></el-input>
+          </el-form-item>
         </el-row>
         <el-table :data="form.files" v-if="form.files.length >= 1">
           <el-table-column align="center" label="文件名称" prop="fileName" />
@@ -471,7 +522,7 @@
           </el-table-column>
         </el-table>
       </el-form>
-      <div slot="footer" class="dialog-footer" v-if="flowList.length <= 0">
+      <div slot="footer" class="dialog-footer" v-if="detailFileList.length <= 0">
         <el-button type="primary" @click="submitForm">确 定</el-button>
         <el-button @click="cancel">取 消</el-button>
       </div>
@@ -490,7 +541,7 @@ import {
   reportExport,
 } from "@/api/report/unitRepotr";
 import { manageSelect } from "@/api/report/management";
-import { categoryName } from "@/api/report/reportName";
+import { categoryName, propertyPeriod } from "@/api/report/reportName";
 import { resourceTreeByUN } from "@/api/system/unit";
 import { getHallSelect } from "@/api/system/hall";
 import Treeselect from "@riophae/vue-treeselect";
@@ -569,16 +620,17 @@ export default {
       reportId: undefined,
       // 页面类型
       typeName: undefined,
+      // 旬、季度、半年下拉框
+      reportTheDays: [],
     };
   },
   created() {
     this.typeName = this.$route.name;
     this.getopinion();
     this.getTreeselect();
-    this.getManageSelect();
-    this.getDicts("report", "report_period").then((response) => {
-      this.periodOption = response;
-    });
+    // this.getDicts("report", "report_period").then((response) => {
+    //   this.periodOption = response;
+    // });
     this.getDicts("report", "report_approver_state").then((response) => {
       this.reportStateOption = response;
     });
@@ -643,15 +695,24 @@ export default {
     // 展现报表流程
     showFlow(row) {
       this.reportId = row.id;
-      reportFlowList(row.id).then((res) => {
-        this.nodeName = res.name;
-        this.flowList = res.nodes;
-        this.open = true;
-        this.title = "流程查看审批";
+      if (row.hasBiz) {
+        reportFlowList(row.id).then((res) => {
+          this.nodeName = res.name;
+          this.flowList = res.nodes;
+          this.open = true;
+          this.title = "流程查看审批";
+          reportInfo({ reportId: row.id }).then((response) => {
+            this.detailFileList = response;
+          });
+        });
+      } else {
         reportInfo({ reportId: row.id }).then((response) => {
           this.detailFileList = response;
+          this.nodeName = row.relationName;
+          this.open = true;
+          this.title = "流程查看审批";
         });
-      });
+      }
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
@@ -720,7 +781,7 @@ export default {
       if (res.code == "00000") {
         res.data.fileId = res.data.id;
         this.form.files.push(res.data);
-        this.form.fileName=res.data.fileName
+        this.form.fileName = res.data.fileName;
         this.fileList = [];
         this.loadingoption.close();
         this.$message.success("文件上传成功");
@@ -757,18 +818,59 @@ export default {
     // 打开上报报表弹窗
     openDialog() {
       this.open = true;
-      this.title = "分公司上传文件";
+      if (typeName != "HallRepotr") {
+        this.title = "分公司上传文件";
+      } else {
+        this.title = "营业厅上传文件";
+      }
     },
     // 通过修改管理内容获取管理名称下拉框
     changeManage(val) {
       categoryName({ manageId: val }).then((res) => {
         this.reportNameOptions = res;
+        this.queryParams.categoryId = res[0].id;
+        this.getPropertyPeriod(res[0].id);
       });
     },
-    // 获取管理内容下拉框
-    getManageSelect() {
-      manageSelect().then((res) => {
-        this.manageOptions = res;
+
+    // 通过修改报表名称获取报表周期
+    changeCategory(val) {
+      this.getPropertyPeriod(val);
+    },
+    // 报表名称变换
+    getPropertyPeriod(categoryId) {
+      propertyPeriod({ categoryId: categoryId }).then((res) => {
+        this.periodOption = res;
+        if (res.length > 0) {
+          this.queryParams.period = res[0].id;
+          if (res[0].id == "0") {
+            this.dataType = "date";
+          } else if (res[0].id == "1") {
+            this.dataType = "month";
+            this.getDicts("report", "report_the_days").then((response) => {
+              this.reportTheDays = response;
+            });
+          } else if (res[0].id == "2") {
+            this.dataType = "month";
+          } else if (res[0].id == "3") {
+            this.dataType = "year";
+            this.getDicts("report", "report_season").then((response) => {
+              this.reportTheDays = response;
+            });
+          } else if (res[0].id == "4") {
+            this.dataType = "year";
+            this.getDicts("report", "report_half_year").then((response) => {
+              this.reportTheDays = response;
+            });
+          } else if (res[0].id == "5") {
+            this.dataType = "year";
+          }
+        } else {
+          this.queryParams.period = undefined;
+          this.queryParams.launchTime = undefined;
+          this.queryParams.periodInfo = undefined;
+        }
+        this.getList();
       });
     },
     /** 查询部门下拉树结构 */
@@ -781,7 +883,16 @@ export default {
             this.queryParams.hallId = res[0].id;
           }
           this.hallList = res;
-          this.getList();
+          manageSelect().then((res) => {
+            this.manageOptions = res;
+            this.queryParams.manageId = res[0].id;
+            categoryName({ manageId: res[0].id }).then((res) => {
+              this.reportNameOptions = res;
+              this.queryParams.categoryId = res[0].id;
+              this.getPropertyPeriod(res[0].id);
+            });
+          });
+          // this.getList();
         });
       });
     },
