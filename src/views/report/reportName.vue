@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2021-01-06 10:24:22
  * @LastEditors: CYZ
- * @LastEditTime: 2021-01-22 10:23:04
+ * @LastEditTime: 2021-01-23 10:40:31
 -->
 <!--
  * @Descripttion: 
@@ -145,6 +145,15 @@
               ></el-input>
             </el-form-item>
           </el-col>
+        </el-row>
+      </el-form>
+      <el-form
+        ref="propertyFrom"
+        :model="propertyFrom"
+        :rules="propertyFromRules"
+        label-width="100px"
+      >
+        <el-row>
           <el-col :span="12">
             <el-form-item label="报表周期" prop="period">
               <el-select
@@ -299,7 +308,7 @@
                       size="mini"
                       type="text"
                       icon="el-icon-edit"
-                      @click="deleteFile(scope.row)"
+                      @click="deleteFile(scope)"
                       >删除</el-button
                     >
                   </template>
@@ -399,6 +408,7 @@ import {
   categoryDetail,
   propertyList,
   propertyEdit,
+  propertyDeleteById 
 } from "@/api/report/reportName";
 import { FlowTypeList } from "@/api/flow/list.js";
 import { listTypeName } from "@/api/flow/type.js";
@@ -429,6 +439,27 @@ export default {
         ],
         manageId: [
           { required: true, message: "管理内容不能为空", trigger: "blur" },
+        ],
+      },
+      // 新增表单校验
+      propertyFromRules: {
+        period: [
+          { required: true, message: "报表周期不能为空", trigger: "blur" },
+        ],
+        scope: [
+          { required: true, message: "编报范围不能为空", trigger: "blur" },
+        ],
+        startTime: [
+          { required: true, message: "开始时间不能为空", trigger: "blur" },
+        ],
+        endTime: [
+          { required: true, message: "结束时间不能为空", trigger: "blur" },
+        ],
+        flowTypeId: [
+          { required: true, message: "流程类型不能为空", trigger: "blur" },
+        ],
+        flowId: [
+          { required: true, message: "流程名称不能为空", trigger: "blur" },
         ],
       },
       // 管理内容下拉框
@@ -486,6 +517,8 @@ export default {
       propertyTimeList: [],
       // 报表起止时间列表
       propertylist: [],
+      // 报表名称id
+      reportNameId: undefined,
     };
   },
   created() {
@@ -497,6 +530,20 @@ export default {
     });
   },
   methods: {
+    // 删除报表表单设定
+    deleteFile(scope) {
+      console.log("scope", scope);
+      if (scope.row.id) {
+        propertyDeleteById(scope.row.id).then((res) => {
+          console.log("propertyDeleteById", res);
+          categoryDetail(this.reportNameId).then((res) => {
+            this.form = res;
+          });
+        });
+      } else {
+        this.form.propertyList.splice(scope.$index, 1);
+      }
+    },
     // 根据启用状态显示不同的颜色
     showColor(row) {
       let item = row.row;
@@ -592,13 +639,17 @@ export default {
     },
     // 将表单设定添加到表格
     addPropertyList() {
-      this.form.propertyList.push(this.propertyFrom);
-      this.propertyFrom = {};
+      this.$refs["propertyFrom"].validate((valid) => {
+        if (valid) {
+          this.form.propertyList.push(this.propertyFrom);
+          this.propertyFrom = {};
+        }
+      });
     },
     // 获取周期名称
     changePeriod(value) {
       this.propertyFrom.periodName = this.periodOption.find(
-        (val) => val.id == this.propertyFrom.period
+        (val) => val.value == this.propertyFrom.period
       ).label;
     },
     // 获取编报范围名称
@@ -650,6 +701,7 @@ export default {
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
+      this.reportNameId = row.id;
       categoryDetail(row.id).then((res) => {
         this.form = res;
         this.open = true;

@@ -70,3 +70,10 @@ export function propertyPeriod(query) {
         params: query
     })
 }
+// 根据id删除报表名称属性
+export function propertyDeleteById(id) {
+    return request({
+        url: `${prefix}/property/${id}`,
+        method: 'delete',
+    })
+}
