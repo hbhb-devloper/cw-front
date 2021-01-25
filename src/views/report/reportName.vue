@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2021-01-06 10:24:22
  * @LastEditors: CYZ
- * @LastEditTime: 2021-01-23 11:05:40
+ * @LastEditTime: 2021-01-25 16:13:09
 -->
 <!--
  * @Descripttion: 
@@ -16,10 +16,10 @@
 -->
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" :inline="true">
+    <el-form :model="queryParams1" ref="queryForm" :inline="true">
       <el-form-item label="管理内容" prop="manageId">
         <el-select
-          v-model="queryParams.manageId"
+          v-model="queryParams1.manageId"
           placeholder="请选择管理内容"
           clearable
           size="small"
@@ -333,7 +333,12 @@
         </div>
         <div class="graphicItem" style="background: #ebebeb">已过期</div>
       </div>
-      <el-table :data="propertylist" style="width: 100%" :row-style="showColor">
+      <el-table
+        :data="propertylist"
+        style="width: 100%"
+        :row-style="showColor"
+        v-loading="loading1"
+      >
         <el-table-column label="序号" type="index" width="50">
         </el-table-column>
         <el-table-column
@@ -390,7 +395,7 @@
         :total="total"
         :page.sync="queryParams.pageNum"
         :limit.sync="queryParams.pageSize"
-        @pagination="getList"
+        @pagination="getpropertyList"
       />
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitProperty">确 定</el-button>
@@ -417,10 +422,9 @@ export default {
   name: "Role",
   data() {
     return {
-      // 查询条件
-      queryParams: {},
       // 遮罩层
       loading: true,
+      loading1: true,
       // 角色表格数据
       controlList: [],
       // 弹出框判断
@@ -511,6 +515,8 @@ export default {
         pageNum: 1,
         pageSize: 10,
       },
+      // 查询参数
+      queryParams1: {},
       // 分页总条数
       total: 0,
       // 批量修改时间数组
@@ -611,10 +617,15 @@ export default {
     },
     // 显示批量修改弹窗
     showProperty(row) {
+      console.log('row',row);
+      this.reset();
       if (row) {
         this.queryParams.categoryId = row.id;
       }
-      this.reset();
+      this.getpropertyList()
+    },
+    getpropertyList() {
+      this.loading1 = true;
       propertyList(this.queryParams).then((res) => {
         res.list.map((item) => {
           item.startTimeData = Date.parse(item.startTime.replace(/-/g, "/"));
@@ -635,6 +646,7 @@ export default {
         this.total = res.totalRow;
         this.PropertyVisible = true;
         this.title = "报表起止时间编辑";
+        this.loading1 = false;
       });
     },
     // 将表单设定添加到表格
@@ -675,7 +687,7 @@ export default {
     },
     // 获取流程类型下拉框
     getFlowTypeList() {
-      FlowTypeList({module:104}).then((res) => {
+      FlowTypeList({ module: 104 }).then((res) => {
         this.FlowTypeOption = res;
       });
     },
@@ -687,7 +699,6 @@ export default {
     },
     /** 搜索按钮操作 */
     handleQuery() {
-      this.queryParams.pageNum = 1;
       this.getList();
     },
     // 开关事件
@@ -717,28 +728,29 @@ export default {
         if (valid) {
           if (this.form.propertyList.length < 1) {
             this.$message.error("请请新增表单列表");
-          }else{
-          if (this.form.id == undefined) {
-            categoryAdd(this.form)
-              .then((response) => {
-                this.msgSuccess("新增成功");
-                this.open = false;
-                this.getList();
-              })
-              .catch((err) => {
-                this.msgError(err.message);
-              });
           } else {
-            categoryEdit(this.form)
-              .then((response) => {
-                this.msgSuccess("修改成功");
-                this.open = false;
-                this.getList();
-              })
-              .catch((err) => {
-                this.msgError(err.message);
-              });
-          }}
+            if (this.form.id == undefined) {
+              categoryAdd(this.form)
+                .then((response) => {
+                  this.msgSuccess("新增成功");
+                  this.open = false;
+                  this.getList();
+                })
+                .catch((err) => {
+                  this.msgError(err.message);
+                });
+            } else {
+              categoryEdit(this.form)
+                .then((response) => {
+                  this.msgSuccess("修改成功");
+                  this.open = false;
+                  this.getList();
+                })
+                .catch((err) => {
+                  this.msgError(err.message);
+                });
+            }
+          }
         }
       });
     },
@@ -748,14 +760,6 @@ export default {
       this.open = false;
       this.reset();
     },
-    // 表单重置
-    // reset() {
-    //   this.form = {
-    //     state: true,
-    //     propertyList: [],
-    //   };
-    //   this.resetForm("form");
-    // },
     /** 新增按钮操作 */
     handleAdd() {
       this.reset();
@@ -765,7 +769,7 @@ export default {
     /** 查询角色列表 */
     getList() {
       this.loading = true;
-      categoryList().then((response) => {
+      categoryList(this.queryParams1).then((response) => {
         this.controlList = response;
         this.loading = false;
       });

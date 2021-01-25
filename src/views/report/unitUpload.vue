@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2021-01-06 10:22:55
  * @LastEditors: CYZ
- * @LastEditTime: 2021-01-23 17:48:08
+ * @LastEditTime: 2021-01-25 16:21:10
 -->
 <template>
   <div class="app-container">
@@ -171,7 +171,7 @@
       <el-table-column align="center" label="管理内容" prop="manageName" />
       <el-table-column align="center" label="报表名称" prop="reportName" />
       <el-table-column align="center" label="报表周期" prop="periodName" />
-      <el-table-column align="center" label="报表时间" prop="createTime" />
+      <el-table-column align="center" label="报表时间" prop="launchTime" />
       <el-table-column align="center" label="报表状态" prop="stateName" />
     </el-table>
 
