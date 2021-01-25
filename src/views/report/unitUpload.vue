@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2021-01-06 10:22:55
  * @LastEditors: CYZ
- * @LastEditTime: 2021-01-25 16:21:10
+ * @LastEditTime: 2021-01-25 17:33:51
 -->
 <template>
   <div class="app-container">
@@ -28,7 +28,6 @@
           placeholder="请选择营业厅"
           size="small"
           style="width: 200px"
-          v-if="typeName == 'HallUpload'"
         >
           <el-option
             v-for="dict in hallList"
@@ -93,6 +92,7 @@
           clearable
           size="small"
           style="width: 200px"
+          @change="changePeriod"
         >
           <el-option
             v-for="dict in periodOption"
@@ -107,14 +107,13 @@
           placeholder="选择报表周期"
           size="small"
           style="width: 200px"
-          value-format="yyyy-MM"
-          format="yyyy-MM"
+          :value-format="dataTypeFormat"
+          :format="dataTypeFormat"
         >
         </el-date-picker>
         <el-select
           v-model="queryParams.periodInfo"
           placeholder="请选择"
-          clearable
           size="small"
           style="width: 200px"
           v-if="
@@ -167,7 +166,18 @@
         prop="lineNumber"
         width="50"
       />
-      <el-table-column align="center" label="营业厅名称" prop="hallName" />
+      <el-table-column
+        align="center"
+        label="营业厅名称"
+        prop="hallName"
+        v-if="typeName == 'HallUpload'"
+      />
+      <el-table-column
+        align="center"
+        label="分公司名称"
+        prop="unitName"
+        v-else
+      />
       <el-table-column align="center" label="管理内容" prop="manageName" />
       <el-table-column align="center" label="报表名称" prop="reportName" />
       <el-table-column align="center" label="报表周期" prop="periodName" />
@@ -195,6 +205,7 @@ import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 import { getToken } from "@/utils/auth";
 import { prefix } from "@/api/report/report";
 import { exportData1 } from "@/utils/export";
+import { dateFormat } from "@/utils/index";
 export default {
   name: "Role",
   components: { Treeselect },
@@ -211,6 +222,15 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
+        unitId: undefined,
+        hallId: undefined,
+        manageId: undefined,
+        categoryId: undefined,
+        state: undefined,
+        period: undefined,
+        launchTime: undefined,
+        periodInfo: undefined,
+        relationName: undefined,
       },
       // 管理内容下拉框
       manageOptions: [],
@@ -224,6 +244,8 @@ export default {
       hallList: [],
       // 日期选择类型
       dataType: undefined,
+      // 日期展现格式
+      dataTypeFormat: "yyyy-MM",
       // 旬、季度、半年下拉框
       reportTheDays: [],
       // 页面类型
@@ -252,6 +274,48 @@ export default {
       this.resetForm("queryForm");
       this.handleQuery();
     },
+    // 修改报表周期
+    changePeriod(val) {
+      this.queryParams.periodInfo = undefined;
+      let date = new Date();
+      let nowDay = dateFormat("YYYY-mm-dd", date);
+      let nowMonth = dateFormat("YYYY-mm", date);
+      let nowYear = dateFormat("YYYY", date);
+      if (val == "0") {
+        this.dataTypeFormat = "yyyy-MM-dd";
+        this.dataType = "date";
+        this.queryParams.launchTime = nowDay;
+      } else if (val == "1") {
+        this.dataType = "month";
+        this.dataTypeFormat = "yyyy-MM";
+        this.queryParams.launchTime = nowMonth;
+        this.getDicts("report", "report_the_days").then((response) => {
+          this.reportTheDays = response;
+        });
+      } else if (val == "2") {
+        this.dataTypeFormat = "yyyy-MM";
+        this.dataType = "month";
+        this.queryParams.launchTime = nowMonth;
+      } else if (val == "3") {
+        this.dataTypeFormat = "yyyy";
+        this.dataType = "year";
+        this.queryParams.launchTime = nowYear;
+        this.getDicts("report", "report_season").then((response) => {
+          this.reportTheDays = response;
+        });
+      } else if (val == "4") {
+        this.dataTypeFormat = "yyyy";
+        this.queryParams.launchTime = nowYear;
+        this.dataType = "year";
+        this.getDicts("report", "report_half_year").then((response) => {
+          this.reportTheDays = response;
+        });
+      } else if (val == "5") {
+        this.dataTypeFormat = "yyyy";
+        this.queryParams.launchTime = nowYear;
+        this.dataType = "year";
+      }
+    },
     // 通过修改管理内容获取管理名称下拉框
     changeManage(val) {
       categoryName({ manageId: val }).then((res) => {
@@ -269,29 +333,9 @@ export default {
       propertyPeriod({ categoryId: categoryId }).then((res) => {
         this.periodOption = res;
         if (res.length > 0) {
-          this.queryParams.period = res[0].id;
-          if (res[0].id == "0") {
-            this.dataType = "date";
-          } else if (res[0].id == "1") {
-            this.dataType = "month";
-            this.getDicts("report", "report_the_days").then((response) => {
-              this.reportTheDays = response;
-            });
-          } else if (res[0].id == "2") {
-            this.dataType = "month";
-          } else if (res[0].id == "3") {
-            this.dataType = "year";
-            this.getDicts("report", "report_season").then((response) => {
-              this.reportTheDays = response;
-            });
-          } else if (res[0].id == "4") {
-            this.dataType = "year";
-            this.getDicts("report", "report_half_year").then((response) => {
-              this.reportTheDays = response;
-            });
-          } else if (res[0].id == "5") {
-            this.dataType = "year";
-          }
+          this.$set(this.queryParams, "period", res[0].id);
+          // this.queryParams.period = res[0].id;
+          this.changePeriod(res[0].id);
         } else {
           this.queryParams.period = undefined;
           this.queryParams.launchTime = undefined;
