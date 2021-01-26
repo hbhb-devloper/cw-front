@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2021-01-23 16:33:29
  * @LastEditors: CYZ
- * @LastEditTime: 2021-01-23 18:13:25
+ * @LastEditTime: 2021-01-26 11:28:48
 -->
 <template>
   <div class="app-container">
@@ -94,6 +94,7 @@
           clearable
           size="small"
           style="width: 200px"
+          @change="changePeriod"
         >
           <el-option
             v-for="dict in periodOption"
@@ -104,12 +105,12 @@
         </el-select>
         <el-date-picker
           v-model="queryParams.launchTime"
-          type="month"
+          :type="dataType"
           placeholder="选择报表周期"
           size="small"
           style="width: 200px"
-          value-format="yyyy-MM"
-          format="yyyy-MM"
+          :value-format="dataTypeFormat"
+          :format="dataTypeFormat"
         >
         </el-date-picker>
         <el-select
@@ -195,7 +196,7 @@
         class-name="small-padding fixed-width"
       >
         <template slot-scope="scope">
-          <el-button size="mini" type="text" @click="deleteReport(scope.row)"
+          <el-button size="mini" type="text" @click.stop="deleteReport(scope.row)"
             >删除</el-button
           >
         </template>
@@ -405,7 +406,7 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="报表状态" prop="state">
+        <!-- <el-form-item label="报表状态" prop="state">
           <el-select
             v-model="form.state"
             placeholder="请选择报表状态"
@@ -420,7 +421,7 @@
               :value="dict.value"
             />
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="有无业务" prop="hasBiz">
           <el-select
             v-model="form.hasBiz"
@@ -522,7 +523,11 @@
           </el-table-column>
         </el-table>
       </el-form>
-      <div slot="footer" class="dialog-footer" v-if="detailFileList.length <= 0">
+      <div
+        slot="footer"
+        class="dialog-footer"
+        v-if="detailFileList.length <= 0"
+      >
         <el-button type="primary" @click="submitForm">确 定</el-button>
         <el-button @click="cancel">取 消</el-button>
       </div>
@@ -551,6 +556,7 @@ import { prefix as reportPrefix } from "@/api/report/report";
 import { getToken } from "@/utils/auth";
 import { getList as getOpinion } from "@/api/flow/opinion.js";
 import { exportData1 } from "@/utils/export";
+import { dateFormat } from "@/utils/index";
 export default {
   name: "Role",
   components: { Treeselect },
@@ -622,6 +628,10 @@ export default {
       typeName: undefined,
       // 旬、季度、半年下拉框
       reportTheDays: [],
+      // 日期展现格式
+      dataTypeFormat: "yyyy-MM",
+      // 日期选择类型
+      dataType: undefined,
     };
   },
   created() {
@@ -727,8 +737,13 @@ export default {
         this.hallList = res;
       });
     },
-    deleteReport() {
-      const reportIds = row.id || this.ids;
+    deleteReport(row) {
+      let reportIds=[]
+      if (row.id) {
+        reportIds.push(row.id)
+      }else{
+        reportIds = this.ids;
+      }
       this.$confirm(
         '是否确认删除报表名称为"' + row.reportName + '"的数据项?',
         "警告",
@@ -813,10 +828,11 @@ export default {
     // 取消按钮
     cancel() {
       this.open = false;
-      // this.reset();
+      this.reset();
     },
     // 打开上报报表弹窗
     openDialog() {
+      this.reset();
       this.open = true;
       if (typeName != "HallRepotr") {
         this.title = "分公司上传文件";
@@ -837,34 +853,56 @@ export default {
     changeCategory(val) {
       this.getPropertyPeriod(val);
     },
+    // 修改报表周期
+    changePeriod(val) {
+      this.queryParams.periodInfo = undefined;
+      let date = new Date();
+      let nowDay = dateFormat("YYYY-mm-dd", date);
+      let nowMonth = dateFormat("YYYY-mm", date);
+      let nowYear = dateFormat("YYYY", date);
+      if (val == "0") {
+        this.dataTypeFormat = "yyyy-MM-dd";
+        this.dataType = "date";
+        this.queryParams.launchTime = nowDay;
+      } else if (val == "1") {
+        this.dataType = "month";
+        this.dataTypeFormat = "yyyy-MM";
+        this.queryParams.launchTime = nowMonth;
+        this.getDicts("report", "report_the_days").then((response) => {
+          this.reportTheDays = response;
+        });
+      } else if (val == "2") {
+        this.dataTypeFormat = "yyyy-MM";
+        this.dataType = "month";
+        this.queryParams.launchTime = nowMonth;
+      } else if (val == "3") {
+        this.dataTypeFormat = "yyyy";
+        this.dataType = "year";
+        this.queryParams.launchTime = nowYear;
+        this.getDicts("report", "report_season").then((response) => {
+          this.reportTheDays = response;
+        });
+      } else if (val == "4") {
+        this.dataTypeFormat = "yyyy";
+        this.queryParams.launchTime = nowYear;
+        this.dataType = "year";
+        this.getDicts("report", "report_half_year").then((response) => {
+          this.reportTheDays = response;
+        });
+      } else if (val == "5") {
+        this.dataTypeFormat = "yyyy";
+        this.queryParams.launchTime = nowYear;
+        this.dataType = "year";
+      }
+    },
     // 报表名称变换
     getPropertyPeriod(categoryId) {
       propertyPeriod({ categoryId: categoryId }).then((res) => {
         this.periodOption = res;
         if (res.length > 0) {
-          this.queryParams.period = res[0].id;
-          if (res[0].id == "0") {
-            this.dataType = "date";
-          } else if (res[0].id == "1") {
-            this.dataType = "month";
-            this.getDicts("report", "report_the_days").then((response) => {
-              this.reportTheDays = response;
-            });
-          } else if (res[0].id == "2") {
-            this.dataType = "month";
-          } else if (res[0].id == "3") {
-            this.dataType = "year";
-            this.getDicts("report", "report_season").then((response) => {
-              this.reportTheDays = response;
-            });
-          } else if (res[0].id == "4") {
-            this.dataType = "year";
-            this.getDicts("report", "report_half_year").then((response) => {
-              this.reportTheDays = response;
-            });
-          } else if (res[0].id == "5") {
-            this.dataType = "year";
-          }
+          this.$set(this.queryParams, "period", res[0].id);
+          // this.queryParams.period = res[0].id;
+          this.changePeriod(res[0].id);
         } else {
           this.queryParams.period = undefined;
           this.queryParams.launchTime = undefined;
@@ -880,7 +918,8 @@ export default {
         this.queryParams.unitId = response.checked;
         getHallSelect(response.checked).then((res) => {
           if (this.typeName == "HallRepotr") {
-            this.queryParams.hallId = res[0].id;
+            this.$set(this.queryParams, "hallId", res[0].id);
+            // this.queryParams.hallId = res[0].id;
           }
           this.hallList = res;
           manageSelect().then((res) => {
