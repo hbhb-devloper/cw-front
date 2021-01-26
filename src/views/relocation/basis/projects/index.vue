@@ -93,6 +93,15 @@
       </el-col>
       <el-col :span="1.5">
         <el-button
+          type="warning"
+          icon="el-icon-download"
+          size="mini"
+          @click="handleExport"
+          >导出</el-button
+        >
+      </el-col>
+      <el-col :span="1.5">
+        <el-button
           type="primary"
           icon="el-icon-download"
           size="mini"
@@ -1237,7 +1246,6 @@ export default {
     /** 搜索按钮操作 */
     handleQuery() {
       this.queryParams.pageNum = 1;
-
       this.getList();
     },
     /** 重置按钮操作 */
@@ -1338,6 +1346,28 @@ export default {
         .then(() => {
           this.getList();
           this.msgSuccess("删除成功");
+        })
+        .catch(function () {});
+    },
+    /** 导出按钮操作 */
+    handleExport() {
+      const queryParams = this.queryParams;
+
+      this.$confirm("是否确认导出基础信息的数据项?", "导出表格", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(function () {
+          return exportData1(
+            getToken(),
+            queryParams,
+            `${prefix}/project/export/list`,
+            "基础信息"
+          );
+        })
+        .then((response) => {
+          this.download(response.msg);
         })
         .catch(function () {});
     },
