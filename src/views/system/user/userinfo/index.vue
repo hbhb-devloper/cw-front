@@ -442,6 +442,7 @@
           :titles="['部门下营业厅', '已选营业厅']"
           @change="handleChange"
           :right-default="defaultHall"
+          v-loading="hallLoading"
         >
         </el-transfer>
       </div>
@@ -540,6 +541,7 @@ export default {
       UNlist: [],
       // 遮罩层
       loading: true,
+      hallLoading: true,
       // 选中数组
       ids: [],
       // 非单个禁用
@@ -654,7 +656,7 @@ export default {
       // 已选营业厅
       defaultHall: [],
       // 选择的用户id
-      rowUserId:undefined
+      rowUserId: undefined,
     };
   },
   watch: {
@@ -673,23 +675,30 @@ export default {
     // 绑定单位和营业厅
     handleChange(value, direction, movedKeys) {
       console.log(value, direction, movedKeys);
-      updataHallNew({ hallSelectIds: value, unitId: this.unitId },this.rowUserId);
+      updataHallNew(
+        { hallSelectIds: value, unitId: this.unitId },
+        this.rowUserId
+      );
     },
     // 获取单位的营业厅
     getUnit(data) {
       this.unitId = data.id;
-      getHallSelectNew({unitId:data.id,userId:this.rowUserId}).then((res) => {
-        if (data.id==11||data.id==429) {
-          res.halls.map(item=>{
-            item.disabled=true
-          })
-          
+      this.hallLoading = true;
+      getHallSelectNew({ unitId: data.id, userId: this.rowUserId }).then(
+        (res) => {
+          if (data.id == 11 || data.id == 429) {
+            res.halls.map((item) => {
+              item.disabled = true;
+            });
+          }
+          this.hallLoading = false;
+
+          this.hallList = res.halls;
+          this.$nextTick(() => {
+            this.defaultHall = res.hallSelect;
+          });
         }
-        this.hallList = res.halls;
-        this.$nextTick(() => {
-          this.defaultHall = res.hallSelect;
-        });
-      });
+      );
     },
     changeDisabled(data, disabled) {
       for (var i = 0; i < data.length; i++) {
@@ -804,7 +813,7 @@ export default {
         checkedRsRoleIds: [],
         checkedUnRoleIds: [],
       };
-      this.defaultHall=[]
+      this.defaultHall = [];
       this.resetForm("form");
     },
     /** 搜索按钮操作 */
@@ -865,7 +874,7 @@ export default {
       this.reset();
       this.getTreeselect();
       const userId = row.id || this.ids;
-      this.rowUserId=row.id
+      this.rowUserId = row.id;
       getUser(userId).then((response) => {
         response.pwd = undefined;
         this.form = response;

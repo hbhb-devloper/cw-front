@@ -60,3 +60,11 @@ export function getUnitSubList() {
     method: 'get'
   })
 }
+// 获取所有的分公司列表
+export function getHallSelectHallByUserId(query) {
+  return request({
+    url: `${prefix}/hall/selectHallByUserId`,
+    method: 'get',
+    params:query
+  })
+}

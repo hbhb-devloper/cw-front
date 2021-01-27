@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2021-01-06 10:22:55
  * @LastEditors: CYZ
- * @LastEditTime: 2021-01-25 17:33:51
+ * @LastEditTime: 2021-01-27 13:51:17
 -->
 <template>
   <div class="app-container">
@@ -15,7 +15,6 @@
           :options="deptOptions"
           placeholder="选择上报单位"
           style="width: 200px"
-          @input="changeUnit"
         />
       </el-form-item>
       <el-form-item
@@ -109,6 +108,7 @@
           style="width: 200px"
           :value-format="dataTypeFormat"
           :format="dataTypeFormat"
+          :clearable="false"
         >
         </el-date-picker>
         <el-select
@@ -196,7 +196,7 @@
 </template>
 <script>
 import { resourceTreeByUN } from "@/api/system/unit";
-import { getHallSelect } from "@/api/system/hall";
+import { getHallSelect, getHallSelectHallByUserId } from "@/api/system/hall";
 import { reportUnitList } from "@/api/report/unitUpload";
 import { manageSelect } from "@/api/report/management";
 import { categoryName, propertyPeriod } from "@/api/report/reportName";
@@ -250,11 +250,15 @@ export default {
       reportTheDays: [],
       // 页面类型
       typeName: undefined,
+      // 自己的userId
+      myUserId: undefined,
     };
   },
   created() {
+    this.myUserId = this.$store.getters.id;
     this.typeName = this.$route.name;
     this.getTreeselect();
+    
     // this.getDicts("report", "report_period").then((response) => {
     //   this.periodOption = response;
     // });
@@ -355,33 +359,33 @@ export default {
     },
 
     // 改变unit的值
-    changeUnit(value) {
-      getHallSelect(value).then((res) => {
-        if (this.typeName == "HallUpload") {
-          this.queryParams.hallId = res[0].id;
-        }
-        this.hallList = res;
-      });
-    },
+    // changeUnit(value) {
+    //   getHallSelect(value).then((res) => {
+    //     if (this.typeName == "HallUpload") {
+    //       this.queryParams.hallId = res[0].id;
+    //     }
+    //     this.hallList = res;
+    //   });
+    // },
     /** 查询部门下拉树结构 */
     getTreeselect() {
       resourceTreeByUN().then((response) => {
         this.deptOptions = response.list;
         this.queryParams.unitId = response.checked;
-        getHallSelect(response.checked).then((res) => {
+        getHallSelectHallByUserId({userId:this.myUserId}).then((res) => {
           if (this.typeName == "HallUpload") {
             this.queryParams.hallId = res[0].id;
           }
           this.hallList = res;
-          manageSelect().then((res) => {
-            this.manageOptions = res;
-            this.queryParams.manageId = res[0].id;
-            categoryName({ manageId: res[0].id }).then((res) => {
-              this.reportNameOptions = res;
-              this.queryParams.categoryId = res[0].id;
-              this.getPropertyPeriod(res[0].id);
-            });
+        manageSelect().then((res) => {
+          this.manageOptions = res;
+          this.queryParams.manageId = res[0].id;
+          categoryName({ manageId: res[0].id }).then((res) => {
+            this.reportNameOptions = res;
+            this.queryParams.categoryId = res[0].id;
+            this.getPropertyPeriod(res[0].id);
           });
+        });
         });
       });
     },

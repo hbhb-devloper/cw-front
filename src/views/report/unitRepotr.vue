@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2021-01-23 16:33:29
  * @LastEditors: CYZ
- * @LastEditTime: 2021-01-26 11:28:48
+ * @LastEditTime: 2021-01-27 14:58:28
 -->
 <template>
   <div class="app-container">
@@ -15,7 +15,6 @@
           :options="deptOptions"
           placeholder="选择上报单位"
           style="width: 200px"
-          @input="changeUnit"
         />
       </el-form-item>
       <el-form-item
@@ -196,7 +195,10 @@
         class-name="small-padding fixed-width"
       >
         <template slot-scope="scope">
-          <el-button size="mini" type="text" @click.stop="deleteReport(scope.row)"
+          <el-button
+            size="mini"
+            type="text"
+            @click.stop="deleteReport(scope.row)"
             >删除</el-button
           >
         </template>
@@ -343,6 +345,7 @@
         ref="form"
         :inline="true"
         label-width="90px"
+        :rules="rules"
       >
         <el-form-item label="上报单位" prop="unitId">
           <treeselect
@@ -350,7 +353,6 @@
             :options="deptOptions"
             placeholder="选择上报单位"
             style="width: 200px"
-            @input="changeUnit"
           />
         </el-form-item>
         <el-form-item
@@ -392,7 +394,7 @@
         <el-form-item label="报表名称" prop="categoryId">
           <el-select
             v-model="form.categoryId"
-            placeholder="请选择管理内容"
+            placeholder="请选择报表名称"
             clearable
             size="small"
             style="width: 200px"
@@ -445,22 +447,24 @@
             clearable
             size="small"
             style="width: 200px"
+            @change="changePeriod"
           >
             <el-option
-              v-for="dict in periodOption"
-              :key="dict.id"
+              v-for="dict in periodOption1"
+              :key="dict.value"
               :label="dict.label"
-              :value="dict.id"
+              :value="dict.value"
             />
           </el-select>
           <el-date-picker
             v-model="form.launchTime"
-            type="month"
+            :type="dataType"
             placeholder="选择报表周期"
             size="small"
             style="width: 200px"
-            value-format="yyyy-MM"
-            format="yyyy-MM"
+            :value-format="dataTypeFormat"
+            :format="dataTypeFormat"
+            :clearable="false"
           >
           </el-date-picker>
           <el-select
@@ -493,11 +497,13 @@
               :on-success="handleSuccess"
               :on-progress="handleupload"
               :on-error="handleFail"
+              :before-upload="beforeAvatarUpload"
               multiple
               :limit="1"
               :on-exceed="handleExceed"
               :action="ActionUrl"
               :file-list="fileList"
+              accept=".xlsx,.xls,.zip"
             >
               <el-button size="small" type="primary">点击上传</el-button>
             </el-upload>
@@ -548,7 +554,7 @@ import {
 import { manageSelect } from "@/api/report/management";
 import { categoryName, propertyPeriod } from "@/api/report/reportName";
 import { resourceTreeByUN } from "@/api/system/unit";
-import { getHallSelect } from "@/api/system/hall";
+import { getHallSelect ,getHallSelectHallByUserId} from "@/api/system/hall";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 import { prefix as systemPrefix } from "@/api/system/system";
@@ -562,6 +568,27 @@ export default {
   components: { Treeselect },
   data() {
     return {
+      // 表单校验
+      rules: {
+        unitId: [
+          { required: true, message: "上报单位不能为空", trigger: "blur" },
+        ],
+        hallId: [
+          { required: true, message: "营业厅不能为空", trigger: "blur" },
+        ],
+        manageId: [
+          { required: true, message: "管理内容不能为空", trigger: "blur" },
+        ],
+        categoryId: [
+          { required: true, message: "报表名称不能为空", trigger: "blur" },
+        ],
+        hasBiz: [
+          { required: true, message: "有无业务不能为空", trigger: "blur" },
+        ],
+        period: [
+          { required: true, message: "报表周期不能为空", trigger: "blur" },
+        ],
+      },
       // 意见下拉框
       opinionList: [],
       // 选中的数组
@@ -588,6 +615,7 @@ export default {
       manageOptions: [],
       // 周期下拉框
       periodOption: [],
+      periodOption1: [],
       // 报表状态下拉框
       reportStateOption: [],
       // 报表名称下拉框
@@ -635,12 +663,13 @@ export default {
     };
   },
   created() {
+    this.myUserId = this.$store.getters.id;
     this.typeName = this.$route.name;
     this.getopinion();
     this.getTreeselect();
-    // this.getDicts("report", "report_period").then((response) => {
-    //   this.periodOption = response;
-    // });
+    this.getDicts("report", "report_period").then((response) => {
+      this.periodOption1 = response;
+    });
     this.getDicts("report", "report_approver_state").then((response) => {
       this.reportStateOption = response;
     });
@@ -715,33 +744,34 @@ export default {
             this.detailFileList = response;
           });
         });
-      } else {
-        reportInfo({ reportId: row.id }).then((response) => {
-          this.detailFileList = response;
-          this.nodeName = row.relationName;
-          this.open = true;
-          this.title = "流程查看审批";
-        });
-      }
+      } 
+      // else {
+      //   reportInfo({ reportId: row.id }).then((response) => {
+      //     this.detailFileList = response;
+      //     this.nodeName = row.relationName;
+      //     this.open = true;
+      //     this.title = "流程查看审批";
+      //   });
+      // }
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
       this.ids = selection.map((item) => item.id);
     },
     // 改变unit的值
-    changeUnit(value) {
-      getHallSelect(value).then((res) => {
-        if (this.typeName == "HallRepotr") {
-          this.queryParams.hallId = res[0].id;
-        }
-        this.hallList = res;
-      });
-    },
+    // changeUnit(value) {
+    //   getHallSelect(value).then((res) => {
+    //     if (this.typeName == "HallRepotr") {
+    //       this.queryParams.hallId = res[0].id;
+    //     }
+    //     this.hallList = res;
+    //   });
+    // },
     deleteReport(row) {
-      let reportIds=[]
+      let reportIds = [];
       if (row.id) {
-        reportIds.push(row.id)
-      }else{
+        reportIds.push(row.id);
+      } else {
         reportIds = this.ids;
       }
       this.$confirm(
@@ -779,6 +809,22 @@ export default {
       });
       this.loadingoption = loading;
     },
+    beforeAvatarUpload(file) {
+      console.log("file", file);
+      var testmsg = file.name.substring(file.name.lastIndexOf(".") + 1);
+      console.log('testmsg',testmsg);
+      const isJPG = testmsg ===( "xlsx" || "xls" || "zip");
+      // const isLt2M = file.size / 1024 / 1024 < 2;
+      console.log('isJPG',isJPG);
+
+      if (!isJPG) {
+        this.$message.error("上传文件只能是 xlsx/xls/zip 格式!");
+      }
+      // if (!isLt2M) {
+      //   this.$message.error('上传头像图片大小不能超过 2MB!');
+      // }
+      return isJPG;
+    },
     handleFail() {
       this.loadingoption.close();
       this.$message.error("上传失败");
@@ -813,16 +859,25 @@ export default {
     },
     // 提交表单按钮
     submitForm() {
-      reportAdd(this.form).then((res) => {
-        console.log("reportAdd", reportAdd);
-        this.open = false;
-        this.getList();
+      this.$refs["form"].validate((valid) => {
+        if (valid) {
+          if (this.form.files.length < 1) {
+            this.$message.error("请上传附件");
+          } else {
+            reportAdd(this.form).then((res) => {
+              this.$message.success("新增成功");
+              this.open = false;
+              this.getList();
+            });
+          }
+        }
       });
     },
     reset() {
       this.form = {
         files: [],
       };
+      this.detailFileList=[]
       this.resetForm("form");
     },
     // 取消按钮
@@ -834,7 +889,7 @@ export default {
     openDialog() {
       this.reset();
       this.open = true;
-      if (typeName != "HallRepotr") {
+      if (this.typeName != "HallRepotr") {
         this.title = "分公司上传文件";
       } else {
         this.title = "营业厅上传文件";
@@ -916,7 +971,7 @@ export default {
       resourceTreeByUN().then((response) => {
         this.deptOptions = response.list;
         this.queryParams.unitId = response.checked;
-        getHallSelect(response.checked).then((res) => {
+        getHallSelectHallByUserId({userId:this.myUserId}).then((res) => {
           if (this.typeName == "HallRepotr") {
             this.$set(this.queryParams, "hallId", res[0].id);
             // this.queryParams.hallId = res[0].id;
@@ -931,7 +986,6 @@ export default {
               this.getPropertyPeriod(res[0].id);
             });
           });
-          // this.getList();
         });
       });
     },

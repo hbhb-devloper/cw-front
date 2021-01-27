@@ -8,6 +8,7 @@ const user = {
     state: {
         token: getToken(),
         name: '',
+        id: '',
         avatar: '',
         unitName:'',
         nickname: '',
@@ -21,6 +22,9 @@ const user = {
         },
         SET_NAME: (state, name) => {
             state.name = name
+        },
+        SET_ID: (state, id) => {
+            state.id = id
         },
         SET_NICKNEM: (state, nickname) => {
             state.nickname = nickname;
@@ -77,6 +81,7 @@ const user = {
             return new Promise((resolve, reject) => {
                 getInfo(state.token).then(res => {
                     commit('SET_NAME', res.userInfo.userName)
+                    commit('SET_ID', res.userInfo.id)
                     // commit('SET_AVATAR', res.userInfo.avatar)
                     commit('SET_UNITNAME', res.userInfo.unitName)
                     commit('SET_NICKNEM', res.userInfo.nickName)
