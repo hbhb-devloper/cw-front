@@ -8,7 +8,9 @@ const user = {
     state: {
         token: getToken(),
         name: '',
+        id: '',
         avatar: '',
+        unitName:'',
         nickname: '',
         roles: [],
         permissions: []
@@ -21,11 +23,17 @@ const user = {
         SET_NAME: (state, name) => {
             state.name = name
         },
+        SET_ID: (state, id) => {
+            state.id = id
+        },
         SET_NICKNEM: (state, nickname) => {
             state.nickname = nickname;
         },
         SET_AVATAR: (state, avatar) => {
             state.avatar = avatar
+        },
+        SET_UNITNAME: (state, unitName) => {
+            state.unitName = unitName
         },
         SET_ROLES: (state, roles) => {
             state.roles = roles
@@ -72,7 +80,9 @@ const user = {
             return new Promise((resolve, reject) => {
                 getInfo(state.token).then(res => {
                     commit('SET_NAME', res.userInfo.userName)
-                    commit('SET_AVATAR', res.userInfo.avatar)
+                    commit('SET_ID', res.userInfo.id)
+                    // commit('SET_AVATAR', res.userInfo.avatar)
+                    commit('SET_UNITNAME', res.userInfo.unitName)
                     commit('SET_NICKNEM', res.userInfo.nickName)
                     commit('SET_PERMISSIONS', res.permissions)
                     let namefilter = ['角色库', '角色分配', '工作台', '流程类型', '流程列表']

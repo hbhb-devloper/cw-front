@@ -10,14 +10,20 @@
         />
       </el-form-item>
       <el-form-item label="营业厅" prop="hallId">
-        <el-input
+        <el-select
           v-model="queryParams.hallId"
-          placeholder="请输入营业厅"
+          placeholder="请选择营业厅"
           clearable
           size="small"
           style="width: 200px"
-          @keyup.enter.native="handleQuery"
-        />
+        >
+          <el-option
+            v-for="dict in hallList"
+            :key="dict.id"
+            :label="dict.label"
+            :value="dict.id"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="日期" prop="time">
         <el-date-picker
@@ -70,11 +76,7 @@
           @click="handleQuery"
           >搜索</el-button
         >
-        <el-button
-          icon="el-icon-refresh"
-          size="mini"
-          @click="save"
-          :disabled="!flag"
+        <el-button icon="el-icon-refresh" size="mini" @click="save"
           >保存</el-button
         >
       </el-form-item>
@@ -132,7 +134,7 @@
             type="number"
             v-model="scope.row.modifyAmount"
             placeholder="修改后申请数量"
-            :disabled="!flag"
+            :disabled="scope.row.state == 1 || scope.row.state == 2"
           ></el-input>
         </template>
       </el-table-column>
@@ -189,6 +191,7 @@ import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 import { getToken } from "@/utils/auth";
 import { prefix } from "@/api/propaganda/propaganda";
 import { exportData1 } from "@/utils/export";
+import { getHallSelect, getHallSelectHallByUserId } from "@/api/system/hall";
 export default {
   name: "Role",
   components: { Treeselect },
@@ -212,10 +215,15 @@ export default {
       timeOption: [],
       flag: true,
       checkerState: "",
+      // 营业厅下拉框
+      hallList: [],
+      // 当前用户Id
+      myUserId: undefined,
     };
   },
   created() {
     // this.getList();
+    this.myUserId = this.$store.getters.id;
     this.getTreeselect();
     this.getStateOption();
     this.getDicts("publicity", "application_detail_state").then((response) => {
@@ -260,7 +268,7 @@ export default {
         cancelButtonText: "取消",
         type: "warning",
       }).then(function () {
-         let changeList = [];
+        let changeList = [];
         that.singleList.map((item) => {
           changeList.push({
             id: item.applicationDetailId,
@@ -273,10 +281,10 @@ export default {
             modifyAmount: item.modifyAmount,
           });
         });
-        let dataObj={
-          goodsReqVO:that.queryParams,
-          list:changeList
-        }
+        let dataObj = {
+          goodsReqVO: that.queryParams,
+          list: changeList,
+        };
         verifySave(dataObj).then((res) => {
           that.msgSuccess("保存成功");
           that.getList();
@@ -296,21 +304,21 @@ export default {
         that.singleList.map((item) => {
           changeList.push({
             id: item.applicationDetailId,
-            goodsId:item.goodsId,
+            goodsId: item.goodsId,
             modifyAmount: item.modifyAmount,
           });
         });
         that.simplexList.map((item) => {
           changeList.push({
             id: item.applicationDetailId,
-            goodsId:item.goodsId,
+            goodsId: item.goodsId,
             modifyAmount: item.modifyAmount,
           });
         });
-        let dataObj={
-          goodsReqVO:that.queryParams,
-          list:changeList
-        }
+        let dataObj = {
+          goodsReqVO: that.queryParams,
+          list: changeList,
+        };
         verifySubmit(dataObj).then((res) => {
           that.msgSuccess("提交成功");
           that.getList();
@@ -337,10 +345,16 @@ export default {
       resourceTreeByUN().then((response) => {
         this.deptOptions = response.list;
         this.queryParams.unitId = response.checked;
-        goodsTime(this.queryParams.time).then((res) => {
-          this.timeOption = res.goodsIndexList;
-          this.$set(this.queryParams, "goodsIndex", res.goodsIndex);
-          this.getList();
+        getHallSelectHallByUserId({ userId: this.myUserId }).then((res) => {
+          if (res[0].id) {
+            this.queryParams.hallId = res[0].id;
+          }
+          this.hallList = res;
+          goodsTime(this.queryParams.time).then((res) => {
+            this.timeOption = res.goodsIndexList;
+            this.$set(this.queryParams, "goodsIndex", res.goodsIndex);
+            this.getList();
+          });
         });
       });
     },

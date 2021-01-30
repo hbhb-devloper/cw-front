@@ -12,8 +12,8 @@
         />
       </el-form-item>
       <el-form-item label="流程类型" prop="flowTypeId">
-        <el-select v-model="queryParams.flowTypeId" placeholder="请选择" style>
-          <el-option :value="undefined" label="全部类型"></el-option>
+        <el-select v-model="queryParams.flowTypeId" placeholder="请选择" filterable>
+          <el-option :value="undefined" label="全部类型" ></el-option>
           <el-option
             v-for="item in flowTypeArr"
             :value="item.id"
@@ -24,14 +24,28 @@
       </el-form-item>
 
       <el-form-item>
-        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+        <el-button
+          type="primary"
+          icon="el-icon-search"
+          size="mini"
+          @click="handleQuery"
+          >搜索</el-button
+        >
+        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery"
+          >重置</el-button
+        >
       </el-form-item>
     </el-form>
 
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
-        <el-button type="primary" icon="el-icon-plus" size="mini" @click="handleAdd">新增</el-button>
+        <el-button
+          type="primary"
+          icon="el-icon-plus"
+          size="mini"
+          @click="handleAdd"
+          >新增</el-button
+        >
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -41,7 +55,8 @@
           :disabled="single"
           @click="handleUpdate"
           v-if="false"
-        >修改</el-button>
+          >修改</el-button
+        >
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -51,7 +66,8 @@
           :disabled="multiple"
           @click="handleDelete"
           v-if="false"
-        >删除</el-button>
+          >删除</el-button
+        >
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -60,7 +76,8 @@
           size="mini"
           @click="handleExport"
           v-if="false"
-        >导出</el-button>
+          >导出</el-button
+        >
       </el-col>
     </el-row>
 
@@ -79,35 +96,56 @@
         width="150"
         align="center"
       />
-      <el-table-column label="流程类型名称" prop="flowTypeName" width="160" align="center" />
+      <el-table-column
+        label="流程类型名称"
+        prop="flowTypeName"
+        width="160"
+        align="center"
+      />
       <!-- <el-table-column label="显示顺序" prop="sortNum" width="100" align="center" /> -->
-      <el-table-column label="创建时间" align="center" prop="createTime" width="160">
+      <el-table-column
+        label="创建时间"
+        align="center"
+        prop="createTime"
+        width="160"
+      >
         <template slot-scope="scope">
-          <span>{{ scope.row.createTime| dataFormat }}</span>
+          <span>{{ scope.row.createTime | dataFormat }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="备注" prop="remark" :show-overflow-tooltip="true" align="center" />
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column
+        label="备注"
+        prop="remark"
+        :show-overflow-tooltip="true"
+        align="center"
+      />
+      <el-table-column
+        label="操作"
+        align="center"
+        class-name="small-padding fixed-width"
+      >
         <template slot-scope="scope">
           <el-button
             size="mini"
             type="text"
             icon="el-icon-edit"
             @click.stop="handleUpdate(scope.row)"
-          >修改</el-button>
+            >修改</el-button
+          >
 
           <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click.stop="handleDelete(scope.row)"
-          >删除</el-button>
+            >删除</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
 
     <pagination
-      v-show="total>0"
+      v-show="total > 0"
       :total="total"
       :page.sync="queryParams.pageNum"
       :limit.sync="queryParams.pageSize"
@@ -138,7 +176,12 @@
         </el-form-item>
 
         <el-form-item label="显示顺序" prop="sortNum">
-          <el-input-number v-model="form.sortNum" controls-position="right" :min="0" :max="9999" />
+          <el-input-number
+            v-model="form.sortNum"
+            controls-position="right"
+            :min="0"
+            :max="9999"
+          />
         </el-form-item>
         <el-form-item label="关联单位" prop="unitId">
           <el-tree
@@ -151,7 +194,11 @@
           ></el-tree>
         </el-form-item>
         <el-form-item label="备注">
-          <el-input v-model="form.remark" type="textarea" placeholder="请输入内容"></el-input>
+          <el-input
+            v-model="form.remark"
+            type="textarea"
+            placeholder="请输入内容"
+          ></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -315,6 +362,9 @@ export default {
         remark: undefined,
       };
       this.resetForm("form");
+      this.$nextTick(() => {
+        this.$refs.dept.setCheckedKeys([]);
+      });
     },
     /** 搜索按钮操作 */
     handleQuery() {

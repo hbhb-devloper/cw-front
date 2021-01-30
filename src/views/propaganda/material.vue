@@ -133,6 +133,7 @@
               style="width: 50%"
               :src="publicityForm.file.filePath"
               fit="cover"
+              @click.native="document.body.style.overflow = ''"
             ></el-image>
           </el-form-item>
         </el-form>
@@ -164,7 +165,9 @@
             icon="el-icon-delete"
             size="mini"
             @click="DelLine(index)"
-            :disabled="applicationList.length == 1"
+            :disabled="
+              applicationList.length != index + 1 || applicationList.length == 1
+            "
             >删除</el-button
           >
         </el-form-item>
@@ -269,7 +272,11 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="是否为类别 " prop="mold">
-              <el-switch :disabled="title=='修改'" v-model="form.mold" @change="changeMold"></el-switch>
+              <el-switch
+                :disabled="title == '修改'"
+                v-model="form.mold"
+                @change="changeMold"
+              ></el-switch>
             </el-form-item>
           </el-col>
           <el-col :span="12" v-if="isMold != 1">
@@ -430,6 +437,7 @@ import {
   addSetting,
   getSetting,
   putLibraryBatch,
+  getSettingMove,
 } from "@/api/propaganda/material";
 import { listFlowRoleUser } from "@/api/flow/flowrole";
 import { resourceTreeByUN } from "@/api/system/unit";
@@ -550,14 +558,12 @@ export default {
     },
     submitCheckerObj() {
       putLibraryBatch(this.CheckerObj).then((res) => {
-        console.log("putLibraryBatch", res);
         this.msgSuccess("批量修改物料审核员成功");
         this.CheckerVisible = false;
       });
     },
     getmaterialRole() {
       let that = this;
-      console.log("that.queryParams.unitId", this.queryParams.unitId);
       let params = {
         flowRoleId: 13,
         unitId: that.queryParams.unitId,
@@ -573,15 +579,15 @@ export default {
 
     // 删除行
     DelLine(index) {
-      this.applicationList.splice(index, 1);
+      getSettingMove({ goodsIndex: index + 1 }).then((res) => {
+        this.applicationList.splice(index, 1);
+      });
     },
     // 打开设置弹出框
     OpenSetVisible() {
       this.settingForm = {};
       this.applicationList = [];
       getSetting().then((res) => {
-        console.log("getSetting", res);
-        // this.settingForm = res;
         this.settingForm.contents = res[0].contents;
         res.map((item, index) => {
           let deadObj = {
@@ -605,7 +611,6 @@ export default {
         this.settingForm.deadlineList.push(item.deadline);
       });
       addSetting(this.settingForm).then((res) => {
-        console.log("addSetting", res);
         this.msgSuccess("添加成功");
         this.SetVisible = false;
       });
@@ -637,7 +642,6 @@ export default {
         // this.$message.error("请点击活动");
       } else {
         getLibraryDetail(data.id).then((res) => {
-          console.log("res", res);
           this.publicityForm = res;
         });
       }
@@ -650,6 +654,7 @@ export default {
         hasNum: false,
         hasSeal: false,
       };
+      this.hideUploadEdit=false
       this.fileList = [];
       this.resetForm("form");
     },
@@ -736,26 +741,23 @@ export default {
     handleEditChange(file, fileList) {
       this.hideUploadEdit = fileList.length >= 1;
       this.fileList = fileList;
-
-      console.log("this.fileList:", fileList);
-      console.log("this.hideUploadEdit:", this.hideUploadEdit);
     },
     beforeAvatarUpload(file) {
       const isJPG = file.type === "image/jpeg";
-      const isLt2M = file.size / 1024 / 1024 < 2;
+      // const isLt2M = file.size / 1024 / 1024 < 2;
 
       if (!isJPG) {
         this.$message.error("上传头像图片只能是 JPG 格式!");
       }
-      if (!isLt2M) {
-        this.$message.error("上传头像图片大小不能超过 2MB!");
-      }
-      return isJPG && isLt2M;
+      // if (!isLt2M) {
+      //   this.$message.error("上传头像图片大小不能超过 2MB!");
+      // }
+      return isJPG ;
     },
     handleupload() {
       const loading = this.$loading({
         lock: true,
-        text: "正在上传文件",
+        text: "正在上传图片",
         spinner: "el-icon-loading",
         background: "rgba(0, 0, 0, 0.7)",
       });
@@ -770,8 +772,6 @@ export default {
       }
       this.hideUploadEdit = fileList.length >= 1;
       this.fileList = fileList;
-      console.log("this.fileList:", fileList);
-      console.log("this.hideUploadEdit:", this.hideUploadEdit);
     },
     handlePictureCardPreview(file) {
       this.dialogImageUrl = file.url;
@@ -779,7 +779,7 @@ export default {
     },
     handleExceed(files, fileList) {
       this.$message.warning(
-        `当前限制选择 1 个文件，本次选择了 ${files.length} 个文件，共选择了 ${
+        `当前限制选择 1 个图片，本次选择了 ${files.length} 个文件，共选择了 ${
           files.length + fileList.length
         } 个文件`
       );
@@ -789,7 +789,6 @@ export default {
       this.$message.error("上传失败");
     },
     handleSuccess(res) {
-      console.log("res", res);
       this.loadingoption.close();
       if (res.code == "00000") {
         this.$message({

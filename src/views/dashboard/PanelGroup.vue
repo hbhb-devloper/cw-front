@@ -199,7 +199,7 @@ export default {
       .card-panel-text {
         line-height: 18px;
         color: rgba(0, 0, 0, 0.45);
-        font-size: 16px;
+        font-size: 15px;
         margin-bottom: 12px;
       }
 

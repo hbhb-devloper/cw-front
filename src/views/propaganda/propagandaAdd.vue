@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-12-22 10:05:30
  * @LastEditors: CYZ
- * @LastEditTime: 2021-01-12 17:54:06
+ * @LastEditTime: 2021-01-21 15:09:22
 -->
 <template>
   <div class="app-container">
@@ -24,11 +24,16 @@
         <el-col
           v-for="(item, index) in flowList"
           :key="index"
-          :span="8"
-          style="height: 190px; border: 1px solid red; border-radius: 10px"
+          style="
+            width: 300px;
+            margin: 10px;
+            height: 190px;
+            border: 2px solid red;
+            border-radius: 10px;
+          "
         >
           <div class="flowItem">
-            <el-form label-width="140px">
+            <el-form label-width="auto" label-position="left">
               <el-form-item :label="item.approverRole">
                 <el-select
                   v-model="item.approver.value"
@@ -154,7 +159,7 @@
           <template slot-scope="scope">
             <el-progress
               :percentage="scope.row.proportion"
-              v-if="scope.row.proportion || scope.row.proportion===0"
+              v-if="scope.row.proportion || scope.row.proportion === 0"
             ></el-progress>
           </template>
         </el-table-column>
@@ -432,7 +437,7 @@
               icon="el-icon-delete"
               size="small"
               type="danger"
-              v-if="importantList.length >= 1"
+              v-if="importantList.length >= 1 && !editAble"
               @click="deleteMaterials"
               >删除导入数据</el-button
             >
@@ -512,6 +517,14 @@
                 width="120"
               />
             </el-table>
+            <el-button
+              icon="el-icon-delete"
+              size="small"
+              type="danger"
+              v-if="pictureFileList.length >= 1 && !editAble"
+              @click="deletepictureFile"
+              >删除导入数据</el-button
+            >
             <el-table
               :data="pictureFileList"
               v-if="pictureFileList.length >= 1"
@@ -590,6 +603,7 @@ import {
   materialsStatistics,
 } from "@/api/propaganda/poster";
 import { resourceTreeByUN } from "@/api/system/unit";
+import { dateFormat } from "@/utils/index";
 export default {
   name: "Role",
   data() {
@@ -663,27 +677,49 @@ export default {
     },
   },
   created() {
+    // this.name = this.$store.getters.nickName;
+    let date = new Date();
+    let time = dateFormat("YYYY-mm-dd HH:MM", date);
+    console.log("time", time);
     this.printId = this.$route.query.id;
+
+    let name = "";
+    let unitName = this.$store.getters.unitName;
+    let nameTime = dateFormat("YYYY/mm/dd", date);
     this.type = this.$route.query.type;
     if (this.type == "printed") {
       this.title = "印刷品";
+      name = "临时申请";
       this.getRoleList();
       if (this.printId) {
         this.showinfo();
+      }else {
+        this.form.printName=`${unitName}${name}${nameTime}`
       }
     } else if (this.type == "design") {
       this.title = "宣传画面";
+      name = "画面申请";
       if (this.printId) {
         this.showinfo();
+      }else {
+        this.form.pictureName=`${unitName}${name}${nameTime}`
       }
     } else if (this.type == "poster") {
       this.title = "物料制作";
+      name = "物料申请";
       if (this.printId) {
         this.showinfo();
       } else {
         this.getTreeselect();
+        this.form.materialsName=`${unitName}${name}${nameTime}`
       }
       // this.getBudgetList();
+    }
+
+    if (!this.printId) {
+      this.form.unitName = `${unitName}`;
+      this.form.nickName = this.$store.getters.nickName;
+      this.form.applyTime = time;
     }
   },
   methods: {
@@ -742,10 +778,10 @@ export default {
     },
     // 删除导入数据
     deleteMaterials() {
-      if (typeof this.printId =='undefined') {
+      if (typeof this.printId == "undefined") {
         this.importantList = [];
       } else {
-        if (this.type == "print") {
+        if (this.type == "printed") {
           printDeleteMaterials(this.printId).then((res) => {
             this.showinfo();
           });
@@ -755,6 +791,10 @@ export default {
           });
         }
       }
+    },
+    // 删除宣传画面导入信息
+    deletepictureFile() {
+      this.pictureFileList = [];
     },
     // 获取市场审核员下拉框
     getRoleList() {
@@ -941,34 +981,46 @@ export default {
           }
           if (this.form.id != undefined) {
             if (this.type == "printed") {
-              printUpdate(this.form).then((response) => {
-                this.msgSuccess("修改成功");
-                this.open = false;
-                this.fileList = [];
-                this.showinfo();
-                this.$router.go(-1);
-              });
+              if (this.importantList.length < 1) {
+                this.$message.error("请上传印刷品模板");
+              } else {
+                printUpdate(this.form).then((response) => {
+                  this.msgSuccess("修改成功");
+                  this.open = false;
+                  this.fileList = [];
+                  this.showinfo();
+                  this.$router.go(-1);
+                });
+              }
             } else if (this.type == "design") {
-              pictureUpdate(this.form).then((response) => {
-                this.msgSuccess("修改成功");
-                this.open = false;
-                this.fileList = [];
-                this.showinfo();
-                this.$router.go(-1);
-              });
+              if (this.pictureFileList.length < 1) {
+                this.$message.error("请上传宣传画面模板");
+              } else {
+                pictureUpdate(this.form).then((response) => {
+                  this.msgSuccess("修改成功");
+                  this.open = false;
+                  this.fileList = [];
+                  this.showinfo();
+                  this.$router.go(-1);
+                });
+              }
             } else if (this.type == "poster") {
-              materialsUpdate(this.form).then((response) => {
-                this.msgSuccess("修改成功");
-                this.open = false;
-                this.fileList = [];
-                this.showinfo();
-                this.$router.go(-1);
-              });
+              if (this.importantList.length < 1) {
+                this.$message.error("请上传物料制作模板");
+              } else {
+                materialsUpdate(this.form).then((response) => {
+                  this.msgSuccess("修改成功");
+                  this.open = false;
+                  this.fileList = [];
+                  this.showinfo();
+                  this.$router.go(-1);
+                });
+              }
             }
           } else {
             if (this.type == "printed") {
               if (this.importantList.length < 1) {
-                this.$message.error("请上传附件");
+                this.$message.error("请上传印刷品模板");
               } else {
                 printAdd(this.form).then((response) => {
                   this.msgSuccess("新增成功");
@@ -978,7 +1030,7 @@ export default {
               }
             } else if (this.type == "design") {
               if (this.pictureFileList.length < 1) {
-                this.$message.error("请上传附件");
+                this.$message.error("请上传宣传画面模板");
               } else {
                 pictureAdd(this.form).then((response) => {
                   this.msgSuccess("新增成功");
@@ -988,7 +1040,7 @@ export default {
               }
             } else if (this.type == "poster") {
               if (this.importantList.length < 1) {
-                this.$message.error("请上传附件");
+                this.$message.error("请上传物料制作模板");
               } else {
                 materialsAdd(this.form).then((response) => {
                   this.msgSuccess("新增成功");
@@ -1013,8 +1065,8 @@ export default {
       // this.importObj.type=this.type
     },
     handleFail(err, file, fileList) {
-      console.log('fileList',fileList);
-      fileList=[]
+      console.log("fileList", fileList);
+      fileList = [];
       this.loadingoption.close();
       this.$message.error("上传失败");
     },

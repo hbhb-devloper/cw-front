@@ -38,9 +38,9 @@ export function applicationToApprove(data) {
     })
 }
 // 营业厅物料分公司汇总（政企/市场部）
-export function applicationFlow(batchNum) {
+export function applicationFlow(batchNum,unitId) {
     return request({
-        url: `${prefix}/application/flow?batchNum=${batchNum}`,
+        url: `${prefix}/application/flow?batchNum=${batchNum}&unitId=${unitId}`,
         method: 'get',
     })
 }

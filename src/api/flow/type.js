@@ -11,7 +11,14 @@ export function listType(query) {
         params: query
     })
 }
-
+// 获取流程类型名称
+export function listTypeName(query) {
+    return request1({
+        url: `${prefix}/names`,
+        method: 'get',
+        params: query
+    })
+}
 // 新增流程类型
 export function addType(data) {
     return request1({
@@ -34,6 +41,15 @@ export function delFlowType(flowTypeId) {
     return request1({
         url: `${prefix}/type/${flowTypeId}`,
         method: 'delete',
+    })
+}
+
+// 根据流程类型id查询流程类型详情
+export function listTypeById(query) {
+    return request1({
+        url: `${prefix}/type/id`,
+        method: 'get',
+        params: query
     })
 }
 

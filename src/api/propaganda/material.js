@@ -61,3 +61,14 @@ export function putLibraryBatch(data) {
         data: data
     })
 }
+
+
+
+// 物料相关设定列表
+export function getSettingMove(query) {
+    return request({
+        url: `${prefix}/goods/setting/move`,
+        method: 'get',
+        params:query
+    })
+}

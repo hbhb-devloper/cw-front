@@ -129,7 +129,6 @@ export default {
         pageNum: 1,
         pageSize: 100000,
         unitId: undefined,
-        state :1
       },
       queryParams1: {
         pageNum: 1,
@@ -200,7 +199,7 @@ export default {
     },
     getUserList() {
       this.loading1 = true;
-      userSelect().then((response) => {
+      userSelect(this.queryParams).then((response) => {
         // this.UserList = response;
         response.map((item) => {
           let UserItem = {

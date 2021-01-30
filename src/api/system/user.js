@@ -227,9 +227,10 @@ export function getInfo() {
 }
 
 // 获取当前所有用户的信息（不分页）
-export function userSelect() {
+export function userSelect(query) {
     return request1({
         url: `${prefix}/user/select`,
-        method: 'get'
+        method: 'get',
+        params:query
     })
 }

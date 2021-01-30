@@ -10,14 +10,20 @@
         />
       </el-form-item>
       <el-form-item label="营业厅" prop="hallId">
-        <el-input
+        <el-select
           v-model="queryParams.hallId"
-          placeholder="请输入营业厅"
+          placeholder="请选择营业厅"
           clearable
           size="small"
           style="width: 200px"
-          @keyup.enter.native="handleQuery"
-        />
+        >
+          <el-option
+            v-for="dict in hallList"
+            :key="dict.id"
+            :label="dict.label"
+            :value="dict.id"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="日期" prop="time">
         <el-date-picker
@@ -110,6 +116,7 @@
 import { goodsList, goodsTime, goodsApply } from "@/api/propaganda/flyer";
 import { resourceTreeByUN } from "@/api/system/unit";
 import Treeselect from "@riophae/vue-treeselect";
+import { getHallSelect, getHallSelectHallByUserId } from "@/api/system/hall";
 
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 export default {
@@ -131,7 +138,7 @@ export default {
       deptOptions: undefined,
       // 查询参数
       queryParams: {
-        hallId: 1,
+        hallId: undefined,
       },
       // 表单参数
       form: {},
@@ -140,9 +147,14 @@ export default {
       editAble: true,
       // 宣传单页公告
       contents: undefined,
+      // 营业厅下拉框
+      hallList: [],
+      // 当前用户Id
+      myUserId: undefined,
     };
   },
   created() {
+    this.myUserId = this.$store.getters.id;
     this.getTreeselect();
 
     // this.getMenuTreeselect();
@@ -179,14 +191,20 @@ export default {
       resourceTreeByUN().then((response) => {
         this.deptOptions = response.list;
         this.queryParams.unitId = response.checked;
-        goodsTime(this.queryParams.time).then((res) => {
-          this.timeOption = res.goodsIndexList;
-          if (res.goodsIndex) {
-            this.$set(this.queryParams, "goodsIndex", res.goodsIndex);
-          } else {
-            this.msgError("当前月份已无审批批次");
+        getHallSelectHallByUserId({ userId: this.myUserId }).then((res) => {
+          this.hallList = res;
+          if (res[0].id) {
+            this.queryParams.hallId = res[0].id;
           }
-          this.getList();
+          goodsTime(this.queryParams.time).then((res) => {
+            this.timeOption = res.goodsIndexList;
+            if (res.goodsIndex) {
+              this.$set(this.queryParams, "goodsIndex", res.goodsIndex);
+            } else {
+              this.msgError("当前月份已无审批批次");
+            }
+            this.getList();
+          });
         });
       });
     },
