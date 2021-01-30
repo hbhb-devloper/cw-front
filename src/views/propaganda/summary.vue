@@ -76,10 +76,7 @@
           @click="handleQuery"
           >搜索</el-button
         >
-        <el-button
-          icon="el-icon-refresh"
-          size="mini"
-          @click="save"
+        <el-button icon="el-icon-refresh" size="mini" @click="save"
           >保存</el-button
         >
       </el-form-item>
@@ -194,7 +191,7 @@ import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 import { getToken } from "@/utils/auth";
 import { prefix } from "@/api/propaganda/propaganda";
 import { exportData1 } from "@/utils/export";
-import { getHallSelect  ,getHallSelectHallByUserId} from "@/api/system/hall";
+import { getHallSelect, getHallSelectHallByUserId } from "@/api/system/hall";
 export default {
   name: "Role",
   components: { Treeselect },
@@ -220,8 +217,8 @@ export default {
       checkerState: "",
       // 营业厅下拉框
       hallList: [],
-       // 当前用户Id
-      myUserId:undefined
+      // 当前用户Id
+      myUserId: undefined,
     };
   },
   created() {
@@ -348,14 +345,16 @@ export default {
       resourceTreeByUN().then((response) => {
         this.deptOptions = response.list;
         this.queryParams.unitId = response.checked;
-       getHallSelectHallByUserId({userId:this.myUserId}).then((res) => {
-          this.queryParams.hallId=res[0].id
+        getHallSelectHallByUserId({ userId: this.myUserId }).then((res) => {
+          if (res[0].id) {
+            this.queryParams.hallId = res[0].id;
+          }
           this.hallList = res;
-        });
-        goodsTime(this.queryParams.time).then((res) => {
-          this.timeOption = res.goodsIndexList;
-          this.$set(this.queryParams, "goodsIndex", res.goodsIndex);
-          this.getList();
+          goodsTime(this.queryParams.time).then((res) => {
+            this.timeOption = res.goodsIndexList;
+            this.$set(this.queryParams, "goodsIndex", res.goodsIndex);
+            this.getList();
+          });
         });
       });
     },

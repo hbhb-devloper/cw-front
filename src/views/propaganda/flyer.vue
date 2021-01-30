@@ -116,7 +116,7 @@
 import { goodsList, goodsTime, goodsApply } from "@/api/propaganda/flyer";
 import { resourceTreeByUN } from "@/api/system/unit";
 import Treeselect from "@riophae/vue-treeselect";
-import { getHallSelect , getHallSelectHallByUserId} from "@/api/system/hall";
+import { getHallSelect, getHallSelectHallByUserId } from "@/api/system/hall";
 
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 export default {
@@ -150,7 +150,7 @@ export default {
       // 营业厅下拉框
       hallList: [],
       // 当前用户Id
-      myUserId:undefined
+      myUserId: undefined,
     };
   },
   created() {
@@ -191,18 +191,20 @@ export default {
       resourceTreeByUN().then((response) => {
         this.deptOptions = response.list;
         this.queryParams.unitId = response.checked;
-        getHallSelectHallByUserId({userId:this.myUserId}).then((res) => {
+        getHallSelectHallByUserId({ userId: this.myUserId }).then((res) => {
           this.hallList = res;
-          this.queryParams.hallId=res[0].id
-        });
-        goodsTime(this.queryParams.time).then((res) => {
-          this.timeOption = res.goodsIndexList;
-          if (res.goodsIndex) {
-            this.$set(this.queryParams, "goodsIndex", res.goodsIndex);
-          } else {
-            this.msgError("当前月份已无审批批次");
+          if (res[0].id) {
+            this.queryParams.hallId = res[0].id;
           }
-          this.getList();
+          goodsTime(this.queryParams.time).then((res) => {
+            this.timeOption = res.goodsIndexList;
+            if (res.goodsIndex) {
+              this.$set(this.queryParams, "goodsIndex", res.goodsIndex);
+            } else {
+              this.msgError("当前月份已无审批批次");
+            }
+            this.getList();
+          });
         });
       });
     },
