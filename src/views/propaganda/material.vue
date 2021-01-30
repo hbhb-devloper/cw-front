@@ -752,12 +752,12 @@ export default {
       // if (!isLt2M) {
       //   this.$message.error("上传头像图片大小不能超过 2MB!");
       // }
-      return isJPG && isLt2M;
+      return isJPG ;
     },
     handleupload() {
       const loading = this.$loading({
         lock: true,
-        text: "正在上传文件",
+        text: "正在上传图片",
         spinner: "el-icon-loading",
         background: "rgba(0, 0, 0, 0.7)",
       });
@@ -779,7 +779,7 @@ export default {
     },
     handleExceed(files, fileList) {
       this.$message.warning(
-        `当前限制选择 1 个文件，本次选择了 ${files.length} 个文件，共选择了 ${
+        `当前限制选择 1 个图片，本次选择了 ${files.length} 个文件，共选择了 ${
           files.length + fileList.length
         } 个文件`
       );
