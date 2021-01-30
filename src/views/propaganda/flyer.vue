@@ -116,7 +116,7 @@
 import { goodsList, goodsTime, goodsApply } from "@/api/propaganda/flyer";
 import { resourceTreeByUN } from "@/api/system/unit";
 import Treeselect from "@riophae/vue-treeselect";
-import { getHallSelect } from "@/api/system/hall";
+import { getHallSelect , getHallSelectHallByUserId} from "@/api/system/hall";
 
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 export default {
@@ -149,9 +149,12 @@ export default {
       contents: undefined,
       // 营业厅下拉框
       hallList: [],
+      // 当前用户Id
+      myUserId:undefined
     };
   },
   created() {
+    this.myUserId = this.$store.getters.id;
     this.getTreeselect();
 
     // this.getMenuTreeselect();
@@ -188,7 +191,7 @@ export default {
       resourceTreeByUN().then((response) => {
         this.deptOptions = response.list;
         this.queryParams.unitId = response.checked;
-        getHallSelect(response.checked).then((res) => {
+        getHallSelectHallByUserId({userId:this.myUserId}).then((res) => {
           this.hallList = res;
           this.queryParams.hallId=res[0].id
         });

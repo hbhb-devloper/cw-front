@@ -692,7 +692,6 @@ export default {
             });
           }
           this.hallLoading = false;
-
           this.hallList = res.halls;
           this.$nextTick(() => {
             this.defaultHall = res.hallSelect;
@@ -886,6 +885,7 @@ export default {
         this.open = true;
         this.title = "修改用户";
         this.form.pwd = undefined;
+        this.getUnit({id:11})
       });
     },
     /** 重置密码按钮操作 */

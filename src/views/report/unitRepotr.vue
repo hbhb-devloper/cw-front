@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2021-01-23 16:33:29
  * @LastEditors: CYZ
- * @LastEditTime: 2021-01-27 14:58:28
+ * @LastEditTime: 2021-01-30 13:56:43
 -->
 <template>
   <div class="app-container">
@@ -155,7 +155,8 @@
         >
       </el-form-item>
     </el-form>
-    <el-row :gutter="10" class="mb8">
+    <!-- 暂时隐藏导出按钮 -->
+    <!-- <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
         <el-button
           type="warning"
@@ -165,7 +166,7 @@
           >导出订单
         </el-button>
       </el-col>
-    </el-row>
+    </el-row> -->
     <!-- 报表表单 -->
     <el-table
       v-loading="loading"
@@ -660,6 +661,8 @@ export default {
       dataTypeFormat: "yyyy-MM",
       // 日期选择类型
       dataType: undefined,
+      // 当前用户Id
+      myUserId:undefined
     };
   },
   created() {

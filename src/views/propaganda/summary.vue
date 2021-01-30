@@ -194,7 +194,7 @@ import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 import { getToken } from "@/utils/auth";
 import { prefix } from "@/api/propaganda/propaganda";
 import { exportData1 } from "@/utils/export";
-import { getHallSelect } from "@/api/system/hall";
+import { getHallSelect  ,getHallSelectHallByUserId} from "@/api/system/hall";
 export default {
   name: "Role",
   components: { Treeselect },
@@ -220,10 +220,13 @@ export default {
       checkerState: "",
       // 营业厅下拉框
       hallList: [],
+       // 当前用户Id
+      myUserId:undefined
     };
   },
   created() {
     // this.getList();
+    this.myUserId = this.$store.getters.id;
     this.getTreeselect();
     this.getStateOption();
     this.getDicts("publicity", "application_detail_state").then((response) => {
@@ -345,8 +348,8 @@ export default {
       resourceTreeByUN().then((response) => {
         this.deptOptions = response.list;
         this.queryParams.unitId = response.checked;
-        getHallSelect(response.checked).then((res) => {
-          // this.queryParams.hallId=res[0].id
+       getHallSelectHallByUserId({userId:this.myUserId}).then((res) => {
+          this.queryParams.hallId=res[0].id
           this.hallList = res;
         });
         goodsTime(this.queryParams.time).then((res) => {
