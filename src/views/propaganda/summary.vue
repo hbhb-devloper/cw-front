@@ -346,9 +346,9 @@ export default {
         this.deptOptions = response.list;
         this.queryParams.unitId = response.checked;
         getHallSelectHallByUserId({ userId: this.myUserId }).then((res) => {
-          if (res[0].id) {
-            this.queryParams.hallId = res[0].id;
-          }
+          // if (res[0].id) {
+          //   this.queryParams.hallId = res[0].id;
+          // }
           this.hallList = res;
           goodsTime(this.queryParams.time).then((res) => {
             this.timeOption = res.goodsIndexList;
