@@ -200,7 +200,7 @@ export default {
     getUserList() {
       this.loading1 = true;
       userSelect(this.queryParams).then((response) => {
-        // this.UserList = response;
+        this.UserList = [];
         response.map((item) => {
           let UserItem = {
             key: item.id,
