@@ -156,7 +156,6 @@
             ref="menu"
             node-key="id"
             empty-text="加载中，请稍后"
-            check-strictly
             :props="defaultProps"
           ></el-tree>
         </el-form-item>
@@ -183,7 +182,6 @@ import {
   changeRoleStatus,
 } from "@/api/system/role";
 // import { treeselect as menuTreeselect, roleMenuTreeselect } from "@/api/system/menu";
-// import { treeselect as deptTreeselect, roleDeptTreeselect } from "@/api/system/dept";
 
 export default {
   name: "Role",
@@ -237,8 +235,6 @@ export default {
       ],
       // 菜单列表
       menuOptions: [],
-      // 部门列表
-      deptOptions: [],
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -288,20 +284,12 @@ export default {
         this.menuOptions = response;
       });
     },
-    /** 查询部门树结构 */
-    getDeptTreeselect() {
-      deptTreeselect().then((response) => {
-        this.deptOptions = response.data;
-      });
-    },
     // 所有菜单节点数据
     getMenuAllCheckedKeys() {
       // 目前被选中的菜单节点
       let checkedKeys = this.$refs.menu.getCheckedKeys();
       // 半选中的菜单节点
-      let halfCheckedKeys = this.$refs.menu.getHalfCheckedKeys();
-      console.log("checkedKeys", checkedKeys);
-      console.log("halfCheckedKeys", halfCheckedKeys);
+      // let halfCheckedKeys = this.$refs.menu.getHalfCheckedKeys();
       let checkList = [];
       checkedKeys.map((checkItem) => {
         let checked = {
@@ -310,24 +298,17 @@ export default {
         };
         checkList.push(checked);
       });
-      halfCheckedKeys.map((halecheckItem) => {
-        let halfchecked = {
-          id: halecheckItem,
-          isHalf: 1,
-        };
-        checkList.push(halfchecked);
-      });
-      checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys);
+      // halfCheckedKeys.map((halecheckItem) => {
+      //   let halfchecked = {
+      //     id: halecheckItem,
+      //     isHalf: 1,
+      //   };
+      //   checkList.push(halfchecked);
+      // });
+      // checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys);
+      console.log('checkedKeys',checkedKeys);
+      console.log('checkList',checkList);
       return checkList;
-    },
-    // 所有部门节点数据
-    getDeptAllCheckedKeys() {
-      // 目前被选中的部门节点
-      let checkedKeys = this.$refs.dept.getHalfCheckedKeys();
-      // 半选中的部门节点
-      let halfCheckedKeys = this.$refs.dept.getCheckedKeys();
-      checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys);
-      return checkedKeys;
     },
     /** 根据菜单模板ID查询菜单树结构 */
     getRoleMenuTreeselect(roleId) {
@@ -335,13 +316,6 @@ export default {
         // this.menuOptions = response.menus;
         console.log('roleMenuTreeselect',response);
         this.$refs.menu.setCheckedKeys(response);
-      });
-    },
-    /** 根据菜单模板ID查询部门树结构 */
-    getRoleDeptTreeselect(roleId) {
-      roleDeptTreeselect(roleId).then((response) => {
-        this.deptOptions = response.depts;
-        this.$refs.dept.setCheckedKeys(response.checkedKeys);
       });
     },
     // 菜单模板状态修改
@@ -381,7 +355,6 @@ export default {
         state: 1,
         roleType: "RS",
         checkedResourceIds: [],
-        deptIds: [],
         remark: undefined,
       };
       this.resetForm("form");
