@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2021-01-06 10:22:55
  * @LastEditors: CYZ
- * @LastEditTime: 2021-02-01 15:14:43
+ * @LastEditTime: 2021-02-02 11:45:32
 -->
 <template>
   <div class="app-container">
@@ -95,9 +95,9 @@
         >
           <el-option
             v-for="dict in periodOption"
-            :key="dict.id"
+            :key="dict.value"
             :label="dict.label"
-            :value="dict.id"
+            :value="dict.value"
           />
         </el-select>
         <el-date-picker
@@ -330,7 +330,7 @@ export default {
     },
     // 通过修改报表名称获取报表周期
     changeCategory(val) {
-      this.getPropertyPeriod(val);
+      // this.getPropertyPeriod(val);
     },
     // 报表名称变换
     getPropertyPeriod(categoryId) {
@@ -383,7 +383,11 @@ export default {
           categoryName({ manageId: res[0].id }).then((res) => {
             this.reportNameOptions = res;
             this.queryParams.categoryId = res[0].id;
-            this.getPropertyPeriod(res[0].id);
+            this.getDicts("report", "report_period").then((response) => {
+                this.periodOption = response;
+                this.getList();
+              });
+            // this.getPropertyPeriod(res[0].id);
           });
         });
         });
