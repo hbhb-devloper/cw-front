@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2021-01-23 16:33:29
  * @LastEditors: CYZ
- * @LastEditTime: 2021-02-02 10:31:53
+ * @LastEditTime: 2021-02-02 14:38:45
 -->
 <template>
   <div class="app-container">
@@ -97,9 +97,9 @@
         >
           <el-option
             v-for="dict in periodOption"
-            :key="dict.value"
+            :key="dict.id"
             :label="dict.label"
-            :value="dict.value"
+            :value="dict.id"
           />
         </el-select>
         <el-date-picker
@@ -555,7 +555,7 @@ import {
 import { manageSelect } from "@/api/report/management";
 import { categoryName, propertyPeriod } from "@/api/report/reportName";
 import { resourceTreeByUN } from "@/api/system/unit";
-import { getHallSelect, getHallSelectHallByUserId } from "@/api/system/hall";
+import { getHallSelect ,getHallSelectHallByUserId} from "@/api/system/hall";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 import { prefix as systemPrefix } from "@/api/system/system";
@@ -662,7 +662,7 @@ export default {
       // 日期选择类型
       dataType: undefined,
       // 当前用户Id
-      myUserId: undefined,
+      myUserId:undefined
     };
   },
   created() {
@@ -747,7 +747,7 @@ export default {
             this.detailFileList = response;
           });
         });
-      }
+      } 
       // else {
       //   reportInfo({ reportId: row.id }).then((response) => {
       //     this.detailFileList = response;
@@ -815,10 +815,10 @@ export default {
     beforeAvatarUpload(file) {
       console.log("file", file);
       var testmsg = file.name.substring(file.name.lastIndexOf(".") + 1);
-      console.log("testmsg", testmsg);
-      const isJPG = testmsg === ("xlsx" || "xls" || "zip");
+      console.log('testmsg',testmsg);
+      const isJPG = testmsg ===( "xlsx" || "xls" || "zip");
       // const isLt2M = file.size / 1024 / 1024 < 2;
-      console.log("isJPG", isJPG);
+      console.log('isJPG',isJPG);
 
       if (!isJPG) {
         this.$message.error("上传文件只能是 xlsx/xls/zip 格式!");
@@ -880,7 +880,7 @@ export default {
       this.form = {
         files: [],
       };
-      this.detailFileList = [];
+      this.detailFileList=[]
       this.resetForm("form");
     },
     // 取消按钮
@@ -903,13 +903,13 @@ export default {
       categoryName({ manageId: val }).then((res) => {
         this.reportNameOptions = res;
         this.queryParams.categoryId = res[0].id;
-        // this.getPropertyPeriod(res[0].id);
+        this.getPropertyPeriod(res[0].id);
       });
     },
 
     // 通过修改报表名称获取报表周期
     changeCategory(val) {
-      // this.getPropertyPeriod(val);
+      this.getPropertyPeriod(val);
     },
     // 修改报表周期
     changePeriod(val) {
@@ -974,7 +974,7 @@ export default {
       resourceTreeByUN().then((response) => {
         this.deptOptions = response.list;
         this.queryParams.unitId = response.checked;
-        getHallSelectHallByUserId({ userId: this.myUserId }).then((res) => {
+        getHallSelectHallByUserId({userId:this.myUserId}).then((res) => {
           if (this.typeName == "HallRepotr") {
             this.$set(this.queryParams, "hallId", res[0].id);
             // this.queryParams.hallId = res[0].id;
@@ -986,11 +986,7 @@ export default {
             categoryName({ manageId: res[0].id }).then((res) => {
               this.reportNameOptions = res;
               this.queryParams.categoryId = res[0].id;
-              this.getDicts("report", "report_period").then((response) => {
-                this.periodOption = response;
-                this.getList();
-              });
-              // this.getPropertyPeriod(res[0].id);
+              this.getPropertyPeriod(res[0].id);
             });
           });
         });
