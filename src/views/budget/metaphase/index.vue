@@ -248,7 +248,7 @@ export default {
       this.fileList = [];
       this.loadingoption.close();
       this.centerDialogVisible = false;
-      if (res.status == 1000) {
+      if (res.code == '00000') {
         this.$message({
           message: "上传成功",
           type: "success",

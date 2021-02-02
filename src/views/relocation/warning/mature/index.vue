@@ -30,7 +30,11 @@
           />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery"
+          <el-button
+            type="primary"
+            icon="el-icon-search"
+            size="mini"
+            @click="handleQuery"
             >搜索</el-button
           >
           <el-button icon="el-icon-refresh" size="mini" @click="resetQuery"
@@ -57,8 +61,18 @@
       :data="typeList"
       @selection-change="handleSelectionChange"
     >
-      <el-table-column label="项目编号" prop="projectNum" width="150" align="center" />
-      <el-table-column label="区市" prop="unitName" width="150" align="center" />
+      <el-table-column
+        label="项目编号"
+        prop="projectNum"
+        width="150"
+        align="center"
+      />
+      <el-table-column
+        label="区市"
+        prop="unitName"
+        width="150"
+        align="center"
+      />
       <el-table-column
         label="施工单位"
         prop="constructionUnit"
@@ -66,8 +80,18 @@
         align="center"
       />
       <!-- <el-table-column label="工程单位" prop="flowTypeName" width="150" align="center" /> -->
-      <el-table-column label="对方单位" prop="oppositeUnit" width="150" align="center" />
-      <el-table-column label="合同编号" prop="contractNum" width="150" align="center" />
+      <el-table-column
+        label="对方单位"
+        prop="oppositeUnit"
+        width="150"
+        align="center"
+      />
+      <el-table-column
+        label="合同编号"
+        prop="contractNum"
+        width="150"
+        align="center"
+      />
       <el-table-column
         label="预付款到账金额（元）"
         prop="anticipatePayment"
@@ -116,8 +140,18 @@
         </template>
       </el-table-column>
     </el-table>
-
-    <el-dialog title="上传附件" :visible.sync="centerDialogVisible" width="500px">
+    <pagination
+      v-show="total > 0"
+      :total="total"
+      :page.sync="queryParams.pageNum"
+      :limit.sync="queryParams.pageSize"
+      @pagination="getList"
+    />
+    <el-dialog
+      title="上传附件"
+      :visible.sync="centerDialogVisible"
+      width="500px"
+    >
       <el-upload
         class="upload-demo"
         :headers="headers"
@@ -137,9 +171,18 @@
         <el-button size="small" type="primary">点击上传</el-button>
       </el-upload>
     </el-dialog>
-    <el-dialog title="查看附件" :visible.sync="viewattachmentshow" width="500px">
+    <el-dialog
+      title="查看附件"
+      :visible.sync="viewattachmentshow"
+      width="500px"
+    >
       <el-table :data="upFileList" v-loading="loading1">
-        <el-table-column label="文件名称" prop="fileName" width="150" align="center" />
+        <el-table-column
+          label="文件名称"
+          prop="fileName"
+          width="150"
+          align="center"
+        />
 
         <el-table-column
           label="操作"
@@ -148,11 +191,17 @@
           class-name="small-padding fixed-width"
         >
           <template slot-scope="scope">
-            <el-button size="mini" type="text" @click="viewattachment(scope.row)"
+            <el-button
+              size="mini"
+              type="text"
+              @click="viewattachment(scope.row)"
               >查看附件</el-button
             >
 
-            <el-button size="mini" type="text" @click="handleDownload(scope.row)"
+            <el-button
+              size="mini"
+              type="text"
+              @click="handleDownload(scope.row)"
               >下载附件</el-button
             >
           </template>
@@ -163,7 +212,11 @@
 </template>
 
 <script>
-import { listFinalWarn, WarnAdd, warnfile } from "@/api/relocation/warning/prompt.js";
+import {
+  listFinalWarn,
+  WarnAdd,
+  warnfile,
+} from "@/api/relocation/warning/prompt.js";
 import { prefix } from "@/api/relocation/relocation";
 
 import { exportData1 } from "@/utils/export";
@@ -194,7 +247,9 @@ export default {
       // 查询参数
       queryParams: {
         flowTypeName: undefined,
-        type:1
+        type: 1,
+        pageNum: 1,
+        pageSize: 50,
       },
       // 表单参数
       form: {},
@@ -204,8 +259,12 @@ export default {
       },
       // 表单校验
       rules: {
-        flowTypeName: [{ required: true, message: "类型名称不能为空", trigger: "blur" }],
-        sortNum: [{ required: true, message: "显示顺序不能为空", trigger: "blur" }],
+        flowTypeName: [
+          { required: true, message: "类型名称不能为空", trigger: "blur" },
+        ],
+        sortNum: [
+          { required: true, message: "显示顺序不能为空", trigger: "blur" },
+        ],
       },
       viewattachmentshow: false,
       centerDialogVisible: false,
@@ -267,7 +326,9 @@ export default {
           type: "error",
         });
       } else {
-        window.open("https://view.officeapps.live.com/op/view.aspx?src=" + row.filepath);
+        window.open(
+          "https://view.officeapps.live.com/op/view.aspx?src=" + row.filepath
+        );
       }
     },
     handleupload() {
@@ -324,8 +385,8 @@ export default {
     getList() {
       this.loading = true;
       listFinalWarn(this.queryParams).then((response) => {
-        this.typeList = response;
-        // this.total = response.total;
+        this.typeList = response.list;
+        this.total = response.totalRow;
         this.loading = false;
       });
     },
@@ -341,6 +402,8 @@ export default {
         flowTypeName: undefined,
         sortNum: 0,
         remark: undefined,
+        pageNum: 1,
+        pageSize: 50,
       };
       this.resetForm("form");
     },

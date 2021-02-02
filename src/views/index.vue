@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-07-20 18:22:09
  * @LastEditors: CYZ
- * @LastEditTime: 2021-01-21 18:17:00
+ * @LastEditTime: 2021-02-02 18:48:35
 -->
 <template>
   <div class="dashboard-editor-container">
@@ -743,7 +743,7 @@ export default {
       this.loadingoption.close();
       this.centerDialogVisible = false;
       // this.getFileList()
-      if (res.status == 90010) {
+      if (res.code != '00000') {
         this.$message.error(res.message);
       } else {
         this.$message({
