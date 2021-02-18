@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-07-20 18:22:09
  * @LastEditors: CYZ
- * @LastEditTime: 2020-12-19 18:12:06
+ * @LastEditTime: 2021-02-18 14:26:51
 --> 
 <template>
   <div class="app-container">
@@ -283,11 +283,11 @@ export default {
       line: {},
       node: {},
       statusOptions: [
-        { dictValue: 10, dictLabel: "小于" },
-        { dictValue: 20, dictLabel: "小于等于" },
+        { dictValue: 40, dictLabel: "小于" },
+        { dictValue: 50, dictLabel: "小于等于" },
         { dictValue: 30, dictLabel: "等于" },
-        { dictValue: 40, dictLabel: "大于" },
-        { dictValue: 50, dictLabel: "大于等于" },
+        { dictValue: 20, dictLabel: "大于" },
+        { dictValue: 10, dictLabel: "大于等于" },
       ],
       remindOptions: [
         { dictValue: 10, dictLabel: "默认提醒" },
