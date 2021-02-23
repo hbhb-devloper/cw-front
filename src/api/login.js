@@ -115,3 +115,41 @@ export function logout() {
 //         method: 'get'
 //     })
 // }
+
+// 重置密码链接发送至邮箱
+export function forgotPassword(query) {
+    return request1({
+        url: `${prefix}/oauth/forgot/password`,
+        method: 'get',
+        params:query
+    })
+}
+// 通过邮箱重置密码
+export function pwdEdit(data) {
+    function deepClone(obj) {
+        let result = typeof obj.splice === "function" ? [] : {};
+        if (obj && typeof obj === 'object') {
+            for (let key in obj) {
+                if (obj[key] && typeof obj[key] === 'object') {
+                    result[key] = deepClone(obj[key]); //如果对象的属性值为object的时候，递归调用deepClone,即在吧某个值对象复制一份到新的对象的对应值中。
+                } else {
+                    result[key] = obj[key]; //如果对象的属性值不为object的时候，直接复制参数对象的每一个键值到新的对象对应的键值对中。
+                }
+
+            }
+            return result;
+        }
+        return obj;
+    }
+    let userInfo = deepClone(data)
+    userInfo.newPwd=Encrypt(userInfo.newPwd)
+    // userInfo.key=userInfo.key.replace(/\%20/g, '+')
+    userInfo.key=decodeURIComponent(userInfo.key).replace(/ /g, '+')
+    // userInfo.key=decodeURIComponent(userInfo.key)
+    delete userInfo.checkPwd
+    return request1({
+        url: `${prefix}/oauth/pwd`,
+        method: 'put',
+        data:userInfo
+    })
+}
