@@ -147,6 +147,13 @@
             :disabled="!(scope.row.state == 10 || scope.row.state == 30)"
             >删除</el-button
           >
+           <el-button
+            size="mini"
+            type="text"
+            @click="handleDelete(scope.row)"
+            v-hasPermi="['propaganda:design:delete']"
+            >强制删除</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
