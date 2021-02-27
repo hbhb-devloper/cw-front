@@ -39,77 +39,44 @@
       </el-form-item>
 
       <el-form-item>
-        <el-button
-          type="primary"
-          icon="el-icon-search"
-          size="mini"
-          @click="handleQuery"
+        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery"
           >搜索</el-button
         >
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery"
-          >重置</el-button
-        >
+        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
 
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
-        <el-button
-          type="primary"
-          icon="el-icon-plus"
-          size="mini"
-          @click="handleAdd"
+        <el-button type="primary" icon="el-icon-plus" size="mini" @click="handleAdd"
           >添加新申请</el-button
         >
       </el-col>
       <el-col :span="1.5">
-          <el-button
-            type="success"
-            icon="el-icon-edit"
-            size="mini"
-            @click="handleExport"
-            >导出</el-button
-          >
-        </el-col>
+        <el-button type="success" icon="el-icon-edit" size="mini" @click="handleExport"
+          >导出</el-button
+        >
+      </el-col>
     </el-row>
 
     <el-table v-loading="loading" :data="printList">
-      <el-table-column
-        align="center"
-        label="申请单号"
-        prop="materialsNum"
-        width="180"
-      />
+      <el-table-column align="center" label="申请单号" prop="materialsNum" width="180" />
       <el-table-column
         align="center"
         label="申请单名称"
         prop="materialsName"
-        width="180"
+        width="130"
       />
       <el-table-column align="center" label="申请单位" prop="unitName" />
-      <el-table-column
-        align="center"
-        label="申请时间"
-        prop="applyTime"
-        width="180"
-      />
-      <el-table-column
-        align="center"
-        label="申请人"
-        prop="nickName"
-        width="120"
-      />
+      <el-table-column align="center" label="申请时间" prop="applyTime" width="180" />
+      <el-table-column align="center" label="申请人" prop="nickName" width="120" />
       <el-table-column
         align="center"
         label="预估金额（元）"
         prop="predictAmount"
-        width="180"
+        width="130"
       />
-      <el-table-column
-        label="查看"
-        align="center"
-        class-name="small-padding fixed-width"
-      >
+      <el-table-column label="查看" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button size="mini" type="text" @click="gotoProAdd(scope.row)"
             >查看</el-button
@@ -143,11 +110,7 @@
           >
         </template>
       </el-table-column>
-      <el-table-column
-        label="删除"
-        align="center"
-        class-name="small-padding fixed-width"
-      >
+      <el-table-column label="删除" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
             size="mini"
@@ -156,8 +119,16 @@
             :disabled="!(scope.row.state == 10 || scope.row.state == 30)"
             >删除</el-button
           >
+          <el-button
+            size="mini"
+            type="text"
+            @click="handleDelete(scope.row)"
+            v-hasPermi="['propaganda:poster:delete']"
+            >强制删除</el-button
+          >
         </template>
       </el-table-column>
+      
     </el-table>
 
     <pagination
@@ -174,9 +145,7 @@
           <el-select
             v-model="LaunchId"
             filterable
-            :placeholder="
-              LaunchOption.length == 0 ? '该单位没有流程类型' : '请选择'
-            "
+            :placeholder="LaunchOption.length == 0 ? '该单位没有流程类型' : '请选择'"
             disabled
           >
             <el-option
@@ -190,10 +159,7 @@
       </el-form>
 
       <div style="width: 100%; text-align: center">
-        <el-button
-          type="primary"
-          @click="handleCancel"
-          style="margin-right: 50px"
+        <el-button type="primary" @click="handleCancel" style="margin-right: 50px"
           >取消</el-button
         >
         <el-button type="primary" @click="SubmitLaunch">提交</el-button>
@@ -272,9 +238,7 @@ export default {
       materialsToApprove(dataObj).then((res) => {
         this.isLaunch = false;
         this.LaunchId = undefined;
-        this.$router.push(
-          `/propaganda/propagandaAdd?id=${this.pictureId}&type=poster`
-        );
+        this.$router.push(`/propaganda/propagandaAdd?id=${this.pictureId}&type=poster`);
         this.$message.success("流程发起成功！");
       });
     },
@@ -338,15 +302,11 @@ export default {
     handleDelete(row) {
       const printname = row.materialsName;
       const pictureId = row.id;
-      this.$confirm(
-        '是否确认删除流程名称为"' + printname + '"的数据项?',
-        "警告",
-        {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning",
-        }
-      )
+      this.$confirm('是否确认删除流程名称为"' + printname + '"的数据项?', "警告", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
         .then(function () {
           return deleteMaterials(pictureId);
         })

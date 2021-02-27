@@ -128,7 +128,7 @@ export default {
 
   .card-panel {
     box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-
+    max-width:419px;
     height: 108px;
     cursor: pointer;
     font-size: 12px;
