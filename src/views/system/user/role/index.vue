@@ -289,7 +289,7 @@ export default {
       // 目前被选中的菜单节点
       let checkedKeys = this.$refs.menu.getCheckedKeys();
       // 半选中的菜单节点
-      // let halfCheckedKeys = this.$refs.menu.getHalfCheckedKeys();
+      let halfCheckedKeys = this.$refs.menu.getHalfCheckedKeys();
       let checkList = [];
       checkedKeys.map((checkItem) => {
         let checked = {
@@ -298,14 +298,14 @@ export default {
         };
         checkList.push(checked);
       });
-      // halfCheckedKeys.map((halecheckItem) => {
-      //   let halfchecked = {
-      //     id: halecheckItem,
-      //     isHalf: 1,
-      //   };
-      //   checkList.push(halfchecked);
-      // });
-      // checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys);
+      halfCheckedKeys.map((halecheckItem) => {
+        let halfchecked = {
+          id: halecheckItem,
+          isHalf: 1,
+        };
+        checkList.push(halfchecked);
+      });
+      checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys);
       console.log('checkedKeys',checkedKeys);
       console.log('checkList',checkList);
       return checkList;
