@@ -2,7 +2,8 @@
   <div class="navbar-top">
     <div>
       <div class="left-log">
-        <img src="../../assets/image/log.png" alt />
+        <div class="img">&nbsp;</div>
+        <!-- <img src="../../assets/image/log.png" alt /> -->
         <text class="log-bolid"></text>
       </div>
       <div class="announce">
@@ -223,8 +224,10 @@ export default {
     float: left;
     margin-left: 5px;
 
-    img {
+    .img {
       padding-right: 20px;
+      width: 230px;
+      height: 1!important;
     }
   }
 
