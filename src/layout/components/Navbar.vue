@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-07-17 09:35:24
  * @LastEditors: CYZ
- * @LastEditTime: 2020-08-21 10:25:14
+ * @LastEditTime: 2020-12-25 18:09:50
 -->
 <template>
   <div class="navbar">
@@ -43,6 +43,9 @@ export default {
       this.$store.dispatch("app/toggleSideBar");
     },
     handleStatus(index) {
+      if (!this.sideRouters[index].children) {
+        this.$router.push(this.sideRouters[index].path);
+      }
       this.$store.dispatch("HANDLESIDEBAR", index);
       localStorage.setItem("NAVBARINDEX", index);
     }

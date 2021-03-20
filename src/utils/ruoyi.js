@@ -145,3 +145,17 @@ export function tansParams(params) {
 	})
 	return result
 }
+
+// 通用下载方法
+export function download1(filePath, fileName) {
+	let url = filePath
+	let link = document.createElement("a");
+	link.style.display = 'none';
+	link.href = url;
+	link.download = fileName;
+	document.body.appendChild(link);
+	link.click();
+	document.body.removeChild(link);
+}
+
+

@@ -128,7 +128,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="显示排序" prop="orderNum">
-              <el-input-number v-model="form.orderNum" controls-position="right" :min="0" />
+              <el-input-number v-model="form.orderNum" controls-position="right" :min="0" :max="9999" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -194,7 +194,7 @@ import {
   delMenu,
   addMenu,
   updateMenu
-} from "@/api/system/menu";
+} from "@/api/system/resource";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 import IconSelect from "@/components/IconSelect";

@@ -2,7 +2,8 @@
   <div class="navbar-top">
     <div>
       <div class="left-log">
-        <img src="../../assets/image/log.png" alt />
+        <div class="img">&nbsp;</div>
+        <!-- <img src="../../assets/image/log.png" alt /> -->
         <text class="log-bolid"></text>
       </div>
       <div class="announce">
@@ -66,7 +67,7 @@ import Search from "@/components/HeaderSearch";
 import RuoYiGit from "@/components/RuoYi/Git";
 import RuoYiDoc from "@/components/RuoYi/Doc";
 import {getNotice} from "@/api/system/notice"
-import { getInfo } from "@/api/login.js";
+import { getInfo } from '@/api/system/user'
 import Stomp from "stompjs";
 
 export default {
@@ -110,7 +111,7 @@ export default {
     this.handleNotice();
   },
   mounted() {
-    this.handleInfo();
+    this.name =this.$store.getters.nickName
     this.startMove();
   },
   methods: {
@@ -128,11 +129,6 @@ export default {
         this.textArr=res;
       })
     },
-    handleInfo() {
-      getInfo().then((res) => {
-        this.name = res.userInfo.userName;
-      });
-    },
     async logout() {
       this.$confirm("确定注销并退出系统吗？", "提示", {
         confirmButtonText: "确定",
@@ -145,7 +141,7 @@ export default {
       });
     },
     onConnected: function () {
-      const dest = "/queue/" + process.env.VUE_APP_WS_QUEUE;
+      const dest = "/exchange/" + process.env.VUE_APP_WS_TOPIC_EXCHANGE + "/" + process.env.VUE_APP_WS_KEY_BROADCAST;
       this.client.subscribe(dest, this.responseCallback, this.onFailed);
     },
     onFailed: function (frame) {
@@ -228,8 +224,10 @@ export default {
     float: left;
     margin-left: 5px;
 
-    img {
+    .img {
       padding-right: 20px;
+      width: 230px;
+      height: 1!important;
     }
   }
 

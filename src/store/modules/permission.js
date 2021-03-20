@@ -4,7 +4,7 @@
  * @Author: CYZ
  * @Date: 2020-07-03 09:49:21
  * @LastEditors: CYZ
- * @LastEditTime: 2020-08-04 14:11:36
+ * @LastEditTime: 2020-12-03 10:40:10
  */
 const permission = {
   state: {
@@ -21,13 +21,13 @@ const permission = {
       state.navRouters = navRouters
     },
     handleSidebar: (state, id) => {
-      state.menuArr = []
-      state.menuArr.push(state.sideRouters[id])
+        state.menuArr = []
+        state.menuArr.push(state.sideRouters[id])
     },
 
   },
   actions: {
-    HANDLESIDEBAR({commit}, data) {
+    HANDLESIDEBAR({ commit }, data) {
       commit('handleSidebar', data)
     },
 

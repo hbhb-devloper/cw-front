@@ -12,15 +12,28 @@
         />
       </el-form-item>
       <el-form-item label="流程类型" prop="flowTypeId">
-        <el-select v-model="queryParams.flowTypeId" placeholder="请选择" style="">
-          <el-option :value="undefined" label="全部类型"></el-option>
-          <el-option v-for="item in flowTypeArr" :value="item.id" :label="item.label"></el-option>
+        <el-select v-model="queryParams.flowTypeId" placeholder="请选择" filterable>
+          <el-option :value="undefined" label="全部类型" ></el-option>
+          <el-option
+            v-for="item in flowTypeArr"
+            :value="item.id"
+            :label="item.label"
+            :key="item.id"
+          ></el-option>
         </el-select>
       </el-form-item>
 
       <el-form-item>
-        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+        <el-button
+          type="primary"
+          icon="el-icon-search"
+          size="mini"
+          @click="handleQuery"
+          >搜索</el-button
+        >
+        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery"
+          >重置</el-button
+        >
       </el-form-item>
     </el-form>
 
@@ -31,7 +44,8 @@
           icon="el-icon-plus"
           size="mini"
           @click="handleAdd"
-        >新增</el-button>
+          >新增</el-button
+        >
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -41,7 +55,8 @@
           :disabled="single"
           @click="handleUpdate"
           v-if="false"
-        >修改</el-button>
+          >修改</el-button
+        >
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -51,7 +66,8 @@
           :disabled="multiple"
           @click="handleDelete"
           v-if="false"
-        >删除</el-button>
+          >删除</el-button
+        >
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -60,7 +76,8 @@
           size="mini"
           @click="handleExport"
           v-if="false"
-        >导出</el-button>
+          >导出</el-button
+        >
       </el-col>
     </el-row>
 
@@ -71,7 +88,7 @@
       @selection-change="handleSelectionChange"
     >
       <!-- <el-table-column type="selection" width="55" align="center" /> -->
-      <el-table-column label="流程id" prop="flowId" width="120" align="center" />
+      <el-table-column label="流程id" prop="id" width="120" align="center" />
       <el-table-column
         label="流程名称"
         prop="flowName"
@@ -79,35 +96,56 @@
         width="150"
         align="center"
       />
-      <el-table-column label="流程类型名称" prop="flowTypeName" width="160" align="center" />
+      <el-table-column
+        label="流程类型名称"
+        prop="flowTypeName"
+        width="160"
+        align="center"
+      />
       <!-- <el-table-column label="显示顺序" prop="sortNum" width="100" align="center" /> -->
-      <el-table-column label="创建时间" align="center" prop="createTime" width="160">
+      <el-table-column
+        label="创建时间"
+        align="center"
+        prop="createTime"
+        width="160"
+      >
         <template slot-scope="scope">
-          <span>{{ scope.row.createTime| dataFormat }}</span>
+          <span>{{ scope.row.createTime | dataFormat }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="备注" prop="remark" :show-overflow-tooltip="true" align="center" />
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column
+        label="备注"
+        prop="remark"
+        :show-overflow-tooltip="true"
+        align="center"
+      />
+      <el-table-column
+        label="操作"
+        align="center"
+        class-name="small-padding fixed-width"
+      >
         <template slot-scope="scope">
           <el-button
             size="mini"
             type="text"
             icon="el-icon-edit"
             @click.stop="handleUpdate(scope.row)"
-          >修改</el-button>
+            >修改</el-button
+          >
 
           <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click.stop="handleDelete(scope.row)"
-          >删除</el-button>
+            >删除</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
 
     <pagination
-      v-show="total>0"
+      v-show="total > 0"
       :total="total"
       :page.sync="queryParams.pageNum"
       :limit.sync="queryParams.pageSize"
@@ -138,7 +176,12 @@
         </el-form-item>
 
         <el-form-item label="显示顺序" prop="sortNum">
-          <el-input-number v-model="form.sortNum" controls-position="right" :min="0" />
+          <el-input-number
+            v-model="form.sortNum"
+            controls-position="right"
+            :min="0"
+            :max="9999"
+          />
         </el-form-item>
         <el-form-item label="关联单位" prop="unitId">
           <el-tree
@@ -151,7 +194,11 @@
           ></el-tree>
         </el-form-item>
         <el-form-item label="备注">
-          <el-input v-model="form.remark" type="textarea" placeholder="请输入内容"></el-input>
+          <el-input
+            v-model="form.remark"
+            type="textarea"
+            placeholder="请输入内容"
+          ></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -169,7 +216,7 @@ import {
   updateFlow,
   delarr,
   getFlow,
-  FlowTypeList
+  FlowTypeList,
 } from "@/api/flow/list";
 import { listType } from "@/api/flow/type";
 import { listUnit } from "@/api/system/unit";
@@ -177,7 +224,7 @@ export default {
   name: "Flowtype",
   data() {
     return {
-      flowTypeArr:[],
+      flowTypeArr: [],
       // 遮罩层
       loading: true,
       // 选中数组
@@ -274,10 +321,10 @@ export default {
       // checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys);
       return halfCheckedKeys;
     },
-    getFlowTypeList(){
-      FlowTypeList().then(res=>{
-        this.flowTypeArr=res;
-      })
+    getFlowTypeList() {
+      FlowTypeList().then((res) => {
+        this.flowTypeArr = res;
+      });
     },
     getMenuTreeselect() {
       listUnit().then((response) => {
@@ -285,7 +332,7 @@ export default {
       });
     },
     gotodetail(data) {
-      this.$router.push(`/flow/customize/vfd/${data.flowId}`);
+      this.$router.push(`/flow/customize/vfd/${data.id}`);
     },
     getTypeList() {
       listType().then((response) => {
@@ -297,7 +344,7 @@ export default {
       this.loading = true;
       listFlow(this.queryParams).then((response) => {
         this.flowList = response.list;
-        this.total = response.count;
+        this.total = response.totalRow;
         this.loading = false;
       });
     },
@@ -315,6 +362,9 @@ export default {
         remark: undefined,
       };
       this.resetForm("form");
+      this.$nextTick(() => {
+        this.$refs.dept.setCheckedKeys([]);
+      });
     },
     /** 搜索按钮操作 */
     handleQuery() {
@@ -342,12 +392,12 @@ export default {
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
-      const flowId = row.flowId || this.ids;
+      const flowId = row.id || this.ids;
       getFlow(flowId).then((response) => {
         this.form = response;
         this.form.unitId = [];
-        this.form.flowUnitInfoVOS.map((item) => {
-          this.form.unitId.push(item.unitId);
+        this.form.unitIds.map((item) => {
+          this.form.unitId.push(item);
         });
         this.$nextTick(() => {
           this.$refs.dept.setCheckedKeys(this.form.unitId);
@@ -361,8 +411,8 @@ export default {
     submitForm: function () {
       this.$refs["form"].validate((valid) => {
         if (valid) {
-          if (this.form.flowId != undefined) {
-            this.form.unitId = this.getMenuAllCheckedKeys();
+          if (this.form.id != undefined) {
+            this.form.unitIds = this.getMenuAllCheckedKeys();
             updateFlow(this.form)
               .then((response) => {
                 this.msgSuccess("修改成功");
@@ -373,7 +423,7 @@ export default {
                 this.msgError(err.message);
               });
           } else {
-            this.form.unitId = this.getMenuAllCheckedKeys();
+            this.form.unitIds = this.getMenuAllCheckedKeys();
             addFlow(this.form)
               .then((response) => {
                 this.msgSuccess("新增成功");
@@ -391,7 +441,7 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const Flowname = row.flowName;
-      const FlowId = row.flowId;
+      const FlowId = row.id;
       this.$confirm(
         '是否确认删除流程名称为"' + Flowname + '"的数据项?',
         "警告",

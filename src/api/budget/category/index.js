@@ -4,22 +4,15 @@
  * @Author: CYZ
  * @Date: 2020-07-07 17:50:31
  * @LastEditors: CYZ
- * @LastEditTime: 2020-07-21 16:42:50
+ * @LastEditTime: 2020-12-28 15:26:50
  */
-import request from '@/utils/request'
-// 查询流程类型列表
-export function listMonth(query) {
-    return request({
-        url: '/month/check/list',
-        method: 'get',
-        params: query
-    })
-}
+import request from '@/utils/request1'
+import {prefix} from '../budget'
 
 // 修改岗位
 export function updateBudget(data) {
     return request({
-        url: '/budget/adjust',
+        url: `${prefix}/adjust`,
         method: 'put',
         data: data
     })
@@ -28,7 +21,7 @@ export function updateBudget(data) {
 // 新增项目类别
 export function AddBudget(data) {
     return request({
-        url: '/budget',
+        url: `${prefix}/`,
         method: 'post',
         data: data
     })
@@ -37,7 +30,7 @@ export function AddBudget(data) {
 // 修改项目类别
 export function PutBudget(data) {
     return request({
-        url: '/budget',
+        url: `${prefix}/`,
         method: 'put',
         data: data
     })
@@ -46,7 +39,7 @@ export function PutBudget(data) {
 // 新增科目类别
 export function AddBudgetItem(data) {
     return request({
-        url: '/budget/item',
+        url: `${prefix}/item`,
         method: 'post',
         data: data
     })
@@ -55,7 +48,7 @@ export function AddBudgetItem(data) {
 // 修改科目类别
 export function PutBudgetItem(data) {
     return request({
-        url: '/budget/item',
+        url: `${prefix}/item`,
         method: 'PUT',
         data: data
     })
@@ -63,14 +56,14 @@ export function PutBudgetItem(data) {
 // 通过科目id获得科目详情
 export function GetBudgetItem(itemId) {
     return request({
-        url: '/budget/item/' + itemId,
+        url: `${prefix}/item/` + itemId,
         method: 'Get',
     })
 }
 // 通过预算id获得预算详情
 export function GetBudget(itemId) {
     return request({
-        url: '/budget/' + itemId,
+        url: `${prefix}/` + itemId,
         method: 'Get',
     })
 }
@@ -78,7 +71,7 @@ export function GetBudget(itemId) {
 // 通过预算id删除预算详情
 export function DelBudget(itemId) {
     return request({
-        url: '/budget/' + itemId,
+        url: `${prefix}/` + itemId,
         method: 'Delete',
     })
 }
@@ -86,7 +79,7 @@ export function DelBudget(itemId) {
 // 通过科目id删除科目详情
 export function DelBudgetItem(itemId) {
     return request({
-        url: '/budget/item/' + itemId,
+        url: `${prefix}/item/` + itemId,
         method: 'Delete',
     })
 }
@@ -95,7 +88,7 @@ export function DelBudgetItem(itemId) {
 // 获得科目列表
 export function GetBudgetProject() {
     return request({
-        url: '/budget/item',
+        url: `${prefix}/item`,
         method: 'Get',
     })
 }

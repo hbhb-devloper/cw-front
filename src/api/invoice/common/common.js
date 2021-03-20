@@ -1,10 +1,10 @@
-import request from '@/utils/request'
-import axios from 'axios'
+import request from '@/utils/request1'
+import { prefix } from '../invoice'
 
 // 查询记录列表
 export function getList(query) {
   return request({
-    url: '/invoice/invoice_machine/list',
+    url: `${prefix}/invoice_machine/list`,
     method: 'get',
     params: query
   })
@@ -13,7 +13,7 @@ export function getList(query) {
 // 新增记录
 export function adddata(data) {
   return request({
-    url: '/invoice/invoice_machine/add',
+    url: `${prefix}/invoice_machine/add`,
     method: 'post',
     data: data
   })
@@ -22,7 +22,7 @@ export function adddata(data) {
 // 修改记录
 export function update(data) {
   return request({
-    url: '/invoice/invoice_machine/edit',
+    url: `${prefix}/invoice_machine/edit`,
     method: 'put',
     data: data
   })
@@ -31,7 +31,7 @@ export function update(data) {
 // 删除记录
 export function delData(Id) {
   return request({
-    url: `/invoice/invoice_machine/${Id}`,
+    url: `${prefix}/invoice_machine/${Id}`,
     method: 'delete'
   })
 }
@@ -39,16 +39,16 @@ export function delData(Id) {
 // 批量删除
 export function delarr(userId) {
   return request({
-    url: '/invoice/invoice_machine/batch',
+    url: `${prefix}/invoice_machine/batch`,
     method: 'delete',
-    data:  userId
+    data: userId
   })
 }
 
 // 查询详情
-export function getInfo(id){
+export function getInfo(id) {
   return request({
-    url:`/invoice/invoice_machine/info/${id}`,
-    method:'get'
+    url: `${prefix}/invoice_machine/info/${id}`,
+    method: 'get'
   })
 }

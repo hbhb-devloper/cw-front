@@ -1,7 +1,19 @@
 const budget ={
   state:{
     projectId: undefined,
-    budgetSelect: {},
+    budgetSelect: {
+      //顶部条件查询
+      unitId: undefined,
+      projectYear: '',
+      createTime: '',
+      budgetId: undefined,
+      projectName: undefined,
+      projectNum: undefined,
+      state: undefined,
+      pageNum: 1, //页码
+      pageSize: 20,
+    },
+    radio:3,
     notice: 0
   },
   mutations:{
@@ -9,13 +21,14 @@ const budget ={
       state.projectId = id;
     },
     setBudgetSelect: (state, data) => {
-      state.budgetSelect = data;
-    },
-    setBudgetRest: (state, data) => {
+      console.log('setBudgetSelect',data);
       state.budgetSelect = data;
     },
     setNotice: (state) => {
       state.notice=state.notice+1;
+    },
+    setRadio:(state,data)=>{
+      state.radio=data;
     }
   },
   actions:{
@@ -27,6 +40,9 @@ const budget ={
     },
     SET_GETNOTICE({commit}) {
       commit('setNotice')
+    },
+    SET_BUDGET_RADIO({commit},data){
+      commit('setRadio',data);
     }
   }
 }

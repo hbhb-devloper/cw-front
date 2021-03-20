@@ -4,37 +4,190 @@
  * @Author: CYZ
  * @Date: 2020-08-01 18:28:36
  * @LastEditors: CYZ
- * @LastEditTime: 2020-08-08 14:52:55
+ * @LastEditTime: 2021-01-21 16:09:09
  */
 import request from '@/utils/request'
-// 查询提醒列表
-export function getNoticeList(query) {
-    return request({
-        url: '/notice/list',
+
+import request1 from '@/utils/request1'
+import { prefix as systemPrefix } from '../system/system'
+import { prefix as budgetPrefix } from '../budget/budget'
+import { prefix as fundPrefix } from '../fund/fund'
+import { prefix as propagandaPrefix } from '../propaganda/propaganda'
+import { prefix as reportPrefix } from '../report/report'
+
+// 工作台模块统计
+export function getWorkList() {
+  return request1({
+    url: `${systemPrefix}/home/module`,
+    method: 'get',
+  })
+}
+
+// 预算提醒
+export function getBudgetSummary() {
+  return request1({
+    url: `${budgetPrefix}/notice/summary`,
+    method: 'get'
+  })
+}
+
+// 更多-预算列表
+export function getBudgetNotice(query) {
+    return request1({
+        url: `${budgetPrefix}/notice/list`,
         method: 'get',
         params: query
     })
 }
-// 查询提醒列表
-export function updateNotice(id) {
-    return request({
-        url: '/notice/update/' + id,
-        method: 'PUT'
-    })
+
+// 更新预算提醒状态
+export function updateBudgetNotice(id) {
+  return request1({
+    url: `${budgetPrefix}/notice/` + id,
+    method: 'PUT'
+  })
 }
-// 查询文件列表
-export function getFileList(query) {
-    return request({
-        url: '/file/list',
+
+// 客户资金提醒
+export function getFundSummary() {
+  return request1({
+    url: `${fundPrefix}/notice/summary`,
+    method: 'get'
+  })
+}
+
+// 更多-客户资金列表
+export function getFundNotice(query) {
+    return request1({
+        url: `${fundPrefix}/notice/list`,
         method: 'get',
         params: query
     })
 }
-// 查询文件列表
-export function delFileList(id) {
-    return request({
-        url: '/file/delete/'+id,
-        method: 'DELETE',
-    })
+
+// 更新客户资金提醒状态
+export function updateFundNotice(id) {
+  return request1({
+    url: `${fundPrefix}/notice/` + id,
+    method: 'PUT'
+  })
+}
+
+// 宣传品物料提醒
+export function getMaterialsSummary() {
+  return request1({
+    url: `${propagandaPrefix}/materials/notice/summary`,
+    method: 'get'
+  })
+}
+
+// 宣传品画面制作提醒
+export function getPictureSummary() {
+  return request1({
+    url: `${propagandaPrefix}/picture/notice/summary`,
+    method: 'get'
+  })
+}
+
+// 宣传品印刷品提醒
+export function getPrintSummary() {
+  return request1({
+    url: `${propagandaPrefix}/print/notice/summary`,
+    method: 'get'
+  })
+}
+
+// 宣传品画面更新提醒消息为已读
+export function updatePictureNotice(id) {
+  return request1({
+    url: `${propagandaPrefix}/picture/notice/${id}` ,
+    method: 'PUT'
+  })
+}
+
+// 物料制作更新提醒消息为已读
+export function updateMaterialsNotice(id) {
+  return request1({
+    url: `${propagandaPrefix}/materials/notice/${id}` ,
+    method: 'PUT'
+  })
+}
+
+// 印刷品更新提醒消息为已读
+export function updatePrintNotice(id) {
+  return request1({
+    url: `${propagandaPrefix}/print/notice/${id}` ,
+    method: 'PUT'
+  })
+}
+
+
+
+// 宣传品印刷品提醒更多提醒
+export function getPrintList(query) {
+  return request1({
+    url: `${propagandaPrefix}/print/notice/list`,
+    method: 'get',
+    params:query
+  })
+}
+// 物料提醒更多提醒
+export function getApplicationList(query) {
+  return request1({
+    url: `${propagandaPrefix}/application/notice/list`,
+    method: 'get',
+    params:query
+  })
+}
+
+// 物料印刷品提醒
+export function getApplicationSummary() {
+  return request1({
+    url: `${propagandaPrefix}/application/notice/summary`,
+    method: 'get'
+  })
+}
+
+// 印刷品更新提醒消息为已读
+export function updateApplicationNotice(id) {
+  return request1({
+    url: `${propagandaPrefix}/application/notice/${id}` ,
+    method: 'PUT'
+  })
+}
+
+
+
+// 物料审核提醒
+export function getVerifySummary() {
+  return request1({
+    url: `${propagandaPrefix}/verify/notice/summary`,
+    method: 'get'
+  })
+}
+
+// 物料审核提醒消息为已读
+export function updateVerifyNotice(id) {
+  return request1({
+    url: `${propagandaPrefix}/verify/notice/${id}` ,
+    method: 'PUT'
+  })
+}
+
+
+
+// 获取登录用户报表的待办提醒
+export function getReportSummary() {
+  return request1({
+    url: `${reportPrefix}/report/notice/summary`,
+    method: 'get'
+  })
+}
+// 物料审核提醒消息为已读
+export function updateReportNotice(id) {
+  return request1({
+    url: `${reportPrefix}/report/notice/${id}` ,
+    method: 'PUT'
+  })
 }
 

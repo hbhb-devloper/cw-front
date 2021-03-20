@@ -27,7 +27,12 @@
       </el-col>
       <!--用户数据-->
       <el-col :span="20" :xs="24">
-        <el-form :model="queryParams" ref="queryForm" :inline="true" label-width="68px">
+        <el-form
+          :model="queryParams"
+          ref="queryForm"
+          :inline="true"
+          label-width="68px"
+        >
           <el-form-item label="登录账号" prop="userName">
             <el-input
               v-model="queryParams.userName"
@@ -75,8 +80,16 @@
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-            <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+            <el-button
+              type="primary"
+              icon="el-icon-search"
+              size="mini"
+              @click="handleQuery"
+              >搜索</el-button
+            >
+            <el-button icon="el-icon-refresh" size="mini" @click="resetQuery"
+              >重置</el-button
+            >
           </el-form-item>
         </el-form>
 
@@ -88,7 +101,8 @@
               size="mini"
               @click="handleAdd"
               v-hasPermi="['system:user:add']"
-            >新增</el-button>
+              >新增</el-button
+            >
           </el-col>
           <el-col :span="1.5">
             <el-button
@@ -98,7 +112,8 @@
               :disabled="single"
               @click="handleUpdate"
               v-hasPermi="['system:user:edit']"
-            >修改</el-button>
+              >修改</el-button
+            >
           </el-col>
           <el-col :span="1.5">
             <el-button
@@ -109,38 +124,23 @@
               @click="handleDelete"
               v-hasPermi="['system:user:remove']"
               v-if="false"
-            >删除</el-button>
-          </el-col>
-          <el-col :span="1.5">
-            <el-button
-              type="info"
-              icon="el-icon-upload2"
-              size="mini"
-              @click="handleImport"
-              v-hasPermi="['system:user:import']"
-              v-if="false"
-            >导入</el-button>
-          </el-col>
-          <el-col :span="1.5">
-            <el-button
-              type="warning"
-              icon="el-icon-download"
-              size="mini"
-              @click="handleExport"
-              v-hasPermi="['system:user:export']"
-              v-if="false"
-            >导出</el-button>
+              >删除</el-button
+            >
           </el-col>
         </el-row>
 
-        <el-table v-loading="loading" :data="userList" @selection-change="handleSelectionChange">
+        <el-table
+          v-loading="loading"
+          :data="userList"
+          @selection-change="handleSelectionChange"
+        >
           <el-table-column type="selection" width="50" align="center" />
           <el-table-column label="用户编号" align="center" prop="id" />
           <el-table-column
             label="登录账号"
             align="center"
             prop="userName"
-            :show-overflow-tooltip="true"
+            width="150"
           />
           <el-table-column
             label="用户姓名"
@@ -148,8 +148,18 @@
             prop="nickName"
             :show-overflow-tooltip="true"
           />
-          <el-table-column label="部门" align="center" prop="unitName" :show-overflow-tooltip="true" />
-          <el-table-column label="手机号码" align="center" prop="phone" width="120" />
+          <el-table-column
+            label="部门"
+            align="center"
+            prop="unitName"
+            :show-overflow-tooltip="true"
+          />
+          <el-table-column
+            label="手机号码"
+            align="center"
+            prop="phone"
+            width="120"
+          />
           <el-table-column label="状态" align="center">
             <template slot-scope="scope">
               <el-switch
@@ -160,7 +170,12 @@
               ></el-switch>
             </template>
           </el-table-column>
-          <el-table-column label="创建时间" align="center" prop="createTime" width="160">
+          <el-table-column
+            label="创建时间"
+            align="center"
+            prop="createTime"
+            width="160"
+          >
             <template slot-scope="scope">
               <span>{{ parseTime(scope.row.createTime) }}</span>
             </template>
@@ -168,7 +183,7 @@
           <el-table-column
             label="操作"
             align="center"
-            width="180"
+            width="140"
             class-name="small-padding fixed-width"
           >
             <template slot-scope="scope">
@@ -178,7 +193,8 @@
                 icon="el-icon-edit"
                 @click="handleUpdate(scope.row)"
                 v-hasPermi="['system:user:edit']"
-              >修改</el-button>
+                >修改</el-button
+              >
               <el-button
                 size="mini"
                 type="text"
@@ -186,13 +202,14 @@
                 @click="handleResetPwd(scope.row)"
                 v-hasPermi="['system:user:resetPwd']"
                 v-if="false"
-              >重置</el-button>
+                >重置</el-button
+              >
             </template>
           </el-table-column>
         </el-table>
 
         <pagination
-          v-show="total>0"
+          v-show="total > 0"
           :total="total"
           :page.sync="queryParams.pageNum"
           :limit.sync="queryParams.pageSize"
@@ -202,22 +219,49 @@
     </el-row>
 
     <!-- 添加或修改参数配置对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="1200px" append-to-body>
+    <el-dialog
+      :title="title"
+      :visible.sync="open"
+      width="1200px"
+      append-to-body
+    >
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-row>
           <el-col :span="7">
-            <el-form-item v-if="form.userId == undefined" label="登录账号" prop="userName">
+            <el-form-item
+              v-if="form.userId == undefined"
+              label="登录账号"
+              prop="userName"
+            >
               <el-input v-model="form.userName" placeholder="请输入登录账号" />
             </el-form-item>
           </el-col>
           <el-col :span="7">
-            <el-form-item v-if="form.userId == undefined" label="用户密码" prop="pwd">
-              <el-input v-model="form.pwd" placeholder="请输入用户密码" type="password" />
+            <el-form-item
+              v-if="form.userId == undefined"
+              label="用户密码"
+              prop="pwd"
+            >
+              <el-input
+                v-model="form.pwd"
+                placeholder="请输入用户密码"
+                type="password"
+                clearable
+              />
             </el-form-item>
           </el-col>
           <el-col :span="7">
-            <el-form-item v-if="form.userId == undefined" label="校验密码" prop="CheckPassword">
-              <el-input v-model="form.CheckPassword" placeholder="请再次输入用户密码" type="password" />
+            <el-form-item
+              v-if="form.userId == undefined"
+              label="校验密码"
+              prop="CheckPassword"
+              clearable
+            >
+              <el-input
+                v-model="form.CheckPassword"
+                placeholder="请再次输入用户密码"
+                type="password"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="7">
@@ -229,7 +273,11 @@
             <el-form-item label="归属单位" prop="unitId">
               <!-- :disable-branch-nodes="true"
               :show-count="true"-->
-              <treeselect v-model="form.unitId" :options="deptOptions" placeholder="请选择归属部门" />
+              <treeselect
+                v-model="form.unitId"
+                :options="deptOptions"
+                placeholder="请选择归属部门"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="7">
@@ -239,7 +287,6 @@
               <treeselect
                 v-model="form.defaultUnitId"
                 :options="deptOptions"
-                :disable-branch-nodes="true"
                 :show-count="true"
                 placeholder="请选择数据部门"
               />
@@ -247,12 +294,20 @@
           </el-col>
           <el-col :span="7">
             <el-form-item label="手机号码" prop="phone">
-              <el-input v-model="form.phone" placeholder="请输入手机号码" maxlength="11" />
+              <el-input
+                v-model="form.phone"
+                placeholder="请输入手机号码"
+                maxlength="11"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="7">
             <el-form-item label="邮箱" prop="email">
-              <el-input v-model="form.email" placeholder="请输入邮箱" maxlength="50" />
+              <el-input
+                v-model="form.email"
+                placeholder="请输入邮箱"
+                maxlength="50"
+              />
             </el-form-item>
           </el-col>
 
@@ -268,7 +323,8 @@
                   v-for="dict in statusOptions"
                   :key="dict.dictValue"
                   :label="dict.dictValue"
-                >{{dict.dictLabel}}</el-radio>
+                  >{{ dict.dictLabel }}</el-radio
+                >
               </el-radio-group>
             </el-form-item>
           </el-col>
@@ -280,7 +336,11 @@
           </el-col>
           <el-col :span="24">
             <el-form-item label="备注">
-              <el-input v-model="form.remark" type="textarea" placeholder="请输入内容"></el-input>
+              <el-input
+                v-model="form.remark"
+                type="textarea"
+                placeholder="请输入内容"
+              ></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -290,15 +350,15 @@
           <div slot="header" class="clearfix">
             <span>菜单权限</span>
           </div>
-          <el-scrollbar style="height:160px">
-            <el-checkbox-group v-model="checkedRsRoleIds"
-                               class="tree-box">
+          <el-scrollbar style="height: 160px">
+            <el-checkbox-group v-model="checkedRsRoleIds" class="tree-box">
               <el-checkbox
                 v-for="item in RSlist"
                 :label="item.id"
                 :key="item.id"
                 @change="handleCheckedRSChange(item)"
-              >{{item.label}}</el-checkbox>
+                >{{ item.label }}</el-checkbox
+              >
             </el-checkbox-group>
           </el-scrollbar>
         </el-card>
@@ -316,7 +376,7 @@
             <span>菜单权限列表</span>
             <!-- <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button> -->
           </div>
-          <el-scrollbar style="height:160px">
+          <el-scrollbar style="height: 160px">
             <el-tree
               :data="menuOptions"
               show-checkbox
@@ -328,21 +388,25 @@
             ></el-tree>
           </el-scrollbar>
         </el-card>
-        <el-card class="box-card">
+        <!-- <el-card class="box-card">
           <div slot="header" class="clearfix">
             <span>单位权限</span>
-            <!-- <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button> -->
           </div>
-          <el-scrollbar style="height:160px">
-            <el-checkbox-group v-model="checkedUnRoleIds"
-                               class="tree-box">
-              <el-checkbox v-for="item in UNlist" :label="item.id" :key="item.id">
-                <span @click.prevent="handleCheckedUNChange(item)">{{item.label}}</span>
+          <el-scrollbar style="height: 160px">
+            <el-checkbox-group v-model="checkedUnRoleIds" class="tree-box">
+              <el-checkbox
+                v-for="item in UNlist"
+                :label="item.id"
+                :key="item.id"
+              >
+                <span @click.prevent="handleCheckedUNChange(item)">{{
+                  item.label
+                }}</span>
               </el-checkbox>
             </el-checkbox-group>
           </el-scrollbar>
-        </el-card>
-        <button
+        </el-card> -->
+        <!-- <button
           disabled="disabled"
           type="button"
           class="el-button el-button--primary is-disabled el-transfer__button"
@@ -350,13 +414,13 @@
           <span>
             <i class="el-icon-arrow-right"></i>
           </span>
-        </button>
-        <el-card class="box-card">
+        </button> -->
+        <el-card class="box-card" style="height: 300px; margin-top: 15px">
           <div slot="header" class="clearfix">
             <span>单位权限列表</span>
             <!-- <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button> -->
           </div>
-          <el-scrollbar style="height:160px">
+          <el-scrollbar style="height: 260px">
             <el-tree
               :data="UnOptions"
               show-checkbox
@@ -365,9 +429,22 @@
               class="tree-box"
               empty-text="加载中，请稍后"
               :props="defaultProps"
+              @node-click="getUnit"
             ></el-tree>
           </el-scrollbar>
         </el-card>
+        <el-transfer
+          filterable
+          filter-placeholder="请输入营业厅名称"
+          v-model="defaultHall"
+          :data="hallList"
+          :props="{ key: 'id', label: 'label' }"
+          :titles="['部门下营业厅', '已选营业厅']"
+          @change="handleChange"
+          :right-default="defaultHall"
+          v-loading="hallLoading"
+        >
+        </el-transfer>
       </div>
 
       <div slot="footer" class="dialog-footer">
@@ -375,7 +452,12 @@
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
-    <el-dialog :title="upload.title" :visible.sync="upload.open" width="400px" append-to-body>
+    <el-dialog
+      :title="upload.title"
+      :visible.sync="upload.open"
+      width="400px"
+      append-to-body
+    >
       <el-upload
         ref="upload"
         :limit="1"
@@ -394,10 +476,16 @@
           <em>点击上传</em>
         </div>
         <div class="el-upload__tip" slot="tip">
-          <el-checkbox v-model="upload.updateSupport" />是否更新已经存在的用户数据
-          <el-link type="info" style="font-size:12px" @click="importTemplate">下载模板</el-link>
+          <el-checkbox
+            v-model="upload.updateSupport"
+          />是否更新已经存在的用户数据
+          <el-link type="info" style="font-size: 12px" @click="importTemplate"
+            >下载模板</el-link
+          >
         </div>
-        <div class="el-upload__tip" style="color:red" slot="tip">提示：仅允许导入“xls”或“xlsx”格式文件！</div>
+        <div class="el-upload__tip" style="color: red" slot="tip">
+          提示：仅允许导入“xls”或“xlsx”格式文件！
+        </div>
       </el-upload>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitFileForm">确 定</el-button>
@@ -416,25 +504,21 @@ import {
   UserList,
   updateUser,
   resetUserPwd,
-  changeUserStatus
+  changeUserStatus,
 } from "@/api/system/user";
 import { getToken } from "@/utils/auth";
-import { treeselect, DeptList } from "@/api/system/dept";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 import { listRole } from "@/api/system/role";
-import {
-  resourceTree,
-  roleMenuTreeselect,
-  listMenu
-} from "@/api/system/resource";
+import { resourceTree, roleMenuTreeselect } from "@/api/system/resource";
 import {
   resourceTreeByUN,
   listUnit,
-  UNroleMenuTreeselect
+  UNroleMenuTreeselect,
 } from "@/api/system/unit";
-import {Encrypt} from '@/utils/AESCrypt'
+import { Encrypt } from "@/utils/AESCrypt";
 
+import { getHallSelectNew, updataHallNew } from "@/api/system/hall";
 export default {
   name: "User",
   components: { Treeselect },
@@ -457,6 +541,7 @@ export default {
       UNlist: [],
       // 遮罩层
       loading: true,
+      hallLoading: true,
       // 选中数组
       ids: [],
       // 非单个禁用
@@ -476,13 +561,13 @@ export default {
       // 部门名称
       deptName: undefined,
       // 默认密码
-      initPassword: '',
+      initPassword: "",
       // 日期范围
       dateRange: [],
       // 状态数据字典
       statusOptions: [
         { dictValue: 1, dictLabel: "正常" },
-        { dictValue: 0, dictLabel: "停用" }
+        { dictValue: 0, dictLabel: "停用" },
       ],
       // 性别状态字典
       sexOptions: [],
@@ -493,11 +578,11 @@ export default {
       // 表单参数
       form: {
         checkedRsRoleIds: [],
-        checkedUnRoleIds: []
+        checkedUnRoleIds: [],
       },
       defaultProps: {
         children: "children",
-        label: "label"
+        label: "label",
       },
 
       // 用户导入参数
@@ -514,7 +599,7 @@ export default {
         // headers: { Authorization: "Bearer " + getToken() },
         headers: { Authorization: getToken() },
         // 上传的地址
-        url: process.env.VUE_APP_BASE_API + "/system/user/importData"
+        url: process.env.VUE_APP_BASE_API + "/system/user/importData",
       },
       // 查询参数
       queryParams: {
@@ -525,21 +610,25 @@ export default {
         phone: undefined,
         state: undefined,
         unitId: undefined,
-        defaultUnitId: undefined
+        defaultUnitId: undefined,
       },
       // 表单校验
       rules: {
         userName: [
-          { required: true, message: "登录账号不能为空", trigger: "blur" }
+          { required: true, message: "登录账号不能为空", trigger: "blur" },
         ],
         nickName: [
-          { required: true, message: "用户姓名不能为空", trigger: "blur" }
+          { required: true, message: "用户姓名不能为空", trigger: "blur" },
         ],
         unitId: [
-          { required: true, message: "归属单位不能为空", trigger: "blur" }
+          { required: true, message: "归属单位不能为空", trigger: "blur" },
         ],
         defaultUnitId: [
-          { required: true, message: "默认数据单位不能为空", trigger: "blur" }
+          { required: true, message: "默认数据单位不能为空", trigger: "blur" },
+        ],
+        // pwd: [{ required: true, message: "用户密码不能为空", trigger: "blur" }],
+        CheckPassword: [
+          { required: true, validator: validatePass2, trigger: "blur" },
         ],
         jobNum: [{ required: true, message: "工号不能为空", trigger: "blur" }],
         email: [
@@ -547,34 +636,69 @@ export default {
           {
             type: "email",
             message: "'请输入正确的邮箱地址",
-            trigger: ["blur", "change"]
-          }
+            trigger: ["blur", "change"],
+          },
         ],
         phone: [
           { required: true, message: "手机号码不能为空", trigger: "blur" },
           {
             pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/,
             message: "请输入正确的手机号码",
-            trigger: "blur"
-          }
-        ]
-      }
+            trigger: "blur",
+          },
+        ],
+      },
+      // 营业厅下拉框
+      hallList: [],
+      value: undefined,
+      // 当前选择单位
+      unitId: undefined,
+      // 已选营业厅
+      defaultHall: [],
+      // 选择的用户id
+      rowUserId: undefined,
     };
   },
   watch: {
     // 根据名称筛选部门树
     deptName(val) {
       this.$refs.tree.filter(val);
-    }
+    },
   },
   created() {
     this.getList();
     this.getTreeselect();
     this.getRoleListRS();
     this.getMenuTreeselect();
-
   },
   methods: {
+    // 绑定单位和营业厅
+    handleChange(value, direction, movedKeys) {
+      console.log(value, direction, movedKeys);
+      updataHallNew(
+        { hallSelectIds: value, unitId: this.unitId },
+        this.rowUserId
+      );
+    },
+    // 获取单位的营业厅
+    getUnit(data) {
+      this.unitId = data.id;
+      this.hallLoading = true;
+      getHallSelectNew({ unitId: data.id, userId: this.rowUserId }).then(
+        (res) => {
+          if (data.id == 11 || data.id == 429) {
+            res.halls.map((item) => {
+              item.disabled = true;
+            });
+          }
+          this.hallLoading = false;
+          this.hallList = res.halls;
+          this.$nextTick(() => {
+            this.defaultHall = res.hallSelect;
+          });
+        }
+      );
+    },
     changeDisabled(data, disabled) {
       for (var i = 0; i < data.length; i++) {
         var children = data[i].children;
@@ -587,48 +711,47 @@ export default {
     /** 查询菜单树结构 */
     getMenuTreeselect() {
       var that = this;
-      resourceTree().then(response => {
+      resourceTree().then((response) => {
         var Moptiongs = that.changeDisabled(response, true);
 
         this.menuOptions = response;
       });
-      listUnit().then(response => {
-        var Uoptiongs = that.changeDisabled(response, true);
+      listUnit().then((response) => {
+        // var Uoptiongs = that.changeDisabled(response, true);
 
         this.UnOptions = response;
-
       });
     },
     handleCheckedRSChange(row) {
-      roleMenuTreeselect(row.id).then(response => {
+      roleMenuTreeselect(row.id).then((response) => {
         this.$refs.menu.setCheckedKeys(response);
       });
     },
     handleCheckedUNChange(row) {
-      UNroleMenuTreeselect(row.id).then(response => {
+      UNroleMenuTreeselect(row.id).then((response) => {
         this.$refs.menu1.setCheckedKeys(response);
       });
     },
     getRoleListRS() {
-      listRole("RS").then(res => {
+      listRole("RS").then((res) => {
         this.RSlist = res;
       });
-      listRole("UN").then(res => {
+      listRole("UN").then((res) => {
         this.UNlist = res;
       });
     },
     /** 查询用户列表 */
     getList() {
       this.loading = true;
-      UserList(this.queryParams).then(response => {
+      UserList(this.queryParams).then((response) => {
         this.userList = response.list;
-        this.total = response.count;
+        this.total = response.totalRow;
         this.loading = false;
       });
     },
     /** 查询部门下拉树结构 */
     getTreeselect() {
-      DeptList().then(response => {
+      listUnit().then((response) => {
         this.deptOptions = response;
       });
     },
@@ -651,16 +774,16 @@ export default {
         {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
-          type: "warning"
+          type: "warning",
         }
       )
-        .then(function() {
+        .then(function () {
           return changeUserStatus(row.id, row.state);
         })
         .then(() => {
           this.msgSuccess(text + "成功");
         })
-        .catch(function() {
+        .catch(function () {
           row.state = row.state === 1 ? 0 : 1;
         });
     },
@@ -671,8 +794,8 @@ export default {
     },
     // 表单重置
     reset() {
-      this.checkedRsRoleIds=[]
-      this.checkedUnRoleIds=[]
+      this.checkedRsRoleIds = [];
+      this.checkedUnRoleIds = [];
       this.form = {
         userId: undefined,
         unitId: undefined,
@@ -687,8 +810,9 @@ export default {
         postIds: [],
         roleIds: [],
         checkedRsRoleIds: [],
-        checkedUnRoleIds: []
+        checkedUnRoleIds: [],
       };
+      this.defaultHall = [];
       this.resetForm("form");
     },
     /** 搜索按钮操作 */
@@ -704,15 +828,39 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.id);
+      this.ids = selection.map((item) => item.id);
       this.single = selection.length != 1;
       this.multiple = !selection.length;
+    },
+    // 所有菜单节点数据
+    getMenuAllCheckedKeys() {
+      // 目前被选中的菜单节点
+      let checkedKeys = this.$refs.menu1.getCheckedKeys();
+      // 半选中的菜单节点
+      let halfCheckedKeys = this.$refs.menu1.getHalfCheckedKeys();
+      // let checkList = [];
+      // checkedKeys.map((checkItem) => {
+      //   let checked = {
+      //     id: checkItem,
+      //     isHalf: 0,
+      //   };
+      //   checkList.push(checked);
+      // });
+      // halfCheckedKeys.map((halecheckItem) => {
+      //   let halfchecked = {
+      //     id: halecheckItem,
+      //     isHalf: 1,
+      //   };
+      //   checkList.push(halfchecked);
+      // });
+      // checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys);
+      return checkedKeys;
     },
     /** 新增按钮操作 */
     handleAdd() {
       this.reset();
       this.getTreeselect();
-      DeptList().then(response => {
+      listUnit().then((response) => {
         this.postOptions = response.data;
         // this.roleOptions = response.roles;
         this.open = true;
@@ -725,28 +873,29 @@ export default {
       this.reset();
       this.getTreeselect();
       const userId = row.id || this.ids;
-
-      getUser(userId).then(response => {
+      this.rowUserId = row.id;
+      getUser(userId).then((response) => {
+        response.pwd = undefined;
         this.form = response;
         this.checkedRsRoleIds = this.form.checkedRsRoleIds;
-        this.checkedUnRoleIds = this.form.checkedUnRoleIds;
-        // this.postOptions = response.posts;
-        // this.roleOptions = response.roles;
-        // this.form.postIds = response.postIds;
-        // this.form.roleIds = response.roleIds;
+        // this.checkedUnRoleIds = this.form.checkedUnRoleIds;
+        this.$nextTick(() => {
+          this.$refs.menu1.setCheckedKeys(response.checkedUintIds);
+        });
         this.open = true;
         this.title = "修改用户";
-        this.form.pwd = "";
+        this.form.pwd = undefined;
+        this.getUnit({id:11})
       });
     },
     /** 重置密码按钮操作 */
     handleResetPwd(row) {
       this.$prompt('请输入"' + row.userName + '"的新密码', "提示", {
         confirmButtonText: "确定",
-        cancelButtonText: "取消"
+        cancelButtonText: "取消",
       })
         .then(({ value }) => {
-          resetUserPwd(row.userId, value).then(response => {
+          resetUserPwd(row.userId, value).then((response) => {
             if (response.code === 200) {
               this.msgSuccess("修改成功，新密码是：" + value);
             }
@@ -755,20 +904,25 @@ export default {
         .catch(() => {});
     },
     /** 提交按钮 */
-    submitForm: function() {
-      this.$refs["form"].validate(valid => {
+    submitForm: function () {
+      this.$refs["form"].validate((valid) => {
         if (valid) {
           this.form.checkedRsRoleIds = this.checkedRsRoleIds;
-          this.form.checkedUnRoleIds = this.checkedUnRoleIds;
-          this.form.pwd = Encrypt(this.form.pwd)
+          this.form.checkedUnRoleIds = this.getMenuAllCheckedKeys();
+          // this.form.checkedResourceIds = this.getMenuAllCheckedKeys();
+          if (typeof this.form.pwd != "undefined") {
+            console.log("this.form.pwd", this.form.pwd);
+            this.form.pwd = Encrypt(this.form.pwd);
+          }
           if (this.form.id != undefined) {
-            updateUser(this.form).then(response => {
+            delete this.form.checkedUintIds;
+            updateUser(this.form).then((response) => {
               this.msgSuccess("修改成功");
               this.open = false;
               this.getList();
             });
           } else {
-            adduser(this.form).then(response => {
+            adduser(this.form).then((response) => {
               this.msgSuccess("新增成功");
               this.open = false;
               this.getList();
@@ -777,27 +931,12 @@ export default {
         }
       });
     },
-    /** 导出按钮操作 */
-    handleExport() {
-      this.download(
-        "system/user/export",
-        {
-          ...this.queryParams
-        },
-        `user_${new Date().getTime()}.xlsx`
-      );
-    },
-    /** 导入按钮操作 */
-    handleImport() {
-      this.upload.title = "用户导入";
-      this.upload.open = true;
-    },
     /** 下载模板操作 */
     importTemplate() {
       this.download(
         "system/user/importTemplate",
         {
-          ...this.queryParams
+          ...this.queryParams,
         },
         `user_${new Date().getTime()}.xlsx`
       );
@@ -817,8 +956,8 @@ export default {
     // 提交上传文件
     submitFileForm() {
       this.$refs.upload.submit();
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -848,7 +987,7 @@ export default {
   display: flex;
   flex-direction: column;
 }
-.tree-box{
+.tree-box {
   padding-bottom: 20px;
 }
 </style>

@@ -1,21 +1,51 @@
 <template>
   <div class="containers">
+    <el-button icon="el-icon-back" type="primary" size="mini" style="width:73px;margin-bottom: 20px" @click="handleBack">返回
+    </el-button>
     <!--  流程详情    -->
     <section class="approval-box">
-      <div class="node-box" v-for="item in approvalData">
-        <div class="approval-people">
-          <i class="el-icon-success"></i>
-          <span>{{item.approvalName}}</span>
-          <el-select placeholder="请选择" v-model="item.defaultName" disabled>
-            <el-option v-for="items in item.selectName" :value="items.lable" :label="items.lable"></el-option>
-          </el-select>
-        </div>
-        <div style="display: flex;flex-direction: row">
-          <span style="width:60px;line-height: 38px;">意见</span>
+<!--      <div class="node-box" v-for="item in approvalData">-->
+<!--        <div class="approval-people">-->
+<!--          <i class="el-icon-success" v-if="item.operation==1"></i>-->
+<!--          <i class="el-icon-error" v-if="item.operation==0"></i>-->
+<!--          <span>{{item.roleDesc}}</span>-->
+<!--          <el-select placeholder="请选择" v-model="item.userId" disabled>-->
+<!--            <el-option ></el-option>-->
+<!--          </el-select>-->
+<!--        </div>-->
+<!--        <div style="display: flex;flex-direction: row">-->
+<!--          <span style="width:60px;line-height: 38px;">意见</span>-->
 
-          <el-input disabled v-model="item.opinion" placeholder="请输入审批意见"></el-input>
+<!--          <el-input disabled v-model="item.suggestion" placeholder="请输入审批意见"></el-input>-->
+<!--        </div>-->
+<!--        <div style="text-align: center;"><span>{{item.userId}}</span><span>({{item.createTime}})</span></div>-->
+<!--      </div>-->
+      <div class="program" >
+        <div v-for="(item,index) in approvalData" class="programList" :key="index">
+          <div class="programList-div">
+            <span style="max-width: 160px;line-height: 19px;">
+              <i class="el-icon-success" v-if="item.operation.value==1"></i>
+              <i class="el-icon-error" v-if="item.operation.value==0"></i>
+              {{item.roleDesc}}：
+            </span>
+            <el-input disabled v-model="item.nickName" style="width:180px" :placeholder="'请输入'+item.roleDesc"></el-input>
+            <!-- <el-select placeholder="请选择" v-model="item.userId" style="width:120px;" disabled>
+              <el-option> </el-option>
+            </el-select> -->
+          </div>
+
+          <div class="programList-div">
+            <span style="display: inline-block;">意见：</span>
+
+            <el-input disabled v-model="item.suggestion.value" style="width:180px" placeholder="请输入审批意见"></el-input>
+            <!--            <el-input :disabled="item.suggestion.readOnly" v-model="programObj.suggestion" :placeholder="'请输入审批意见'"></el-input>-->
+          </div>
+          <div style="height:32px">
+            <div ><span style="opacity: 0.7;">{{item.nickName}}</span>({{item.approveTime}})
+            </div>
+          </div>
         </div>
-        <div style="text-align: center;"><span>{{item.defaultName}}</span><span>({{item.time}})</span></div>
+        <div style="clear: both"></div>
       </div>
     </section>
     <!--  记录详情    -->
@@ -27,23 +57,46 @@
             <el-input v-model="info.fcCode" placeholder="请输入编号" disabled style="width: 200px"/>
           </el-form-item>
           <el-form-item label="部门" :required="true">
-            <el-input v-model="info.dptId" placeholder="请输入部门" disabled style="width: 120px"/>
+            <el-input v-model="info.unitName" placeholder="请输入部门" disabled style="width: 120px"/>
             <el-checkbox disabled v-model="info.directSelling">是否核销</el-checkbox>
           </el-form-item>
           <el-form-item label="金额(元)"  :required="true">
             <el-input v-model="info.amount" placeholder="请输入金额(元)" disabled style="width: 200px"/>
           </el-form-item>
           <el-form-item label="款项类型" :required="true">
-            <el-input v-model="info.amountType" disabled style="width: 200px"/>
+            <el-select v-model="info.amountType" disabled style="width:200px" placeholder="请选择">
+              <el-option label="现金" value="1"></el-option>
+              <el-option label="支票" value="2"></el-option>
+            </el-select>
           </el-form-item>
           <el-form-item label="办理业务" :required="true">
-            <el-input v-model="info.busType" disabled style="width: 200px"/>
+<!--            <el-input v-model="info.busType" disabled style="width: 200px"/>-->
+            <el-select disabled
+              v-model="info.busType"
+              placeholder="请选择办理业务内容"
+              clearable
+              size="medium"
+              style="width: 100%"
+            >
+              <el-option
+                v-for="dict in typeList"
+                :label="dict.label"
+                :value="dict.value"
+                :key="dict.value"
+              />
+            </el-select>
           </el-form-item>
+
           <el-form-item label="集团信息" :required="true">
             <el-input v-model="info.groupName" disabled style="width: 200px"/>
           </el-form-item>
           <el-form-item label="资金流向" :required="true">
-            <el-input v-model="info.fundFlows" disabled style="width: 200px"/>
+<!--            <el-input v-model="info.fundFlows" disabled style="width: 200px"/>-->
+            <el-select v-model="info.fundFlows" disabled style="width: 200px" placeholder="请选择">
+              <el-option label="使用" value="1"></el-option>
+              <el-option label="收款" value="2"></el-option>
+              <el-option label="退款" value="3"></el-option>
+            </el-select>
           </el-form-item>
           <el-form-item label="资金到账时间" :required="true">
             <el-input v-model="info.intoAccountDate" disabled style="width: 200px"/>
@@ -79,10 +132,9 @@
           <el-form-item label="附件" :form-class="formClass" :content-class="contentClass">
             <el-table :data="Filetable">
               <el-table-column prop="fileName" align="center" label="标题"></el-table-column>
-              <el-table-column prop="author" align="center" label="作者"></el-table-column>
+              <el-table-column prop="auther" align="center" label="作者"></el-table-column>
               <el-table-column prop="uploadTime" align="center" label="时间"></el-table-column>
               <el-table-column prop="fileSize" align="center" label="大小"></el-table-column>
-              <el-table-column align="center" label="删除"></el-table-column>
             </el-table>
           </el-form-item>
         </el-form>
@@ -92,19 +144,19 @@
     <section class="statistics-box">
       <el-table :data="tableData" v-loading="loading">
         <el-table-column align="center" type="index" label="序号"></el-table-column>
-        <el-table-column prop="dptName" align="center" label="部门"></el-table-column>
-        <el-table-column prop="groupName" width="120px" align="center" label="集团信息"></el-table-column>
-        <el-table-column prop="amount" width="120px" align="center" label="初期余额(元)"></el-table-column>
-        <el-table-column prop="amount" width="120px" align="center" label="本期增加(元)"></el-table-column>
-        <el-table-column prop="amount" width="120px" align="center" label="核销收款(元)"></el-table-column>
-        <el-table-column prop="amount" width="120px" align="center" label="本期减少(元)"></el-table-column>
-        <el-table-column prop="amount" width="120px" align="center" label="本期收款冻结(元)"></el-table-column>
-        <el-table-column prop="amount" width="120px" align="center" label="本期使用冻结(元)"></el-table-column>
-        <el-table-column prop="amount" width="120px" align="center" label="本期退款冻结(元)"></el-table-column>
-        <el-table-column prop="amount" width="120px" align="center" label="本期退款(元)"></el-table-column>
-        <el-table-column prop="amount" width="120px" align="center" label="本期余额(元)"></el-table-column>
-        <el-table-column prop="amount" width="120px" align="center" label="累积开票金额(元)"></el-table-column>
-        <el-table-column prop="amount" width="120px" align="center" label="累积入账金额(元)"></el-table-column>
+        <el-table-column prop="unitName" align="center" label="部门"></el-table-column>
+        <el-table-column prop="groupName" width="180" align="center" label="集团信息"></el-table-column>
+        <el-table-column prop="beginAmount" width="120" align="center" label="初期余额(元)"></el-table-column>
+        <el-table-column prop="addAmount" width="120" align="center" label="本期增加(元)"></el-table-column>
+        <el-table-column prop="verifyAmount" width="120" align="center" label="核销收款(元)"></el-table-column>
+        <el-table-column prop="reduceAmount" width="120" align="center" label="本期减少(元)"></el-table-column>
+        <el-table-column prop="collectionFrozen" width="140" align="center" label="本期收款冻结(元)"></el-table-column>
+        <el-table-column prop="useFrozen" width="140" align="center" label="本期使用冻结(元)"></el-table-column>
+        <el-table-column prop="refundFrozen" width="140" align="center" label="本期退款冻结(元)"></el-table-column>
+        <el-table-column prop="refund" width="120" align="center" label="本期退款(元)"></el-table-column>
+        <el-table-column prop="balance" width="120" align="center" label="本期余额(元)"></el-table-column>
+        <el-table-column prop="totalInvoiceAmount" width="140" align="center" label="累积开票金额(元)"></el-table-column>
+        <el-table-column prop="totalEnterAmount" width="140" align="center" label="累积入账金额(元)"></el-table-column>
       </el-table>
     </section>
   </div>
@@ -112,7 +164,7 @@
 
 <script>
   import ElFormItem from '@/components/customize/ElFormItem';
-  import {getInfo} from '@/api/fund/fundSelect/info'
+  import {getInfo,getFlowList,getStatDetail} from '@/api/fund/fundSelect/info'
 
   export default {
     components: {
@@ -120,84 +172,52 @@
     },
     data() {
       return {
-        approvalData: [
-          {
-            approvalName: '客户经理',
-            defaultName: '陈燕',
-            selectName: [
-              {id: 1, lable: '陈燕'},
-              {id: 1, lable: '陈燕'},
-            ],
-            opinion: '同意',
-            time: '2020-08-27 15:25:47'
-          },
-          {
-            approvalName: '客户经理',
-            defaultName: '陈燕',
-            selectName: [
-              {id: 1, lable: '陈燕'},
-              {id: 1, lable: '陈燕'},
-            ],
-            opinion: '同意',
-            time: '2020-08-27 15:25:47'
-          },
-          {
-            approvalName: '客户经理',
-            defaultName: '陈燕',
-            selectName: [
-              {id: 1, lable: '陈燕'},
-              {id: 1, lable: '陈燕'},
-            ],
-            opinion: '同意',
-            time: '2020-08-27 15:25:47'
-          },
-          {
-            approvalName: '客户经理',
-            defaultName: '陈燕',
-            selectName: [
-              {id: 1, lable: '陈燕'},
-              {id: 1, lable: '陈燕'},
-            ],
-            opinion: '同意',
-            time: '2020-08-27 15:25:47'
-          },
-          {
-            approvalName: '客户经理',
-            defaultName: '陈燕',
-            selectName: [
-              {id: 1, lable: '陈燕'},
-              {id: 1, lable: '陈燕'},
-            ],
-            opinion: '同意',
-            time: '2020-08-27 15:25:47'
-          },
-          {
-            approvalName: '客户经理',
-            defaultName: '陈燕',
-            selectName: [
-              {id: 1, lable: '陈燕'},
-              {id: 1, lable: '陈燕'},
-            ],
-            opinion: '同意',
-            time: '2020-08-27 15:25:47'
-          }
-        ],
+        approvalData: [],
         info:{},
         checked:true,
         formClass: 'column is-12 no-padding',
         contentClass: 'column is-9 no-padding',
         tableData:[],
         Filetable:[],
+        loading:false,
+        typeList:[],
       }
     },
     created() {
-      this.handleGetStatistics(this.$route.params.id)
+      this.handleGetStatistics(this.$route.params.id);
+      this.getStatDetail(this.$route.params.id);
+      this.getFlowLists(this.$route.params.id);
+      this.handleGetBusiness();
     },
     methods: {
       handleGetStatistics(id){
         getInfo(parseInt(id)).then(res=>{
           this.info=res;
-          this.Filetable=res.sysFile;
+          this.Filetable=[];
+          this.Filetable.push(res.files);
+
+        })
+      },
+      getFlowLists(id){
+        getFlowList(id).then(res=>{
+          this.approvalData=res;
+        })
+      },
+      handleGetBusiness() {
+      this.getDicts("fund", "business_type").then((response) => {
+          this.typeList = response;
+        })
+      },
+      //返回
+      handleBack() {
+        this.$router.go(-1);
+      },
+      getStatDetail(id){
+        this.loading=true;
+        this.tableData=[];
+        getStatDetail(id).then(res=>{
+          this.tableData.push(res);
+          this.loading=false;
         })
       }
     }
@@ -210,24 +230,48 @@
     margin: 20px auto 0 auto;
     display: flex;
     flex-direction: column;
-
-    .approval-box {
+    .approval-box{
+      padding: 2%;
       background: #fff;
-      padding: 10px;
-      display: flex;
-      flex-direction: row;
-      flex-wrap: wrap;
+      .programList {
+        width: 330px;
+        max-width: 380px;
+        margin-left: 10px;
+        float: left;
+        margin-bottom: 30px;
+        padding: 15px 0px 15px 15px;
+        border: 1.5px solid red;
+        border-radius: 8px;
+        position: relative;
 
-      .node-box {
-        width: 30%;
-        margin-right: 3%;
-
-        .el-icon-success {
-          color: #67c23a;
+        .el-icon-close {
+          display: inline-block;
+          margin: 0 0 10px 330px;
+          cursor: pointer;
         }
 
         div {
-          line-height: 45px;
+          display: flex;
+          flex-direction: row;
+          line-height: 40px;
+
+          .el-icon-success {
+            color: #67c23a;
+            font-size: 27px;
+          }
+
+          .el-icon-error {
+            color: #f56c6c;
+            font-size: 27px;
+          }
+        }
+
+        .programList-div {
+          margin-bottom: 10px;
+
+          span {
+            font-size: 13px;
+          }
         }
       }
     }
@@ -240,6 +284,9 @@
       .form-box{
         margin-top: 15px;
       }
+    }
+    .statistics-box{
+      margin-bottom: 30px;
     }
   }
 

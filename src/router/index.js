@@ -27,131 +27,162 @@ import First from '@/views/Channel/currency/currency'
 
 // 公共路由
 export const constantRoutes = [{
-        path: '/redirect',
-        component: Layout,
-        hidden: true,
-        children: [{
-            path: '/redirect/:path(.*)',
-            component: (resolve) => require(['@/views/redirect'], resolve)
-        }]
-    },
-    {
-        path: '/login',
-        component: (resolve) => require(['@/views/login'], resolve),
-        hidden: true
-    },
-    {
-        path: '/404',
-        component: (resolve) => require(['@/views/error/404'], resolve),
-        hidden: true
-    },
-    {
-        path: '/401',
-        component: (resolve) => require(['@/views/error/401'], resolve),
-        hidden: true
-    },
-    {
-        path: '',
-        component: Layout,
-        redirect: 'index',
-        children: [{
-            path: 'index',
-            component: (resolve) => require(['@/views/index'], resolve),
-            name: '首页',
-            meta: {
-                title: '首页',
-                icon: 'dashboard',
-                noCache: true,
-                affix: true,
-                isUseCache: false, // 这个字段的意思稍后再说
-                keepAlive: true // 通过此字段判断是否需要缓存当前组件
-            }
-        }]
-    },
-    {
-        path: '/user',
-        component: Layout,
-        hidden: true,
-        redirect: 'noredirect',
-        children: [{
-            path: 'profile',
-            component: (resolve) => require(['@/views/system/user/profile/index'], resolve),
-            name: 'Profile',
-            meta: { title: '个人中心', icon: 'user' }
-        }]
-    },
-  {
+    path: '/redirect',
+    component: Layout,
+    hidden: true,
+    children: [{
+        path: '/redirect/:path(.*)',
+        component: (resolve) => require(['@/views/redirect'], resolve)
+    }]
+},
+{
+    path: '/login',
+    component: (resolve) => require(['@/views/login'], resolve),
+    hidden: true
+},
+{
+    path: '/forget',
+    component: (resolve) => require(['@/views/forget'], resolve),
+    hidden: true
+},
+{
+    path: '/modifyPassword',
+    component: (resolve) => require(['@/views/modifyPassword'], resolve),
+    hidden: true
+},
+
+{
+    path: '/404',
+    component: (resolve) => require(['@/views/error/404'], resolve),
+    hidden: true
+},
+{
+    path: '/401',
+    component: (resolve) => require(['@/views/error/401'], resolve),
+    hidden: true
+},
+{
+    path: '',
+    component: Layout,
+    redirect: 'index',
+    children: [{
+        path: 'index',
+        component: (resolve) => require(['@/views/index'], resolve),
+        name: '首页',
+        meta: {
+            title: '首页',
+            icon: 'dashboard',
+            noCache: true,
+            affix: true,
+            isUseCache: false, // 这个字段的意思稍后再说
+            keepAlive: true // 通过此字段判断是否需要缓存当前组件
+        }
+    }]
+},
+{
     path: '/user',
     component: Layout,
     hidden: true,
     redirect: 'noredirect',
     children: [{
-      path: 'admin',
-      component: (resolve) => require(['@/views/system/user/profile/admin'], resolve),
-      name: 'admin',
-      meta: { title: '联系管理员', icon: 'user' }
+        path: 'profile',
+        component: (resolve) => require(['@/views/system/user/profile/index'], resolve),
+        name: 'Profile',
+        meta: { title: '个人中心', icon: 'user' }
     }]
-  },
+},
+{
+    path: '/user',
+    component: Layout,
+    hidden: true,
+    redirect: 'noredirect',
+    children: [{
+        path: 'admin',
+        component: (resolve) => require(['@/views/system/user/profile/admin'], resolve),
+        name: 'admin',
+        meta: { title: '联系管理员', icon: 'user' }
+    }]
+},
 
-    {
-        path: '/dict',
-        component: Layout,
-        hidden: true,
-        children: [{
-            path: 'type/data/:dictId(\\d+)',
-            component: (resolve) => require(['@/views/system/dict/data'], resolve),
-            name: 'Data',
-            meta: { title: '字典数据', icon: '' }
-        }]
-    },
-    {
-        path: '/job',
-        component: Layout,
-        hidden: true,
-        children: [{
-            path: 'log',
-            component: (resolve) => require(['@/views/monitor/job/log'], resolve),
-            name: 'JobLog',
-            meta: { title: '调度日志' }
-        }]
-    },
-    {
-        path: '/gen',
-        component: Layout,
-        hidden: true,
-        children: [{
-            path: 'edit',
-            component: (resolve) => require(['@/views/tool/gen/editTable'], resolve),
-            name: 'GenEdit',
-            meta: { title: '修改生成配置' }
-        }]
-    },
-  {
+{
+    path: '/dict',
+    component: Layout,
+    hidden: true,
+    children: [{
+        path: 'type/data/:dictId(\\d+)',
+        component: (resolve) => require(['@/views/system/dict/data'], resolve),
+        name: 'Data',
+        meta: { title: '字典数据', icon: '' }
+    }]
+},
+{
+    path: '/job',
+    component: Layout,
+    hidden: true,
+    children: [{
+        path: 'log',
+        component: (resolve) => require(['@/views/monitor/job/log'], resolve),
+        name: 'JobLog',
+        meta: { title: '调度日志' }
+    }]
+},
+{
+    path: '/gen',
+    component: Layout,
+    hidden: true,
+    children: [{
+        path: 'edit',
+        component: (resolve) => require(['@/views/tool/gen/editTable'], resolve),
+        name: 'GenEdit',
+        meta: { title: '修改生成配置' }
+    }]
+},
+{
     path: '/budget',
     component: Layout,
     hidden: true,
     children: [{
-      path: 'edit',
-      component: (resolve) => require(['@/views/budget/Report/info'], resolve),
-      meta: { title: '签报新增修改' }
+        path: 'edit',
+        component: (resolve) => require(['@/views/budget/Report/info'], resolve),
+        meta: { title: '签报新增修改' }
     }]
-  },
-  {
+},
+{
     path: '/fund',
     component: Layout,
     hidden: true,
     children: [{
-      path: 'select/info/:id',
-      component: (resolve) => require(['@/views/fund/fundSelect/info'], resolve),
-      meta: { title: '签报新增修改' }
+        path: 'select/info/:id',
+        component: (resolve) => require(['@/views/fund/fundSelect/info'], resolve),
+        meta: { title: '客户资金查询详情' }
     }]
-  },
-  // {
-  //   path:'/budget/edit',
-  //   component: layout,
-  //   hidden: true,
-  //
-  // }
+},
+{
+    path: '/fund',
+    component: Layout,
+    hidden: true,
+    children: [{
+        path: 'management/info/:id',
+        component: (resolve) => require(['@/views/fund/management/info'], resolve),
+        meta: { title: '发票预开详情' }
+    }]
+},
+{
+    path: '/fund',
+    component: Layout,
+    hidden: true,
+    children: [{
+        path: 'management/info/:id',
+        component: (resolve) => require(['@/views/fund/management/info'], resolve),
+        meta: { title: '签报新增修改' }
+    }]
+},
+    // {
+    //   path:'/budget/edit',
+    //   component: layout,
+    //   hidden: true,
+    //
+    // }
     // {
     //     path: '/flow',
     //     component: Layout,

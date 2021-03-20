@@ -2,11 +2,23 @@
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true">
       <el-form-item label="单位" prop="unitId">
-        <treeselect v-model="queryParams.unitId" :options="deptOptions" placeholder="请选择单位" />
+        <treeselect
+          v-model="queryParams.unitId"
+          :options="deptOptions"
+          placeholder="请选择单位"
+        />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+        <el-button
+          type="primary"
+          icon="el-icon-search"
+          size="mini"
+          @click="handleQuery"
+          >搜索</el-button
+        >
+        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery"
+          >重置</el-button
+        >
       </el-form-item>
     </el-form>
 
@@ -18,7 +30,8 @@
           size="mini"
           :disabled="!submitAble"
           @click="submitForm"
-        >保存</el-button>
+          >保存</el-button
+        >
       </el-col>
     </el-row>
     <div class="info">
@@ -32,27 +45,26 @@
           <el-table-column label="角色标识号" prop="id" align="center" />
           <el-table-column label="角色名称" prop="roleName" align="center" />
         </el-table>
-<!--        <pagination-->
-<!--          v-show="total1>0"-->
-<!--          :total="total1"-->
-<!--          :page.sync="queryParams1.pageNum"-->
-<!--          :limit.sync="queryParams1.pageSize"-->
-<!--          @pagination="getList"-->
-<!--        />-->
+        <pagination
+          v-show="total1 > 0"
+          :total="total1"
+          :page.sync="queryParams1.pageNum"
+          :limit.sync="queryParams1.pageSize"
+          @pagination="getList"
+        />
         <div class="page-box">
-
-          <el-pagination
+          <!-- <el-pagination
             background
             style="margin-top:3px;"
             @current-change="handleRole"
             layout="prev, pager, next"
             :page-count="total1">
-          </el-pagination>
-          <el-select v-model="queryParams1.pageSize" placeholder="请选择" @change="getList" style="width:100px">
+          </el-pagination> -->
+          <!-- <el-select v-model="queryParams1.pageSize" placeholder="请选择" @change="getList" style="width:100px">
             <el-option value="10" label="10条/页"></el-option>
             <el-option value="20" label="20条/页"></el-option>
             <el-option value="30" label="30条/页"></el-option>
-          </el-select>
+          </el-select> -->
         </div>
       </div>
       <div class="tablist">
@@ -74,7 +86,17 @@
           :limit.sync="queryParams.pageSize"
           @pagination="getUserList"
         />-->
-        <el-transfer v-model="form.userIds" :data="UserList" :titles="titles" filterable v-loading="loading1"></el-transfer>
+        <el-transfer
+          :props="{
+            key: 'id',
+            label: 'label',
+          }"
+          v-model="form.userIds"
+          :data="UserList"
+          :titles="titles"
+          filterable
+          v-loading="loading1"
+        ></el-transfer>
       </div>
     </div>
   </div>
@@ -83,7 +105,7 @@
 <script>
 import { listRole, updateRoleUser } from "@/api/flow/role";
 import { resourceTreeByUN } from "@/api/system/unit";
-import { UserList } from "@/api/system/user";
+import { UserList, userSelect } from "@/api/system/user";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 export default {
@@ -126,10 +148,7 @@ export default {
       deptOptions: [],
       // 查询参数
       queryParams: {
-        pageNum: 1,
-        pageSize: 100000,
         unitId: undefined,
-        state :1
       },
       queryParams1: {
         pageNum: 1,
@@ -154,7 +173,7 @@ export default {
         ],
       },
       //穿梭框标题
-      titles:['待选用户列表','已选用户列表']
+      titles: ["待选用户列表", "已选用户列表"],
     };
   },
   computed: {
@@ -175,7 +194,7 @@ export default {
       let that = this;
       resourceTreeByUN().then((response) => {
         that.deptOptions = response.list;
-        // that.queryParams.unitId = response.checked[0];
+        // that.queryParams.unitId = response.checked;
         // that.getList();
       });
     },
@@ -184,8 +203,8 @@ export default {
       this.form.flowRoleId = row.id;
       this.RoleAble = true;
     },
-    handleRole(cur){
-      this.queryParams1.pageNum=cur;
+    handleRole(cur) {
+      this.queryParams1.pageNum = cur;
       this.getList();
     },
     /** 查询角色列表 */
@@ -193,21 +212,22 @@ export default {
       this.loading = true;
       listRole(this.queryParams1).then((response) => {
         this.RoleList = response.list;
-        this.total1 = Math.ceil(response.count/this.queryParams1.pageSize);
+        // this.total1 = Math.ceil(response.count/this.queryParams1.pageSize);
+        this.total1 = response.totalRow;
         this.loading = false;
       });
     },
     getUserList() {
       this.loading1 = true;
-      UserList(this.queryParams).then((response) => {
-        this.UserList = [];
-        response.list.map((item) => {
-          let UserItem = {
-            key: item.id,
-            label: item.nickName + "-" + item.unitName,
-          };
-          this.UserList.push(UserItem);
-        });
+      userSelect(this.queryParams).then((response) => {
+        this.UserList = response;
+        // response.map((item) => {
+        //   let UserItem = {
+        //     key: item.id,
+        //     label: item.label,
+        //   };
+        //   this.UserList.push(UserItem);
+        // });
         // this.UserList = response.list;
 
         this.total = response.count;
@@ -252,8 +272,8 @@ export default {
     },
     /** 提交按钮 */
     submitForm: function () {
-      updateRoleUser(this.form.flowRoleId, this.form.userIds)
-        .then((response) => {
+      updateRoleUser(this.form.flowRoleId, this.form.userIds).then(
+        (response) => {
           this.msgSuccess("修改成功");
           this.open = false;
           this.form = {
@@ -262,7 +282,8 @@ export default {
           };
           this.tags = [];
           this.getList();
-        })
+        }
+      );
     },
 
     /** 删除按钮操作 */
@@ -290,7 +311,7 @@ export default {
 };
 </script>
 <style scoped>
-.tablist /deep/ .el-transfer-panel{
+.tablist /deep/ .el-transfer-panel {
   width: 30%;
 }
 .el-form-item--medium /deep/ .el-form-item__content {
@@ -310,8 +331,8 @@ export default {
 
   /* background-color: transparent; */
 }
-.page-box{
-  width:100%;
+.page-box {
+  width: 100%;
   display: flex;
   flex-direction: row;
 }
@@ -332,10 +353,10 @@ export default {
   position: relative;
   width: 50%;
 }
-.tablist /deep/ .el-transfer-panel{
-  width:50%;
+.tablist /deep/ .el-transfer-panel {
+  width: 50%;
 }
-.tablist  /deep/ .el-transfer{
+.tablist /deep/ .el-transfer {
   display: flex;
   flex-direction: row;
 }

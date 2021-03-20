@@ -83,8 +83,9 @@ import { resourceTreeByUN } from "@/api/system/unit";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 import { updateBudget } from "@/api/budget/decompose/decompose";
-import { exportData } from "@/utils/export";
+import { exportData1 } from "@/utils/export";
 import { getToken } from "@/utils/auth";
+import { prefix } from "@/api/budget/budget";
 
 import { listMonth } from "@/api/budget/assessment";
 export default {
@@ -163,8 +164,8 @@ export default {
       let that = this;
       resourceTreeByUN().then(response => {
         that.deptOptions = response.list;
-        that.queryParams.unitId = response.checked[0];
-        that.morenUnit = response.checked[0];
+        that.queryParams.unitId = response.checked;
+        that.morenUnit = response.checked;
         that.getList();
       });
     },
@@ -229,10 +230,10 @@ export default {
         type: "warning"
       })
         .then(function() {
-          return exportData(
+          return exportData1(
             getToken(),
             queryParams,
-            "/budget/export",
+            `${prefix}/export`,
             "月度考核情况"
           );
         })

@@ -33,7 +33,13 @@
           <img :src="codeUrl" @click="getCode" class="login-code-img"/>
         </div>
       </el-form-item>
-      <el-checkbox v-model="loginForm.rememberMe" style="margin:0px 0px 25px 0px;">记住密码</el-checkbox>
+      <!-- <el-checkbox v-model="loginForm.rememberMe" style="margin:0px 0px 25px 0px;">记住密码</el-checkbox> -->
+      <el-button
+                size="mini"
+                type="text"
+                @click="gotoForget"
+                >忘记密码</el-button
+              >
       <el-form-item style="width:100%;">
         <el-button
           :loading="loading"
@@ -69,7 +75,7 @@ var bcrypt = require('bcryptjs');
         loginForm: {
           username: '',
           password: '',
-          rememberMe: false,
+          // rememberMe: false,
           captcha: '',
           captchaKey: ''
         },
@@ -99,6 +105,9 @@ var bcrypt = require('bcryptjs');
       // this.getCookie()
     },
     methods: {
+      gotoForget(){
+        this.$router.push('/forget')
+      },
       getCode() {
         getCodeImg().then(res => {
           this.codeUrl = 'data:image/gif;base64,' + res.img
@@ -120,7 +129,6 @@ var bcrypt = require('bcryptjs');
             this.$store.dispatch('Login', this.loginForm).then(() => {
               this.$router.push('/');
               // console.log('登陆成功')
-
             })
               .catch(() => {
                 this.loading = false

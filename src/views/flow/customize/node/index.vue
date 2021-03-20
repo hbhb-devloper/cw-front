@@ -2,7 +2,11 @@
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true">
       <el-form-item label="单位" prop="unitId">
-        <treeselect v-model="queryParams.unitId" :options="deptOptions" placeholder="请选择单位" />
+        <treeselect
+          v-model="queryParams.unitId"
+          :options="deptOptions"
+          placeholder="请选择单位"
+        />
       </el-form-item>
       <el-form-item label="流程名称" prop="flowId">
         <el-select
@@ -11,6 +15,7 @@
           clearable
           size="medium"
           style="width: 230px"
+          filterable
         >
           <el-option
             v-for="dict in flowOptions"
@@ -21,8 +26,16 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+        <el-button
+          type="primary"
+          icon="el-icon-search"
+          size="mini"
+          @click="handleQuery"
+          >搜索</el-button
+        >
+        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery"
+          >重置</el-button
+        >
       </el-form-item>
     </el-form>
 
@@ -33,166 +46,205 @@
           icon="el-icon-download"
           size="mini"
           @click="handleExport"
-        >导出</el-button>
+          >导出</el-button
+        >
       </el-col>
-
     </el-row>
 
-    <el-table
-      v-loading="loading"
-      :data="nodeList"
-    >
-      <el-table-column label="单位" prop="unitName"  align="center"/>
-      <el-table-column label="流程名称" prop="flowName" :show-overflow-tooltip="true"  align="center"/>
-      <el-table-column label="节点名称" prop="flowNodeName" align="center"/>
+    <el-table v-loading="loading" :data="nodeList">
+      <el-table-column label="单位" prop="unitName" align="center" />
+      <el-table-column
+        label="流程名称"
+        prop="flowName"
+        :show-overflow-tooltip="true"
+        align="center"
+      />
+      <el-table-column label="节点名称" prop="flowNodeName" align="center" />
       <!-- <el-table-column label="环节名称" prop="linkName"  align="center" /> -->
-      <el-table-column label="角色" prop="roleDescription"  align="center"/>
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column label="角色" prop="roleDescription" align="center" />
+      <el-table-column
+        label="操作"
+        align="center"
+        class-name="small-padding fixed-width"
+      >
         <template slot-scope="scope">
           <el-button
             size="mini"
             type="text"
             icon="el-icon-edit"
             @click.stop="handleUpdate(scope.row)"
-          >查看详情</el-button>
+            >查看详情</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
 
     <pagination
-      v-show="total>0"
+      v-show="total > 0"
       :total="total"
       :page.sync="queryParams.pageNum"
       :limit.sync="queryParams.pageSize"
       @pagination="getList"
     />
     <el-dialog title="查看节点" :visible.sync="ItemVisible" width="50%">
-        <el-radio-group v-model="FormType" style="margin-bottom: 30px;">
-          <el-radio-button label="jbxx">基本信息</el-radio-button>
-          <el-radio-button label="xgtx">相关提醒</el-radio-button>
-        </el-radio-group>
-        <el-form ref="dataForm" :model="node" label-width="80px" v-if="FormType=='jbxx'">
-          <el-form-item label="用户角色">
-            <el-select
-              v-model="node.flowRoleId"
-              disabled
-              placeholder="请选择角色"
-              clearable
-              size="medium"
-            >
-              <el-option
-                v-for="dict in roleOptions"
-                :key="dict.id"
-                :label="dict.roleName"
-                :value="dict.id"
-              />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="角色范围">
-            <treeselect
+      <el-radio-group v-model="FormType" style="margin-bottom: 30px">
+        <el-radio-button label="jbxx">基本信息</el-radio-button>
+        <el-radio-button label="xgtx">相关提醒</el-radio-button>
+      </el-radio-group>
+      <el-form
+        ref="dataForm"
+        :model="node"
+        label-width="80px"
+        v-if="FormType == 'jbxx'"
+      >
+        <el-form-item label="用户角色">
+          <el-select
+            v-model="node.flowRoleId"
             disabled
-              v-model="node.unitId"
-              :options="deptOptions"
-              :disable-branch-nodes="true"
-              :show-count="true"
-              placeholder="请选择角色范围"
+            placeholder="请选择角色"
+            clearable
+            size="medium"
+          >
+            <el-option
+              v-for="dict in roleOptions"
+              :key="dict.id"
+              :label="dict.roleName"
+              :value="dict.id"
             />
-          </el-form-item>
-          <el-form-item label="默认用户">
-            <el-select v-model="node.userId" placeholder="请选择默认用户" disabled clearable size="medium">
-              <el-option
-                v-for="dict in uesrOptions"
-                :key="dict.id"
-                :label="dict.label"
-                :value="dict.id"
-              />
-            </el-select>
-          </el-form-item>
-          <!-- <el-form-item label="环节">
+          </el-select>
+        </el-form-item>
+        <el-form-item label="角色范围">
+          <treeselect
+            disabled
+            v-model="node.unitId"
+            :options="deptOptions"
+            :disable-branch-nodes="true"
+            :show-count="true"
+            placeholder="请选择角色范围"
+          />
+        </el-form-item>
+        <el-form-item label="默认用户">
+          <el-select
+            v-model="node.userId"
+            placeholder="请选择默认用户"
+            disabled
+            clearable
+            size="medium"
+          >
+            <el-option
+              v-for="dict in uesrOptions"
+              :key="dict.id"
+              :label="dict.label"
+              :value="dict.id"
+            />
+          </el-select>
+        </el-form-item>
+        <!-- <el-form-item label="环节">
             <el-input v-model="node.linkId" disabled></el-input>
           </el-form-item> -->
-          <el-form-item label="分配者">
-            <el-select v-model="node.assigner" placeholder="请选择分配者" disabled clearable size="medium">
-              <el-option
-                v-for="dict in roleOptions"
-                :key="dict.id"
-                :label="dict.roleName"
-                :value="dict.id"
-              />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="是否能够自定义流程">
-            <el-checkbox v-model="node.controlAccess" :true-label="Istrue" :false-label="Isfalse"></el-checkbox>
-          </el-form-item>
-          <el-form-item label="是否允许被不参与流程">
-            <el-checkbox v-model="node.isJoin" :true-label="Istrue" :false-label="Isfalse"></el-checkbox>
-          </el-form-item>
-          <el-form-item label="启用条件">
-            <div style="width:70px">项目金额</div>
+        <el-form-item label="分配者">
+          <el-select
+            v-model="node.assigner"
+            placeholder="请选择分配者"
+            disabled
+            clearable
+            size="medium"
+          >
+            <el-option
+              v-for="dict in roleOptions"
+              :key="dict.id"
+              :label="dict.label"
+              :value="dict.id"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="是否能够自定义流程">
+          <el-checkbox
+            v-model="node.controlAccess"
+            :true-label="Istrue"
+            :false-label="Isfalse"
+          ></el-checkbox>
+        </el-form-item>
+        <el-form-item label="是否允许被不参与流程">
+          <el-checkbox
+            v-model="node.isJoin"
+            :true-label="Istrue"
+            :false-label="Isfalse"
+          ></el-checkbox>
+        </el-form-item>
+        <el-form-item label="启用条件">
+          <div style="width: 70px">项目金额</div>
+          <el-select
+            v-model="node.state"
+            placeholder="关系"
+            clearable
+            disabled
+            size="medium"
+            style="width: 150px"
+          >
+            <el-option
+              v-for="dict in statusOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+          <el-input
+            v-model="node.amount"
+            disabled
+            style="width: 150px; margin-left: 10px"
+          ></el-input>
+        </el-form-item>
+      </el-form>
+
+      <el-table :data="tableData" style="width: 100%" v-if="FormType == 'xgtx'">
+        <el-table-column label="提醒流程" width="180" align="center">
+          <template slot-scope="scope">
             <el-select
-              v-model="node.state"
-              placeholder="关系"
-              clearable
+              v-model="scope.row.noticeNodeId"
               disabled
-              size="medium"
-              style="width: 150px"
+              placeholder="请选择"
             >
               <el-option
-                v-for="dict in statusOptions"
+                v-for="dict in flownodeOptions"
+                :key="dict.id"
+                :label="dict.name"
+                :value="dict.id"
+              ></el-option>
+            </el-select>
+          </template>
+        </el-table-column>
+        <el-table-column label="提醒状态" width="180" align="center">
+          <template slot-scope="scope">
+            <el-select v-model="scope.row.state" disabled placeholder="请选择">
+              <el-option
+                v-for="dict in remindOptions"
                 :key="dict.dictValue"
                 :label="dict.dictLabel"
                 :value="dict.dictValue"
-              />
+              ></el-option>
             </el-select>
-            <el-input v-model="node.amount" disabled style="width: 150px;margin-left:10px;"></el-input>
-          </el-form-item>
-        </el-form>
-
-        <el-table :data="tableData" style="width: 100%" v-if="FormType=='xgtx'">
-          <el-table-column label="提醒流程" width="180" align="center">
-            <template slot-scope="scope">
-              <el-select v-model="scope.row.noticeNodeId" disabled placeholder="请选择">
-                <el-option
-                  v-for="dict in flownodeOptions"
-                  :key="dict.id"
-                  :label="dict.name"
-                  :value="dict.id"
-                ></el-option>
-              </el-select>
-            </template>
-          </el-table-column>
-          <el-table-column label="提醒状态" width="180" align="center">
-            <template slot-scope="scope">
-              <el-select v-model="scope.row.state" disabled placeholder="请选择">
-                <el-option
-                  v-for="dict in remindOptions"
-                  :key="dict.dictValue"
-                  :label="dict.dictLabel"
-                  :value="dict.dictValue"
-                ></el-option>
-              </el-select>
-            </template>
-          </el-table-column>
-          <el-table-column label="提醒信息" align="center">
-            <template slot-scope="scope">
-              <el-select v-model="scope.row.inform" disabled placeholder="请选择">
-                <el-option
-                  v-for="dict in noticeOptions"
-                  :key="dict.id"
-                  :label="dict.content"
-                  :value="dict.content"
-                ></el-option>
-              </el-select>
-            </template>
-          </el-table-column>
-        </el-table>
-        
-      </el-dialog>
+          </template>
+        </el-table-column>
+        <el-table-column label="提醒信息" align="center">
+          <template slot-scope="scope">
+            <el-select v-model="scope.row.inform" disabled placeholder="请选择">
+              <el-option
+                v-for="dict in noticeOptions"
+                :key="dict.id"
+                :label="dict.content"
+                :value="dict.content"
+              ></el-option>
+            </el-select>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { listFlow, addFlow, updateFlow, delarr } from "@/api/flow/list";
+import { addFlow, updateFlow, delarr } from "@/api/flow/list";
 import { listType } from "@/api/flow/type";
 import { getremindList } from "@/api/flow/remind";
 import {
@@ -200,26 +252,24 @@ import {
   getFlowRoleUser,
   addFlowProp,
   putFlowProp,
-  addFlowPropNotice,
   getFlowPropNotice,
-  getFlowPropNodeRole,
 } from "@/api/flow/vfd";
-import { DeptList } from "@/api/system/dept";
-import { listNode , listflow} from "@/api/flow/node";
+import { listNode, listflow } from "@/api/flow/node";
 import { listUnit } from "@/api/system/unit";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 import { listFlowRoles } from "@/api/flow/flowrole";
 import { getProject } from "@/api/flow/project";
-import { exportData } from "@/utils/export";
+import {prefix} from '@/api/flow/flow'
+import { exportData1 } from "@/utils/export";
 import { getToken } from "@/utils/auth";
 export default {
   name: "Flowtype",
   components: { Treeselect },
   data() {
     return {
-      Istrue:1,
-      Isfalse:2,
+      Istrue: 1,
+      Isfalse: 2,
       node: {},
       ItemVisible: false,
       FormType: "jbxx",
@@ -236,8 +286,8 @@ export default {
       // 部门列表
       deptOptions: [],
       uesrOptions: [],
-      flowOptions:[],
-      roleOptions:[],
+      flowOptions: [],
+      roleOptions: [],
       noticeOptions: [],
       remindOptions: [
         { dictValue: 10, dictLabel: "默认提醒" },
@@ -256,7 +306,7 @@ export default {
         pageNum: 1,
         pageSize: 10,
         unitId: undefined,
-        flowId: undefined
+        flowId: undefined,
       },
       // 表单参数
       form: {},
@@ -288,7 +338,7 @@ export default {
       });
     },
     getTreeselect() {
-      DeptList().then((response) => {
+      listUnit().then((response) => {
         this.deptOptions = response;
         let morendept = {
           id: 0,
@@ -303,19 +353,18 @@ export default {
       });
     },
     getFlowList() {
-      listflow().then(response => {
+      listflow().then((response) => {
         this.flowOptions = response;
       });
     },
     /** 查询角色列表 */
     getList() {
       this.loading = true;
-      listNode(this.queryParams).then(response => {
+      listNode(this.queryParams).then((response) => {
         this.nodeList = response.list;
-        this.total = response.count;
+        this.total = response.totalRow;
         this.loading = false;
       });
-      
     },
     // 表单重置
     reset() {
@@ -350,13 +399,13 @@ export default {
       this.resetForm("queryForm");
       this.handleQuery();
     },
-    
+
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
       const nodeId = row.flowNodeId;
       const flowId = row.flowId;
-      let that=this
+      let that = this;
       getFlowProp(nodeId).then((response) => {
         if (response) {
           this.node = response;
@@ -379,10 +428,10 @@ export default {
         this.ItemVisible = true;
       });
       getProject(flowId).then((response) => {
-          this.projectdata = response;
-        });
+        this.projectdata = response;
+      });
     },
-     /** 导出按钮操作 */
+    /** 导出按钮操作 */
     handleExport() {
       const queryParams = this.queryParams;
       this.$confirm("是否确认导出流程节点的数据项?", "导出表格", {
@@ -392,10 +441,10 @@ export default {
       })
         .then(function () {
           // return BudgetExport(queryParams);
-          return exportData(
+          return exportData1(
             getToken(),
             queryParams,
-            "/flow/export",
+            `${prefix}/node/export`,
             "流程节点导出"
           );
         })
@@ -404,14 +453,14 @@ export default {
         })
         .catch(function () {});
     },
-  }
+  },
 };
 </script>
 <style scoped>
 .el-form-item--medium /deep/ .el-form-item__content {
   width: 230px;
 }
-.el-dialog  .el-form-item--medium /deep/ .el-form-item__content {
+.el-dialog .el-form-item--medium /deep/ .el-form-item__content {
   width: auto;
 }
 .el-dialog .el-form-item--medium /deep/ .el-form-item__label {
